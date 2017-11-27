@@ -1,0 +1,30 @@
+pip install django==1.9.7
+pip install djangorestframework
+pip install xhtml2pdf
+
+# Descobri o problema! django-xhtml2pdf utiliza o xhtml2pdf que por sua vez utilizava o html5lib..
+# esse passou por uma atualização de versão que não funciona perfeitamente com a ultima versão do xhtml2pdf.
+# Quando xhtml2pdf atraves de seus requirements baixava o html5lib baixava na versão mais nova cujo recentemente
+# descobriram essa incompatibilidade. # Como o projeto xhtml2pdf foi oficialmente descontinuado no dia 02/05/2016
+# e de la pra ca eu não precisei reinstalar o projeto quando precisei reinstalar o problema apareceu.
+# A solução e mais detalhes estão descritos em um caso reportado na pagina do projeto
+# (https://github.com/xhtml2pdf/xhtml2pdf/issues/318), basta instalar a versão 1.0b8.
+# Caso alguem tenha mais alguma dificuldade como eu tive, tente instalar o xhtml2pdf
+# antes do django-xhtml2pdf, e assim consegui resolver meu problema..
+
+# E preciso desinstalar o html5lib e reinstalar a versao especificada, ate aprovarem o pull request
+# que fizeram atualizando o requirements do xhtml2pdf.
+# pip uninstall html5lib
+# pip install html5lib==1.0b8
+
+
+# Tambem foi necessário manter a versão do django-xhtml2pdf na versão 0.0.3 e não a mais atual (0.0.6):
+#
+# pip install -e git+https://github.com/chrisglass/django-xhtml2pdf.git#egg=django-xhtml2pdf (VERSAO MAI ATUAL)
+# Sera necessario desinstalar caso ja tenha instalado. E instalar a versão usada em desenvolvimento
+#pip uninstall django-xhtml2pdf
+pip install http://pypi.python.org/packages/source/d/django-xhtml2pdf/django-xhtml2pdf-0.0.3.tar.gz
+
+
+pip install requests
+pip install django-multiselectfield

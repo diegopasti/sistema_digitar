@@ -1,0 +1,360 @@
+<html>
+	<head>
+		<title>Imprimir Protocolo</title>
+		<meta charset="utf-8">
+		
+		
+		<style>
+		.bordas_padrao{
+			border-color: #ccc;
+			
+		}
+		</style>
+		
+		
+		{% load staticfiles %}
+		<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css"/>  -->
+		
+		<link rel="stylesheet" type="text/css" href="maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+		<script src="{% static 'datatable/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js' %}"></script>
+		<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+				
+		<script type="text/javascript">
+		$(document).ready(function() {
+		    $('#itens_protocolo').DataTable( {
+		    	"dom": '<"top">rt"<"rightcolumn"p><"clear">',
+		    	"bAutoWidth": false,
+				"aoColumns": [
+			                   { "sWidth": null }, // 2st column width 
+			                   { "sWidth": "40px" }, // 3th column width
+			                   { "sWidth": "80px"}, // 4st column width 
+			                   { "sWidth": "110px"}
+			                   
+			                   ]
+		    } );
+		    
+		} );
+		</script>
+    	
+		<style type="text/css">
+			
+	        .titulo {
+	            background: -webkit-gradient(linear, left top, right top, from(#FFFFFF), to(#00008B)) no-repeat;
+	            background: -moz-linear-gradient(left, #FFFFFF, #00008B);
+	            filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='#FFFFFF', EndColorStr='#00008B');            
+	        }
+    	</style>
+		
+	</head>
+
+	<body style="height:480px;width:880px;background-color: #999;">
+	
+		<div> <!--  style="padding: 20px;">  -->
+			<div class="panel panel-default ">
+			
+				<div class="panel-heading titulo ">
+				
+					<table border='0'>
+						<tr>
+							<td>
+								{% load staticfiles %}
+								<img src="{% static 'imagens/logo.png' %}" alt="logo" height="40px" width="66px"/>
+							</td>
+							
+							<td style='padding-left: 10px;padding-top: 0px'>
+								<font size=1><b>{{ emissor.nome_razao }}</b>,{{ emissor.cpf_cnpj }}.<br>
+								{{ endereco_emissor }}</font>
+							</td>
+							
+							<td>
+								<center><font size=4><b>PROTOCOLO</b></font></center>
+							</td>
+							
+						</tr>
+					
+					</table>
+
+				</div>
+				
+				<hr size="100px" width="1" align="left" color="#000000">
+				
+				<div class="panel-body"	style="padding-bottom: 18px; margin-top: -5px;">
+				
+				<div class="col-lg-6">
+				
+					<div class="panel panel-default">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">Remetente</h3>
+					  </div>
+					  <div class="panel-body">
+					    Panel content
+					  </div>
+					</div>
+				</div>
+				
+				<div class="col-lg-6">
+					<div class="panel panel-default">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">Destinatário</h3>
+					  </div>
+					  <div class="panel-body">
+					    Panel content
+					  </div>
+					</div>
+				</div>
+
+					<table border='1'>
+						<tr>
+							<td>
+								<h5><b>{{ emissor.nome_razao }}</b>,
+					
+								{% if emissor.cpf_cnpj|length == 14 %}			
+									{{ emissor.cpf_cnpj }}.
+								{% else %}
+									{{ emissor.cpf_cnpj }}.
+								{% endif %}
+								</h5>
+								<h5><sub>{{ endereco_emissor }}</sub></h5>
+							</td>
+						
+							<td>
+								<h5><b>{{ destinatario.nome_razao }}</b>,
+					
+								{% if destinatario.cpf_cnpj|length == 14 %}			
+									{{ destinatario.cpf_cnpj }}.
+								{% else %}
+									{{ destinatario.cpf_cnpj }}.
+								{% endif %}
+								</h5>
+								<h5><sub>{{ endereco_destinatario }}</sub></h5>
+							</td>
+						</tr>
+						
+						
+					</table>
+
+
+
+										
+					
+							
+				</div>
+				
+				<div class="dataTable_wrapper" style="padding: 15px;">
+				
+					<table id="itens_protocolo" class="compact table table-striped table-bordered" id="itens_protocolo">
+				
+					<!--  <table class="table table-striped table-bordered table-hover compact" id="itens_protocolo"> -->
+					
+					<!-- <table class="table display compact table-bordered table-striped  bordas_padrao" id="itens_protocolo" cellspacing=0  style="border-color:#CCC;">  -->
+			
+						<thead>
+							<tr class="text-right">
+								<!-- <th style="text-align:center;"></th> -->
+								<th style="text-align:center;">Documentos Entregues</th>
+								<th style="text-align:center;">Referencia</th>
+								<th style="text-align:center;">Vencimento</th>
+								<th style="text-align:center;">Valor</th>
+							</tr>
+						</thead>
+			
+						{% if documentos %}
+							<tbody style="height: 500px;">
+								{% for item in documentos %}
+			
+								<tr style="padding: 0 !important;">
+									{% if item.complemento %}
+									<td>{{ item.documento }} - {{ item.complemento }}</td> 
+									{% else %}
+										<td>{{ item.documento }}</td> 
+									{% endif %}
+			
+									<td align="center">{{	item.referencia }}</td>
+									<td align="center">{{ item.vencimento }}</td>
+									
+									{% if item.valor %}
+										<td align="center">R$ {{ item.valor }}</td>
+									{% else %}
+										<td align="center"></td>
+									{% endif %}
+								</tr>
+								
+								{% endfor %}
+							</tbody>
+						{% endif %}
+					</table>
+					<!-- /.table-responsive -->
+					
+					<div class="row">
+						<div class="col-lg-7">
+						 
+						</div>
+					
+						<div class="col-lg-5 pull-left">
+						<br>
+						<font color="#CCC">___________________________________________</font>
+						<br>
+						<center>Recebido por</center>
+						<br>
+						</div>
+					</div>
+				
+				</div>
+				
+				<div class="panel-footer" style="padding-top:5px;">						
+					<sub><center>{{ endereco_emissor }}</center></sub><br>
+					<sub><center>(27) 3043-0703 / (27) 99988-1254</center></sub>
+				</div>
+
+			</div>
+			
+			
+					
+		</div>
+		
+		<hr style="padding:0px; border:1px dashed silver;">
+		<!-- SEGUNDA VIA -->
+		
+		
+		<div> <!--  style="padding: 20px;">  -->
+			<div class="panel panel-default ">
+			
+				<div class="panel-heading titulo ">
+					<div class="row">
+						<div class="col-lg-12">
+							{% load staticfiles %}
+							<img src="{% static 'imagens/exemplo_logo.png' %}" alt="logo" height="50px" width="150px"/>
+						</div>
+					</div>
+				</div>
+				
+				<div class="panel-body"	style="padding-bottom: 18px; margin-top: -5px;">
+					<center><h4><b>PROTOCOLO</b></h4></center>
+					<br>
+					
+					<div class="row">
+						<div class="col-lg-8">
+							<h5><b>{{ emissor.nome_razao }}</b>,
+							
+							{% if emissor.cpf_cnpj|length == 14 %}			
+								{{ emissor.cpf_cnpj }}.
+							{% else %}
+								{{ emissor.cpf_cnpj }}.
+							{% endif %}
+							</h5>
+							
+							<h5><sub>{{ endereco_emissor }}</sub></h5>
+						</div>
+						
+						<div class="col-lg-4 pull-rigth">
+							<h5><sub>(27) 99988-1254</sub></h5>
+						</div>
+					
+					</div>
+					
+					<hr>
+					
+					<h5><b>{{ destinatario.nome_razao }}</b>,
+					
+					{% if destinatario.cpf_cnpj|length == 14 %}			
+						{{ destinatario.cpf_cnpj }}.
+					{% else %}
+						{{ destinatario.cpf_cnpj }}.
+					{% endif %}
+					</h5>
+					<h5><sub>{{ endereco_destinatario }}</sub></h5>
+							
+				</div>
+				
+				<div class="dataTable_wrapper" style="padding: 15px;min-height: 0px;">
+					<table class="table display compact table-bordered table-striped  bordas_padrao" id="{{ datatable_nome }}" cellspacing=0  style="border-color:#CCC;">
+			
+						<thead>
+							<tr class="text-right">
+								<!-- <th style="text-align:center;"></th> -->
+								<th style="text-align:center;">Documentos Entregues</th>
+								<th style="text-align:center;">Referencia</th>
+								<th style="text-align:center;">Vencimento</th>
+								<th style="text-align:center;">Valor</th>
+							</tr>
+						</thead>
+			
+						{% if documentos %}
+							<tbody>
+								{% for item in documentos %}
+			
+								<tr>
+									{% if item.complemento %}
+									<td>{{ item.documento }} - {{ item.complemento }}</td> 
+									{% else %}
+										<td>{{ item.documento }}</td> 
+									{% endif %}
+			
+									<td align="center">{{	item.referencia }}</td>
+									<td align="center">{{ item.vencimento }}</td>
+									
+									{% if item.valor %}
+										<td align="center">R$ {{ item.valor }}</td>
+									{% else %}
+										<td align="center"></td>
+									{% endif %}
+								</tr>
+								
+								{% endfor %}
+							</tbody>
+						{% endif %}
+					</table>
+					<!-- /.table-responsive -->
+					
+					<div class="row">
+						<div class="col-lg-7">
+						 
+						</div>
+					
+						<div class="col-lg-5 pull-left">
+						<br>
+						<font color="#CCC">___________________________________________</font>
+						<br>
+						<center>Recebido por</center>
+						<br>
+						</div>
+					</div>
+				
+				</div>
+
+			</div>
+		</div>
+	</body>
+	
+	
+	
+	<!-- 
+	<script>
+		$(document).ready(function() {
+			
+			$('#itens_protocolo').DataTable({
+				
+				
+				
+				//responsive: false,
+				//"pagingType": "simple",
+				//"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
+				//"dom": '<"top">rt"<"rightcolumn"p><"clear">',
+				//"bSort": true,
+				//"ordering": true,
+				"bAutoWidth": false,
+				"aoColumns": [
+			                   { "sWidth": "50px" }, // 2st column width 
+			                   { "sWidth": "70px" }, // 3th column width
+			                   { "sWidth": "80px"}, // 4st column width 
+			                   { "sWidth": "60px"}
+			                   
+			                   ]
+			});
+			
+		});
+		</script>
+		 -->
+</html>

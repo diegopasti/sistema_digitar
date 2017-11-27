@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Digitar - Configuração Inicial</title>
+
+
+	{% load staticfiles %}
+	<!-- JQUERY -->
+	<script type="text/javascript" src="{% static 'jquery/jquery-2.2.0.min.js' %}"></script>
+	
+	<!-- BOOTSTRAP -->
+	<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+	<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+	
+	<!-- DATATABLE -->
+	<link rel="stylesheet" type="text/css" href="{% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+	<!-- <link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>  -->
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="{% static 'creative/animate.min.css' %}" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'creative/creative.css' %}" type="text/css">
+    
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <style>
+	    .row.better_col_spacings_first_chield [class*='col-']:first-child {
+			padding-right:5px;
+			padding-bottom:5px;
+		}
+		
+		.row.better_col_spacings_last_chield [class*='col-']:last-child {
+			padding-left:5px;
+			padding-bottom:5px;
+		}
+		
+		.row.better_col_middle_spacings [class*='col-']:not(:first-child):not(:last-child) {
+		  padding-right:5px;
+		  padding-left:5px;
+		  padding-bottom:5px;
+		}
+		
+		.uppercase{ 
+		    text-transform: uppercase;
+		}
+		
+		.lowercase{ 
+		    text-transform: uppercase;
+		}
+	</style>
+
+</head>
+
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Digitar</a>
+            </div>
+			
+			
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                	<li>
+                        <a class="page-scroll" href="cadastrar_empresa">Cadastre-se</a>
+                    </li>
+                    
+                	<!-- 
+                    <li>
+                        <a class="page-scroll" href="#about">Sobre</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#services">Serviços</a>
+                    </li>
+					
+					
+
+                    <li>
+                        <a class="page-scroll" href="#contact">Contato</a>
+                    </li>
+                     -->
+				
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+		
+        <!-- /.container-fluid -->
+    </nav>
+	
+	<header>
+       	<div class="header-content">
+            <div class="header-content-inner" style='padding-top: 30px;'>
+    	
+		    	<div class="col-lg-4 col-md-6 col-xs-12" style='padding-top: 20px; padding-right: 40px;'>
+		    		<h3>Cadastre sua Empresa</h3>
+					<hr>
+					<p style="text-align:center">Utilize o formulário ao lado para cadastra as informações básicas da sua empresa no sistema.</p>
+		    	</div>
+		    		
+		    	<div class="col-lg-8 col-md-6 col-xs-12">
+			    
+			    	<form action="" method="post">  <!-- <button type='submit' name='elevar_indice_categoria' value='{{ item.codigo }}  -->
+					  	{% csrf_token %}
+					  	
+					  	<!-- 
+					  	<table border=1>
+					  		<tr>
+					  			<td>
+						  			<h4><sub>Cnpj: </sub></h4>
+						  			{{ formulario.cpf_cnpj }}
+					  			</td>
+					  			
+					  			<td colspan='5'>
+						  			<h4><sub> Nome Fantasia: </sub></h4>
+									{{ formulario.apelido_fantasia }}
+					  			</td>
+					  		</tr>
+					  		
+					  		<tr>
+					  			<td>
+						  			<h4><sub> Fundação: </sub></h4>
+									{{ formulario.nascimento_fundacao }}
+					  			</td>
+					  			
+					  			<td>
+						  			<h4><sub> Código Postal: </sub></h4>
+									{{ formulario.cep }}
+					  			</td>
+					  			
+					  			<td>
+					  				<h4><sub> {{ formulario.endereco.label }} </sub></h4>
+									{{ formulario.endereco }}
+								</td>
+					  		</tr>
+					  		
+					  		
+					  		
+					  		
+					  	</table>
+					  	
+					  	 -->
+				      	 
+						      
+							<div class="row better_col_spacings_first_chield better_col_middle_spacings better_col_spacings_last_chield">
+				
+								<div class="col-lg-4">
+									<h4><sub>Cnpj: </sub></h4>
+									{{ formulario.cpf_cnpj }}
+								</div>
+								
+								<div class="col-lg-8">
+									<h4><sub> Razão Social: </sub></h4>
+									{{ formulario.nome_razao }}
+								</div>
+							</div>
+							
+							<div class="row better_col_spacings_first_chield better_col_middle_spacings better_col_spacings_last_chield">							
+								<div class="col-lg-3">
+									<h4><sub> Fundação: </sub></h4>
+									{{ formulario.nascimento_fundacao }}
+								</div>
+								
+								<div class="col-lg-3">
+									<h4><sub> Código Postal: </sub></h4>
+									{{ formulario.cep }}
+								</div>
+								
+								<div class="col-lg-6">
+									<h4><sub> {{ formulario.endereco.label }} </sub></h4>
+									{{ formulario.endereco }}
+								</div>
+							</div>
+							
+							<div class="row better_col_spacings_first_chield better_col_middle_spacings better_col_spacings_last_chield">
+							
+								<div class="col-lg-2">
+									<h4><sub> {{ formulario.numero_endereco.label }} </sub></h4>
+									{{ formulario.numero_endereco }}
+								</div>
+							
+								<div class="col-lg-5">
+									<h4><sub> {{ formulario.complemento.label }} </sub></h4>
+									{{ formulario.complemento }}
+								</div>
+								
+								<div class="col-lg-5">
+									<h4><sub> {{ formulario.bairro.label }} </sub></h4>
+									{{ formulario.bairro }}
+								</div>
+							
+							</div>
+							
+							<div class="row better_col_spacings_first_chield better_col_middle_spacings better_col_spacings_last_chield">
+							
+								<div class="col-lg-4">
+									<h4><sub> {{ formulario.municipio.label }} </sub></h4>
+									{{ formulario.municipio }}
+								</div>
+							
+								<div class="col-lg-3">
+									<h4><sub> Código: </sub></h4>
+									{{ formulario.codigo_municipio }}
+								</div>
+							
+								<div class="col-lg-3">
+									<h4><sub> {{ formulario.estado.label }} </sub></h4>
+									{{ formulario.estado }}
+								</div>
+							
+								<div class="col-lg-2">
+									<h4><sub> {{ formulario.pais.label }} </sub></h4>
+									{{ formulario.pais }}
+								</div>
+							
+							</div>
+							
+							<div class="row better_col_spacings_first_chield better_col_middle_spacings better_col_spacings_last_chield">
+								<div class="col-lg-2">
+									<h4><sub> {{ formulario.tipo_contato.label }} </sub></h4>
+									{{ formulario.tipo_contato }}
+								</div>
+							
+								<div class="col-lg-2">
+									<h4><sub> {{ formulario.numero_contato.label }} </sub></h4>
+									{{ formulario.numero_contato }}
+								</div>
+							
+							
+								<div class="col-lg-3">
+									<h4><sub> {{ formulario.cargo_setor.label }} </sub></h4>
+									{{ formulario.cargo_setor }}
+								</div>
+							
+								<div class="col-lg-5">
+									<h4><sub> {{ formulario.email.label }} </sub></h4>
+									{{ formulario.email }}
+								</div>
+							
+							</div>
+						  
+						  <br>
+						  
+						  	      
+					      <div class="modal-footer">
+					      	<div class="form-group">
+					      		<button type="submit" id="bt_formulario" class="btn btn-success pull-right">Enviar</button> 
+					      		
+								<!--  <p class="help-block pull-left text-danger hide" id="form-error">&nbsp;{{ message }}</p></div>  -->
+				
+					        <!-- <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button> -->
+					        </div>
+					     </div>
+					</form>
+		    	</div>
+		    </div>
+        </div>
+    </header>
+    
+    {% include "componentes/mensagem.html" with messages=messages %}
+	<!-- 
+    <section class="bg-primary" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Nós temos o que você procurava </h2>
+                    <hr class="light">
+                    <p class="text-faded">Com uma interface simples e funcionalidades inteligentes suas compras cadastradas viram uma programação de compras completa. Gere uma lista de compra em segundos com o que você precisa pra semana, quinzena ou pro mês.</p>
+					<button type="button" id="bt_novo_documento" class="btn btn-default btn-xl page-scroll  wow tada" data-toggle="modal" data-target="#myModal" style="position: relative; margin-top: -2px;margin-right: 2px;">Começar hoje mesmo!</button>                 </div>
+            </div>
+        </div>
+    </section>
+	
+    <section id="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Serviços</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-diamond wow bounceIn text-primary"></i>
+                        <h3>Lista de Compras</h3>
+                        <p class="text-muted">Maior agilidade na hora de fazer suas compras</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-paper-plane wow bounceIn text-primary" data-wow-delay=".1s"></i>
+                        <h3>Estoque</h3>
+                        <p class="text-muted">Cansado de esquecer se comprou determinado produto?</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-newspaper-o wow bounceIn text-primary" data-wow-delay=".2s"></i>
+                        <h3>Histórico de Produtos</h3>
+                        <p class="text-muted">Consulte e compare na hora de comprar de qualquer lugar.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-heart wow bounceIn text-primary" data-wow-delay=".3s"></i>
+                        <h3>Relatórios</h3>
+                        <p class="text-muted">Precisando acompanhar suas despesas, isso foi feito pra você!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+	
+	<aside class="bg-dark">
+        <div class="container text-center">
+            <div class="call-to-action">
+                <h2>Experimente gratuitamente o MinhasCompras é grátis!</h2>
+				<button type="button" id="bt_novo_documento" class="btn btn-default btn-xl page-scroll  wow tada" data-toggle="modal" data-target="#myModal" style="position: relative; margin-top: -2px;margin-right: 2px;">Ok, vamos lá!</button>
+                
+            </div>
+        </div>
+    </aside>
+
+    <section id="contact" class="bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Contatos</h2>
+                    <hr class="primary">
+                    <p>Pronto pra começar a usar o MinhasCompras? Estamos felizes por fazer mais por você e se precisar estamos aqui para fazer ainda mais, entre em contato com a gente.</p>
+                </div>
+                <div class="col-lg-4 col-lg-offset-2 text-center">
+                    <i class="fa fa-phone fa-3x wow bounceIn"></i>
+                    <p>(27) 12345-6789</p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fa fa-envelope-o fa-3x wow bounceIn" data-wow-delay=".1s"></i>
+                    <p><a href="mailto:your-email@your-domain.com">diegopasti@gmail.com</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+     -->
+
+    <!-- Plugin JavaScript -->
+    
+    <script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+    
+    <script src="{% static 'creative/jquery.fittext.js' %}"></script>
+    <script src="{% static 'creative/wow.min.js' %}"></script>
+    <script src="{% static 'creative/creative.js' %}"></script>
+    
+    <script type="text/javascript">
+		$('#codigo_postal').blur(function(){
+			$.ajax({
+				url: '/consultar_cep/'+$('#codigo_postal').val(),
+			    type: 'get', //this is the default though, you don't actually need to always mention it
+			    success: function(data) {
+			    	$('#endereco').val(data[0]);
+			    	$('#bairro').val(data[1]);
+			    	$('#municipio').val(data[2]);
+			    	$('#codigo_municipio').val(data[3]);
+			    	$('#estado').val(data[4]);
+			    	$('#pais').val(data[5]);
+			        $('#numero_endereco').focus();
+			      //alert(data);
+			    },
+			    failure: function(data) { 
+			        alert('Got an error dude');
+			    }
+			}); 
+		}); 
+	</script>
+	
+	<script type="text/javascript">
+		$(".alert").fadeOut(6000);
+	</script>
+
+    <!-- 
+    <script type="text/javascript">
+		$('#codigo_postal').blur(function(){
+			$.ajax({
+				url: '/consultar_cep/'+$('#codigo_postal').val(),
+			    type: 'get', //this is the default though, you don't actually need to always mention it
+			    success: function(data) {
+			    	$('#endereco').val(data[0]);
+			    	$('#bairro').val(data[1]);
+			    	$('#municipio').val(data[2]);
+			    	$('#estado').val(data[3]);
+			    	$('#codigo_municipio').val(data[4]);
+			    	$('#pais').val(data[5]);
+			        $('#numero_endereco').focus();
+			      //alert(data);
+			    },
+			    failure: function(data) { 
+			        alert('Got an error dude');
+			    }
+			}); 
+		}); 
+	</script>
+	 -->
+	 
+	 <script type="text/javascript">
+		$('#tipo_contato').blur(function(){
+			var campo_telefone = document.getElementById('tipo_contato');
+			if (campo_telefone.value == 'C') {
+				$("#numero_contato").mask("(99) 99999-9999");
+			} else {		
+				if (campo_telefone.value == 'F') {
+					$("#numero_contato").mask("(99) 9999-9999");
+				} else {
+					$("#numero_contato").unmask();
+				}
+			} 
+		}); 
+	</script>
+	
+	<script>
+		jQuery(document).ready(function(){
+			$("#cpf_cnpj").mask("99.999.999/9999-99");
+		   	$("#nascimento_fundacao").mask("99/99/9999");
+		   	$("#numero_contato").mask("(99) 99999-9999");
+		   	$("#codigo_postal").mask("99999999");
+		});
+</script>
+
+</body>
+
+</html>
+
+
+
+
+

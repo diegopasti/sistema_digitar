@@ -1,0 +1,25 @@
+beautifulsoup4==4.5.0
+dj-database-url==0.4.1
+Django==1.9.7
+django-mathfilters==0.4.0
+django-multiselectfield==0.1.8
+djangorestframework==3.4.0
+gunicorn==19.6.0
+psycopg2==2.6.2
+requests==2.10.0
+selenium==2.53.6
+six==1.10.0
+sonarqube-api==1.3.0
+webencodings==0.5
+whitenoise==3.2
+xhtml2pdf== 0.2b1 #0.0.6
+
+
+# DJANGO-XHTML2PDF
+# NEED REPLACE 'import StringIO' to 'from io import StringIO' on file utils.py
+
+#Pillow==3.3.0
+#PyPDF2==1.26.0
+#reportlab==3.3.0
+#django-xhtml2pdf==0.0.3
+#html5lib==1.0b8

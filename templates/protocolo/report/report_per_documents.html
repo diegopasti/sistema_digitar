@@ -1,0 +1,381 @@
+{% extends 'base_page.html' %}
+
+{% block Titulo %}
+	<meta charset="utf-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="Emulating real sheets of paper in web documents (using HTML and CSS)">
+  <title>Digitar - Relatório de Protocolos</title>
+{% endblock %}
+
+{% load staticfiles %}
+{% block recrusos_necessarios %}
+{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
+<!-- BOOTSTRAP 3.3.6 -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<link rel="stylesheet" type="text/css" href="{% static 'html-sheets-paper/css/sheets-of-paper-a4.css' %}">
+
+<style type="text/css">
+.uppercase{
+    text-transform: uppercase;
+}
+
+.lowercase{
+    text-transform: uppercase;
+}
+
+.center_align{
+    text-align: center;
+}
+
+.left_align{
+	padding-left: 8px;
+    text-align: left;
+}
+
+.right_align{
+    text-align: right;
+}
+
+.link_desabilitado {
+     pointer-events: none;
+     cursor: default;
+     opacity: 0.6;
+}
+
+.div_desabilitado {
+	display: none;
+    z-index: 1000;
+    background-color: lightgrey;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.dataTables_paginate {
+	position: relative;
+    display: block;
+    top: 30px;
+}
+
+label {
+    font-weight: normal !important;
+}
+
+th {
+	font-size: 12px;
+}
+
+.report-company-logo {
+	float: left;
+	height: 10px;
+	width: 120px;
+}
+
+.report-title{
+	padding-top: 10px;
+}
+
+.report-generate-details{
+	font-size: 0.9em;
+	margin-top: -10px;
+	float: right;
+	text-align: right;
+}
+
+.breadcrumb{
+display: none;
+}
+
+@media print {
+  ...
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+  ...
+}
+</style>
+{% endblock %}
+
+<!--% block breadcrumb_block %}
+<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+<li><a href="/protocolo">Protocolo</a></li>
+<li><a>Relatório</a></li>
+% endblock %}-->
+
+{% block conteudo %}
+
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-xs-12">
+		<div class="box box-default " style="margin-top: -50px;">
+			<div class="box-heading">
+
+				<div class="box-header with-border center_align" style="padding: 10px 10px 20px 10px;">
+					<h5 class="box-title report-title">Relatório de Protocolos</h5>
+
+					<div class="report-company-logo">
+						<img src="{% static 'imagens/exemplo_logo.png' %}" alt="logo" height="35" width="120" />
+					</div>
+
+					<div class="pull-right">
+						<span class="report-generate-details"><sub>18/08/2017 às 02:16 <br>por Diego Pasti</sub></span>
+						<!--<a href="/protocolo/emitir_protocolo" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Protocolo</a>
+						<a href="#modal_relatorio" id='bt_relatorio' role="button" class="btn btn-sm btn-default" data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Gerar Relatório</a>
+						<a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_confirmar_entrega" data-toggle="modal" data-target="#myModal" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-check" aria-hidden="true"></i> Confirmar Recebimento</a>-->
+					</div>
+				</div>
+			</div>
+			<!-- /.panel-heading -->
+
+			<div class="box-body" style="padding-bottom: -10px;">
+
+				<style>
+					.form-group label{
+						padding-left: 14px;
+					}
+
+					label sub {
+						font-weight: bold;
+					}
+
+
+					.form-filter-option{
+						height: 28px;
+						margin-top: -6px;
+						-webkit-box-shadow: none;
+						 box-shadow: none;
+						 border-top: 0px;
+						 border-left: 0px;
+						 border-right: 0px;
+						 border-bottom: 0px;
+					}
+
+					.search-input {
+							border-right: 0;
+					}
+
+					.search-icon {
+							border-left:0 solid transparent;
+							background:transparent;
+					}
+
+					input[type="text"]:disabled {
+						background: #fff;
+						cursor: default;
+					}
+
+					input::selection {
+						background: #fff; /* WebKit/Blink Browsers */
+					}
+					input::-moz-selection {
+						background: #fff; /* Gecko Browsers */
+					}
+
+
+					/*
+					.form-group{
+						border-right: 1px solid #ccc;
+					}
+
+					.form-group:last-child{
+						border-right: 0px solid #ccc;
+					}*/
+
+					table{
+					font-size: 12px;
+					}
+				</style>
+
+				<div class="row no-gutter" style="margin-top: -10px;">
+					<div class="col-md-4 col-sm-12 col-xs-12 form-group">
+						<label><sub>Cliente</sub></label>
+						<input id="filtro_cliente" type="text" value="{{ filtro_cliente }}" disabled class="form-control form-filter-option"/>
+					</div>
+
+					<div class="col-md-2 col-sm-6 col-xs-6 form-group">
+						<label><sub>Protocolo</sub></label>
+						<input id="filtro_status" type="text" value="{{ filtro_status }}" disabled class="form-control form-filter-option"/>
+					</div>
+
+					<div class="col-md-2 col-sm-6 col-xs-6 form-group">
+						<label><sub>Situação</sub></label>
+						<input id="filtro_operacao" type="text" value="{{ filtro_operacao }}" disabled class="form-control form-filter-option"/>
+					</div>
+
+
+
+					{% if filtro_desde or filtro_ate %}
+						<div class="col-md-2 col-sm-3 col-xs-6 form-group">
+						<label>
+							<sub>{{ filtro_operacao|title }}
+							{% if filtro_desde %}
+								{% if filtro_ate %}
+									entre
+								{% else %}
+									a partir de
+								{% endif %}
+							{% else %}
+								{% if filtro_ate %}
+									até
+								{% else %}
+
+								{% endif %}
+							{% endif %}
+							</sub>
+						</label>
+
+						{% if filtro_desde %}
+								{% if filtro_ate %}
+									<input id="filtro_desde" type="text" value="{{ filtro_desde }} à {{ filtro_ate }}" disabled class="form-control form-filter-option"/>
+								{% else %}
+									<input id="filtro_desde" type="text" value="{{ filtro_desde }}" disabled class="form-control form-filter-option"/>
+								{% endif %}
+							{% else %}
+								{% if filtro_ate %}
+									<input id="filtro_desde" type="text" value="{{ filtro_ate }}" disabled class="form-control form-filter-option"/>
+								{% else %}
+									<input id="filtro_desde" type="text" value="QUALQUER PERÍODO" disabled class="form-control form-filter-option"/>
+								{% endif %}
+							{% endif %}
+
+					</div>
+					{% endif %}
+
+					<!--<div class="col-md-2 col-sm-3 col-xs-6 form-group">
+						<label><sub>Data Final</sub></label>
+						<input id="filtro_ate" type="text" value="{{ filtro_ate }}" disabled class="form-control form-filter-option"/>
+					</div>-->
+
+					<div class="col-md-2 col-sm-3 col-xs-6 form-group">
+						<label><sub>Resultado</sub></label>
+						<input id="resultado" type="text" value="{{ total_protocolos }} Protocolos Encontrados" disabled class="form-control form-filter-option"/>
+					</div>
+				</div>
+
+				<div style="margin-top: 10px;">
+					{% for item in protocols_list %}
+					<table class="table table-condensed table-striped table-bordered table-hover" id="datatable">
+					<thead>
+					<tr class="linha_cabecalho">
+						<th colspan="7">PROTOCOLOS CONTENDO {{ item.documento }}
+						<span class="pull-right">PROTOCOLOS ABERTOS {{ item.protocolos_abertos }}/{{ item.protocolos|length }}</span>
+						</th>
+
+					</tr>
+
+						<tr class="linha_cabecalho">
+							<th style="vertical-align: middle;"></th>
+							<th style="text-align: center;vertical-align: middle;">Nº PROTOCOLO</th>
+							<th style="text-align: center;vertical-align: middle;">DESTINATÁRIO</th>
+							<th style="text-align: center;vertical-align: middle;">EMISSÃO</th>
+							<th style="text-align: center;vertical-align: middle;">EMITIDO POR</th>
+							<th style="text-align: center;vertical-align: middle;">ENTREGA</th>
+							<th style="text-align: center;vertical-align: middle; width: 120px;">RECEBIDO POR</th>
+						</tr>
+					</thead>
+
+					<tbody>
+					{% for protocolo in item.protocolos %}
+					<tr class='clickable-row' data-toggle="modal" data-target=".bs-example-modal-lg" data-href='{{ protocolo.id }}'>
+						<td style="width: 30px;text-align: center;cursor:pointer;">{{ forloop.counter }}</td>
+						{% if protocolo.numeracao_destinatario == 'AVULSO' %}
+						<td style="text-align: center;cursor:pointer; width: 100px;">AVULSO</td>
+						{% else %}
+						<td style="text-align: center;cursor:pointer;width: 100px;">{{ protocolo.numeracao_destinatario }}</td>
+						{% endif %}
+
+						<td style="text-align: left;cursor:pointer;">{{ protocolo.destinatario.nome_razao }}</td>
+						<td style="width: 140px;text-align: center;cursor:pointer">{{ protocolo.data_emissao|date:"d/m/Y" }} - {{ protocolo.hora_emissao|date:"H:i:s" }}</td>
+						<td style="width: 140px;text-align: center;cursor:pointer">{{ protocolo.emitido_por|slice:':15' }}{% if protocolo.emitido_por|length > 15 %}..{% endif %}</td>
+
+						{% if protocolo.data_recebimento %}
+						<td style="width: 140px;text-align: center;cursor:pointer">{{ protocolo.data_recebimento|date:"d/m/Y" }} - {{ protocolo.hora_recebimento|date:"H:i:s" }}</td>
+						{% else %}
+						<td style="width: 140px;text-align: center;cursor:pointer">{{ protocolo.calcular_dias_atraso }} DIAS EM ABERTO</td><!-- {{ protocolo.data_emissao|timesince }}-- {% now "d/m/Y" %} {{ now }}-->
+						{% endif %}
+
+						{% if protocolo.recebido_por %}
+							<td class='left_align'>{{ protocolo.recebido_por|slice:':14' }}{% if protocolo.recebido_por|length > 14 %}..{% endif %}</td>
+							{% else %}
+							<td style="text-align: center;cursor:pointer">-</td>
+							{% endif %}
+					</tr>
+					{% empty %}
+					<tr><td>Nenhum protocolo com esse documento</td></tr>
+					{% endfor %}
+
+					{% empty %}
+					<tr><td>Nenhum registro encontrado!</td></tr>
+					</tbody>
+					</table>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+		<!--<div class="panel-footer" style="margin-top: -37px;"></div>
+	</div> -->
+</div>
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg"  style="width: 290px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Consultar Informações</h4>
+			</div>
+			<div class="modal-body" style="width: 260px;margin-left: auto;margin-right: auto;padding-bottom: 0px;">
+				<!--<h5 style="text-align: center;">Escolha o tipo da Entidade</h5>-->
+
+				<div class="row">
+					<div class="col-xs-6 col-md-6" style="width: 130px;padding: 5px;text-align: center;padding-bottom: 0px;">
+						<a id='bt_visualizar_protocolo' href="#" class="thumbnail" target="_blank">
+							<div class="icon">
+								<i class="fa fa-search fa-2x" aria-hidden="true" style="color: #999;padding-top: 10px;margin-left: -8px;"></i>
+							</div>
+							<div class="icon-label" style="margin-bottom: -10px;">
+								<h5>Visualizar<br>Protocolo</h5>
+							</div>
+						</a>
+					</div>
+
+					<div class="col-xs-6 col-md-6" style="width: 130px;padding: 5px;text-align: center;padding-bottom: 0px;">
+						<a id='bt_confirmar_protocolo' href="#" class="thumbnail" target="_blank">
+							<div class="icon">
+								<i class="fa fa-check fa-2x" aria-hidden="true" style="color: #999;padding-top: 10px;margin-left: -8px;"></i>
+							</div>
+							<div class="icon-label" style="margin-bottom: -10px;">
+								<h5>Confirmar<br>Protocolo</h5>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer" style="margin-top: 0px;padding-top: 5px;">
+				<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>-->
+			</div>
+
+		</div>
+	</div>
+</div>
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+
+<script>
+jQuery(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        //window.location = $(this).data("href");
+        var id_protocolo = $(this).data("href");
+        $("#bt_visualizar_protocolo").attr('href','/protocolo/visualizar/'+id_protocolo)
+        $("#bt_confirmar_protocolo").attr('href','/protocolo/'+id_protocolo)
+        //alert("VAMOS OLHAR O PROTOCOLOS: "+$(this).data("href"));
+    });
+});
+</script>
+{% endblock %}
+

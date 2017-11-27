@@ -1,0 +1,903 @@
+{% extends 'base_page.html' %}
+
+{% block Titulo %}
+<meta charset="utf-8">
+<title>Digitar - Honorários</title>
+{% endblock %}
+
+{% load staticfiles %}
+{% block recrusos_necessarios %}
+{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
+<!-- BOOTSTRAP 3.3.6 -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+<!-- DATATABLE -->
+<!--<link rel="stylesheet" type="text/css" href="% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/
+<link rel="stylesheet" type="text/css" href="% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
+
+<script src="% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="% static 'datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>-->
+
+<!-- JQUERY UI DATAPICKER-->
+<link rel="stylesheet" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}">
+
+<!-- JQUERY AUTOCOMPLETE EDITABLE
+<link rel="stylesheet" type="text/css" href="% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}" />
+<script src="% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script> -->
+
+<!-- CUSTOM -->
+<!-- <link href="% static 'styles/menu_simples_responsivo.css' %}" rel="stylesheet"/> -->
+<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
+<script src="{% static 'scripts/protocolo/protocolo.js' %}"></script>
+
+<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
+<script src="{% static 'angular-1.5.8/dirPagination.js'%}"></script>
+<script src="{% static 'angular-1.5.8/angular-locale_pt-br.js'%}"></script>
+<link href="{% static 'styles/servico/servico.css' %}" rel="stylesheet"/>
+
+
+
+<style type="text/css">
+.uppercase{
+    text-transform: uppercase;
+}
+
+.lowercase{
+    text-transform: uppercase;
+}
+
+.center{
+    text-align: center;
+}
+
+.left{
+	padding-left: 8px;
+	text-align: left;
+}
+
+.right{
+    text-align: right;
+}
+
+.link_desabilitado {
+     pointer-events: none;
+     cursor: default;
+     opacity: 0.6;
+}
+
+.div_desabilitado {
+	display: none;
+    z-index: 1000;
+    background-color: lightgrey;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.dataTables_paginate {
+	position: relative;
+    display: block;
+    top: 30px;
+}
+
+label {
+    font-weight: normal !important;
+}
+
+.form-group label{
+	margin-left: 8px;
+}
+
+.linha_cabecalho th{
+	cursor: pointer;
+}
+
+ /* unvisited link */
+.linha_cabecalho a {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* visited link */
+.linha_cabecalho a:visited {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* mouse over link */
+.linha_cabecalho a:hover {
+    color: #222;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* selected link */
+.linha_cabecalho a:active {
+    color: #111;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.no-gutter > [class*='col-'] {
+    padding-right:3px;
+    padding-left:3px;
+}
+
+.caret_one, .caret_two{
+color:#ccc;
+}
+
+.caret_one:hover, .caret_two:hover{
+color:blue;
+}
+
+.wrong{
+	border: 1px solid #CE5454;
+	box-shadow: 1px 1px 5px #CE5454;
+}
+
+.clean{
+	border: 0px;
+}
+
+.field.bad .alert {
+  top: 0px;
+  left: 0;
+  opacity: 1;
+}
+.field .alert {
+  padding: 2px;
+  text-align: right;
+  color: #CE5454;
+  font-size: 80%;
+  width: 100%;
+  position: relative;
+  opacity: 0;
+  z-index: 1;
+  transition: .15s ease-out;
+}
+
+.responsive-text{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#table_contratos td{
+	height: 26px;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumb_title %}Honorários {% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+<li class="active">Honorários</li>
+{% endblock %}
+
+{% block conteudo %}
+
+<div id="controle_angular" ng-app="app" ng-cloak ng-controller="MeuController" ng-init="contratos_carregados=false">
+
+	<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 70%">
+			<!--  > -->
+			<form id="form_adicionar_contrato" method="post" novalidate autocomplete="off" ng-submit="esta_adicionando? adicionar_contrato() : alterar_contrato()">
+				{% csrf_token %}
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h5 id="titulo_modal_adicionar_contrato" style="font-weight: bold">Definir Contrato</h5>
+					</div>
+
+					<div class="modal-body" style="padding: 35px;padding-top: 10px;">
+						<!--
+						<div class="row">
+							<div class="col-md-3">
+								<div class="row no-gutter">
+									<div class="col-md-12">
+										<div class="form-group">
+											<sub><label>{{ formulario_contrato.tipo_contrato.label }}</label></sub>
+											<div id="select_tipo_contrato" style="border-radius: 4px;">
+												{{ formulario_contrato.tipo_contrato }}
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row no-gutter">
+									<div class="col-md-12">
+										<div class="form-group">
+											<sub><label>{{ formulario_contrato.plano.label }}</label></sub>
+											<div id="select_plano" style="border-radius: 4px;">
+												{{ formulario_contrato.plano }}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-9">
+								<div class="row">
+									<div class="col-md-12" style="margin-top: 8px;height: 115px;">
+
+
+											<div>
+												<span style="">
+													<b>Plano Básico</b>
+													<br>
+													<sub>
+													serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.
+													</sub>
+
+												</span>
+
+											</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						-->
+						<div class="row no-gutter fluid">
+							<div class="col-md-3 col-xs-12 col-sm-12">
+								<div class="form-group">
+									<sub><label>{{ formulario_contrato.tipo_cliente.label }}</label></sub>
+										<div id="select_tipo_cliente" style="border-radius: 4px;">
+											{{ formulario_contrato.tipo_cliente }}
+										</div>
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+
+							<div class="col-md-3 col-xs-12 col-sm-12">
+								<div class="form-group">
+									<sub><label>{{ formulario_contrato.plano.label }}</label></sub>
+										<div id="select_plano" style="border-radius: 4px;">
+											{{ formulario_contrato.plano }}
+										</div>
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+						</div>
+
+						<hr>
+
+						<div class="row no-gutter  fluid">
+							<div class="col-md-2 col-xs-12 col-sm-6">
+								<div class="form-group">
+									<sub><label>{{ formulario_contrato.vigencia_inicio.label }}</label></sub>
+									{{ formulario_contrato.vigencia_inicio }}
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-6">
+								<div class="form-group">
+									<sub><label>{{ formulario_contrato.vigencia_fim.label }}</label></sub>
+									{{ formulario_contrato.vigencia_fim }}
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-4">
+								<div class="form-group">
+									<sub><label>{{ formulario_contrato.tipo_vencimento.label }}</label></sub>
+									<div id="select_tipo_vencimento" style="border-radius: 4px;">
+										{{ formulario_contrato.tipo_vencimento }}
+									</div>
+
+
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-4">
+								<div class="form-group" id="group_dia_vencimento">
+									<sub><label>{{ formulario_contrato.dia_vencimento.label }}</label></sub>
+									<div id="select_dia_vencimento" style="border-radius: 4px;">
+										{{ formulario_contrato.dia_vencimento }}
+									</div>
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-4">
+								<div class="form-group" id="group_data_venvimento">
+									<sub><label>{{ formulario_contrato.data_vencimento.label }}</label></sub>
+									{{ formulario_contrato.data_vencimento }}
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-12">
+								<div class="form-group" >
+									<sub><label>{{ formulario_contrato.tipo_honorario.label }}</label></sub>
+									<div id="select_tipo_honorario" style="border-radius: 4px;">
+										{{ formulario_contrato.tipo_honorario }}
+									</div>
+
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+						</div>
+
+						<div class="row no-gutter">
+							<div class="col-md-2 col-xs-12">
+								<div class="form-group" id="group_taxa_honorario">
+									<sub><label>{{ formulario_contrato.taxa_honorario.label }}</label></sub>
+									{{ formulario_contrato.taxa_honorario }}
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-4">
+								<div class="form-group" id="group_valor_honorario">
+									<sub><label>{{ formulario_contrato.valor_honorario.label }}</label></sub>
+									{{ formulario_contrato.valor_honorario }}
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-6">
+								<div class="form-group">
+									<sub><label>{{ formulario_contrato.desconto_inicio.label }}</label></sub>
+									{{ formulario_contrato.desconto_inicio }}
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-6">
+								<div class="form-group">
+									<sub><label>{{ formulario_contrato.desconto_fim.label }}</label></sub>
+									{{ formulario_contrato.desconto_fim }}
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-6">
+								<div class="form-group">
+									<sub><label>{{ formulario_contrato.desconto_temporario.label }}</label></sub>
+									{{ formulario_contrato.desconto_temporario }}
+									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+								</div>
+							</div>
+
+							<div class="col-md-2 col-xs-12 col-sm-6">
+								<style>
+									#total[type="text"]:disabled{background-color: #fff;border: hidden; text-align: right;border-bottom: 1px solid #cccccc; border-top: 0px;box-shadow:0 0px 0px #fff}
+								</style>
+								<div class="form-group" id="group_total">
+									<sub><label>{{ formulario_contrato.total.label }}</label></sub>
+									{{ formulario_contrato.total }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="row">
+							<div class="col-md-2 col-md-push-10">
+								<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
+								<!-- <a href="#modal_adicionar_documento" role="button"            ng-class="{'desabilitado': modal_servico == ''}"                            class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="modal_indicacoes" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 90%">
+			{% csrf_token %}
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h5 id="titulo_modal_indicacoes" style="font-weight: bold">Indicações</h5>
+				</div>
+
+				<div class="modal-body" style="padding: 15px;padding-top: 10px;">
+					<form ng-submit="esta_indicando? alterar_indicacao() : adicionar_indicacao()">
+						<div class="row">
+							<div class="col-lg-8 col-md-8 col-sm-6 col-xs-12" ng-class="{desabilitado: ( indicacao_selecionada != null), nonselect: (indicacao_selecionada != null)}"> <!--ng-class="'esta_indicando' ? 'desabilitado nonselect' " -->
+								<sub><label>{{ formulario_indicacao.indicacao.label }}</label></sub>
+									{{ formulario_indicacao.indicacao }}
+							</div>
+
+							<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" style="padding-bottom: 5px;">
+								<sub><label>{{ formulario_indicacao.taxa_desconto_indicacao.label }}</label></sub>
+								{{ formulario_indicacao.taxa_desconto_indicacao }}
+							</div>
+							{% verbatim %}
+
+							<span href="#" ng-if="indicacao_selecionada == null">
+								<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  style="padding-top: 20px;padding-bottom: 15px;">
+									<button type="submit" id="bt_adicionar_indicacao" class="btn btn-sm btn-primary form-control" data-toggle="modal">Adicionar</button>
+								</div>
+							</span>
+
+							<span href="#" ng-if="indicacao_selecionada != null">
+								<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  style="text-align: right; padding-top: 20px;padding-bottom: 15px;">
+									<button type="button" ng-click="deletar_indicacao()" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash-o" aria-hidden="true"></i> Apagar</button>
+									<button type="submit" id="bt_adicionar_indicacao" class="btn btn-sm btn-primary" data-toggle="modal"><i class="fa fa-check-square-o" aria-hidden="true"></i> Salvar</button>
+								</div>
+								<!--<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  style="">
+									<button type="button" ng-click="deletar_indicacao()" class="btn btn-sm btn-primary" style="background-color:#ff3824; border:#ff3824"; data-toggle="modal">Excluir</button>
+								</div>
+								<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  style=>
+
+								</div>-->
+							</span>
+							{% endverbatim %}
+							</div>
+					</form>
+
+					<br>
+
+					<div class="row" style="margin-top: -15px;margin-left: 0px;margin-right: 0px;padding-right: 0px;padding-bottom: 0px;margin-bottom: 0px;border-top: 0px;">
+						<div class="dataTable_wrapper" style="margin-left: 0px;margin-right:0px;margin-bottom:0px;padding-bottom: 0px;">
+							<div class='row'>
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+									<table class="table table-condensed  table-striped table-bordered table-hover" id="datatable">
+										<thead>
+											<tr class="linha_cabecalho">
+												<!--<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>-->
+
+												<th class='center'>Empresa Indicada</th>
+
+												<th class="center">Data de Indicação</th>
+
+												<th class='center'>Taxa Desconto</th>
+
+												<th class='center'>Ativo</th>
+											</tr>
+										</thead>
+
+										<style>
+											#datatable td{
+												padding: 0px;
+												padding-top: 4px;
+											}
+										</style>
+
+										<tbody>
+											{% verbatim %}
+												<tr ng-if="indicacoes_carregadas == false">
+													<td colspan="8" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
+														Aguarde.. Carregando...<br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+													</td>
+												</tr>
+
+												<tr ng-if="indicacoes_carregadas == true" class="angular-repeat linha_selecionavel {{ registro.indicacao.selecionado }}" ng-repeat='registro in registro_selecionado.indicacoes' ng-click="selecionar_linha_indicacao(registro.indicacao)" ng-init='incrementar_desconto_fidelidade(registro.indicacao.taxa_desconto)'>
+													<!--<td class='center' style="width: 30px;">{{ $index+1 }}</td>-->
+													<td class="left"	style="padding-left: 10px;">{{ registro.indicacao.nome_razao }}</td>
+													<td class="center" style="width: 30px">{{ registro.indicacao.data_cadastro| date:'dd/MM/yyyy' }}</td>
+													<td class="center" style="width: 30px;">{{ registro.indicacao.taxa_desconto }}</td>
+													<td class="center" style="width: 30px; padding-left: 15px; padding-top: 4px">
+														<style>
+															.switch {
+																position: relative;
+																display: table;
+																width: 50px;
+																height: 20px;
+															}
+
+															.switch input {display:none;}
+
+															.slider {
+																position: absolute;
+																cursor: pointer;
+																top: 0;
+																left: 0;
+																right: 0;
+																bottom: 0;
+																background-color: #47FF7F;
+																-webkit-transition: 1s;
+																transition: 1s;
+															}
+
+															.slider:before {
+																position: absolute;
+																content: "";
+																height: 15px;
+																width: 15px;
+																left: 4px;
+																bottom: 3px;
+																background-color: #c4bbcc;
+																-webkit-transition: 1s;
+																transition: .40s;
+															}
+
+															input:checked + .slider {
+																background-color: #FA4226;
+															}
+
+															input:focus + .slider {
+																box-shadow: 0 0 1px #2196F3;
+															}
+
+															input:checked + .slider:before {
+																-webkit-transform: translateX(26px);
+																-ms-transform: translateX(26px);
+																transform: translateX(26px);
+															}
+
+															/* Rounded sliders */
+															.slider.round {
+																border-radius: 20px;
+															}
+
+															.slider.round:before {
+																border-radius: 50%;
+															}
+														</style>
+														<label class="switch" style="padding-bottom: 20px">
+															<input type="checkbox" ng-checked='registro.indicacao.indicacao_ativa == 0' ng-click="ativar_desativar_indicacao()" >;;;;
+															<span class="slider round" ></span>
+														</label>
+													</td>
+													<!--<td class="center" style="width: 30px" ng-if="registro.indicacao.indicacao_ativa">Bolo</td>
+													<td class="center" style="width: 30px" ng-if="!(registro.indicacao.indicacao_ativa)">Pudim</td>-->
+												</tr>
+
+												<tr ng-if="indicacoes_carregadas == true" ng-repeat="k in minimal_quantity_rows.slice(registro_selecionado.indicacoes.length,minimal_quantity_rows.length)">
+													<td style="height: 28px;"></td>
+													<td style="width:140px;"></td>
+													<td class='center' style="width: 120px;"></td>
+													<td class='center' style="width: 80px;"></td>
+												</tr>
+
+												<tr ng-if="indicacoes_carregadas == true" style="border-top: 2px solid #DDD;">
+													<th colspan="2" style="padding-left: 8px;">Descontos Adiquirdo <span style="vertical-align: middle;padding-left: 8px; font-weight: bold; padding-top: 0px;color: #8B1A1A; font-size:10px;">(Desconto Máximo Aplicável 30%)</span></th>
+													<th colspan="2" class="text-center">{{ total_desconto_fidelidade }}%</th>
+												</tr>
+											{% endverbatim %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer" style="height: 25px;margin-top: -15px;">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="modal_servicos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 40%">
+			{% csrf_token %}
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h5 id="titulo_modal_servicos" style="font-weight: bold; margin-top: 3px;">Plano {% verbatim %}{{ registro_selecionado.plano }}{% endverbatim %}</h5>
+				</div>
+
+				<div class="modal-body" style="padding: 15px;padding-top: 10px;padding-bottom: 0px;">
+					<div class="row" style="margin-top: 5px;margin-left: 0px;margin-right: 0px;padding-right: 0px;padding-bottom: 0px;margin-bottom: 0px;border-top: 0px;">
+						<div class="dataTable_wrapper" style="margin-left: 0px;margin-right:0px;margin-bottom:0px;padding-bottom: 0px;">
+							<div class='row'>
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+									<table class="table table-condensed  table-striped table-bordered table-hover" id="datatable_servicos">
+										<thead>
+											<tr class="linha_cabecalho">
+												<!--<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>-->
+
+												<th class='center'>Serviço Aplicáveis</th>
+
+												<th class='center'>Ativo</th>
+											</tr>
+										</thead>
+
+										<style>
+											#datatable_servicos td{
+												padding: 0px;
+												padding-top: 4px;
+											}
+										</style>
+
+										<tbody>
+											{% verbatim %}
+												<tr class="angular-repeat linha_selecionavel" ng-repeat='registro in servicos_contratados'>
+													<!--<td class='center' style="width: 30px;">{{ $index+1 }}</td>-->
+													<td class="left"	style="padding-left: 10px;" title="{{ registro.descricao }}">{{ registro.nome }}</td>
+													<td class="center" style="width: 30px; padding-left: 15px; padding-top: 4px">
+														<style>
+															.switch {
+																position: relative;
+																display: table;
+																width: 50px;
+																height: 20px;
+															}
+
+															.switch input {display:none;}
+
+															.slider {
+																position: absolute;
+																cursor: pointer;
+																top: 0;
+																left: 0;
+																right: 0;
+																bottom: 0;
+																background-color: #47FF7F;
+																-webkit-transition: 1s;
+																transition: 1s;
+															}
+
+															.slider:before {
+																position: absolute;
+																content: "";
+																height: 15px;
+																width: 15px;
+																left: 4px;
+																bottom: 3px;
+																background-color: #c4bbcc;
+																-webkit-transition: 1s;
+																transition: .40s;
+															}
+
+															input:checked + .slider {
+																background-color: #FA4226;
+															}
+
+															input:focus + .slider {
+																box-shadow: 0 0 1px #2196F3;
+															}
+
+															input:checked + .slider:before {
+																-webkit-transform: translateX(26px);
+																-ms-transform: translateX(26px);
+																transform: translateX(26px);
+															}
+
+															/* Rounded sliders */
+															.slider.round {
+																border-radius: 20px;
+															}
+
+															.slider.round:before {
+																border-radius: 50%;
+															}
+														</style>
+														<label class="switch" style="padding-bottom: 20px">
+
+															<input type="checkbox" ng-checked='registro.ativo != true' ng-click="ativar_desativar_servico(registro)" >
+
+															<span class="slider round" ></span>
+														</label>
+													</td>
+												</tr>
+
+												<tr ng-repeat="k in minimal_quantity_rows.slice(servicos_contratados.length,minimal_quantity_rows.length)">
+													<td class='center' style="height: 26px;"></td>
+													<td class='center' style="width: 80px;"></td>
+												</tr>
+											{% endverbatim %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer" style="padding-rigth: 5px;padding-top: 15px;padding-bottom: 0px;">
+					<!--<div class="row">
+						<div class="col-md-3 col-md-push-9">
+							<button type="submit" id="bt_submit_servicos" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="modal_servicos" ng-click="atualizar_servicos_contratados();">Salvar</button>
+
+						</div>
+					</div>-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" style="margin-top: -40px;">
+		<div class="col-lg-12 col-md-12 col-xs-12">
+			<div class="box box-default" >
+				<div class="box-heading">
+					<div class="box-header with-border">
+						<h5 class="box-title">Contratos</h5>
+						<div class="pull-right">
+							<div class="btn-group" role="group" aria-label="...">
+								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="load_fields();">Contrato</a>
+								<a href="#" id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_servicos" ng-click="carregar_servicos_contratados();" style='margin-left: 5px;'>Serviços</a>
+								<!--<a href="#" role="button" id="bt_consultar_cliente" class="btn btn-sm btn-default pull-left desabilitado" style='margin-left: 5px;'><i class="fa fa-pencil-square-o fa-1x"></i> Editar</a>-->
+								<a href="#" id='bt_indicacoes' role="button" class="btn btn-sm btn-default pull-left" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" data-toggle="modal" data-target="#modal_indicacoes" ng-click="carregar_indicacao()" style='margin-left: 5px;'> Indicações</a>
+
+								<div class="btn-group" role="group" style='margin-left: 5px;'>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li role="separator" class="divider"></li>
+										<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-body" style="padding-bottom: -10px; margin-top: 0px;">
+					<div class="dataTable_wrapper">
+						<div class='row'>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								{% verbatim %}
+								<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
+									<thead>
+										<tr class="linha_cabecalho">
+											<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>
+
+											<th class='center' ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Cliente</th>
+
+											<th class="center" ng-hide='screen0 || screen1' ng-click="sortType = 'plano'; sortReverse = !sortReverse">Plano</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'inicio'; sortReverse = !sortReverse">Início</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'termino'; sortReverse = !sortReverse">Término</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'valor_honorario'; sortReverse = !sortReverse">Honorário (R$)</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'descontos'; sortReverse = !sortReverse">Desc (%)</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Total (R$)</th>
+										</tr>
+									</thead>
+
+									<tbody style="font-size: 11px;">
+
+										<tr ng-if="(contratos|filter:filterIds()).length == 0">
+											<td colspan="8" class="center">Nenhum Cliente Cadastrado!</td>
+										</tr>
+
+										<tr ng-if="contratos_carregados == false">
+											<td colspan="8" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
+												Aguarde.. Carregando...<br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+											</td>
+										</tr>
+
+										<tr ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado">
+											<!--<tr ng-repeat='contrato in contratos' class="linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos">-->
+
+											<td class='center' style="width: 30px;">{{ contrato.cliente_id }}</td> <!-- {{ $index+1 }} -->
+											<td class="col-cliente" class="left">
+												{{ contrato.cliente_nome }}
+												<!--<div class="responsive-text"  style="max-width: {{ col_cliente_size }}px">{{ contrato.cliente_nome }}</div> isso faz cortar as palavras mas temos um problema com alinhamento que nao fica perfeito dependendo de como a largura foi carregada inicialmente -->
+											</td>
+
+											<td ng-hide='screen0 || screen1' ng-class="{true:'left', false:'center'}[contrato.plano=='']">
+												<span ng-if="contrato.plano">{{ contrato.plano }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{true:'left', false:'center'}[contrato.contrato.vigencia_inicio=='']" style="width: 80px;">
+												<span ng-if="contrato.contrato.vigencia_inicio">{{ contrato.contrato.vigencia_inicio| date: 'dd/MM/yyyy' }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{true:'left', false:'center'}[contrato.contrato.vigencia_fim=='']" style="width: 80px;">
+												<span ng-if="contrato.contrato.vigencia_fim">{{ contrato.contrato.vigencia_fim | date: 'dd/MM/yyyy' }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'right': contrato.contrato.valor_honorario, 'center': !contrato.plano  }" style="width: 130px;">
+												<span ng-if="contrato.contrato.valor_honorario">{{ contrato.contrato.valor_honorario | currency:"" }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 80px;">
+												<span ng-if="contrato.plano" title="Desconto Temporário: {{ contrato.contrato.desconto_temporario_ativo }}% disponivel de {{ contrato.contrato.desconto_temporario }}% concedido e Desconto Fidelidade: {{ contrato.contrato.desconto_indicacoes }}%">
+													{{ contrato.contrato.desconto_temporario_ativo -- contrato.contrato.desconto_indicacoes }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2' ng-class="{'right': contrato.plano, 'center':!contrato.plano }" style="width: 130px;">
+												<span ng-if="contrato.plano">{{ contrato.contrato.valor_total | currency:"" }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+										</tr>
+
+										<tr ng-if='contratos_carregados'  ng-repeat="k in minimal_quantity_rows.slice(contratos.length,minimal_quantity_rows.length)">
+											<td style="width:30px;"></td>
+											<td></td>
+											<td style="width:120px;"></td>
+											<td class='center' style="width: 80px;"></td>
+											<td class='center' style="width: 80px;"></td>
+											<td class='right' style="width: 130px;"></td>
+											<td class='center' style="width: 80px;"></td>
+											<td class='right' style="width: 130px;"></td>
+										</tr>
+
+										<tr ng-if="resultado.length === 0 && (contratos|filter:filterIds()).length > 0">
+											<td colspan="3" class='center'>Nenhum resultado Encontrado</td>
+										</tr>
+
+									</tbody>
+
+
+									</table>
+								{% endverbatim %}
+							</div>
+						</div>
+					</div>
+
+					<div class='row no-gutter' style="padding: 0px 10px 0px 10px;">
+						{% verbatim %}
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
+							<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
+							<select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
+								<option value="0">Código</option>
+								<option value="1" selected>Cliente</option>
+								<option value="2">Plano</option>
+							</select>
+						</div>
+
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 31px;'>
+							<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
+						</div>
+
+
+
+						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" >
+							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
+								<dir-pagination-controls pagination-id="paginate_contratos" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
+
+								</dir-pagination-controls>
+							</span>
+						</div>
+						{% endverbatim %}
+					</div>
+				</div>
+			</div>
+			<!-- /.panel -->
+		</div>
+		<!-- /.row -->
+	</div>
+</div>
+<br>
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'honorario/honorarioController.js' %}"></script>
+<script type="text/javascript" src="{% static 'honorario/honorario.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
+<script type="text/javascript" src="{% static 'sistema/core/base_api.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+
+
+<script>
+	$(document).ready(function() {
+
+
+
+		$("#divCarregando").show();
+		$(window).load(function () {
+				// Quando a página estiver totalmente carregada, remove o id
+				$('#divCarregando').fadeOut('slow');
+		});
+
+		angular.element(document.getElementById('controle_angular')).scope().carregar_clientes();
+		angular.element(document.getElementById('controle_angular')).scope().get_salario_vigente();
+		configurar_formulario_padrao()
+		NProgress.done();
+	});
+
+	window.onresize = function(event) {
+    angular.element(document.getElementById('controle_angular')).scope().reajustar_tela();
+	};
+</script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base_page.html' %}
+
+{% block Titulo %}
+	<meta charset="utf-8">
+    <title>Digitar - Blank Page</title>
+{% endblock %}
+
+{% load staticfiles %}
+{% block recrusos_necessarios %}
+{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
+<!-- BOOTSTRAP 3.3.6 -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+<style type="text/css">
+.uppercase{
+    text-transform: uppercase;
+}
+
+.lowercase{
+    text-transform: uppercase;
+}
+
+.center_align{
+    text-align: center;
+}
+
+.left_align{
+	padding-left: 8px;
+    text-align: left;
+}
+
+.right_align{
+    text-align: right;
+}
+
+.link_desabilitado {
+     pointer-events: none;
+     cursor: default;
+     opacity: 0.6;
+}
+
+.div_desabilitado {
+	display: none;
+    z-index: 1000;
+    background-color: lightgrey;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.dataTables_paginate {
+	position: relative;
+    display: block;
+    top: 30px;
+}
+
+label {
+    font-weight: normal !important;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+{% endblock %}
+
+{% block conteudo %}
+
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+
+{% endblock %}

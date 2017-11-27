@@ -1,0 +1,591 @@
+{% extends 'base_page.html' %}
+
+{% block Titulo %}
+	<meta charset="utf-8">
+    <title>Digitar - Emitir Protocolo</title>
+{% endblock %}
+
+{% block recrusos_necessarios %}
+{% load staticfiles %}
+
+<!-- JQUERY -->
+<script type="text/javascript" src="{% static 'jquery/jquery-2.2.0.min.js' %}"></script>
+<script src="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.js' %}"></script>
+
+<!-- BOOTSTRAP -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+<!-- DATATABLE -->
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
+
+<script src="{% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
+
+<!-- JQUERY AUTOCOMPLETE EDITABLE -->
+<link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}" />
+<script src="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script>
+
+<!-- JQUERY UI DATAPICKER -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <!--<link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
+
+
+<!-- Plugin para realizar autocomplete
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+-->
+
+
+<!-- ICONES -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">  -->
+
+
+<!-- CUSTOM -->
+<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
+<script src="{% static 'scripts/protocolo/protocolo.js' %}"></script>
+<!-- <script src="{% static 'scripts/meu_script.js' %}"></script> 
+<script src="{% static 'scripts/padrao/controle_datatable.js' %}"></script> -->
+ 
+
+
+<style type="text/css">
+
+.row.better_col_spacings_first_chield [class*='col-']:first-child {
+	padding-right:5px;
+	padding-bottom:15px;
+}
+
+.row.better_col_spacings_last_chield [class*='col-']:last-child {
+	padding-left:5px;
+	padding-bottom:15px;
+}
+
+.row.better_col_middle_spacings [class*='col-']:not(:first-child):not(:last-child) {
+  padding-right:5px;
+  padding-left:5px;
+  padding-bottom:15px;
+}
+
+.uppercase{ 
+    text-transform: uppercase;
+}
+
+.lowercase{ 
+    text-transform: uppercase;
+}
+
+.scrollable {
+    height: 100px;
+    overflow-y: scroll;
+}
+
+
+.botao_desabilitado {
+	opacity: 0.65; 
+  	cursor: not-allowed;
+  	visibility: hidden;
+}
+
+.link_desabilitado {
+     pointer-events: none;
+     cursor: default;
+     opacity: 0.6;
+}
+
+.ui-autocomplete { z-index:2147483647; }
+
+.box-title {
+    padding-left: 10px;
+    padding-top:  6px;
+}
+
+
+</style>
+
+{% endblock %}
+
+{% block breadcrumb_title %}Controle de Protocolos{% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+<li><a href="#"> Protocolo</a></li>
+<li class="active">Novo Protocolo</li>
+{% endblock %}
+
+{% block conteudo %}
+
+<!-- <form action="" method="post" id="form_protocolo_informacoes_complementares">  
+	{% csrf_token %}-->
+	<div id="myModal_informacoes_complementares" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<!--  style="width: 90%"> -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">×</button>
+					<h3 id="myModalLabel">Informações Complementares</h3>
+				</div>
+	
+				<div class="modal-body" style="padding: 30px;">	
+
+					<div class="row" style="padding-left: 15px; padding-right: 15px">
+						<div style='padding-left: 8px'>
+							<sub>CPF:</sub>
+						</div>
+						<input class='form-control uppercase' type='text' id='complemento_cpf'></input>
+
+							
+					</div>
+
+					<div class="row" style="padding-left: 15px; padding-right: 15px">
+						<div style='padding-left: 8px'>
+							<sub>Endereço:</sub>
+						</div>
+						<input type='text' class='form-control uppercase' id='complemento_endereco'></input>
+					</div>
+					
+					<div class="row" style="padding-left: 15px; padding-right: 15px">
+						<div style='padding-left: 8px'>
+							<sub>Contatos:</sub>
+						</div>
+						<input type='text' class='form-control uppercase' id='complemento_contato'></input>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-3 col-lg-push-9">
+							<button type="button" id="bt_adicionar_informacoes" class="btn btn-primary form-control" onclick="adiciona_informacoes_complementares();" name='informacoes_complementares' style="position: relative; margin-top: 20px">Salvar</button>
+							<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+<form action="" method="post" id="form_protocolo" autocomplete="off">
+	{% csrf_token %}
+	<div id="myModal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<!--  style="width: 90%"> -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">×</button>
+					<h3 id="myModalLabel">Novo Documento</h3>
+				</div>
+	
+				<div class="modal-body" style="padding: 30px;">
+
+					<div class="row" style="padding-left: 15px; padding-right: 15px">
+
+                        <div style='padding-left: 8px'>
+							<sub>{{ formulario_protocolo.documento.label }}</sub>
+						</div>
+
+						{{ formulario_protocolo.documento }}
+							<datalist id="lista_documentos">
+								{% for item in documentos %}
+									<option value="{{ item.nome }}">
+								{% endfor %}
+							</datalist>
+
+    				</div>
+
+					<div class="row" style="padding-left: 15px; padding-right: 15px">
+						<div style='padding-left: 8px'>
+							<sub>{{ formulario_protocolo.complemento.label }}</sub>
+						</div>
+						{{ formulario_protocolo.complemento }}
+					</div>
+
+					<div
+						class="row better_col_spacings_first_chield better_col_middle_spacings better_col_spacings_last_chield">
+
+						<div class="col-lg-4">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario_protocolo.referencia.label }}</sub>
+							</div>
+							{{ formulario_protocolo.referencia }}
+						</div>
+
+						<div class="col-lg-4">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario_protocolo.vencimento.label }}</sub>
+							</div>
+							{{ formulario_protocolo.vencimento }}
+						</div>
+
+						<div class="col-lg-4">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario_protocolo.valor.label }}</sub>
+							</div>
+
+							<div class="input-group">
+								<span class="input-group-addon">R$</span> {{ formulario_protocolo.valor }}
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-3 col-lg-push-9">
+							<button type="submit" id="bt_adicionar_item" class="btn btn-primary form-control" name='adicionar_item' style="position: relative; margin-top: 20px">Adicionar</button>
+							<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="box box-default" style="margin-top: -15px; margin-left: 0px; margin-right: 0px;">
+				<div class="box-heading">
+                    <div class="box-header with-border">
+                        <h5 class="box-title">Destinatário</h5>
+                    </div>
+                </div>
+	
+				<div class="panel-body"	style="padding-bottom: 18px; margin-top: 1px;">
+					<div class="row">
+						<div class="col-lg-5">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario_protocolo.select_destinatarios.label }}</sub>
+							</div>
+							
+							<select class='form-control uppercase' id="select_destinatarios" onblur="conferir_destinatario()">
+								{% for item in destinatarios %}
+                                {% if item.nome_filial %}
+                                    <option value='{{ item.id }}'>{{ item.id }} - {{ item.nome_razao|upper }} - {{ item.nome_filial|upper }}</option>
+                                {% else %}
+                                    <option value='{{ item.id }}'>{{ item.id }} - {{ item.nome_razao|upper }}</option>
+                                {% endif %}
+
+								<!--<option value='{ item.id }}'>{ item.id }} - { item.nome_razao|upper }}
+                                % if item.nome_filial %}
+                                - { item.nome_filial|upper }}
+                                % endif %}
+                                </option>-->
+								{% endfor %}
+															
+							</select>
+						</div>
+						
+						<div class="col-lg-3">
+						{{ formulario_protocolo.entidade_destinatario }}
+						</div>
+						
+						<div class="col-lg-2 pull-right">
+						
+							<a id='bt_resetar' role="button" onclick="resetar_protocolo()" class="pull-right" style="color: #8B0000;position: relative; margin-top: 9px; margin-right: 10px;" > Alterar Destinatário</a>
+
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<br>
+	
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="box box-default" style="margin-top: -15px; margin-left: 0px; margin-right: 0px;">
+	
+				<div class="box-heading">
+
+                    <div class="box-heading">
+
+                    <div class="box-header with-border">
+                        <h5 class="box-title">Documentos</h5>
+
+                        <div class="pull-right">
+
+
+
+                            <div id="tooltip_documento" style="display: inline-block;" tooltip="My Tooltip">
+                                <button type="button" id="bt_novo_documento" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal" style="position: relative;margin-right: 2px;">Novo Documento</button> <!--  -->
+                            </div>
+
+                            <button type="submit" name='excluir_item' value='-1' id="bt_apagar" class="confirm btn btn-sm btn-default " style="position: relative;">Apagar</button>
+
+                            <!--<a href="/protocolo/emitir_protocolo" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Protocolo</a>
+                            <a href="#modal_relatorio" id='bt_relatorio' role="button" class="btn btn-sm btn-default" data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Gerar Relatório</a>
+                            <a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_confirmar_entrega" data-toggle="modal" data-target="#myModal" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-check" aria-hidden="true"></i> Confirmar Recebimento</a>-->
+
+	
+
+	
+				<div class="box-body" style="padding-bottom: -10px; margin-top: -5px;">
+					
+					<div class="dataTable_wrapper" style="padding-top: -5px">
+					
+						<table class="table table-condensed table-bordered table-hover bordas_padrao" id="datatable" style="border-color:#CCC;">
+	
+							<thead>
+								<tr class="text-right">
+									<th style="text-align:center;">Documentos Entregues</th>
+									<th style="text-align:center;">Referência</th>
+									<th style="text-align:center;">Vencimento</th>
+									<th style="text-align:center;">Valor</th>
+								</tr>
+							</thead>
+	
+							{% if dados %}
+								<tbody>
+									{% for item in dados %}
+
+
+									<tr>
+										{% if item.complemento %}
+										<td style="cursor: pointer;">{{ item.documento }} - {{ item.complemento }}</td> 
+										{% else %}
+											<td style="cursor: pointer;">{{ item.documento }}</td> 
+										{% endif %}
+		
+										<td align="center" style="cursor: pointer;">{{ item.referencia }}</td>
+										<td align="center" style="cursor: pointer;">{{ item.vencimento }}</td>
+										
+										{% if item.valor %}
+											<td align="center" style="cursor: pointer;">R$ {{ item.valor }}</td>
+										{% else %}
+											<td align="center" style="cursor: pointer;"></td>
+										{% endif %}
+									</tr>
+									
+									{% endfor %}
+								</tbody>
+							
+							{% else %}
+								<tbody>
+									<tr><td colspan=4 style='text-align:center;'>Adicione novos documentos</td> </tr>
+								</tbody>
+							{% endif %}
+						</table>
+						<!-- /.table-responsive -->
+					</div>
+	
+					<div class='row'>
+						
+					
+						<div class="col-lg-2 col-lg-push-10">
+							{% if dados %}
+								<button type="submit" id="bt_gerar_protocolo" target=_blank class="btn btn-primary pull-right liberado" name='gerar_protocolo' onclick="return confirm('Finalizar Protocolo?')" style="position: relative; margin-top: 15px">Gerar Protocolo</button>
+							{% else %}
+								<button type="submit" id="bt_gerar_protocolo" target=_blank class="btn btn-default pull-right aguardando" name='gerar_protocolo' onclick="return confirm('Finalizar Protocolo?')" style="position: relative; margin-top: 15px">Gerar Protocolo</button> 
+							{% endif %}
+						</div>
+					</div>							
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+
+<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
+
+<script>
+jQuery(document).ready(function(){
+	$("#referencia").mask("99/9999");
+	$("#vencimento").mask("99/99/9999");
+	$('#valor').maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+
+
+    {% if dados|length >= 10 %}
+    $('#bt_novo_documento').addClass('link_desabilitado');
+    $('#tooltip_documento').tooltip({title: "Permitido apenas 10 documentos por protocolo!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+
+    {% else %}
+    $('#bt_novo_documento').removeClass('link_desabilitado');
+    $('#tooltip_documento').tooltip("destroy");
+    {% endif %}
+});
+</script>
+
+<script>
+$(function() {
+	$("#vencimento").datepicker({
+		  dayNames: [ "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado" ],
+		  monthNames: [ "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro" ],
+		  dayNamesMin: [ "D", "S", "T", "Q", "Q", "S", "S" ],
+		  dateFormat: 'dd/mm/yy'
+	});
+});
+</script>
+
+<!-- SCRIPTS CERTO!!!! -->
+<script type="text/javascript">
+if ($("#entidade_destinatario").val() != ""){
+	$('#bt_resetar').removeClass('link_desabilitado');
+}
+else{
+	$('#bt_resetar').addClass('link_desabilitado');
+
+}
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	configurar_pagina(document);
+	configurar_datatable("#datatable");
+	
+	var destinatario = $("#entidade_destinatario").val();
+	if (destinatario != ""){
+		
+		if ( destinatario.indexOf('|') > -1 ) {
+			//alert("identificou o caractet |");
+			var campos = destinatario.split("|");	
+			$("#select_destinatarios").val(campos[0]);
+		} 
+		else {
+			//alert("nao identificou o caracter |");
+			$("#select_destinatarios").val(destinatario);
+		}
+		
+		$('#bt_resetar').removeClass('link_desabilitado');
+		desabilitar_botao("#select_destinatarios");
+	}
+	else{
+		//alert("nao precisa do texto");
+		$('#bt_resetar').addClass('link_desabilitado');
+		//$("#select_destinatarios").val("desgrama2");
+
+	}
+	
+		
+});
+</script>
+
+
+
+<script type="text/javascript">
+$('#select_destinatarios').editableSelect({
+	effects: 'fade',
+	
+	onSelect: function (element) {
+		//alert(this.val());
+		habilitar_botao("#bt_novo_documento");
+		$("#entidade_destinatario").val(this.val());
+		var el = document.getElementById("bt_resetar");
+		el.classList.remove("link_desabilitado");
+		desabilitar_botao("#select_destinatarios");
+		//$("#entidade_destinatario").text = ;
+    },
+});
+</script>
+
+<script type="text/javascript">
+	function conferir_destinatario(){
+        var destinatario = $('#select_destinatarios').val();
+
+		if (destinatario == ''){
+			desabilitar_botao("#bt_novo_documento");
+			desabilitar_botao("#bt_gerar_protocolo");
+			$('#bt_resetar').addClass('link_desabilitado');
+			$("#entidade_destinatario").val(destinatario);
+		}
+		
+		else{			
+
+			habilitar_botao("#bt_novo_documento");
+			$('#bt_resetar').removeClass('link_desabilitado');
+			
+			if(destinatario.contains("-")) {
+				$("#entidade_destinatario").val(destinatario);
+				desabilitar_botao("#select_destinatarios");
+			}
+			
+			else{
+				$('#myModal_informacoes_complementares').modal('show');
+				desabilitar_botao("#select_destinatarios");
+				
+			}
+		}
+	}
+	
+	function adiciona_informacoes_complementares(){
+		var cpf = $("#complemento_cpf").val();
+		var endereco = $("#complemento_endereco").val();
+		var contato = $("#complemento_contato").val();
+		
+		var complemento = cpf+"|"+endereco+"|"+contato;
+		
+		$("#entidade_destinatario").val($("#select_destinatarios").val()+"|"+complemento);
+		$('#myModal_informacoes_complementares').modal('hide');
+	}
+	
+</script>
+
+<script type="text/javascript">   
+	function resetar_protocolo() { 
+    	if (window.confirm('Para trocar o destinatário do protocolo é necessário \nresetar o protocolo. Deseja continuar?')){
+         	window.location.href = ('/protocolo/emitir_protocolo/');
+    	}
+     	else{
+            return false;
+     }
+};
+</script>
+
+ <script type="text/javascript">
+ $(".alert").fadeOut(6000);
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	//alert("Olha o que temos de documentos: {{ dados }}");
+	{% if dados %}
+		//alert("vim configurar a exclusao e tenho dados..");
+		configurar_datatable_selecionavel("#datatable","#bt_apagar","{{ dados|length }}");
+		
+	{% else %}
+		//alert("vim configurar a exclusaom mas nao tenho dados..");
+		configurar_datatable_selecionavel("#datatable","#bt_apagar","{{ dados|length }}");
+		desabilitar_botao("#bt_gerar_protocolo");
+	{% endif %}	
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#datatable"+' tbody').on( 'click', 'tr', seleciona_linha("#datatable",$(this),true));
+});
+</script>
+
+<script type="text/javascript">
+$('#bt_gerar_protocolo').click( function () {
+	document.getElementById('form_protocolo').target='_blank';
+	setTimeout(function(){ window.location.href = ('/protocolo/emitir_protocolo/'); }, 1000);
+	//window.location.reload();
+	//setTimeout(function () {  }, 3);
+	
+ });
+
+$('#bt_novo_documento').click( function () {
+	$("#item").attr('list','lista_documentos');
+ });
+</script>
+
+{% endblock %}
+
+

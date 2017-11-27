@@ -1,0 +1,1735 @@
+{% extends 'base_page.html' %}
+
+{% block Titulo %}
+<meta charset="utf-8">
+<title>Digitar - Adicionar Cliente</title>
+{% endblock %}
+
+{% load staticfiles %}
+{% block recrusos_necessarios %}
+{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
+<!-- BOOTSTRAP 3.3.6 -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+<!-- DATATABLE -->
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
+
+<script src="{% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
+
+<!-- JQUERY UI DATAPICKER -->
+<link rel="stylesheet" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}">
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+
+<!-- JQUERY AUTOCOMPLETE EDITABLE -->
+<link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}" />
+<script src="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script>
+
+<!-- BOOTSTRAP SWITCHER
+<link href=" static 'bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css' %}" rel="stylesheet" /> -->
+<!--<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>-->
+
+<!-- CUSTOM -->
+<!-- <link href="{% static 'styles/menu_simples_responsivo.css' %}" rel="stylesheet"/> -->
+<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
+<script src="{% static 'scripts/protocolo/protocolo.js' %}"></script>
+
+<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>-->
+
+
+<style type="text/css">
+
+.form-control {
+    height: 28px;
+}
+
+.uppercase{
+    text-transform: uppercase;
+}
+
+.lowercase{
+    text-transform: lowercase;
+}
+
+.center_align{
+    text-align: center;
+}
+
+.left_align{
+	padding-left: 8px;
+    text-align: left;
+}
+
+.right_align{
+    text-align: right;
+}
+
+.link_desabilitado {
+     pointer-events: none;
+     cursor: default;
+     opacity: 0.6;
+}
+
+.desabilitado {
+     pointer-events: none;
+     cursor: not-allowed;
+     opacity: 0.6;
+}
+
+.label_desabilitado {
+    font-color: #ccc;
+    opacity: 0.6;
+}
+
+.div_desabilitado {
+	display: none;
+    z-index: 1000;
+    background-color: lightgrey;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.dataTables_paginate {
+	position: relative;
+    display: block;
+    top: 30px;
+}
+
+li > a{
+    color: #999;
+}
+
+tr td i{
+    display: block;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+/*
+li > a .{
+    color: #555;
+}
+*/
+
+label {
+    font-weight: normal !important;
+    margin-left: 10px;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+#abas_formulario {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  height: 40px;
+}
+
+#abas_formulario > li > a {
+  height: 40px;
+  text-align: center;
+
+  line-height: 1.2;
+  color: #787878;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1em;
+  border: 0px;
+  display: block;
+}
+
+#abas_formulario > li.active > a{
+    background-color: #fff !important;
+    border: 0px;
+    /*background-color: #f1eff6 !important;*/
+    /*color: #696766;*/
+}
+
+legend {
+    padding: 0.2em 0.5em;
+    padding-top: 15px;
+    padding-bottom: 0px;
+    font-weight: bold;
+    font-size:100%;
+    text-align:left;
+}
+
+.field_required label:after {
+    color: #b51814;
+    content: '*';
+    display:inline;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumb_title %}Novo Registro{% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+<li><a href="/entidade">Clientes</a></li>
+<li class="active">Novo Registro</li>
+{% endblock %}
+{% block conteudo %}
+
+<form action="" method="post" autocomplete="off">
+	{% csrf_token %}
+	<!-- ng-cloak  -->
+	<div id="controle_angular"
+			 ng-app="app"
+			 ng-controller="MeuController"
+			 style='margin-top: -30px;'
+
+			 ng-init="
+            {% if meus_contatos %}
+                people=[
+                {% for item in meus_contatos %}
+                   { tipo_contato:'{{item.tipo_contato}}', numero_contato:'{{item.numero}}', cargo_setor:'{{item.cargo_setor}}',email:'{{item.email}}' },
+                {% endfor %}
+                ];
+            {% endif %}
+
+            {% if minhas_atividades %}
+                atividades=[
+                    {% for item in minhas_atividades %}
+                       { atividade:'{{item.atividade}}', desde:'{{item.desde|date:"d/m/Y"|default_if_none:""}}'},
+	{% endfor %}
+	];
+	{% endif %}
+
+	{% if meus_documentos %}
+	documentos = [
+	{% for item in meus_documentos %}
+
+	{ tipo_documento:'{{item.tipo}}',
+	documento:'{{item.nome}}',
+	documento_vencimento:'{{item.vencimento|date:"d/m/Y"|default_if_none:""}}',
+	notificar_cliente:'{{ item.notificar_cliente }}',
+	prazo_notificacao:'{{ item.prazo_notificar|default_if_none:"" }}',
+	documento_senha:'{{item.senha|default_if_none:""}}'
+	},
+	{% endfor %}
+	]
+	{% endif %}
+	">
+
+	<div class="box box-default" stlye='padding-top: 0px;'>
+
+		<div class="box-body"  style='padding:2px;'>
+			<ul id='abas_formulario' class="nav nav-pills">
+				<li id='nav_cliente' class="active" style="width: 80px;"><a data-toggle="tab" href="#tab_cliente"><!--<i class="fa fa-user" aria-hidden="true"></i>--> Cliente</a></li>
+				<!--<li id='nav_contatos' style="width: 90px;"><a data-toggle="tab" href="#tab_contatos"><i class="fa fa-phone" aria-hidden="true"></i> Contatos</a></li>-->
+				<!--<li id='nav_cnae' style="width: 80px;"><a data-toggle="tab" href="#tab_cnae"><!--<i class="fa fa-user" aria-hidden="true"></i> Cnaes</a></li>-->
+				<li id='nav_controles' style="width: 90px;"><a data-toggle="tab" href="#tab_servicos"><!--<i class="fa fa-suitcase" aria-hidden="true"></i>--> Controles</a></li>
+				<li id='nav_administrativo' class='pull-right' style="width: 150px;">
+					<a data-toggle="tab" href="#tab_administrativo" style='margin-top:0px;'>
+						<i class="fa fa-lock" style='margin-top: -10px;'aria-hidden="true"></i> Administrativo
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="panel panel-default" style="margin-top:-14px;">
+
+		<div class="panel-body" style='padding:0px;padding-left: 14px;padding-right: 14px;'>
+			<div class="row">
+
+				<div class="col-lg-12 col-md-12 col-xs-12">
+
+					<div class="tab-content" style="padding-top: 0px;padding-bottom:0px;padding-left: 0px;padding-right: 0px;">
+
+						<div id="tab_cliente" class="tab-pane fade in active">
+
+							<div class="box-body">
+								<fieldset>
+									<legend><i class="fa fa-user" aria-hidden="true"></i> Identificação</legend>
+
+									<div class="row">
+
+										<div class="col-lg-2">
+											<div class="form-group field_required">
+												<sub><label id="lb_cpf_cnpj" for="cpf_cnpj">{{ formulario_entidade.cpf_cnpj.label|upper }}</label></sub>
+												{{ formulario_entidade.cpf_cnpj }}
+											</div>
+										</div>
+
+										<div class="col-lg-5">
+											<div class="form-group field_required">
+												<sub><label id="lb_nome_razao" for="nome_razao">{{ formulario_entidade.nome_razao.label }}</label></sub>
+												{{ formulario_entidade.nome_razao }}
+											</div>
+										</div>
+
+										<div class="col-lg-3">
+											<div class="form-group">
+												<sub><label id="lb_apelido_fantasia" for="apelido_fantasia">{{ formulario_entidade.apelido_fantasia.label }}</label></sub>
+												{{ formulario_entidade.apelido_fantasia }}
+											</div>
+										</div>
+
+										<!--
+										<div class="col-lg-2">
+												<div class="form-group">
+														<sub><label id="lb_tipo_registro" for="tipo_registro">{ formulario.tipo_registro.label }}</label></sub>
+														{ formulario.tipo_registro }}
+												</div>
+										</div>
+										-->
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_nascimento_fundacao" for="nascimento_fundacao">{{ formulario_entidade.nascimento_fundacao.label }}</label></sub>
+												{{ formulario_entidade.nascimento_fundacao }}
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row" style="margin-top: -10px;">
+
+										<div class="col-lg-8">
+											<div class="form-group">
+												<sub><label id="lb_natureza_juridica" for="natureza_juridica">{{ formulario_entidade.natureza_juridica.label }}</label></sub>
+
+												<!--<input id='natureza_juridica' class="form-control" list="naturezas_juridicas" name="natureza_juridica">-->
+												{{ formulario_entidade.natureza_juridica }}
+												<datalist id="naturezas_juridicas">
+
+												</datalist>
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_regime_apuracao" for="regime_apuracao">{{ formulario_entidade.regime_apuracao.label }}</label></sub>
+												{{ formulario_entidade.regime_apuracao }}
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_regime_desde" for="regime_desde">{{ formulario_entidade.regime_desde.label }}</label></sub>
+												{{ formulario_entidade.regime_desde }}
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_nome_filial" for="nome_filial">{{ formulario_entidade.nome_filial.label }}</label></sub>
+												{{ formulario_entidade.nome_filial }}
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_inscricao_estadual" for="inscricao_estadual">{{ formulario_entidade.inscricao_estadual.label }}</label></sub>
+												{{ formulario_entidade.inscricao_estadual }}
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_inscricao_municipal" for="inscricao_municipal">{{ formulario_entidade.inscricao_municipal.label }}</label></sub>
+												{{ formulario_entidade.inscricao_municipal }}
+											</div>
+										</div>
+
+
+
+										<div class="col-lg-2">
+											<div class="form-group" data-toggle="tooltip" data-placement="top" title="Inscrição da Junta Comercial, Cartório ou OAB.">
+												<sub><label id="lb_inscricao_junta_comercial" for="inscricao_junta_comercial">{{ formulario_entidade.inscricao_junta_comercial.label }}</label></sub>
+												{{ formulario_entidade.inscricao_junta_comercial }}
+											</div>
+										</div>
+
+										<div class="col-lg-2" >
+											<div class="form-group" data-toggle="tooltip" data-placement="top" title="Inscrição Rural">
+												<sub><label id="lb_inscricao_produtor_rural" for="inscricao_produtor_rural">{{ formulario_entidade.inscricao_produtor_rural.label }}</label></sub>
+												{{ formulario_entidade.inscricao_produtor_rural }}
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group" data-toggle="tooltip" data-placement="top" title="Inscrição de Imóvel Rural">
+												<sub><label id="lb_inscricao_imovel_rural" for="inscricao_imovel_rural">{{ formulario_entidade.inscricao_imovel_rural.label }}</label></sub>
+												{{ formulario_entidade.inscricao_imovel_rural }}
+											</div>
+										</div>
+
+									</div>
+
+								</fieldset>
+
+
+								<fieldset>
+
+									<legend><i class="fa fa-map-marker" aria-hidden="true"></i> Localização</legend>
+
+									<div class="row">
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_cep" for="cep">{{ formulario_entidade.cep.label }}</label></sub>
+												{{ formulario_entidade.cep }}
+											</div>
+										</div>
+
+										<div class="col-lg-5">
+											<div class="form-group field_required">
+												<sub><label id="lb_endereco" for="endereco">{{ formulario_entidade.endereco.label }}</label></sub>
+												{{ formulario_entidade.endereco }}
+											</div>
+										</div>
+
+										<div class="col-lg-1">
+											<div class="form-group">
+												<sub><label id="lb_numero_endereco" for="numero_endereco">{{ formulario_entidade.numero_endereco.label }}</label></sub>
+												{{ formulario_entidade.numero_endereco }}
+											</div>
+										</div>
+
+										<div class="col-lg-4">
+											<div class="form-group">
+												<sub><label id="lb_complemento" for="complemento">{{ formulario_entidade.complemento.label }}</label></sub>
+												{{ formulario_entidade.complemento }}
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row">
+
+										<div class="col-lg-3">
+											<div class="form-group">
+												<sub><label id="lb_bairro" for="bairro">{{ formulario_entidade.bairro.label }}</label></sub>
+												{{ formulario_entidade.bairro }}
+											</div>
+										</div>
+
+										<div class="col-lg-3">
+											<div class="form-group field_required">
+												<sub><label id="lb_municipio" for="municipio">{{ formulario_entidade.municipio.label }}</label></sub>
+												{{ formulario_entidade.municipio }}
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_codigo_municipio" for="codigo_municipio">{{ formulario_entidade.codigo_municipio.label }}</label></sub>
+												{{ formulario_entidade.codigo_municipio }}
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group field_required">
+												<sub><label id="lb_estado" for="estado">{{ formulario_entidade.estado.label }}</label></sub>
+												{{ formulario_entidade.estado }}
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group field_required">
+												<sub><label id="lb_pais" for="pais">{{ formulario_entidade.pais.label }}</label></sub>
+												{{ formulario_entidade.pais }}
+											</div>
+										</div>
+
+									</div>
+
+
+								</fieldset>
+
+								<fieldset id="field_contatos">
+
+									<legend><i class="fa fa-phone" aria-hidden="true"></i> Contatos</legend>
+
+									{{ formulario_entidade.contatos }}
+									{% verbatim %}
+
+									<div class="row">
+
+										<div class="col-md-3">
+
+											<div class="row">
+												<div class="col-lg-5">
+													<div class="form-group">
+														<sub><label id="lb_tipo_contato" for="tipo_contato">Tipo:</label></sub>
+														<select id="tipo_contato" class="form-control" ng-model="tipo_contato">
+															<option value="CELULAR">CELULAR</option>
+															<option value="COMERCIAL">COMERCIAL</option>
+															<option value="RESIDENCIAL">RESIDENCIAL</option>
+															<option value="OUTRO">OUTRO</option>
+														</select>
+													</div>
+												</div>
+
+												<div class="col-lg-7">
+													<div class="form-group">
+														<sub><label id="lb_tipo_contato" for="tipo_contato">Telefone:</label></sub>
+														<input type="text" id="numero_contato" class="form-control" ng-model="numero_contato">
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="form-group field_required">
+														<sub><label id="lb_cargo_setor" for="cargo_setor">Nome / Cargo / Setor:</label></sub>
+														<input type="text" id="cargo_setor" class="form-control uppercase" ng-model="cargo_setor">
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="form-group">
+														<sub><label id="lb_email" for="email">Email:</label></sub>
+														<input type="text" id="email" class="form-control lowercase" ng-model="email">
+													</div>
+												</div>
+
+												<div class="col-lg-12">
+													<div class="form-group">
+														<button type="button" id='bt_adicionar_contato' class="btn btn-sm btn-default pull-right" ng-click="addPerson($index)" ng-disabled="people.length >= 6">Adicionar</button>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-9">
+											<div class="box box-panel" style="margin-top: 18px;">
+												<table class="table table-condensed table-striped table-hover table-bordered">
+													<thead>
+														<tr>
+															<th style="text-align: center">Tipo</th>
+															<th style="text-align: center">Telefone</th>
+															<th style="text-align: center">Nome / Cargo / Setor</th>
+															<th style="text-align: center">Email</th>
+															<th></th>
+														</tr>
+													</thead>
+
+													<tbody>
+														<tr ng-repeat="person in people">
+															<td style="width:100px;">{{ person.tipo_contato }}</td>
+															<td style="width:100px;">{{ person.numero_contato }}</td>
+															<td style="width:100px;">{{ person.cargo_setor }}</td>
+															<td style="width:180px;">{{ person.email }}</td>
+															<td style="width: 30px; ">
+																<a ng-click="removePerson($index)" style="cursor:pointer; border-left: hidden; text-align: center;" >
+																	<i class="fa fa-trash-o" aria-hidden="true"></i>
+																</a>
+															</td>
+														</tr>
+
+														<tr ng-repeat="i in range_list.slice(people.length,range_list.lenght)">
+															<td height="30"></td><td></td><td></td><td></td><td></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+
+										</div>
+
+
+
+									</div>
+
+									<div class="row">
+										<div class="col-md-12" style="text-align: right; color: #b51814; width: 100%; margin-top:-20px;">
+											<label id="label_contatos"><sub>*Informe pelo menos um contato para realizar o cadastro.</sub></label>
+										</div>
+									</div>
+
+									{% endverbatim %}
+								</fieldset>
+
+								<fieldset id='fieldset_cnae'>
+
+									<legend>Atividades Econômicas</legend>
+
+									<div class="row">
+										<div class="col-lg-8">
+											<div class="form-group">
+												<sub><label id="lb_atividades" for="atividade_descricao">Atividade Econômica:</label></sub>
+
+												<input id='atividade_descricao' ng-model="atividade_descricao" class="form-control" list="codigo_atividades">
+												<datalist id="codigo_atividades">
+
+												</datalist>
+
+												{{ formulario_entidade.atividade_economica }}
+
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_atividade_desde" for="atividade_desde">{{ formulario_entidade.atividade_desde.label }}</label></sub>
+												<!--<input id="atividade_desde" type="date" class="form-control" ng-model="atividade_desde">-->
+												{{ formulario_entidade.atividade_desde }}
+											</div>
+										</div>
+
+										<div class="col-lg-1">
+											<div class="form-group">
+												<sub><label style='color: #FFF;'>.</label></sub>
+												<button type="button" id='bt_adicionar_atividade' class="btn btn-sm btn-default" ng-click="adicionar_atividade($index)">Adicionar</button>
+											</div>
+										</div>
+
+									</div>
+
+
+									<div class="row">
+
+										<div class="col-md-12">
+
+											<div class="box box-panel" style="margin-top: 18px;">
+												<table id="table_cnae" class="table table-condensed table-striped table-hover table-bordered">
+
+													<thead>
+													<tr>
+														<th style="text-align: center">Atividade</th>
+														<th style="width: 100px;text-align: center;">Desde</th>
+														<th style="width: 30px;"></th>
+													</tr>
+													</thead>
+
+													<tbody>
+
+													{% verbatim %}
+													<tr ng-repeat="item in atividades">
+														<td>{{ item.atividade }}</td>
+														<td style="width: 100px;">{{ item.desde|date:"d/m/Y" }}</td>
+
+														<td style="width: 30px; ">
+															<a ng-click="excluir_atividade($index)" style="cursor:pointer; border-left: hidden; text-align: center;" >
+																<i class="fa fa-trash-o" aria-hidden="true"></i>
+															</a>
+														</td>
+													</tr>
+													{% endverbatim %}
+
+													<tr ng-repeat="i in range_list.slice(atividades.length,range_list.lenght)"><td height="30"></td><td></td><td></td></tr>
+
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+									</div>
+
+								</fieldset>
+
+							</div>
+
+						</div>
+
+						<!--<div id="tab_contatos" class="tab-pane fade ">
+						</div>
+
+						<div id="tab_cnae" class="tab-pane fade">
+
+								<div class="box-body">
+								 </div>
+						</div>-->
+
+						<div id="tab_servicos" class="tab-pane fade">
+
+							<div class="box-body">
+
+								<fieldset id="fieldset_iss">
+									<legend>Vencimento de Impostos</legend>
+									<div class="row">
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_tipo_vencimento" for="check_tipo_vencimento">{{ formulario_entidade.tipo_vencimento.label }}</label></sub>
+												{{ formulario_entidade.tipo_vencimento }}
+												<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_data_vencimento_iss" for="data_vencimento_iss">{{ formulario_entidade.data_vencimento_iss.label }}</label></sub>
+												{{ formulario_entidade.data_vencimento_iss }}
+												<!--<input id="data_vencimento" type="text" class="form-control">-->
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_dia_vencimento_iss" for="dia_vencimento_iss">{{ formulario_entidade.dia_vencimento_iss.label }}</label></sub>
+												{{ formulario_entidade.dia_vencimento_iss }}
+												<!--<input id="data_vencimento" type="text" class="form-control">-->
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_taxa_iss" for="taxa_iss">{{ formulario_entidade.taxa_iss.label }}</label></sub>
+												{{ formulario_entidade.taxa_iss }}<!-- <input id="taxa_iss" type="text" class="form-control">-->
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset>
+									<legend>Vencimento de Documentos</legend>
+
+									{{ formulario_entidade.tabela_documentos }}
+
+
+									<div class="row" style="padding-bottom: 5px;">
+
+										<div class="col-lg-3">
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="form-group">
+														<sub><label>Tipo do Documento:</label></sub>
+														<select id="tipo_documento" class="form-control" onchange="definir_tipo_documento(this)" ng-model="tipo_documento">
+															<option value="ALVARÁ">ALVARÁ</option>
+															<option value="CERTIDÃO">CERTIDÃO</option>
+															<option value="CERITIFICADO">CERTIFICADO</option>
+															<option value="PROCURAÇÃO">PROCURAÇÃO</option>
+															<option value="OUTRO">OUTRO</option>
+														</select>
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="form-group">
+														<sub><label>Documento:</label></sub>
+														<input type="text" id="documento" class="form-control" ng-model="documento" list="opcoes_documentos" style="text-transform: uppercase;">
+														<datalist id="opcoes_documentos">
+
+														</datalist>
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="form-group">
+														<sub><label>Senha:</label></sub>
+														<input type="text" id="documento_senha" class="form-control" ng-model="documento_senha">
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="form-group">
+														<sub><label id='lb_documento_vencimento'>Vencimento:</label></sub>
+														<input type="text" id="documento_vencimento" class="form-control" ng-model="documento_vencimento">
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-lg-6">
+													<div class="form-group">
+														<sub><label>Notificar Cliente:</label></sub>
+
+														<select id="notificar_cliente" class="form-control" onchange="definir_notificacao_cliente(this)">
+															<option value="SIM" >SIM</option>
+															<option value="NAO" selected>NÃO</option>
+														</select>
+													</div>
+												</div>
+
+												<div class="col-lg-6">
+													<div class="form-group">
+														<sub><label>Prazo (Dias):</label></sub>
+														<input type="number" id="prazo_notificacao" class="form-control" onkeydown="filter_numbers(event)">
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="form-group">
+														<button type="button" id='bt_adicionar_documento' class="btn btn-sm btn-default pull-right" style='margin-top: 8px;' ng-click="adicionar_documento($index)">Adicionar</button>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="col-lg-9">
+
+											<div class="row">
+												<div class="col-md-12">
+													<div class="box box-panel" style="margin-top: 18px;">
+														<table class="table table-condensed table-striped table-hover table-bordered">
+
+															<thead>
+															<tr>
+																<th style="text-align: center">Tipo</th>
+																<th style="text-align: center">Documento</th>
+																<th style="text-align: center">Vencimento</th>
+																<th style="text-align: center">Notificar</th>
+																<th></th>
+															</tr>
+															</thead>
+
+															<tbody>
+															{% verbatim %}
+															<tr ng-repeat="documento in documentos"> <!-- class="clickable"  ng-click="editar_documento($index)" -->
+																<td class='left_align' style="width:100px;">{{ documento.tipo_documento }}</td>
+
+																<td class='left_align'>
+																	{{ documento.documento }}
+																	<span ng-if='documento.documento_senha!=""'>
+																		- SENHA: {{ documento.documento_senha }}
+																	</span>
+
+																	<span ng-if='documento.documento_senha==""'>
+
+																	</span>
+																</td>
+
+
+																<td class='center_align' style="width:100px;">{{ documento.documento_vencimento }}</td>
+
+																<td class='center_align'>
+																	<span ng-if='documento.prazo_notificacao!=""'>
+																		{{ documento.prazo_notificacao }} DIAS
+																	</span>
+
+																	<span ng-if='documento.prazo_notificacao==""'>
+																		-
+																	</span>
+																</td>
+
+																<td style="width: 30px; ">
+																	<a ng-click="excluir_documento($index)" style="cursor:pointer; border-left: hidden; text-align: center;" >
+																		<i class="fa fa-trash-o" aria-hidden="true"></i>
+																	</a>
+																</td>
+															</tr>
+
+															<tr ng-repeat="k in size_list_documents.slice(documentos.length,size_list_documents.length)">
+																<td height="30"></td><td></td><td></td><td></td><td></td>
+															</tr>
+															{% endverbatim %}
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
+
+						<div id="tab_administrativo" class="tab-pane fade">
+							<!--<div class="box-body">
+								<div class="row">
+									<div class='col-md-4'>
+										<div class="col-md-12">
+											<div class="box box-panel" style="margin-top: 18px;overflow: scroll;height: 180px;">
+												<table class="table table-condensed table-striped table-hover table-bordered">
+													<thead>
+														<tr>
+															<th style="text-align: center">#</th>
+															<th style="text-align: center">Indicação</th>
+															<th style="text-align: center">Cadastrado em</th>
+														</tr>
+													</thead>
+
+													<tbody>
+													{% verbatim %}
+													<tr ng-repeat="documento in documentos"> <!-- class="clickable"  ng-click="editar_documento($index)" --
+														<td class='left_align' style="width:30px;">{{$index}}</td>
+
+														<td class='left_align'>
+															{{ documento.documento }}
+															<span ng-if='documento.documento_senha!=""'>
+																 - SENHA: {{ documento.documento_senha }}
+															</span>
+
+															<span ng-if='documento.documento_senha==""'>
+															</span>
+														</td>
+
+														<td class='center_align' style="width:70px;">
+															{{ documento.documento_vencimento }}
+														</td>
+
+														<!--<td class='center_align'>
+																<span ng-if='documento.prazo_notificacao!=""'>
+																		{{ documento.prazo_notificacao }} DIAS
+																</span>
+
+																<span ng-if='documento.prazo_notificacao==""'>
+																		-
+																</span>
+														</td>
+
+														<td style="width: 30px; ">
+																<a ng-click="excluir_documento($index)" style="cursor:pointer; border-left: hidden; text-align: center;" >
+																		<i class="fa fa-trash-o" aria-hidden="true"></i>
+																</a>
+														</td>--
+													</tr>
+
+													<tr ng-repeat="k in size_list_documents.slice(documentos.length,size_list_documents.length)">
+														<td height="30" style="width:30px;"></td><td></td><td style="width:120px;"></td>
+													</tr>
+													{% endverbatim %}
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>-->
+
+							<div class="row">
+								<div class="col-md-4">
+									<div class="row">
+										<div class="col-md-12">
+											<fieldset>
+												<legend>Controle</legend>
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group">
+															<sub><label>Responsável:</label></sub>
+															<!--<input type="text" id="documento_senha" class="form-control" ng-model="documento_senha">-->
+															{{ formulario_entidade.responsavel_cliente }}
+														</div>
+													</div>
+												</div>
+
+												<div class='row'>
+													<div class="col-md-12">
+														<div class="form-group">
+															<sub><label>Supervisor:</label></sub>
+															<!--<input type="text" id="documento_senha" class="form-control" ng-model="documento_senha">-->
+															{{ formulario_entidade.supervisor_cliente }}
+														</div>
+													</div>
+												</div>
+											</fieldset>
+										</div>
+									</div>
+
+									<div class='row'>
+										<div class="col-lg-12">
+											<fieldset>
+												<legend>Notificações Automáticas</legend>
+												{{ formulario_entidade.documentos }}
+												<!--% verbatim %}-->
+
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group">
+															<sub><label>{{ formulario_entidade.notificacao_responsavel.label }}</label></sub>
+															{{ formulario_entidade.notificacao_responsavel }}
+
+															<datalist id="sugestao_responsavel">
+
+															</datalist>
+															<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+														</div>
+													</div>
+												</div>
+
+												<div class='row'>
+													<div class="col-lg-12">
+														<div class="form-group">
+															<sub><label>{{ formulario_entidade.notificacao_email.label }}</label></sub>
+															{{ formulario_entidade.notificacao_email }}
+															<datalist id="sugestao_email">
+															</datalist>
+														</div>
+													</div>
+												</div>
+
+												<div class='row'>
+													<div class="col-md-12">
+														<div class="form-group">
+															<sub><label>{{ formulario_entidade.notificacao_envio.label }}</label></sub>
+															{{ formulario_entidade.notificacao_envio }}
+															<!--<input id="data_vencimento" type="text" class="form-control">-->
+														</div>
+													</div>
+												</div>
+												<!--% endverbatim %}-->
+											</fieldset>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-8">
+
+
+									<fieldset>
+										<legend>Informações Complementares</legend>
+
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<sub><label id="lb_observacoes" for="observacoes">Observações:</label></sub>
+													{{ formulario_entidade.observacoes }}
+													<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
+												</div>
+											</div>
+										</div>
+									</fieldset>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+
+	<div class="box box-default" style='padding-top: 0px;margin-top:-10px;'>
+		<div class="box-body"  style='padding:2px;'>
+			<button type="submit" class="btn btn-primary pull-right" onclick="return verificar_dados_antes_salvar()">Salvar</button>
+		</div>
+	</div>
+
+	</div>
+</form>
+
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+
+<!--<script type="text/javascript" src=" static 'bootstrap-switch/dist/js/bootstrap-switch.min.js' %}" />-->
+<script src="{% static 'scripts/entidade/validar_cpf_cnpj.js' %}"></script>
+
+<script>
+        function substituir_valor_nulo(valor){
+            if (valor == null){ valor = ""; }
+            return valor;
+        }
+    </script>
+
+<script>
+        //Declarando o módulo da aplicação
+        var app = angular.module('app', []);
+        //Declarando o construtor do MeuController
+        app.controller('MeuController', ['$scope', function($scope) {
+            $scope.people = [];
+            $scope.atividades = [];
+            $scope.documentos = [];
+            $scope.range_list = [1,2,3,4,5,6];
+            $scope.size_list_documents = [1,2,3,4,5,6,7,8,9,10];
+            $scope.size_list_indications = [1,2,3,4]
+            $scope.salario_vigente = null;
+            //$scope.valor_honorario = 0;
+            /*{tipo_contato:'Jon', numero_contato: 30, cargo_setor: 'Developer'},
+                {tipo_contato:'Mike', numero_contato: 37, cargo_setor: 'Manager'},
+                {tipo_contato:'Allen', numero_contato: 50, cargo_setor: 'CEO'}
+                ];*/
+
+            $scope.editar_documento = function(index){
+                $('#tipo_documento').val($scope.documentos[index].tipo_documento);
+                $('#documento').val($scope.documentos[index].documento);
+                $('#documento_vencimento').val($scope.documentos[index].documento_vencimento);
+                $('#documento_senha').val($scope.documentos[index].documento_senha);
+
+                $scope.excluir_documento(index);
+            }
+
+            $scope.get_salario_vigente = function(){
+              $.ajax({
+                url: '/api/preferencias/salario_vigente/',
+                type: 'get', //this is the default though, you don't actually need to always mention it
+                success: function(data) {
+                    $('#form-group-taxa-salario').tooltip({title:"Valor de Referência: "+data.salario_vigencia_atual});
+                    $scope.salario_vigente = data.salario_vigencia_atual;
+                    $scope.$apply();
+                },
+                failure: function(data) {
+                    alert('Got an error dude');
+                }
+              });
+            }
+
+            $scope.adicionar_documento = function(){
+                //alert("Veja os dados: "+$scope.tipo_documento+" - "+$scope.documento+" - "+$scope.documento_vencimento+" - "+$scope.documento_senha);
+
+                var notificar_cliente = $("#notificar_cliente").val();
+                var prazo_notificacao = $("#prazo_notificacao").val();
+
+                var documento = {
+                    tipo_documento: substituir_valor_nulo($scope.tipo_documento),
+                    documento: substituir_valor_nulo($scope.documento),
+                    documento_vencimento: substituir_valor_nulo($scope.documento_vencimento),
+                    documento_senha: substituir_valor_nulo($scope.documento_senha),
+                    notificar_cliente: notificar_cliente,
+                    prazo_notificacao: prazo_notificacao
+                };
+
+                $scope.documentos.push(documento);
+
+                $('#tabela_documentos').val(
+                    $('#tabela_documentos').val()+"+|"+
+                    documento.tipo_documento+"|"+
+                    documento.documento+"|"+
+                    documento.documento_vencimento+"|"+
+                    documento.documento_senha+"|"+
+                    documento.notificar_cliente+"|"+
+                    documento.prazo_notificacao+
+                    "#"
+                );
+
+                $('#tipo_documento').val("");
+                $('#documento').val("");
+                $('#documento_vencimento').val("");
+                $('#documento_senha').val("");
+                $("#notificar_cliente").val("NAO");
+                $("#prazo_notificacao").val("");
+
+                desabilitar_campo("documento_senha");
+
+                $scope.tipo_documento = "";
+                $scope.documento = "";
+                $scope.documento_vencimento = "";
+                $scope.documento_senha = "";
+                $scope.notificar_cliente = "NAO";
+                $scope.prazo_notificacao = "";
+
+            };
+
+            $scope.excluir_documento = function(index){
+                $scope.documentos.splice(index, 1);
+
+                var registro_temporario = $('#tabela_documentos').val();
+                var temp = new Array();
+                temp = registro_temporario.split("#")[index];
+
+
+                if (temp.indexOf("+") !=-1) {
+                    registro_temporario = registro_temporario.replace(temp+"#","");
+                }
+
+                else{
+                    registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
+                }
+
+                alert("Veja:"+registro_temporario);
+                $('#tabela_documentos').val(registro_temporario);
+            };
+
+
+            $scope.salvar_entidade = function(dados){
+                alert("acho que é isso"+dados);
+            }
+
+            $scope.adicionar_atividade = function(){
+                var cnae = {
+                    atividade: $scope.atividade_descricao,
+                    desde: $scope.atividade_desde
+                };
+
+                $scope.atividades.push(cnae);
+                $('#atividade_economica').val($('#atividade_economica').val()+"+|"+$scope.atividade_descricao+"|"+$scope.atividade_desde+"#");
+                $('#atividade_descricao').val("");
+                $('#atividade_desde').val("");
+
+                $scope.atividade_descricao = "";
+                $scope.atividade_desde = "";
+
+            };
+
+            $scope.excluir_atividade = function(index){
+                $scope.atividades.splice(index, 1);
+
+                var registro_temporario = $('#atividade_economica').val();
+                var temp = new Array();
+                temp = registro_temporario.split("#")[index];
+                registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
+                //alert("Veja:"+registro_temporario);
+                $('#atividade_economica').val(registro_temporario);
+
+            };
+
+            $scope.add_contato = function(tipo,numero,nome_contato,cargo_setor,email) {
+                var person = {
+                    tipo_contato: tipo,
+                    numero_contato: numero,
+                    cargo_setor: cargo_setor,
+                    email: email,
+                };
+
+                $scope.people.push(person);
+            };
+
+            $scope.addPerson = function(){
+                $scope.cargo_setor = $scope.cargo_setor.toUpperCase();
+                var person = {
+                    tipo_contato: $scope.tipo_contato,
+                    numero_contato: $scope.numero_contato,
+                    cargo_setor: $scope.cargo_setor,
+                    email: $scope.email,
+                };
+
+                var sugestao_email = $scope.email;
+
+                $scope.people.push(person);
+                $('#contatos').val($('#contatos').val()+"+|"+$scope.tipo_contato+"|"+$scope.numero_contato+"|"+"undefined"+"|"+$scope.cargo_setor+"|"+$scope.email+"#");
+                $('#tipo_contato').val("");
+                $('#numero_contato').val("");
+                $('#cargo_setor').val("");
+                $('#email').val("");
+
+                $scope.tipo_contato = "";
+                $scope.numero_contato = "";
+                $scope.cargo_setor = "";
+                $scope.email = "";
+
+                var sugestao = document.getElementById("sugestao_email").innerHTML;
+                sugestao += '<option value="'+sugestao_email+'" />';
+                document.getElementById("sugestao_email").innerHTML = sugestao;
+
+            };
+
+            $scope.removePerson = function(index){
+                $scope.people.splice(index, 1);
+
+                var registro_temporario = $('#contatos').val();
+                var temp = new Array();
+                temp = registro_temporario.split("#")[index];
+                registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
+                //alert("Veja:"+registro_temporario);
+                $('#contatos').val(registro_temporario);
+
+            };
+
+          $scope.calcular_valor_base = function(index){
+            if($scope.taxa_honorario){
+              var salario_minimo = $scope.salario_vigente.replace("R$ ", "");
+              var salario_minimo = salario_minimo.replace(".", "");
+              var salario_minimo = parseFloat(salario_minimo.replace(",", "."));
+              var taxa = parseFloat($scope.taxa_honorario);
+              var valor_base = parseFloat(salario_minimo*taxa);
+              $scope.valor_base = valor_base;
+              $('#valor_base').val(valor_base*100).trigger('mask.maskMoney');
+            }
+          };
+
+          $scope.set_valor_base_contrato = function(valor){
+            $scope.valor_base = valor;
+          };
+
+
+          $scope.get_valor_base_contrato = function(){
+            return $scope.valor_base;
+          };
+
+        }]);
+
+    </script>
+
+
+
+<!--
+<!
+<!    SCRIPTS NECESSARIOS PARA FORMATACAO
+<!
+-->
+
+
+
+<!--
+<!
+<!    SCRIPTS POS CARREGAMENTO
+<!
+-->
+<!-- SCRIPT PARA MANIPULACAO DE CONTROLES -->
+<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
+
+<!-- SCRIPT PARA MANIPULACAO DE MASCARAS NOS CAMPOS -->
+<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
+
+<!-- CONFIGURACAO DE COMPONENTES -->
+<script>
+
+</script>
+
+<script>
+    configurar_campo_data("nascimento_fundacao");
+    configurar_campo_data("regime_desde");
+    configurar_campo_data("atividade_desde");
+    configurar_campo_data("data_vencimento_iss");
+    configurar_campo_data("documento_vencimento");
+    configurar_campo_data("contrato_inicio");
+    configurar_campo_data("contrato_fim");
+    </script>
+
+
+
+
+
+<!-- SCRIPTS COMPLEMENTARES -->
+<script>
+        $(function() {
+          $('#tipo_honorario').change(function() {
+            if(this.value == "VARIAVEL"){
+              habilitar_campo("taxa_honorario");
+            }
+            else{
+              desabilitar_campo("taxa_honorario");
+            }
+          });
+        });
+
+        $(function() {
+          $('#valor_base').blur(function() {
+
+            //var data = new Date(Date.fromString('09/05/2012', {order: 'DMY'}))
+
+            var valor_base = parseFloat(this.value.replace(".","").replace(",","."))
+            angular.element(document.getElementById('controle_angular')).scope().set_valor_base_contrato(valor_base);
+
+
+          });
+        });
+
+        function calcular_honorario(){
+          var desconto = $("#desconto_temporario").val();
+          var valor_base = angular.element(document.getElementById('controle_angular')).scope().get_valor_base_contrato();
+          var valor_final = valor_base;
+          var desconto_inicio = $("#desconto_inicio").val()
+          var desconto_fim = $("#desconto_fim").val()
+          if (valor_base && desconto_inicio && desconto_fim && desconto){
+            desconto_inicio = desconto_inicio.split('/')
+            desconto_inicio = desconto_inicio[2]+"-"+desconto_inicio[1]+"-"+desconto_inicio[0];
+
+            desconto_fim = desconto_fim.split('/')
+            desconto_fim = desconto_fim[2]+"-"+desconto_fim[1]+"-"+desconto_fim[0];
+            var data_atual = new Date().getTime();
+            var data_inicio = new Date(desconto_inicio).getTime();
+            var data_fim = new Date(desconto_fim).getTime();
+
+            if ((data_atual >= data_inicio) && (data_atual <= data_fim)) {
+              var valor_desconto = parseFloat(desconto)/100;
+              valor_final = valor_base*(1-valor_desconto);
+            }
+            else{
+              alert("Desconto Temporário não está na validade.")
+            }
+          }
+          else{
+            //alert("Se tem algum campo do desconto nao preenchido ele sera desconsiderado")
+          }
+          $('#valor_honorario').val(valor_final*100).trigger('mask.maskMoney');
+
+        }
+
+        $(function() {
+          $('#valor_base').blur(function() {
+            calcular_honorario();
+          });
+
+          $('#desconto_inicio').blur(function() {
+            calcular_honorario();
+          });
+
+          $('#desconto_fim').blur(function() {
+            calcular_honorario();
+          });
+
+          $('#desconto_temporario').blur(function() {
+            calcular_honorario();
+          });
+
+          $('#valor_honorario').blur(function() {
+            calcular_honorario();
+          });
+        });
+
+        $(function() {
+            $('#tipo_vencimento').change(function() {
+                if(this.value == "VARIAVEL"){
+                    habilitar_campo("dia_vencimento_iss");
+                    habilitar_campo("taxa_iss");
+                    desabilitar_campo("data_vencimento_iss");
+                }
+                else{
+                    habilitar_campo("data_vencimento_iss");
+                    desabilitar_campo("taxa_iss");
+                    desabilitar_campo("dia_vencimento_iss");
+                }
+            });
+        });
+
+        configurar_valor_padrao("inscricao_estadual","ISENTO");
+        configurar_valor_padrao("inscricao_produtor_rural","ISENTO");
+        configurar_valor_padrao("inscricao_imovel_rural","ISENTO");
+        configurar_valor_padrao("inscricao_junta_comercial","ISENTO");
+
+        $('#inscricao_municipal').blur(function(){
+            configurar_inscricao_municipal();
+        });
+
+        $('#inscricao_municipal').focus(function(){
+            if($('#inscricao_municipal').val() == "ISENTO"){
+                $('#inscricao_municipal').val("");
+            }
+            desabilitar_campo("tipo_vencimento");
+        });
+
+        //desabilitar_fieldset("fieldset_iss");
+
+        desabilitar_campo("tipo_vencimento");
+        desabilitar_campo("data_vencimento_iss");
+        desabilitar_campo("dia_vencimento_iss");
+        desabilitar_campo("taxa_iss");
+        desabilitar_campo("documento_senha");
+        desabilitar_campo("taxa_honorario");
+
+        var notificar_cliente = document.getElementById('notificar_cliente');
+        if(notificar_cliente.value =='SIM'){
+            habilitar_campo("prazo_notificacao");
+        }
+        else{
+            desabilitar_campo("prazo_notificacao");
+        }
+
+        $('#tipo_contato').blur(function(){
+          var campo_telefone = document.getElementById('tipo_contato');
+                $("#numero_contato").unmask();
+
+          if (campo_telefone.value == 'CELULAR') {
+                    $("#numero_contato").mask("(99) 99999-9999");
+                }
+
+                if (campo_telefone.value == 'COMERCIAL') {
+                    $("#numero_contato").mask("(99) 9999-9999");
+                }
+
+                if (campo_telefone.value == 'RESIDENCIAL') {
+                    $("#numero_contato").mask("(99) 9999-9999");
+                }
+        });
+
+        $('#apelido_fantasia').blur(function(){
+            var sugestao = "";
+            sugestao += '<option value="'+$('#apelido_fantasia').val().toUpperCase()+'" />';
+            document.getElementById('sugestao_responsavel').innerHTML = sugestao;
+        });
+    </script>
+
+<script type="text/javascript">
+        $('#codigo_postal').blur(function(){
+            $.ajax({
+                url: '/consultar_cep/'+$('#codigo_postal').val(),
+                type: 'get', //this is the default though, you don't actually need to always mention it
+                success: function(data) {
+                    $('#endereco').val(data[0]);
+                    $('#bairro').val(data[1]);
+                    $('#municipio').val(data[2]);
+                    $('#codigo_municipio').val(data[3]);
+                    $('#estado').val(data[4]);
+                    $('#pais').val(data[5]);
+                    $('#numero_endereco').focus();
+                  //alert(data);
+                },
+                failure: function(data) {
+                    alert('Got an error dude');
+                }
+            });
+        });
+        </script>
+
+<script>
+        jQuery(document).ready(function(){
+            //$("#cpf_cnpj").mask("99999999999999");
+            $('#cpf_cnpj').tooltip({title: "Preencha somente os numeros!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+            $("#nascimento_fundacao").mask("99/99/9999");
+            $("#regime_desde").mask("99/99/9999");
+            $("#atividade_desde").mask("99/99/9999");
+            $("#numero_contato").mask("(99) 99999-9999");
+
+            if($("#codigo_postal").val() == ""){
+                $("#codigo_postal").mask("99999999");
+            }
+
+            angular.element(document.getElementById('controle_angular')).scope().get_salario_vigente();
+            $('#valor_base').maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+            $('#valor_honorario').maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+            $("#desconto_inicio").mask("99/99/9999");
+            $("#desconto_fim").mask("99/99/9999");
+        });
+    </script>
+
+<script type="text/javascript">
+        $('#cpf_cnpj').blur(function(){
+						if($('#cpf_cnpj').val() != ""){
+							verificar_tipo_cliente();
+						}
+        });
+
+        if($('#cpf_cnpj').val() != ""){
+            verificar_tipo_cliente();
+        }
+
+        function verificar_dados_antes_salvar(){
+            if (valida_cpf_cnpj($('#cpf_cnpj').val()) == false){
+                //$('#cpf_cnpj').tooltip({title: "CPF Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+                alert("CPF ou CNPJ Inválido!");
+                return false;
+            }
+        }
+
+        function verificar_tipo_cliente(){
+            var texto = $('#cpf_cnpj').val();
+
+            if (texto.length == 11){
+                configurar_formulario_pessoa_fisica();
+                if (valida_cpf($('#cpf_cnpj').val()) == false){
+                    //$('#cpf_cnpj').tooltip({title: "CPF Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+                    alert("CPF Inválido!");
+                }
+            }
+
+            else{
+                configurar_formulario_pessoa_juridica();
+                if (valida_cnpj($('#cpf_cnpj').val()) == false){
+                    //$('#cpf_cnpj').tooltip({title: "CNPJ Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+                    alert("CNPJ Inválido!");
+                }
+            }
+        }
+
+        function configurar_formulario_pessoa_fisica(){
+            $("#lb_cpf_cnpj").text("CPF:");
+            $("#lb_nome_razao").text("Nome Completo:");
+            $("#lb_apelido_fantasia").text("Apelido:");
+            $("#lb_nascimento_fundacao").text("Nascimento:");
+
+            desabilitar_campo("natureza_juridica");
+            desabilitar_campo("regime_apuracao");
+            desabilitar_campo("regime_desde");
+            desabilitar_campo("nome_filial");
+            desabilitar_campo("inscricao_estadual");
+            desabilitar_campo("inscricao_municipal");
+            desabilitar_campo("inscricao_junta_comercial");
+            desabilitar_campo("inscricao_produtor_rural");
+            desabilitar_campo("inscricao_imovel_rural");
+
+            desabilitar_campo("atividade_descricao");
+            desabilitar_campo("atividade_desde");
+            desabilitar_campo("bt_adicionar_atividade");
+
+            desabilitar('table_cnae');
+
+        }
+
+        function configurar_formulario_pessoa_juridica(){
+            $("#lb_cpf_cnpj").text("CNPJ:");
+            $("#lb_nome_razao").text("Razão Social:");
+            $("#lb_apelido_fantasia").text("Nome Fantasia:");
+            $("#lb_nascimento_fundacao").text("Fundação:");
+
+            habilitar_campo("natureza_juridica");
+            habilitar_campo("regime_apuracao");
+            habilitar_campo("regime_desde");
+            habilitar_campo("nome_filial");
+            habilitar_campo("inscricao_estadual");
+            habilitar_campo("inscricao_municipal");
+            habilitar_campo("inscricao_junta_comercial");
+            habilitar_campo("inscricao_produtor_rural");
+            habilitar_campo("inscricao_imovel_rural");
+
+            habilitar_campo("atividade_descricao");
+            habilitar_campo("atividade_desde");
+            habilitar_campo("bt_adicionar_atividade");
+
+            habilitar('table_cnae');
+
+            //habilitar_nav_page("#nav_controles",'#tab_servicos');
+            var inscricao_municipal = $('#inscricao_municipal').val();
+            if (inscricao_municipal != "" && inscricao_municipal != "ISENTO"){
+                configurar_inscricao_municipal();
+            }
+        }
+
+        function configurar_inscricao_municipal(){
+            if($('#inscricao_municipal').val() == "" || $('#inscricao_municipal').val() == "ISENTO"){
+                $('#inscricao_municipal').val("ISENTO");
+                desabilitar_campo("tipo_vencimento");
+                desabilitar_campo("data_vencimento_iss");
+                desabilitar_campo("dia_vencimento_iss");
+                desabilitar_campo("taxa_iss");
+            }
+
+            else{
+                $("#tipo_vencimento").val('fixo');
+                habilitar_campo("tipo_vencimento");
+                habilitar_campo("data_vencimento_iss");
+            }
+        }
+
+    </script>
+
+
+<script>
+        window.addEventListener('DOMContentLoaded', carregar_dados_complementares, false);
+
+        function carregar_dados_complementares(){
+            carregar_naturezas_juridicas();
+            carregar_atividades_economicas();
+        }
+
+        function carregar_naturezas_juridicas() {
+            var opcoes = ""
+            {% for grupo in naturezas_juridicas %}
+                //alert("hora de carregar grupo");
+                {% for item in grupo %}
+                    opcoes = opcoes+"<option value='{{ item }}'/>";
+                {% endfor %}
+            {% endfor %}
+        document.getElementById('naturezas_juridicas').innerHTML = opcoes;
+        }
+
+        function carregar_atividades_economicas() {
+            var opcoes = ""
+
+            {% for item in atividades_economicas %}
+                opcoes = opcoes+"<option value='{{ item }}'/>";
+            {% endfor %}
+        document.getElementById('codigo_atividades').innerHTML = opcoes;
+        }
+    </script>
+
+<script>
+    function definir_tipo_documento(campo){
+        var opcao = campo.value;
+
+        var opcoes_alvara = ["ALVARÁ DE FUNCIONAMENTO E LOCALIZAÇÃO","ALVARÁ AMBIENTAL","ALVARÁ DOS BOMBEIROS","ALVARÁ VIGILÂNCIA SANITÁRIA"];
+        var opcoes_certidoes = ["CERTIDÃO NEGATIVA FEDERAL","CERTIDÃO NEGATIVA ESTADUAL","CERTIDÃO NEGATIVA MUNICIPAL","CERTIDÃO NEGATIVA TRABALHISTA","CERTIDÃO JUNTA COMERCIAL","CERTIDÃO DE FALÊNCIA E RECUPERAÇÃO JUDICIAL"];
+        var opcoes_certificado = ["CERTIFICADO DIGITAL"];
+        var opcoes_procuracao = ["PROCURAÇÃO ELETRÔNICA"];
+        var outras_opcoes = [];
+
+        $('#documento').val("");
+
+
+        switch (opcao) {
+            case "ALVARÁ":
+                //alert("Alvara");
+                trocar_opcoes_datalist("opcoes_documentos",opcoes_alvara);
+                desabilitar_campo("documento_senha");
+                $('#documento_senha').val("");
+                break;
+            case "CERTIDÃO":
+                //alert("Certidao");
+                trocar_opcoes_datalist("opcoes_documentos",opcoes_certidoes);
+                desabilitar_campo("documento_senha");
+                $('#documento_senha').val("");
+                break;
+            case "CERITIFICADO":
+                //alert("Certificado Digital");
+                trocar_opcoes_datalist("opcoes_documentos",opcoes_certificado);
+                habilitar_campo("documento_senha");
+                break;
+
+            case "PROCURAÇÃO":
+                //alert("Certificado Digital");
+                trocar_opcoes_datalist("opcoes_documentos",opcoes_procuracao);
+                habilitar_campo("documento_senha");
+                break;
+
+            case "OUTRO":
+                //alert("Outro Documento");
+                trocar_opcoes_datalist("opcoes_documentos",outras_opcoes);
+                desabilitar_campo("documento_senha");
+                $('#documento_senha').val("");
+                break;
+
+        }
+    }
+
+    function trocar_opcoes_datalist(datalist_id, novas_opcoes){
+        var opcoes = ""
+
+        document.getElementById(datalist_id).innerHTML = "";
+        for(var i = 0; i < novas_opcoes.length; i++){
+            opcoes = opcoes+"<option value='"+novas_opcoes[i]+"'/>";
+        }
+        document.getElementById(datalist_id).innerHTML = opcoes;
+        //alert("Troquei as opcoes"+opcoes);
+    }
+    </script>
+
+<script>
+    function definir_notificacao_cliente(campo) {
+        var opcao = campo.value;
+        $('#prazo_notificacao').val("");
+        if(opcao=='SIM'){
+            habilitar_campo("prazo_notificacao");
+        }
+        else{
+            desabilitar_campo("prazo_notificacao");
+        }
+    }
+    </script>
+
+<script>
+    function filter_numbers(event) {
+        var key_code = event.which || event.keyCode;
+
+        if ($.inArray(event.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+             // Allow: Ctrl+A => (event.keyCode == 65 && e.ctrlKey === true) ||
+
+             // Allow: Ctrl+C => (event.keyCode == 67 && e.ctrlKey === true) ||
+             // Allow: Ctrl+X =>(event.keyCode == 88 && e.ctrlKey === true) ||
+             // Allow: home, end, left, right
+            (event.keyCode >= 35 && event.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((event.shiftKey || (event.keyCode < 48 || event.keyCode > 57)) && (event.keyCode < 96 || event.keyCode > 105)) {
+            event.preventDefault();
+        }
+    }
+
+    /*$(".numbers_only").keydown(function( event ) {
+        alert("Olha ai primeiro: "+event);
+        //if ( event.which == 13 ) {
+        //    event.preventDefault();
+        //}
+    }*/
+
+    //$(".numbers_only").on("keypress",function search(e) {
+
+        //alert("Olha ai: "+e.keyCode);
+        //if(e.keyCode == 13) {
+        //    alert($(this).val());
+        //}
+    //});
+
+    </script>
+
+{% endblock %}

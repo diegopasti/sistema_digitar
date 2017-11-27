@@ -1,0 +1,658 @@
+{% extends 'base_page.html' %}
+
+{% block Titulo %}
+<meta charset="utf-8">
+    <title>Digitar - Cadastro de Entidades</title>
+{% endblock %}
+
+{% block recrusos_necessarios %}
+{% load staticfiles %}
+
+{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
+<!-- BOOTSTRAP 3.3.6 -->
+
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+<!-- JQUERY UI DATAPICKER -->
+<link rel="stylesheet" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}">
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"> -->
+
+<!-- DATATABLE -->
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
+
+<script src="{% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
+
+<style type="text/css">
+
+.row.better_col_spacings_first_chield [class*='col-']:first-child {
+	padding-right:5px;
+	padding-bottom:15px;
+}
+
+.row.better_col_spacings_last_chield [class*='col-']:last-child {
+	padding-left:5px;
+	padding-bottom:15px;
+}
+
+.row.better_col_middle_spacings [class*='col-']:not(:first-child):not(:last-child) {
+  padding-right:5px;
+  padding-left:5px;
+  padding-bottom:15px;
+}
+
+.uppercase{ 
+    text-transform: uppercase;
+}
+
+.lowercase{ 
+    text-transform: lowercase;
+}
+
+.center_align{
+    text-align: center;
+}
+
+.left_align{
+	padding-left: 8px;
+    text-align: left;
+}
+
+.right_align{
+    text-align: right;
+}
+
+.scrollable {
+    height: 100px;
+    overflow-y: scroll;
+  }
+
+.dataTables_paginate {
+	position: relative;
+    display: block;
+    top: 30px;
+}
+
+.titulo{
+    margin-left: 15px;
+    margin-top: -5px;
+}
+
+
+.box-title {
+    padding-left: 10px;
+    padding-top:  6px;
+}
+
+.desabilitado {
+     pointer-events: none;
+     cursor: not-allowed;
+     opacity: 0.6;
+}
+
+label {
+    font-weight: normal !important;
+}
+</style>
+
+
+{% endblock %}
+
+{% block breadcrumb_title %}Cadastro de Clientes{% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+<li class="active">Clientes</li>
+{% endblock %}
+
+{% block conteudo %}
+
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-xs-12">
+		<div class="box box-default" style="margin-top: -40px;">
+
+            <div class="box-heading">
+                <div class="box-header with-border">
+                    <h5 class="box-title">Clientes</h5>
+
+                    <div class="pull-right">
+                        <!--<a href="#myModal" role="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal"><i class="fa fa-plus fa-1x"></i> Adicionar</a>-->
+
+                        <div class="btn-group" role="group" aria-label="...">
+                            <a href="/entidade/adicionar" role="button" class="btn btn-sm btn-primary pull-left"><i class="fa fa-plus fa-1x"></i> Adicionar Cliente</a>
+
+                            <a href="#" role="button" id="bt_consultar_cliente" class="btn btn-sm btn-default pull-left desabilitado" style='margin-left: 5px;'><i class="fa fa-search fa-1x"></i> Visualizar</a>
+
+
+
+                            <div class="btn-group" role="group" style='margin-left: 5px;'>
+                                <button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <!--<li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li role="separator" class="divider"></li>-->
+                                <li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+			<div class="box-body" style="padding-bottom: -10px; margin-top: -5px;">
+				<div class="dataTable_wrapper">
+
+
+
+					<table class="table table-condensed table-striped table-bordered table-hover" id="datatable">
+
+						<thead>
+							<tr class="linha_cabecalho">
+                                <th style="vertical-align: middle"></th>
+								<th style="vertical-align: middle;">CNPJ</th>
+								<th style="vertical-align: middle;">Razão Social</th>
+								<th style="vertical-align: middle;">Nome Fantasia</th>
+                                <th style="vertical-align: middle;">Data Cadastro</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							{% for item in dados %} <!-- reversed -->
+
+							<tr class="alinhado_meio">
+								<!--<td style="cursor:pointer;text-align:center;">{ forloop.counter }}         class='clickable-row ' data-href='/entidade/visualizar/{ item.id }}'</td>-->
+                                <td style="cursor:pointer;text-align:center;">{{ item.id }}</td>
+                                {% if item.cpf_cnpj|length == 11 %}
+                                <td style="cursor:pointer">{{ item.cpf_cnpj|slice:":3" }}.{{ item.cpf_cnpj|slice:"3:6" }}.{{ item.cpf_cnpj|slice:"6:9" }}-{{ item.cpf_cnpj|slice:"9:" }}</td>
+                                {% else %}
+                                <td style="cursor:pointer">{{ item.cpf_cnpj|slice:":2" }}.{{ item.cpf_cnpj|slice:"2:5" }}.{{ item.cpf_cnpj|slice:"5:8" }}/{{ item.cpf_cnpj|slice:"8:12" }}-{{ item.cpf_cnpj|slice:"12:" }}</td>
+                                {% endif %}
+
+								<td align="left" style="cursor:pointer">{{ item.nome_razao }}</td>
+								<td align="left" style="cursor:pointer">{{ item.apelido_fantasia }}</td>
+                            <td align="center" style="cursor:pointer">{{ item.data_cadastro|date:"d/m/Y" }}</td>
+							</tr>
+
+							{% empty %}
+    							<tr><td colspan="5" style='text-align:center;'><a href="/entidade/adicionar">Adicione uma nova Entidade.</a></td></tr>
+							{% endfor %}
+						</tbody>
+					</table>
+
+                    <script>
+					$('#datatable').DataTable({
+						"pagingType": "simple_numbers",
+						"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
+						"dom": '<"top">rt"<"rightcolumn"><"clear">p',
+						"bSort": true,
+						"ordering": true,
+						"bAutoWidth": false,
+						"aoColumns": [
+                                      {"sWidth": "20px"},
+					                  {"sWidth": "120px"},
+                                      {"sWidth": null},
+                                      {"sWidth": null},
+                                      {"sWidth": "110px"}
+					    		    ],
+
+                        //"columnDefs": [ {
+						      //"targets": 0,
+						      ///"data": null,
+						      //"orderable": false,
+						      //"className": 'details-control',
+						      //"defaultContent": '<button><i class="fa fa-plus" aria-hidden="true"></i> oi</button>'
+						    //} ]
+
+
+					});
+
+
+					$('#datatable'+' tbody').on('click', 'tr', function () {
+                        var table = $('#datatable').DataTable();
+					     if ($(this).hasClass('selected')) {
+                             var id_cliente = table.cell('.selected', 0).data();
+					    	 $(this).removeClass('selected');
+                             document.getElementById("bt_consultar_cliente").href = "#";
+                             desabilitar("bt_consultar_cliente");
+                             desabilitar("bt_desativar_cliente");
+                             desabilitar("bt_outras_acoes");
+
+
+
+					     }
+					     else {
+
+					    	 table.$('tr.selected').removeClass('selected');
+					    	 $(this).addClass('selected');
+                             var id_cliente = table.cell('.selected', 0).data();
+					    	 habilitar('bt_consultar_cliente');
+                             habilitar('bt_desativar_cliente');
+                             habilitar('bt_outras_acoes');
+                             document.getElementById("bt_consultar_cliente").href = "/entidade/visualizar/"+id_cliente;
+
+
+
+
+
+
+					    	/*
+					    	$.ajax({
+								url: 'get_detalhes_protocolo/'+table.cell('.selected', 0).data(),
+								type: 'get', //this is the default though, you don't actually need to always mention it
+								success: function(data) {
+									///alert(data['data']);
+
+									$('#lb_emitido_por').text(data['emitido_por']);
+									var table_detalhes = $('#datatable_detalhes').DataTable();
+									table_detalhes.rows().remove();
+									table_detalhes.rows.add(data['data']).draw();
+
+
+									$("#datatable_detalhes tbody tr td").addClass("center_align");
+									$("#datatable_detalhes tbody tr td:first-child").removeClass("centralizado").addClass("left_align");
+
+
+									//alert("consegui?");
+
+								},
+								failure: function(data) {
+									alert('Got an error dude');
+								}
+							});
+							*/
+
+					     }
+
+					     $('#bt_excluir').click( function () {
+							$.ajax({
+								url: '/protocolo/documento/excluir/'+table.cell('.selected', 0).data(),
+								type: 'get', //this is the default though, you don't actually need to always mention it
+								success: function(data) {
+
+									/*if (data=="SUCESS"){
+										alert("Deu Certo Carai",data);
+									}
+
+									else{
+										alert("Erro na exclusão! ",data);
+									}
+									*/
+									table.row('.selected').remove().draw( false );
+									$('#bt_excluir').addClass('link_desabilitado');
+									$('#bt_alterar').addClass('link_desabilitado');
+								},
+								failure: function(data) {
+									alert('Erro! Falha na exclusão do registro');
+								}
+							});
+
+
+					        //alert("Vamos confirmar.. "+table.cell('.selected', 0).data());
+					        //$("#protocolo_id").val(table.cell('.selected', 0).data());
+					        //alert("Vamos confirmar.. "+table.cell('.selected', 0).data());
+					     } );
+
+					});
+
+				</script>
+
+				</div>
+
+                <div class='row'>
+
+                    {% if dados|length > 0 %}
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-top:-36px;'>
+                    {% else %}
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-top:6px;'>
+                    {% endif %}
+						<label id="label_buscar_por" class='left_align desabilitado'>
+                            <sub>Buscar por:</sub>
+                        </label>
+
+                        <select id='buscar_por' class='form-control desabilitado'>
+                             <option value="0">Código</option>
+                             <option value="1" >Cpf ou Cnpj</option>
+						 	 <option value="2" selected>Nome ou Razão Social</option>
+                             <option value="3" >Apelido ou Nome Fantasia</option>
+						</select>
+					</div>
+
+					{% if dados|length > 0 %}
+					<div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top: -11px;'>
+                    {% else %}
+                    <div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top: 31px;'>
+                    {% endif %}
+						<input type="text" id="search" class="form-control desabilitado" placeholder="Consultar..">
+					</div>
+
+				</div>
+                <!--
+				<div class="col-lg-6">
+					<input type="text" id="search" class="form-control" style="position: relative; margin-left: -15px; margin-top: -5px;" placeholder="Consultar..">
+				</div>
+				-->
+
+			</div>
+		</div>
+	        </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal_justificativa" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+  <div class="modal-dialog" style="width: 60%">
+    <div class="modal-content">
+      <div class="modal-header"><!-- style="height: 48px;"> -->
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 id="myModalLabel">Desativar Cliente</h4>
+      </div>
+
+      <!-- <button type='submit' name='elevar_indice_categoria' value='{ item.codigo }}
+	  	    % csrf_token %}-->
+            <div class="modal-body">
+
+                <div style="margin-top: 0px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form_desativar.operacao }}
+                            {{ form_desativar.tabela }}
+                            {{ form_desativar.user }}
+                            {{ form_desativar.cliente }}
+                            {{ form_desativar.descricao }}
+                            <sub><label style="padding-left: 8px;">Descrição da Operação:</label></sub>
+                            <p id="texto_operacao_descricao" style="padding-left: 12px;">
+
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div style='padding-left: 8px'>
+                                <sub>
+                                    <label>{{ form_desativar.justificativa.label }}</label>
+                                </sub>
+                            </div>
+                            {{ form_desativar.justificativa }}
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <div class="form-group">
+                    <a role="button" id="bt_confirmar_desativacao" class="btn btn-danger pull-right">Desativar</a>
+
+                <!--  <p class="help-block pull-left text-danger hide" id="form-error">&nbsp;{{ message }}</p></div>  -->
+
+                <!-- <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button> -->
+                </div>
+            </div>
+
+    </div>
+  </div>
+</div>
+
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+    <script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+
+<script type="text/javascript">
+$(".alert").fadeOut(6000);
+</script>
+
+
+<script type="text/javascript">
+    $("#example-tabs").steps({
+        headerTag: "h3",
+        bodyTag: "section",
+        transitionEffect: "slideLeft",
+        enableFinishButton: false,
+        enablePagination: false,
+        enableAllSteps: true,
+        titleTemplate: "#title#",
+        cssClass: "tabcontrol"
+    });
+</script>
+
+
+<script type="text/javascript">
+$(function() {
+	$("#nascimento_fundacao").datepicker({
+		  dayNames: [ "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado" ],
+		  monthNames: [ "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro" ],
+		  dayNamesMin: [ "D", "S", "T", "Q", "Q", "S", "S" ],
+		  dateFormat: 'dd/mm/yy'
+	});
+});
+</script>
+<script type="text/javascript">
+$('#codigo_postal').blur(function(){
+	$.ajax({
+		url: '/consultar_cep/'+$('#codigo_postal').val(),
+	    type: 'get', //this is the default though, you don't actually need to always mention it
+	    success: function(data) {
+	    	$('#endereco').val(data[0]);
+	    	$('#bairro').val(data[1]);
+	    	$('#municipio').val(data[2]);
+	    	$('#codigo_municipio').val(data[3]);
+	    	$('#estado').val(data[4]);
+	    	$('#pais').val(data[5]);
+	        $('#numero_endereco').focus();
+	      //alert(data);
+	    },
+	    failure: function(data) { 
+	        alert('Got an error dude');
+	    }
+	}); 
+}); 
+</script>
+
+<script>
+$('.modal').on('hidden.bs.modal', function(){
+	$(this).find('form')[0].reset();
+});
+</script>
+
+
+<script>
+     $('#search').on( 'keyup', function () {
+        var table = $('#datatable').DataTable();
+        var campo = $('#buscar_por').val();
+        table.search('').columns().search( '' ).draw(); // reseta a pesquisa
+        table.columns(campo).search($('#search').val()).draw();
+        //table.search( this.value ).search(this.value).draw(); // Busca em todas as colunas
+    });
+
+    $('#buscar_por').change(function() {
+            var table = $('#datatable').DataTable();
+            var campo = $('#buscar_por').val();
+            table.search('').columns().search( '' ).draw(); // reseta a pesquisa
+            table.columns(campo).search($('#search').val()).draw();
+    });
+
+    {% if dados|length > 0 %}
+        $('#buscar_por').removeClass('desabilitado');
+        $('#search').removeClass('desabilitado');
+        $('#label_buscar_por').removeClass('desabilitado');
+        document.getElementById("search").focus();
+    {% else  %}
+        $('#buscar_por').addClass('desabilitado');
+        $('#search').addClass('desabilitado');
+    {% endif %}
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+$('#tipo_contato').blur(function(){
+	var campo_telefone = document.getElementById('tipo_contato');
+	if (campo_telefone.value == 'C') {
+		$("#numero_contato").mask("(99) 99999-9999");
+	} else {		
+		if (campo_telefone.value == 'F') {
+			$("#numero_contato").mask("(99) 9999-9999");
+		} else {
+			$("#numero_contato").unmask();
+		}
+	} 
+}); 
+</script>
+
+<script>
+jQuery(document).ready(function(){
+	//$("#cpf_cnpj").mask("99999999999999");
+    $('#cpf_cnpj').tooltip({title: "Preencha somente os numeros!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+   	$("#nascimento_fundacao").mask("99/99/9999");
+   	$("#numero_contato").mask("(99) 99999-9999");
+   	$("#codigo_postal").mask("99999999");
+});
+
+$('#cpf_cnpj').blur(function(){
+	var texto = $('#cpf_cnpj').val();
+    if (texto.length == 11){
+        $("#lb_cpf_cnpj").text("CPF:");
+        $("#lb_nome_razao").text("Nome Completo:");
+        $("#lb_apelido_fantasia").text("Apelido:");
+        $("#lb_nascimento_fundacao").text("Nascimento:");
+    }
+    else{
+        $("#lb_cpf_cnpj").text("CNPJ:");
+        $("#lb_nome_razao").text("Razão Social:");
+        $("#lb_apelido_fantasia").text("Nome Fantasia:");
+        $("#lb_nascimento_fundacao").text("Fundação:");
+    }
+});
+
+$('.numbersOnly').keyup(function () {
+    if (this.value != this.value.replace(/[^0-9\.]/g, '')) {
+       this.value = this.value.replace(/[^0-9\.]/g, '');
+
+    }
+});
+
+</script>
+
+
+<script>
+$('.modal').on('hidden.bs.modal', function(){
+    $(this).find('form')[0].reset();
+});
+</script>
+
+
+<script>
+$(document).ready(function() {
+	
+	{% if erro %}
+    	$('#myModal').modal('show');
+    	BootstrapDialog.show({
+	        message: $("Tentando")
+	    });
+    
+    {% else %}
+		$('#myModal').modal('hide');
+	{% endif %}
+});
+
+</script>
+
+<meta charset="utf-8">
+{% load staticfiles %}
+<!-- DataTables JavaScript -->
+
+<script	src="{% static 'datatable/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'datatable/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js' %}"></script>
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+ 
+
+<script>
+jQuery(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+    });
+});
+
+
+
+
+
+$(".alert").fadeOut(4000 );
+
+
+
+</script>
+
+<script>
+$("#bt_desativar_cliente").click(function() {
+    var table = $('#datatable').DataTable();
+    var id_cliente = table.cell('.selected', 0).data();
+    var documento_cliente = table.cell('.selected', 1).data();
+    var nome_cliente = table.cell('.selected', 2).data();
+
+    $('#operacao').val("DEL");
+    $('#operacao_tabela').val("ENTIDADE");
+    $('#operacao_user').val("1");
+    $('#operacao_cliente').val(id_cliente);
+    $('#operacao_descricao').val("DESATIVAR CLIENTE "+nome_cliente+" ("+documento_cliente+") DO SISTEMA.");
+    $("#texto_operacao_descricao").text("DESATIVAR CLIENTE "+nome_cliente+" ("+documento_cliente+") DO SISTEMA.");
+
+
+});
+
+$("#bt_confirmar_desativacao").click(function() {
+    var table = $('#datatable').DataTable();
+    var id_cliente = table.cell('.selected', 0).data();
+    var justificativa = $('#operacao_justificativa').val();
+
+    if (window.confirm('Tem certeza que deseja desativar esse cliente?')){
+        $.ajax({
+            url: '/entidade/desativar/'+id_cliente,
+            type: 'get', //this is the default though, you don't actually need to always mention it
+            data: justificativa,
+            success: function (data) {
+                    table.row('.selected').remove().draw(false);
+                    //$("#modal_justificativa").modal().hide()
+                    $("#modal_justificativa").removeClass("in");
+                    $(".modal-backdrop").remove();
+                    $("#modal_justificativa").hide();
+                },
+            error: function (data) {
+                alert("Erro! Não foi possivel desativar esse registro.");
+            },
+        });
+    }
+    else{
+        return false;
+    }
+});
+</script>
+
+{% endblock %}

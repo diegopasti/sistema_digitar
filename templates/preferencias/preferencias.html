@@ -1,0 +1,588 @@
+{% extends 'base_page.html' %}
+{% block Titulo %}
+    <title>Digitar - Preferências</title>
+{% endblock %}
+
+{% load staticfiles %}
+{% block recrusos_necessarios %}
+{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
+<!-- BOOTSTRAP 3.3.6 -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+<!-- BASE STYLE-->
+<link href="{% static 'styles/padrao/base_format.css' %}" rel="stylesheet"/>
+
+<!-- CUSTOM STYLE
+<link href="% static 'styles/padrao/base_format.css' %}" rel="stylesheet"/>-->
+
+<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
+<script src="{% static 'scripts/preferencias/preferencia.js' %}"></script>
+
+<link href="{% static 'styles/preferencias/salario_minimo.css' %}" rel="stylesheet"/>
+<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
+<script src="{% static 'angular-1.5.8/angular-locale_pt-br.js'%}"></script>
+
+{% endblock %}
+
+{% block breadcrumb_title %}Preferências{% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+<li class="active">Preferências</li>
+{% endblock %}
+
+{% block conteudo %}
+
+<div id="controle_angular" ng-app="app" ng-controller="MeuController">
+
+    <div id="modal_adicionar_salario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+        <div class="modal-dialog">
+        <form id="form_adicionar_servico" autocomplete="off" ng-submit="esta_adicionando? adicionar_salario() : alterar_salario()">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h5 class='titulo_modal' id="titulo_modal_adicionar_salario">Novo Salário Mínimo</h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="field_required">
+                                <label><sub>{{ formulario_salario.valor.label }}</sub></label>
+                            </div>
+                            {{ formulario_salario.valor }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="field_required">
+                                <label><sub>{{ formulario_salario.inicio_vigencia.label }}</sub></label>
+                            </div>
+                            {{ formulario_salario.inicio_vigencia }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-3 col-md-push-9">
+                            <button type="submit" id="bt_submit_servico" ng-class="{'desabilitado': (salario_valor == '0,00')}" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_salario">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 col-md-8 col-xs-12" style="padding-bottom: 30px;">
+            <div id="box_salario"  class="box box-default">
+
+                <div class="box-heading">
+
+                    <div class="box-header with-border">
+                        <h5 class="box-title">Cadastro de Salários</h5>
+
+                        <div class="pull-right">
+                             <a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="configurar_inclusao_salario();esta_adicionando = true"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Salário</a>
+
+                              <a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Alterar</a>
+                              <a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir</a>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <div class="dataTable_wrapper">
+                        <div class='row'>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <table class="table table-condensed  table-striped table-bordered table-hover" id="tabela_salario">
+                                    <thead>
+                                        <tr class="linha_cabecalho">
+                                            <th id='coluna_codigo' class='center_align'>
+                                                <a id="caret_cod" ng-click="sortType = 'id'; sortReverse = !sortReverse"> #
+                                                    <span class='caret_one pull-right' ng-class="sortType == 'id' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
+
+                                                    <span class='caret_two pull-right' ng-class="sortType == 'id' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
+                                                </a>
+                                            </th>
+
+                                            <th id='coluna_data_cadastro'>
+                                                <a id="caret_data_cadastro" ng-click="sortType = 'data_cadastro'; sortReverse = !sortReverse">Data do Cadastro
+                                                     <span class='caret_one pull-right' ng-class="sortType == 'data_cadastro' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
+                                                    <span class='caret_two pull-right' ng-class="sortType == 'data_cadastro' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
+                                                </a>
+                                            </th>
+
+                                            <th id='coluna_vigencia'>
+                                                <a id="caret_inicio_vigencia" ng-click="sortType = 'inicio_vigencia'; sortReverse = !sortReverse">Inicio da Vigência
+                                                     <span class='caret_one pull-right' ng-class="sortType == 'inicio_vigencia' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
+                                                    <span class='caret_two pull-right' ng-class="sortType == 'inicio_vigencia' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
+                                                </a>
+                                            </th>
+
+                                            <th id='coluna_salario'>
+                                                <a id="caret_valor" ng-click="sortType = 'valor'; sortReverse = !sortReverse">Salário (R$)
+                                                     <span class='caret_one pull-right' ng-class="sortType == 'valor' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
+                                                    <span class='caret_two pull-right' ng-class="sortType == 'valor' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
+                                                </a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        {% verbatim %}
+                                        <tr ng-cloak ng-if="(salarios|filter:filterIds()).length == 0">
+                                            <td colspan="4" class="center_align">Nenhum Salário Mínimo Cadastrado!</td>
+                                        </tr>
+
+                                        <tr ng-cloak ng-class="salario.id == id_salario_vigencia_atual ? 'vigente' : 'nao_vigente' "class="angular-repeat linha_selecionavel {{ salario.selecionado }}" ng-click="selecionar_linha(salario)" pagination-id="paginate_salarios" dir-paginate="salario in salarios | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado" >
+
+                                            <td class='center_align'>{{ salario.id }}</td>
+                                            <td class="center_align">{{ salario.data_cadastro | date :  "dd/MM/yyyy HH:mm:ss" }}</td>
+                                            <td class="center_align">{{ salario.inicio_vigencia | date :  "dd/MM/yyyy" }}</td>
+                                            <td class="right_align">
+
+                                                <span ng-show="salario.id == id_salario_vigencia_atual" data-toggle="tooltip" data-placement="bottom" title="Salário Mínimo Vigente" class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                                                {{ salario.valor | currency:""}}
+
+
+
+                                            </td>
+                                        </tr>
+
+                                        <tr ng-cloak ng-if="resultado.length === 0 && (salarios|filter:filterIds()).length > 0">
+                                          <td colspan="4" class='center_align'>Nenhum resultado Encontrado</td>
+                                        </tr>
+
+                                      {% endverbatim %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='row'>
+                        {% verbatim %}
+                        <div id='painel_opcao_consulta' class="col-md-3 col-sm-3 col-xs-12">
+                            <label id="label_buscar_por" class='left_align {{ desabilitar }}'><sub>Buscar por:</sub></label>
+                            <select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
+                                 <option value="0">Código</option>
+                                 <option value="1" selected>Data Cadastro</option>
+                                 <option value="2" selected>Vigência</option>
+                                 <option value="3">Salário</option>
+                            </select>
+                        </div>
+
+                        <div id='painel_consulta' class="col-md-4 col-sm-5 col-xs-12">
+                            <input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
+                        </div>
+
+                        <div id="painel_pagination" class="col-md-offset-1 col-md-6 col-xs-12 mt-xs-0 pull-right" >
+                            <span class="pull-right">
+                                <dir-pagination-controls pagination-id="paginate_salarios" max-size="5" auto-hide="false" boundary-links="false" direction-links="true">
+
+                                </dir-pagination-controls>
+                            </span>
+                        </div>
+                        {% endverbatim %}
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.row -->
+
+        <div class="col-lg-4 col-md-4 col-xs-12">
+            <div id="box_salario_vigente" class="box box-primary">
+
+                <!--<div class="box-heading">
+
+                    <div class="box-header with-border">
+                        <h5 class="box-title text-center"></h5>
+                    </div>
+                </div>-->
+                {% verbatim %}
+                <div ng-cloak class="box-body">
+                    <p class="text-center">
+                        <strong>Salário Mínimo Vigente</strong>
+                    </p>
+
+                    <div id="painel_salario_vigente">
+                        <h6 ng-show="!salario_vigencia_atual">Nenhum Cadastrado!</h6>
+                        <h3><span class="label label-primary">{{ salario_vigencia_atual }}</span></h3>
+                    </div>
+
+                    <br><br><br>
+
+
+                  <div id="progress_proxima_vigencia" class="progress-group">
+
+                    <span ng-if="inicio_proxima_vigencia">Início da próxima vigência em</span>
+                    <span ng-if="!inicio_proxima_vigencia" class="desabilitado">Vigência por tempo indeterminado</span>
+
+                    <span ng-if="inicio_proxima_vigencia" class="progress-number">{{ dias_restante_vigencia_atual }} dias</span>
+
+
+                    <a ng-if="inicio_proxima_vigencia" data-toggle="tooltip" data-placement="bottom" title="{{ salario_proxima_vigencia }} à partir de {{ inicio_proxima_vigencia | date :  'dd/MM/yyyy' }}">
+
+                        <div class="progress sm">
+                          <div class="progress-bar progress-bar-striped active progress-bar-aqua" style="width:{{ percentual_restante_vigencia_atual }}%"></div>
+                        </div>
+                    </a>
+
+                    <a ng-if="!inicio_proxima_vigencia">
+                        <div class="progress sm desabilitado">
+                          <div class="progress-bar progress-bar-striped active progress-bar-aqua" style="width:{{ percentual_restante_vigencia_atual }}%"></div>
+                        </div>
+                    </a>
+
+
+                  </div>
+                  {% endverbatim %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
+<script src="{% static 'angular-1.5.8/dirPagination.js'%}"></script>
+<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+
+<script>
+    //Declarando o módulo da aplicação
+    var app = angular.module('app', ['angularUtils.directives.dirPagination']);
+    app.controller('MeuController', ['$scope', function($scope) {
+
+        $scope.sortType     = 'inicio_vigencia'; // set the default sort type
+        $scope.sortReverse  = true;  // set the default sort order
+        $scope.filter_by    = '2';
+        $scope.filter_by_index = parseInt($scope.filter_by);
+        $scope.filter_by_options = ["codigo","data_cadastro","vigencia","salario"];
+        $scope.search      = '';     // set the default search/filter term
+
+        $scope.opcao_desabilitada = "desabilitado";
+        $scope.registro_selecionado = null;
+        $scope.esta_adicionando = null;
+
+        // Carrega os dados ja cadastrados
+        $scope.carregar_salarios_cadastrados = function() {
+            $.ajax({
+                type: "GET",
+                url: "/api/preferencias/salarios",
+                success: function (data) {
+                    $scope.salarios = data;
+                    //$scope.verificar_salarios();
+                    $scope.$apply();
+                },
+                failure: function (data) {
+                    $scope.salarios = [];
+                    $scope.desabilitar = 'link_desabilitado';
+                    alert('Erro! Não foi possivel carregar configurações de Salário Mínimo.');
+                }
+            });
+        }
+
+        $scope.carregar_salario_vigente = function() {
+            $.ajax({
+                type: "GET",
+                url: "/api/preferencias/salario_vigente",
+                success: function (data) {
+                    $scope.id_salario_vigencia_atual          = data['id_salario_vigencia_atual'];
+                    $scope.salario_vigencia_atual             = data['salario_vigencia_atual'];
+                    $scope.duracao_vigencia_atual             = data['duracao_vigencia_atual'];
+                    $scope.dias_restante_vigencia_atual       = data['dias_restante_vigencia_atual'];
+                    $scope.percentual_restante_vigencia_atual = data['percentual_restante_vigencia_atual'];
+                    $scope.inicio_proxima_vigencia            = data['inicio_proxima_vigencia'];
+                    $scope.salario_proxima_vigencia           = data['salario_proxima_vigencia'];
+                    $scope.$apply();
+                },
+                failure: function (data) {
+                    alert('Erro! Não foi possivel carregar a lista de serviços');
+                }
+            });
+        }
+
+        $scope.adicionar_salario = function() {
+            var salario         = $('#salario_valor').val();
+            var inicio_vigencia = $('#inicio_vigencia').val();
+            salario = salario.replace(/[^0-9,]/gi, '');
+            salario = salario.replace(",",".");
+
+            if(validar_novo_salario()){
+                $.ajax({
+                    type: "POST",
+                    url: "/api/preferencias/novo_salario",
+                    data: {
+                        valor: salario,
+                        inicio_vigencia: inicio_vigencia,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+
+                    success: function (data) {
+                        var resultado = $.parseJSON(data);
+                        if (resultado['success'] == true){
+                            var parametros = resultado['message'].split("#");
+                            var id = parametros[0];
+                            var data_cadastro = parametros[1];
+                            var salario = {
+                                id: id,
+                                valor: salario,
+                                data_cadastro: data_cadastro,
+                                inicio_vigencia:formatar_data(inicio_vigencia,"EN"),
+                                selecionado: ""
+                            };
+
+                            $scope.salarios.push(salario);
+                            $scope.$apply();
+                            $scope.resetar_formulario_salario();
+
+                        }
+
+                        else{
+                            alert(resultado["message"]);
+                        }
+                    },
+                    failure: function (data) {
+                        alert('Erro! Falha na execução do ajax');
+                    }
+                });
+            }
+            else{
+                abrir_modal("modal_adicionar_salario");
+            }
+
+            $scope.verificar_salarios();
+            $scope.carregar_salarios_cadastrados();
+            $scope.carregar_salario_vigente();
+
+        }
+
+        $scope.alterar_salario = function() {
+            var salario = $('#salario_valor').val();
+            var inicio_vigencia = $('#inicio_vigencia').val();
+            salario = salario.replace(/[^0-9,]/gi, '');
+            salario = salario.replace(",",".");
+
+            if(validar_novo_salario()){
+                if (confirm('Deseja mesmo alterar esse Salário?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/preferencias/alterar_salario/" + $scope.registro_selecionado.id + "/",
+                        data: {
+                            valor: salario,
+                            inicio_vigencia: inicio_vigencia,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+
+                        success: function (data) {
+                            var resultado = $.parseJSON(data);
+
+                            if (resultado['success'] == true) {
+                                $scope.registro_selecionado.valor = salario;
+                                $scope.registro_selecionado.inicio_vigencia = formatar_data(inicio_vigencia,"EN");
+                                $scope.registro_selecionado.inicio_vigencia = formatar_data(inicio_vigencia,"EN");
+                                $scope.registro_selecionado.selecionado = '';
+                                $scope.$apply();
+                                $scope.resetar_formulario_salario();
+                            }
+
+                            else {
+                                alert(resultado["message"]);
+                            }
+                        },
+                        failure: function (data) {
+                            alert('Erro! Falha na execução do ajax');
+                        }
+                    });
+                }
+                else{
+                    e.preventDefault();
+                }
+            }
+            else{
+                abrir_modal("modal_adicionar_salario");
+            }
+            $scope.verificar_salarios();
+            $scope.carregar_salario_vigente();
+        }
+
+        $scope.select_filter_by = function (index) {
+            $scope.filter_by_index = parseInt($scope.filter_by);
+            $scope.apply();
+        }
+
+        $scope.get_filter_column = function(){
+            var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
+            switch (filtrar_pesquisa_por) {
+                case 'codigo':
+                    //alert("filtrar por codigo");
+                    return {id: $scope.search};
+                case 'salario':
+                    //alert("filtrar por salario");
+                    return {valor: $scope.search};
+                case 'vigencia':
+                    //alert("filtrar por vigencia");
+                    return {inicio_vigencia: $scope.search};
+                case 'data_cadastro':
+                    //alert("filtrar por vigencia");
+                    return {data_cadastro: $scope.search};
+                default:
+                    return {inicio_vigencia: $scope.search}
+            }
+        }
+
+        $scope.verificar_salarios = function () {
+            if ($scope.salarios == "" || $scope.salarios == []){
+                $scope.desabilitar  = 'link_desabilitado';
+            }
+            else{
+                $scope.desabilitar  = '';
+            }
+        }
+
+        $scope.resetar_formulario_salario = function() {
+
+            $('#modal_adicionar_salario').modal('hide');
+            $('#salario_valor').val("");
+            $('#inicio_vigencia').val("");
+            $scope.salario_valor = "";
+            $scope.inicio_vigencia = "";
+        }
+
+        $scope.selecionar_linha = function(registro) {
+            //alert("veja o index: "+registro.id+"-"+registro.nome);
+
+            if ($scope.registro_selecionado != null){
+                //alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
+                if (registro.selecionado=='selected'){
+                    //alert("O cara clicou na linha que ja tava selecionada");
+                    $scope.desmarcar_linha_selecionada();
+                    //registro.selecionado = "";
+                    //$scope.registro_selecionado = null;
+                    //$scope.opcao_desabilitada = "desabilitado";
+                }
+
+                else{
+                    //alert("O usuario tinha um registro selecionado mas selecionou novo registro: "+registro.id+"-"+registro.nome);
+                    $scope.desmarcar_linha_selecionada();
+                    registro.selecionado = "selected";
+                    $scope.registro_selecionado = registro;
+                    $scope.opcao_desabilitada = "";
+                }
+            }
+
+            else{
+                //alert("nao tinha nada marcado, vou marcar"+$scope.registro_selecionado);
+                registro.selecionado = 'selected';
+                $scope.registro_selecionado = registro;
+                $scope.opcao_desabilitada = "";
+            }
+            $scope.apply();
+        }
+
+        $scope.desmarcar_linha_selecionada = function(){
+            $scope.registro_selecionado.selecionado = "";
+            $scope.registro_selecionado = null;
+            $scope.opcao_desabilitada = "desabilitado";
+            $scope.apply();
+        }
+
+        $scope.configurar_inclusao_salario = function(){
+            $scope.esta_adicionando = true;
+            $("#titulo_modal_adicionar_salario").text("Novo Salário");
+            $("#salario_valor").val("");
+            $("#inicio_vigencia").val("");
+            $scope.salario_valor = "";
+            $scope.inicio_vigencia = "";
+            $scope.apply();
+        }
+
+        $scope.configurar_alteracao_salario = function(){
+            alert("Olha o modal:"+$('#modal_adicionar_salario').modal);
+            $scope.esta_adicionando = false;
+            var data = formatar_data($scope.registro_selecionado.inicio_vigencia,"BR");
+            //$scope.inicio_vigencia = $scope.registro_selecionado.inicio_vigencia;
+            $("#titulo_modal_adicionar_salario").text("Alterar Salário");
+
+            var valor = $scope.registro_selecionado.valor.toString();
+            var fracao = valor.split(".")[1];
+            if (fracao){
+                if (fracao.length == 1){
+                    //alert("So tem um digito apos a virgula: "+valor+" - "+fracao);
+                    valor = valor.concat("0");
+                }
+            }
+            else{
+                valor = valor.concat(".00");
+            }
+
+            //alert("olha o valor: "+valor);
+            $("#salario_valor").val(valor);
+            $("#salario_valor").maskMoney('mask',$("#salario_valor").val());
+            $("#inicio_vigencia").val(data);//$filter('date')(new Date(),'dd/MM/yyyy'));
+        }
+
+        $scope.excluir_salario = function () {
+            if (confirm('Deseja mesmo excluir esse Salário?')) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/preferencias/excluir_salario/"+$scope.registro_selecionado.id+"/",
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+
+                    success: function (data) {
+                        var resultado = $.parseJSON(data);
+
+                        if (resultado['success'] == true){
+                            $scope.salarios.splice($scope.salarios.indexOf($scope.registro_selecionado), 1);
+                            $scope.registro_selecionado = null;
+                            $scope.opcao_desabilitada = "desabilitado";
+                            $scope.$apply();
+                            $scope.resetar_formulario_salario();
+                            alert("Registro Excluido com Sucesso!");
+                        }
+
+                        else{
+                            alert(resultado["message"]);
+                        }
+                    },
+                    failure: function (data) {
+                        alert('Erro! Falha na execução do ajax');
+                    }
+                });
+                //return true;
+            }
+            else {
+                e.preventDefault();
+                //return false;
+            }
+
+            $scope.verificar_salarios();
+            $scope.carregar_salario_vigente()
+        }
+
+    }]);
+</script>
+
+<script>
+$(document).ready(function() {
+    angular.element(document.getElementById('controle_angular')).scope().carregar_salarios_cadastrados();
+    angular.element(document.getElementById('controle_angular')).scope().carregar_salario_vigente();
+    $('#salario_valor').maskMoney({showSymbol: false, symbol: "R$", decimal: ",", thousands: "."});
+    $("#inicio_vigencia").mask("99/99/9999");
+});
+</script>
+{% endblock %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       

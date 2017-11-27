@@ -1,0 +1,637 @@
+{% extends 'base_page.html' %}
+
+{% block Titulo %}
+	<meta charset="utf-8">
+    <title>Digitar - Emitir Protocolo</title>
+{% endblock %}
+
+{% block recrusos_necessarios %}
+{% load staticfiles %}
+
+<!-- JQUERY -->
+<script type="text/javascript" src="{% static 'jquery/jquery-2.2.0.min.js' %}"></script>
+<script src="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.js' %}"></script>
+
+<!-- BOOTSTRAP -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+
+<!-- JQUERY AUTOCOMPLETE EDITABLE -->
+<link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}"></link>
+<script src="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script>
+
+<!-- JQUERY UI DATAPICKER -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">-->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">-->
+<link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}" />
+
+<!-- ANGULAR -->
+<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
+
+<!-- CUSTOM -->
+<link rel="stylesheet" href="{% static 'styles/protocolo/protocolo.css' %}">
+<!--<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>-->
+<script src="{% static 'scripts/protocolo/new_protocolo.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumb_title %}Novo Protocolo{% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+<li><a href="/protocolo"> Protocolo</a></li>
+<li class="active">Novo Protocolo</li>
+{% endblock %}
+
+{% block conteudo %}
+
+<div id="controle_angular" ng-app="app" ng-controller="MeuController"
+     ng-init='lista_clientes = [{"id": "1", "name": "1 - DIGITAR ASSESSORIA CONTABIL LTDA ME"}, {"id": "2", "name": "2 - DIEGO P\u00c3STI"}, {"id": "3", "name": "3 - CLINICA DO RITMO LTDA - EPP (FILIAL VIT\u00d3RIA)"}]'
+    >
+    <div id="modal_adicionar_documento" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+        <div class="modal-dialog">
+            <!--  style="width: 90%"> -->
+
+            <form id="form_adicionar_documento" autocomplete="off" ng-submit="esta_adicionando? adicionar_documento() : alterar_documento()">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h5 id="titulo_modal_adicionar_documento" class='titulo_modal'>Novo Documento</h5>
+                    </div>
+
+                    <div class="modal-body">
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group field_required">
+                                    <label><sub>Documento:</sub></label>
+
+                                    <input id="modal_documento" ng-model='modal_documento' class="form-control uppercase" list='lista_documentos' type="text" onblur="validar_novo_documento()" required/>
+                                    <datalist id="lista_documentos">
+                                        {% for item in documentos %}
+                                        <option value="{{ item.nome }}">
+                                        {% endfor %}
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label><sub>Complemento:</sub></label>
+                                    <input id="modal_complemento" ng-model='modal_complemento' onblur="validar_novo_documento();" class="form-control uppercase" type="text" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label><sub>Tipo de Referência:</sub></label>
+                                                <select id="select_tipo_referencia" style='width: 130px;' class="form-control" onchange="definir_tipo_referencia();">
+                                                    <option value="mensal" selected>Mensal</option>
+                                                    <option value="anual">Anual</option>
+                                                </select>
+                                            </div>
+                                        </td>
+
+                                        <td></td>
+
+                                        <td>
+                                            <div class="form-group">
+                                                <label><sub>Referência:</sub></label>
+                                                <input id="modal_referencia" ng-model='modal_referencia' maxlength="9" class="form-control" onblur="validar_novo_documento();" type="text" />
+                                            </div>
+                                        </td>
+
+                                        <td></td>
+
+                                        <td>
+                                            <div class="form-group">
+                                                <label><sub>Vencimento:</sub></label>
+                                                <input id="modal_vencimento" ng-model='modal_vencimento' class="form-control" onblur="validar_novo_documento();" type="text" />
+                                            </div>
+                                        </td>
+
+                                        <td></td>
+
+                                        <td>
+                                            <div class="form-group">
+                                                <label><sub>Valor:</sub></label>
+                                                <input id="modal_valor" ng-model='modal_valor' class="form-control" type="text" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-md-3 col-md-push-9">
+                                <button type="submit" id="bt_adicionar_item" ng-disabled="!modal_documento" class="btn btn-sm btn-primary" onclick="return validar_novo_documento();" data-toggle="modal" data-target="#modal_adicionar_documento">Salvar</button>
+                                <!-- <a href="#modal_adicionar_documento" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal_help_protocolo_avulso" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+        <div class="modal-dialog">
+            <!--  style="width: 90%"> -->
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h5 id="myModalLabel"><b>Protocolo Avulso</b></h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>
+                                Protocolo Avulso é um protocolo emitido para um cliente não cadastrado no sistema.<br>
+                                Se um destinatário informado não existir na lista de clientes, o sistema irá solicitar
+                                dados adicionais (não obrigatórios) para gerar o protocolo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-3 col-md-push-9">
+                            <button class="btn btn-sm btn-default form-control" data-toggle="modal" data-target="#modal_help_protocolo_avulso">Entendi</button>
+                            <!-- <a href="#modal_adicionar_documento" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modal_informacoes_complementares" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<!--  style="width: 90%"> -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">×</button>
+					<h3 id="myModalLabel">Informações Complementares</h3>
+				</div>
+
+				<div class="modal-body" style="padding: 30px;">
+
+					<div class="row" style="padding-left: 3px; padding-right: 3px">
+
+            <div class="col-md-6">
+                <div style='padding-left: 0px'>
+                    <sub>CPF ou CNPJ:</sub>
+                </div>
+                <input class='form-control uppercase' type='text' id='complemento_identificacao' maxlength="14" onblur="formatar_cpf_cnpj_simples();" onkeydown="filter_numbers(event)"/>
+            </div>
+
+            <div class="col-md-6">
+                <div style='padding-left: 0px'>
+                    <sub>Contato:</sub>
+                </div>
+                <input type='text' class='form-control uppercase' id='complemento_contato'/>
+            </div>
+
+					</div>
+
+					<div class="row" style="padding-left: 3px; padding-right: 3px">
+            <div class="col-md-12">
+                <div style='padding-left: 0px'>
+                    <sub>Endereço:</sub>
+                </div>
+                <input type='text' class='form-control uppercase' id='complemento_endereco'/>
+            </div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-3 col-lg-push-9">
+							<button type="button" id="bt_adicionar_informacoes" class="btn btn-primary form-control" ng-click="adicionar_informacoes_complementares();" name='informacoes_complementares' style="position: relative; margin-top: 20px">Salvar</button>
+							<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box box-default" id="box_destinatario">
+                <div class="box-heading">
+                    <div class="box-header with-border">
+                        <h5 class="box-title">Destinatário</h5>
+                    </div>
+                </div>
+
+                <div class="panel-body"	>
+                    <div class="row">
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <select class='form-control uppercase' id="select_destinatarios" ng-model="destinatario" onchange="conferir_destinatario()" onkeyup="filter_cerquilha(event)"> <!--ng-options="item.name for item in lista_clientes"-->
+                            {% for item in destinatarios %}
+                            {% if item.nome_filial %}
+                                <option value='{{ item.id }}'>#{{ item.id }} - {{ item.nome_razao|upper }} - {{ item.nome_filial|upper }}</option>
+                            {% else %}
+                                <option value='{{ item.id }}'>#{{ item.id }} - {{ item.nome_razao|upper }}</option>
+                            {% endif %}
+                            {% endfor %}
+
+                            <!--<option ng-repeat="option in lista_clientes" value="{{option.id}}">{{option.name}}</option>-->
+                        </select>
+
+                          <span class="input-group-btn">
+                              <a role="button"  id="bt_open_painel_informacoes_complementares" style="height: 34px;margin-left: 0px;" onclick='verificar_dados_complementares();' class="btn btn-sm btn-default" title="Alterar informações Complementares"><i class="fa fa-bars fa-lg" style='margin-top:5px;' aria-hidden="true"></i></a>
+                          </span>
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-7 pull-right"> <!--col-md-offset-3-->
+                        <label id="label_destinatario" class="label_info right_align"><sub>*Selecione um cliente na lista ou digite um nome de identificação para emitir um <a class="label_help" data-toggle="modal" data-target="#modal_help_protocolo_avulso">Protocolo Avulso</a>.</sub></label>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box box-default" id="box_documentos">
+
+                <div class="box-heading">
+                    <div class="box-heading">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Documentos Entregues</h3>
+
+                            <div class="pull-right">
+                                <button type="button" id="bt_novo_documento" class="btn btn-sm btn-primary" data-toggle="modal" ng-click="novo_documento();" data-target="#modal_adicionar_documento" ng-disabled="documentos.length >= limite_documentos" >Novo Documento</button>
+                                <button type="button" id="bt_alterar_documento" class="btn btn-sm btn-default" ng-click="editar_documento()" data-toggle="modal" data-target="#modal_adicionar_documento" ng-disabled="linha_selecionada == null">Alterar</button>
+                                <button type="button" id="bt_apagar" name='excluir_item' value='-1' ng-click='excluir_documento()' class="btn btn-sm btn-default" ng-disabled="linha_selecionada == null">Apagar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-body">
+
+                    <div class="table_wrapper">
+
+                        <table class="table table-condensed table-bordered table-hover bordas_padrao" id="tabela_documentos">
+
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Documentos</th>
+                                    <th style="text-align:center;">Referência</th>
+                                    <th style="text-align:center;">Vencimento</th>
+                                    <th style="text-align:center;">Valor</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% verbatim %}
+                                <tr ng-if="(documentos|filter:filterIds()).length == 0">
+                                    <td colspan="4" class="center_align">Nenhum documento adicionado!</td>
+                                </tr>
+
+                                <tr ng-repeat="documento in documentos" ng-click="selecionar_linha($index)" class="linha_selecionavel {{ documento.selecionado }}">
+                                    <td>{{ documento.documento }}
+                                        <span ng-if='documento.complemento'>
+                                         - {{ documento.complemento }}
+                                        </span>
+                                    </td>
+
+                                    <td class="center_align">{{ documento.referencia }}</td>
+                                    <td class="center_align">{{ documento.vencimento }}</td>
+
+
+                                    <td class="center_align"><span ng-if='documento.valor'>R$ </span>{{ documento.valor }}</td>
+
+                                </tr>
+
+                                {% endverbatim %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class='row'>
+                        <div class="col-md-4" style="margin-top: -15px;">
+                            <label id="label_documentos" class="label_info left_align"><sub>*Cada Protocolo deve conter no <b>minimo um</b> e no <b>máximo dez</b> documentos.</sub></label>
+                        </div>
+
+                        <div class="col-md-2 col-md-push-6">
+                            <button type="button" ng-disabled="(documentos.length == 0) || (!destinatario)" id="bt_gerar_protocolo" target=_blank class="btn btn-primary pull-right" name='gerar_protocolo'>Gerar Protocolo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+
+<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/entidade/validar_cpf_cnpj.js' %}"></script>
+
+<script>
+    //Declarando o módulo da aplicação
+    var app = angular.module('app', []);
+    app.controller('MeuController', ['$scope', function($scope) {
+        $scope.operador = "{{ operador }}";
+        $scope.documentos = [];
+        $scope.destinatario = '';
+        $scope.esta_adicionando = null;
+        $scope.linha_selecionada = null;
+
+        $scope.limite_documentos = 10;
+        $scope.opcao_desabilitada = "desabilitado";
+
+        $scope.complemento_identificacao = "";
+        $scope.complemento_endereco = "";
+        $scope.complemento_contato = "";
+
+        $scope.adicionar_informacoes_complementares= function (){
+            $scope.complemento_identificacao = $("#complemento_identificacao").val();
+            $scope.complemento_endereco = $("#complemento_endereco").val().toUpperCase();
+            $scope.complemento_contato = $("#complemento_contato").val().toUpperCase();
+            $("#complemento_identificacao").val("")
+            $("#complemento_endereco").val("");
+            $("#complemento_contato").val("");
+            fechar_modal("modal_informacoes_complementares");
+            $scope.$apply();
+        }
+
+        $scope.limpar_informacoes_complementares = function(){
+            $scope.complemento_identificacao = "";
+            $scope.complemento_endereco = "";
+            $scope.complemento_contato = "";
+            $("#complemento_identificacao").val("")
+            $("#complemento_endereco").val("");
+            $("#complemento_contato").val("");
+            $scope.$apply();
+        }
+
+        $scope.set_documento = function(documento){
+            $scope.documento = documento;
+            $scope.$apply();
+        }
+
+        $scope.set_destinatario = function(cliente){
+            $scope.destinatario = cliente;
+            conferir_destinatario();
+            $scope.$apply();
+        }
+
+        $scope.adicionar_documento = function() {
+            var documento = {
+                documento: $("#modal_documento").val().toUpperCase(),
+                complemento: $("#modal_complemento").val().toUpperCase(),
+                referencia: $("#modal_referencia").val(),
+                vencimento: $("#modal_vencimento").val(),
+                valor: $("#modal_valor").val(),
+                selecionado: ""
+            };
+
+            $scope.documentos.push(documento);
+            $scope.desmarcar_linha_selecionada();
+            $("#bt_adicionar_item").addClass("desabilitado");
+            $scope.reset_scope_modal();
+            reset_dados_modal();
+            $scope.$apply();
+        };
+
+        $scope.alterar_documento = function() {
+            $scope.documentos[$scope.linha_selecionada].documento = $("#modal_documento").val().toUpperCase();
+            $scope.documentos[$scope.linha_selecionada].complemento = $("#modal_complemento").val().toUpperCase();
+            $scope.documentos[$scope.linha_selecionada].referencia = $("#modal_referencia").val();
+            $scope.documentos[$scope.linha_selecionada].vencimento = $("#modal_vencimento").val();
+            $scope.documentos[$scope.linha_selecionada].valor = $("#modal_valor").val();
+
+            $("#bt_adicionar_item").addClass("desabilitado");
+            $scope.desmarcar_linha_selecionada();
+            $scope.reset_scope_modal();
+            reset_dados_modal();
+            //desabilitar("bt_alterar_documento");
+        };
+
+        $scope.novo_documento = function(){
+          $("#titulo_modal_adicionar_documento").text("Novo Documento");
+          $scope.esta_adicionando = true;
+          $("#modal_documento").val("");
+          $("#modal_complemento").val("");
+
+          var today = new Date();
+          var mm = today.getMonth() + 1; //January is 0!
+          var yyyy = today.getFullYear();
+          var referencia_padrao;
+
+          if (mm < 10) {
+            referencia_padrao = 0 + mm.toString() + "/" + yyyy.toString();
+          }
+          else {
+            referencia_padrao = mm.toString() + "/" + yyyy.toString();
+          }
+
+          $("#modal_referencia").val(referencia_padrao);
+          $("#modal_vencimento").val("");
+          $("#modal_valor").val("");
+          $("#bt_adicionar_item").addClass("desabilitado");
+        }
+
+        $scope.editar_documento = function(){
+          $scope.esta_adicionando = false;
+          $("#titulo_modal_adicionar_documento").text("Alterar Documento");
+          $("#modal_documento").val($scope.documentos[$scope.linha_selecionada].documento);
+          $("#modal_complemento").val($scope.documentos[$scope.linha_selecionada].complemento);
+          $("#modal_referencia").val($scope.documentos[$scope.linha_selecionada].referencia);
+          $("#modal_vencimento").val($scope.documentos[$scope.linha_selecionada].vencimento);
+          $("#modal_valor").val($scope.documentos[$scope.linha_selecionada].valor);
+        }
+        
+        $scope.excluir_documento = function () {
+            $scope.documentos.splice($scope.documentos.indexOf($scope.linha_selecionada), 1);
+            $scope.linha_selecionada = null;
+            $scope.opcao_desabilitada = "desabilitado";
+        }
+
+        $scope.reset_scope_modal = function(){
+            $scope.modal_documento = "";
+            $scope.modal_complemento = "";
+            $scope.modal_referencia = "";
+            $scope.modal_vencimento = "";
+            $scope.modal_valor = "";
+        }
+
+
+        $scope.selecionar_linha = function(index) {
+            if ($scope.linha_selecionada != null){
+                //alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
+                if ($scope.documentos[index].selecionado=='selected'){
+                    //alert("O cara clicou na linha que ja tava selecionada");
+                    $scope.documentos[index].selecionado = "";
+                    $scope.linha_selecionada = null;
+                    $scope.opcao_desabilitada = "desabilitado";
+                }
+
+                else{
+                    //alert("o usuario selecionou outro: "+$scope.linha_selecionada);
+                    $scope.documentos[$scope.linha_selecionada].selecionado = "";
+                    $scope.documentos[index].selecionado = "selected";
+                    $scope.linha_selecionada = index;
+                    $scope.opcao_desabilitada = "";
+                }
+            }
+
+            else{
+                //alert("nao tinha nada marcado, vou marcar"+$scope.linha_selecionada);
+                //this.selected = 'selected';
+                $scope.linha_selecionada = index;
+                $scope.documentos[$scope.linha_selecionada].selecionado = 'selected';
+                $scope.opcao_desabilitada = "";
+            }
+          $scope.$apply();
+        }
+
+        $scope.desmarcar_linha_selecionada = function(){
+            $scope.documentos[$scope.linha_selecionada].selecionado = "";
+            $scope.linha_selecionada = null;
+            $scope.opcao_desabilitada = "desabilitado";
+        }
+
+        $scope.salvar_protocolo = function(){
+            if (confirm('Confirma a geração do protocolo?')) {
+              $.ajax({
+                type: "POST",
+                url: "/api/protocolo/salvar",
+                data: {
+                  destinatario: $scope.destinatario,
+                  operador: $scope.operador,
+
+                  complemento_identificacao: $scope.complemento_identificacao,
+                  complemento_endereco: $scope.complemento_endereco,
+                  complemento_contato: $scope.complemento_contato,
+
+                  documentos: $scope.documentos,
+                  total_documentos: $scope.documentos.length,
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+
+                success: function (data) {
+                  //var resultado = $.parseJSON(data);
+                  //alert("Ve:"+);
+                  window.open(data['message'], '_blank');
+                  setTimeout(function () {
+                    window.location.href = ('/protocolo/emitir_protocolo/');
+                  }, 1000);
+                  //if (resultado['success'] == true){
+                  //   alert("Sucesso:"+resultado["message"]);
+                  //}
+                  //else{
+                  ///    alert("Falha:"+resultado["message"]);
+                  //    }
+                  //
+                },
+
+                failure: function (data) {
+                  alert('Erro! Falha na execução do ajax');
+                }
+              });
+            }
+            else{
+                e.preventDefault();
+            }
+        }
+    }]);
+</script>
+
+<script>
+    //window.addEventListener('DOMContentLoaded', carregar_dados_complementares(), false);
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#bt_open_painel_informacoes_complementares").addClass("desabilitado");
+    $("#modal_referencia").mask("99/9999");
+    configurar_campo_data("modal_vencimento");
+    $("#modal_vencimento").mask("99/99/9999");
+    $('#modal_valor').maskMoney({showSymbol: false, symbol: "R$", decimal: ",", thousands: "."});
+});
+
+$('#bt_gerar_protocolo').click( function () {
+    angular.element(document.getElementById('controle_angular')).scope().salvar_protocolo();
+    //document.getElementById('form_gerar_protocolo').target='_blank';
+    //
+	//window.location.reload();
+});
+</script>
+
+
+
+<script type="text/javascript">
+$('#select_destinatarios').editableSelect({
+	effects: 'fade',
+	
+	onSelect: function (element) {
+        //$('#select_destinatarios').trigger('input');
+        var cliente = $('#select_destinatarios').val();
+        angular.element(document.getElementById('controle_angular')).scope().set_destinatario(cliente);
+    },
+});
+
+$("#select_destinatarios").blur(function() {
+    //conferir_destinatario();
+});
+
+
+
+</script>
+
+<script type="text/javascript">
+    function adiciona_informacoes_complementares(){
+		/*var cpf = $("#complemento_cpf").val();
+		var endereco = $("#complemento_endereco").val();
+		var contato = $("#complemento_contato").val();
+		
+		var complemento = cpf+"|"+endereco+"|"+contato;
+		
+		$("#entidade_destinatario").val($("#select_destinatarios").val()+"|"+complemento);*/
+		$('#modal_informacoes_complementares').modal('hide');
+	}
+</script>
+
+<script type="text/javascript">
+    $(".alert").fadeOut(6000);
+</script>
+{% endblock %}
+
+

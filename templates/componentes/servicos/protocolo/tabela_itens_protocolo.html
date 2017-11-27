@@ -1,0 +1,530 @@
+<meta charset="utf-8">
+
+<style>
+.bordas_padrao{
+	border-color: #ccc;
+}
+</style>
+
+
+<!-- Plugin para realizar autocomplete -->
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+
+<script>
+	$(function() {
+		var esportes = [
+		{% if destinatarios %}			
+			{% for item in destinatarios %}
+				"{{ item.id }} - {{ item.nome_razao }}", 
+			{% endfor %}
+		{% endif %}
+			
+		];
+		
+		$("#entidade_destinatario" ).autocomplete({
+			source: esportes
+		});
+	});
+</script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+	$('#entidade_destinatario').keyup(function() {
+		
+		var destinatario = document.getElementById('entidade_destinatario');
+		if (destinatario.value == "") {
+			desabilitar_botao("#bt_novo_documento");
+		} else {		
+			habilitar_botao("#bt_novo_documento");
+		} 
+	});
+});
+	
+</script>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		desabilitar_botao("#bt_apagar");
+		
+		var destinatario = document.getElementById('entidade_destinatario');
+		if (destinatario.value == "") {
+			desabilitar_botao("#bt_novo_documento");
+			desabilitar_botao("#bt_gerar_protocolo");
+			$('#entidade_destinatario').focus();
+		}
+		else{
+			habilitar_botao("#bt_novo_documento");
+			//habilitar_botao("#bt_gerar_protocolo");	
+		}
+	});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#bt_adicionar_item").click(function(){
+		$("#bt_gerar_protocolo").prop("disabled", false);
+	});
+});
+</script>
+
+<script type="text/javascript">
+$(document).on('shown.bs.modal', function () {
+	  $(this).find('.form-control:visible:first').focus();
+	});
+</script>
+
+<script type="text/javascript">
+	function confirmar_envio() {
+		//alert("Finalizar Protocolo?");
+		
+		$.confirm({
+    		title: "Protocolo",
+    	    text: "Confirmar emissão do Protocolo?",
+    	    confirmButton: "Confirmar",
+    	    cancelButton: "Cancelar",
+    	    confirmButtonClass: "btn-primary pull-right",
+    	    cancelButtonClass: "btn-default botao_desabilitado",
+    	    
+    	    confirm: return true,
+    	    
+    	    cancel: function() {
+    	        // nothing to do
+    	    }
+    	});
+	
+		
+		//$('#bt_apagar').click( function () {
+	    	//alert( 'Row index: '+table.row( '.selected' ).index() );
+	    	
+	    //} );
+   
+	}
+</script>
+
+<script type="text/javascript">
+$(function(){
+ $("#valor").maskMoney({symbol:'R$ ',showSymbol:false, thousands:'.', decimal:',', symbolStay: true});
+ })
+</script>
+
+	
+	
+	<!--
+	<script type="text/javascript">
+		$(document).ready(function() {
+		    $.ajax({
+		        url : "/buscar_entidades/",
+		        dataType : "json",
+		        success : function(data){
+		            var resultado = data;
+		            alert(resultado)
+		        }
+		    });
+	</script>
+	-->
+	
+	<!-- 
+	<script>
+		
+	    $("#entidade_destinatario").autocomplete({
+			source: function(request, response) {
+		        $.ajax({
+		            url: "/buscar_entidades/",
+		            dataType: "jsonp",
+		            success: function( data ) {
+		              	alert(data)
+		            	response(data);
+		            }
+		          });
+		        },
+		    minLength: 3,
+		});
+		
+		</script>
+	 -->
+	 
+	 
+	 
+	 
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	configurar_datatable_padrao("#{{ datatable_nome }}");
+	
+	{% if dados %}
+	configurar_datatable_selecionavel("#{{ datatable_nome }}","#bt_apagar",true);
+	$("#bt_gerar_protocolo").prop("disabled", false);
+
+	{% else %}
+	configurar_datatable_selecionavel("#{{ datatable_nome }}","#bt_apagar",false);
+	$("#bt_gerar_protocolo").prop("disabled", true);
+	
+	{% endif %}
+	
+});
+
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#bt_apagar").click(function(event) {
+	    var cont = confirm('Deseja mesmo excluir esse item?');
+	    //var cont = excluir_item_protocolo('#datatable',"#bt_apagar");   PRECISO FAZER ISSO AQUI FUNCIONAR
+	    if(cont) {
+	        return true;
+	    }
+	    
+	    else{
+	    	event.preventDefault();
+	    	
+	    	//desmarcar_linha_selecionada("#{{ datatable_nome }}"); GOSTARIA DE 
+	    	
+	    	var table = $("#{{ datatable_nome }}").DataTable();
+	    	table.$('tr.selected').removeClass('selected');
+	    	
+	    	desabilitar_botao("#bt_apagar");
+	    	alert("porque nao desabilitou as coisas?");
+		    return false;
+	    }
+	});
+});
+</script>
+
+<!-- 
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	$("#bt_apagar").click(function(event){
+		
+		event.preventDefault();
+		var table = $('#datatable').DataTable();
+		var indice = table.row( '.selected' ).index();
+		
+		
+		if(confirm ("Deseja mesmo excluir esse item")){
+			//var resultado = excluir_item_protocolo("#datatable",'#bt_apagar'); 
+			//if (resultado == true){
+			alert("Foi confirmado");
+			$('#bt_apagar').val(indice);
+			
+			
+			
+		    $("#form_protocolo")[1].submit();//[0].submit();
+		    
+		}
+		else{
+			alert("não foi confirmado");
+		}
+	});
+});
+</script>
+ -->
+	 
+<!-- 	 
+	 
+	 
+<script>
+$(document).ready(function() {
+    var table = $('#datatable').DataTable();
+ 
+    $('#datatable tbody').on( 'click', 'tr', function () {
+    	
+    	$("#bt_apagar").prop("disabled", false);
+    	
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+            $("#bt_apagar").prop("disabled", true);
+        }
+        else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            
+        }
+    } );
+ 
+    $('#bt_apagar').click( function () {
+    	//alert( 'Row index: '+table.row( '.selected' ).index() );
+    	$.confirm({
+    		title: "Excluir Documento",
+    	    text: "Deseja mesmo excluir esse Documento?",
+    	    confirmButton: "Excluir",
+    	    cancelButton: "Cancelar",
+    	    confirmButtonClass: "btn-danger pull-right",
+    	    cancelButtonClass: "btn-default botao_desabilitado",
+    	    
+    	    confirm: function() {
+    	    	
+    	    	var table = $('#datatable').DataTable();
+    	    	    	    	
+    	    	$.ajax({
+    	    		url: '/emitir_protocolo/excluir/'+table.row( '.selected' ).index(),
+    	    	    type: 'get', //this is the default though, you don't actually need to always mention it
+    	    	    success: function(data) {
+    	    	    	// $('#endereco').val(data[0]);
+    	    	      	//alert(data);
+    	    	    },
+    	    	    failure: function(data) { 
+    	    	        alert('Falha na requisao');
+    	    	    }
+    	    	});
+    	    	
+    	    	table.row('.selected').remove().draw( false );
+    	        $("#bt_apagar").prop("disabled", true);
+    	    },
+    	    
+    	    cancel: function() {
+    	        // nothing to do
+    	    }
+    	});
+    } );
+} );
+</script>
+	 
+	 
+	 
+	 
+<script type="text/javascript">
+$(document).ready(function() {
+    var table = $('#{{datatable_nome}}').DataTable();
+ 
+    $('#{{datatable_nome}} tbody').on( 'click', 'tr', function () {
+    	
+    	alert("Funciona")
+    	
+    } );
+ 
+    $('#bt_apagar').click( function () {
+    	//alert( 'Row index: '+table.row( '.selected' ).index() );
+    	$.confirm({
+    		title: "Excluir Documento",
+    	    text: "Deseja mesmo excluir esse Documento?" ,
+    	    confirmButton: "Excluir",
+    	    cancelButton: "Cancelar",
+    	    confirmButtonClass: "btn-danger pull-right",
+    	    cancelButtonClass: "btn-default botao_desabilitado",
+    	    
+    	    confirm: function() {
+    	    	
+    	    	var table = $('#{{datatable_nome}}').DataTable();
+    	    	   	    	
+    	    	$.post("/emitir_protocolo/excluir/"+table.row( '.selected' ).index(),)
+    	    	
+    	    	//
+    	    	//$.ajax({
+    	    	//	url: '/emitir_protocolo/excluir/'+table.row( '.selected' ).index(),
+    	    	//   type: 'get', //this is the default though, you don't actually need to always mention it
+    	    	//    success: function(data) {
+    	    	//    	// $('#endereco').val(data[0]);
+    	    	//      	//alert(data);
+    	    	//    },
+    	    	//    failure: function(data) { 
+    	    	//        alert('Falha na requisao');
+    	    	//    }
+    	    	
+    	    	
+    	    	});
+    	    	table.row('.selected').remove().draw(false);
+    	        $("#bt_apagar").prop("disabled", true);
+    	    },
+    	    
+    	    cancel: function() {
+    	        // nothing to do
+    	    }
+    	});
+    } );
+} );
+</script>
+	 
+	 
+	 
+ -->	 
+
+
+<form action="" method="post" id="form_protocolo">
+	{% csrf_token %}
+	<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<!--  style="width: 90%"> -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">×</button>
+					<h3 id="myModalLabel">Novo Documento</h3>
+				</div>
+	
+				<div class="modal-body" style="padding: 30px;">	
+
+					<div class="row" style="padding-left: 15px; padding-right: 15px">
+						<div style='padding-left: 8px'>
+							<sub>{{ formulario_protocolo.documento.label }}</sub>
+						</div>
+						{{ formulario_protocolo.documento }}
+						
+						
+							
+							
+					</div>
+
+					<div class="row" style="padding-left: 15px; padding-right: 15px">
+						<div style='padding-left: 8px'>
+							<sub>{{ formulario_protocolo.complemento.label }}</sub>
+						</div>
+						{{ formulario_protocolo.complemento }}
+					</div>
+
+					<div
+						class="row better_col_spacings_first_chield better_col_middle_spacings better_col_spacings_last_chield">
+
+						<div class="col-lg-4">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario_protocolo.referencia.label }}</sub>
+							</div>
+							{{ formulario_protocolo.referencia }}
+						</div>
+
+						<div class="col-lg-4">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario_protocolo.vencimento.label }}</sub>
+							</div>
+							{{ formulario_protocolo.vencimento }}
+						</div>
+
+						<div class="col-lg-4">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario_protocolo.valor.label }}</sub>
+							</div>
+
+							<div class="input-group">
+								<span class="input-group-addon">R$</span> {{ formulario_protocolo.valor }}
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-3 col-lg-push-9">
+							<button type="submit" id="bt_adicionar_item" class="btn btn-primary form-control" name='adicionar_item' style="position: relative; margin-top: 20px">Adicionar</button>
+							<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-default" style="margin-top: -15px; margin-left: 0px; margin-right: 0px;">
+				<div class="panel-heading">
+					<div class="row" style="height: 30px; line-height: 30px">
+						<div class="col-lg-7">
+							<b>Destinatário</b>
+						</div>
+					</div>
+				</div>
+	
+				<div class="panel-body"	style="padding-bottom: 18px; margin-top: -5px;">
+					<div class="row">
+						<div class="col-lg-5">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario_protocolo.entidade_destinatario.label }}</sub>
+							</div>
+							{{ formulario_protocolo.entidade_destinatario }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<br>
+	
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-default"
+				style="margin-top: -15px; margin-left: 0px; margin-right: 0px;">
+	
+				<div class="panel-heading">
+	
+					<div class="row" style="height: 30px; line-height: 30px">
+						<div class="col-lg-9">
+							<b>Documentos</b>
+						</div>
+						
+						<div class="col-lg-3 ">
+						
+							<div class = "btn-toolbar" role = "toolbar">
+								<div class="btn-group pull-right" role="group">			
+									<button type="submit" name='excluir_item' value='-1' id="bt_apagar" class="confirm btn btn-default " style="position: relative; margin-top: -2px;margin-right: -8px;">Apagar</button>
+								</div>
+							
+								<div class="btn-group pull-right" role="group">
+									<button type="button" id="bt_novo_documento" class="btn btn-default" data-toggle="modal" data-target="#myModal" style="position: relative; margin-top: -2px;margin-right: 2px;">Novo Documento</button> <!--  -->
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+	
+				<div class="panel-body" style="padding-bottom: -10px; margin-top: -5px;">
+					
+					<div class="dataTable_wrapper" style="padding-top: 5px">
+						<table class="table table-striped table-bordered table-hover bordas_padrao" id="{{ datatable_nome }}" cellspacing=0  style="border-color:#CCC;"">
+	
+							<thead>
+								<tr class="text-right">
+									<th style="text-align:center;">Documentos Entregues</th>
+									<th style="text-align:center;">Referência</th>
+									<th style="text-align:center;">Vencimento</th>
+									<th style="text-align:center;">Valor</th>
+								</tr>
+							</thead>
+	
+							{% if dados %}
+								<tbody>
+									{% for item in dados %}
+		
+									<tr>
+										{% if item.complemento %}
+										<td style="cursor: pointer;">{{ item.documento }} - {{ item.complemento }}</td> 
+										{% else %}
+											<td style="cursor: pointer;">{{ item.documento }}</td> 
+										{% endif %}
+		
+										<td align="center" style="cursor: pointer;">{{	item.referencia }}</td>
+										<td align="center" style="cursor: pointer;">{{ item.vencimento }}</td>
+										
+										{% if item.valor %}
+											<td align="center" style="cursor: pointer;">R$ {{ item.valor }}</td>
+										{% else %}
+											<td align="center" style="cursor: pointer;"></td>
+										{% endif %}
+									</tr>
+									
+									{% empty %}
+		   								<tr>Adicione um novo Documento.</tr>
+									
+									{% endfor %}
+								</tbody>
+							{% endif %}
+						</table>
+						<!-- /.table-responsive -->
+					</div>
+	
+					<div class='row'>
+						<div class="col-lg-2 col-lg-push-10">
+							<button type="submit" id="bt_gerar_protocolo" name='gerar_protocolo' onclick="return confirm('Finalizar Protocolo?')" class="btn btn-primary form-control pull-right"
+								style="position: relative; margin-top: 15px">Gerar Protocolo</button>
+						</div>
+					</div>							
+				</div>
+			</div>
+		</div>
+	</div>
+</form>	

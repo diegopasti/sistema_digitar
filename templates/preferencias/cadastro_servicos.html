@@ -1,0 +1,601 @@
+{% extends 'base_page.html' %}
+
+{% block Titulo %}
+	<meta charset="utf-8">
+    <title>Digitar - Configurações</title>
+{% endblock %}
+
+{% load staticfiles %}
+{% block recrusos_necessarios %}
+{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
+<!-- BOOTSTRAP 3.3.6 -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+<!-- DATATABLE -->
+<!--<link rel="stylesheet" type="text/css" href="% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/
+<link rel="stylesheet" type="text/css" href="% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
+
+<script src="% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="% static 'datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>-->
+
+<!-- JQUERY UI DATAPICKER
+<link rel="stylesheet" href="% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}">-->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+
+<!-- JQUERY AUTOCOMPLETE EDITABLE
+<link rel="stylesheet" type="text/css" href="% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}" />
+<script src="% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script> -->
+
+<!-- CUSTOM -->
+<!-- <link href="% static 'styles/menu_simples_responsivo.css' %}" rel="stylesheet"/> -->
+<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
+<script src="{% static 'scripts/protocolo/protocolo.js' %}"></script>
+
+<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
+<script src="{% static 'angular-1.5.8/dirPagination.js'%}"></script>
+<link href="{% static 'styles/servico/servico.css' %}" rel="stylesheet"/>
+
+
+<style type="text/css">
+.uppercase{ 
+    text-transform: uppercase;
+}
+
+.lowercase{ 
+    text-transform: uppercase;
+}
+
+.center_align{ 
+    text-align: center;
+}
+
+.left_align{ 
+	padding-left: 8px;
+    text-align: left;
+}
+
+.right_align{ 
+    text-align: right;
+}
+
+.link_desabilitado {
+     pointer-events: none;
+     cursor: default;
+     opacity: 0.6;
+}
+
+.div_desabilitado {
+	display: none;
+    z-index: 1000;
+    background-color: lightgrey;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.dataTables_paginate {
+	position: relative;
+    display: block;
+    top: 30px;
+}
+
+label {
+    font-weight: normal !important;
+}
+
+ /* unvisited link */
+.linha_cabecalho a {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* visited link */
+.linha_cabecalho a:visited {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* mouse over link */
+.linha_cabecalho a:hover {
+    color: #222;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* selected link */
+.linha_cabecalho a:active {
+    color: #111;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+</style>
+{% endblock %}
+
+{% block breadcrumb_title %}Configurações do Sistema{% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+<li class="active">Configurações</li>
+{% endblock %}
+
+{% block conteudo %}
+<div id="controle_angular" ng-app="app" ng-controller="MeuController">
+
+    <div id="modal_adicionar_servico" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+        <div class="modal-dialog">
+            <!--  style="width: 90%"> -->
+            <form id="form_adicionar_servico" autocomplete="off" ng-submit="esta_adicionando? adicionar_servico() : alterar_servico()">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h5 id="titulo_modal_adicionar_servico" style="font-weight: bold">Novo Serviço</h5>
+                    </div>
+
+                    <div class="modal-body" style="padding: 30px;padding-top: 20px;">
+                        <div class="row" style="padding-left: 15px; padding-right: 15px">
+                            <div style='padding-left: 8px'>
+                                <sub>{{ formulario.servico.label }}</sub>
+                            </div>
+                            {{ formulario.servico }}
+                        </div>
+
+                        <div class="row" style="padding-left: 15px; padding-right: 15px">
+                            <div style='padding-left: 8px'>
+                                <sub>{{ formulario.descricao.label }}</sub>
+                            </div>
+                            {{ formulario.descricao }}
+
+                        </div>
+                        <!--<div class="row">
+                            <div class="col-lg-3 col-lg-push-9">
+                                <button type="button" id="bt_submit_servico" class="btn btn-primary form-control" ng-click="adicionar_servico()" style="position: relative; margin-top: 20px">Salvar</button>
+                                <!-- <a href="#modal_adicionar_servico" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  ->
+                            </div>
+                        </div>
+                        -->
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="row">
+
+                            <div class="col-md-3 col-md-push-9">
+                                <button type="submit" id="bt_submit_servico" ng-class="{'desabilitado': modal_servico == ''}" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_documento">Salvar</button>
+                                <!-- <a href="#modal_adicionar_documento" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="box box-default" style="margin-top: -25px;">
+
+                <div class="box-heading">
+
+                    <div class="box-header with-border">
+                        <h5 class="box-title">Serviços</h5>
+
+                        <div class="pull-right">
+                             <a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_servico" ng-click="configurar_inclusao_servico();esta_adicionando = true"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Serviço</a>
+
+                              <a href="#modal_adicionar_servico" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_servico();esta_adicionando = false" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Alterar</a>
+                              <a href="#modal_adicionar_servico" role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_servico();" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir</a>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-body" style="padding-bottom: -10px; margin-top: 0px;">
+                    <div class="dataTable_wrapper">
+
+                        <div class='row'>
+
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <table class="table table-condensed  table-striped table-bordered table-hover" id="datatable">
+
+                                    <thead>
+                                        <tr class="linha_cabecalho">
+                                            <th class='center_align' style="width: 40px; vertical-align: middle;">
+                                                <a id="caret_cod" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="display:block;"> #
+                                                    <span class='caret_one pull-right' ng-class="sortType == 'id' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
+
+                                                    <span class='caret_two pull-right' ng-class="sortType == 'id' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
+                                                </a>
+                                            </th>
+
+                                            <th style="text-align: center;vertical-align: middle;">
+                                                <a id="caret_servico" ng-click="sortType = 'nome'; sortReverse = !sortReverse" style="display:block;">Serviço
+                                                     <span class='caret_one pull-right' ng-class="sortType == 'nome' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
+                                                    <span class='caret_two pull-right' ng-class="sortType == 'nome' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
+                                                </a>
+                                            </th>
+                                            <th style="text-align: center;vertical-align: middle;">
+                                                <a id="caret_descricao" ng-click="sortType = 'descricao'; sortReverse = !sortReverse" style="display:block;">Descrição
+                                                     <span class='caret_one pull-right' ng-class="sortType == 'descricao' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
+                                                    <span class='caret_two pull-right' ng-class="sortType == 'descricao' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
+                                                </a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        {% verbatim %}
+                                        <tr ng-if="(servicos|filter:filterIds()).length == 0">
+                                            <td colspan="3" class="center_align">Nenhum serviço Cadastrado!</td>
+                                        </tr>
+
+                                        <tr ng-cloak class="angular-repeat linha_selecionavel {{ servico.selecionado }}" ng-click="selecionar_linha(servico)" pagination-id="paginate_servicos" dir-paginate="servico in servicos | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado" >
+                                            <td class='center_align' style="width: 30px; vertical-align: middle;">{{ servico.id }}</td>
+                                            <td>{{ servico.nome }}</td>
+                                            <td>{{ servico.descricao }}</td>
+                                        </tr>
+
+                                        <tr ng-if="resultado.length === 0 && (servicos|filter:filterIds()).length > 0">
+                                          <td colspan="3" class='center_align'>Nenhum resultado Encontrado</td>
+                                        </tr>
+
+                                      {% endverbatim %}
+
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                        </div>
+                    </div>
+
+                    <div class='row'>
+
+                        {% verbatim %}
+
+                        <div class="col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
+                            <label id="label_buscar_por" class='left_align {{ desabilitar }}'><sub>Buscar por:</sub></label>
+                            <select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
+                                 <option value="0">Código</option>
+                                 <option value="1" selected>Serviço</option>
+                                <option value="2">Descrição</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 col-sm-5 col-xs-12" style='margin-left:-20px;margin-top: 31px;'>
+                            <input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
+                        </div>
+
+                        <div class="col-md-offset-3 col-md-4 col-xs-12 mt-xs-0 pull-right" >
+                            <span class="pull-right" style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">
+
+                                <dir-pagination-controls pagination-id="paginate_servicos" max-size="4" auto-hide="false" boundary-links="false" direction-links="true">
+
+                                </dir-pagination-controls>
+                            </span>
+                        </div>
+
+
+
+                        {% endverbatim %}
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.row -->
+    </div>
+</div>
+<br>
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
+
+<script>
+    //Declarando o módulo da aplicação
+    var app = angular.module('app', ['angularUtils.directives.dirPagination']);
+    //Declarando o construtor do MeuController
+
+    /*App.controller('MeuController', function($scope, $http) {
+    $http.get('/api/servico')
+       .then(function(res){
+           alert("Olha o que recebi"+res.data);
+          $scope.todos = res.data;
+        });
+    });*/
+
+    app.controller('MeuController', ['$scope', function($scope) {
+
+        $scope.sortType     = 'id'; // set the default sort type
+        $scope.sortReverse  = false;  // set the default sort order
+        $scope.filter_by    = '1';
+        $scope.filter_by_index = parseInt($scope.filter_by);
+        $scope.filter_by_options = ["codigo","preferencias", "descricao"];
+        $scope.search      = '';     // set the default search/filter term
+
+
+        $scope.opcao_desabilitada = "desabilitado";
+        $scope.registro_selecionado = null;
+
+        $scope.esta_adicionando = null;
+
+        // Carrega os dados ja cadastrados
+        $scope.carregar_servicos_cadastrados = function() {
+            $.ajax({
+                type: "GET",
+                url: "/api/preferencias/servicos/",
+                success: function (data) {
+                    $scope.servicos = data;//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
+                    $scope.verificar_servicos();
+                    $scope.$apply();
+                },
+                failure: function (data) {
+                    $scope.servicos = [];
+                    $scope.desabilitar = 'link_desabilitado';
+                    alert('Erro! Não foi possivel carregar a lista de serviços');
+                }
+            });
+        }
+
+        $scope.adicionar_servico = function() {
+            var servico = $('#modal_servico').val().toUpperCase();
+            var descricao = $('#modal_descricao').val().toUpperCase();
+
+            if(servico){
+                $.ajax({
+                    type: "POST",
+                    url: "/api/preferencias/novo_servico",
+                    data: {
+                        servico: servico,
+                        descricao: descricao,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+
+                    success: function (data) {
+                        var resultado = $.parseJSON(data);
+                        if (resultado['success'] == true){
+
+                            var servico = {
+                                id: resultado["message"],
+                                nome: angular.uppercase($scope.modal_servico),
+                                descricao: angular.uppercase($scope.modal_descricao),
+                                selecionado: ""
+                            };
+
+                            $scope.servicos.push(servico);
+                            $scope.$apply();
+                            $scope.resetar_formulario_servico();
+                        }
+
+                        else{
+                            alert(resultado["message"]);
+                        }
+                    },
+                    failure: function (data) {
+                        alert('Erro! Falha na execução do ajax');
+                    }
+                });
+            }
+            else{
+                alert('Erro! Preencha os campos antes de enviar');
+            }
+
+            $scope.verificar_servicos();
+        }
+
+        $scope.alterar_servico = function() {
+            var servico = $('#modal_servico').val().toUpperCase();
+            var descricao = $('#modal_descricao').val().toUpperCase();
+
+
+            if(servico){
+                if (confirm('Deseja mesmo alterar esse Serviço?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/preferencias/alterar_servico/" + $scope.registro_selecionado.id + "/",
+                        data: {
+                            servico: servico,
+                            descricao: descricao,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+
+                        success: function (data) {
+
+                            var resultado = $.parseJSON(data);
+
+                            if (resultado['success'] == true) {
+                                $scope.registro_selecionado.nome = servico;
+                                $scope.registro_selecionado.descricao = descricao;
+                                $scope.registro_selecionado.selecionado = '';
+                                $scope.$apply();
+                                $scope.resetar_formulario_servico();
+                            }
+
+                            else {
+                                alert(resultado["message"]);
+                            }
+                        },
+                        failure: function (data) {
+                            alert('Erro! Falha na execução do ajax');
+                        }
+                    });
+                }
+
+                else{
+                    e.preventDefault();
+                }
+            }
+            else{
+                alert('Erro! Preencha os campos antes de enviar');
+            }
+
+            $scope.verificar_servicos();
+        }
+
+        $scope.select_filter_by = function (index) {
+            $scope.filter_by_index = parseInt($scope.filter_by);
+            $scope.apply();
+        }
+
+        $scope.get_filter_column = function(){
+            var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
+
+            switch (filtrar_pesquisa_por) {
+
+                case 'codigo':
+                    //alert("filtrar por codigo");
+                    return {id: $scope.search};
+                case 'descricao':
+                    //alert("filtrar por descricao");
+                    return {descricao: $scope.search};
+                default:
+                    return {nome: $scope.search}
+            }
+        }
+
+
+        $scope.verificar_servicos = function () {
+            if ($scope.servicos == "" || $scope.servicos == []){
+                $scope.desabilitar  = 'link_desabilitado';
+            }
+            else{
+                $scope.desabilitar  = '';
+            }
+        }
+
+        $scope.resetar_formulario_servico = function() {
+            $('#modal_adicionar_servico').modal('hide');
+            $('#preferencias').val("");
+            $('#descricao').val("");
+            $scope.model_servico = "";
+            $scope.model_descricao = "";
+        }
+
+        $scope.selecionar_linha = function(registro) {
+            //alert("veja o index: "+registro.id+"-"+registro.nome);
+
+            if ($scope.registro_selecionado != null){
+                //alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
+                if (registro.selecionado=='selected'){
+                    //alert("O cara clicou na linha que ja tava selecionada");
+                    $scope.desmarcar_linha_selecionada();
+                    //registro.selecionado = "";
+                    //$scope.registro_selecionado = null;
+                    //$scope.opcao_desabilitada = "desabilitado";
+                }
+
+                else{
+                    //alert("O usuario tinha um registro selecionado mas selecionou novo registro: "+registro.id+"-"+registro.nome);
+                    $scope.desmarcar_linha_selecionada();
+                    registro.selecionado = "selected";
+                    $scope.registro_selecionado = registro;
+                    $scope.opcao_desabilitada = "";
+                }
+            }
+
+            else{
+                //alert("nao tinha nada marcado, vou marcar"+$scope.registro_selecionado);
+                registro.selecionado = 'selected';
+                $scope.registro_selecionado = registro;
+                $scope.opcao_desabilitada = "";
+
+            }
+            $scope.apply();
+        }
+
+        $scope.desmarcar_linha_selecionada = function(){
+            $scope.registro_selecionado.selecionado = "";
+            $scope.registro_selecionado = null;
+            $scope.opcao_desabilitada = "desabilitado";
+            //$scope.apply();
+        }
+
+        $scope.configurar_inclusao_servico = function(){
+            $scope.esta_adicionando = true;
+            $("#titulo_modal_adicionar_servico").text("Novo Serviço");
+            $("#modal_servico").val("");
+            $("#modal_descricao").val("");
+            $scope.modal_servico = "";
+            $scope.modal_descricao = "";
+            $scope.apply();
+        }
+
+        $scope.configurar_alteracao_servico = function(){
+            $scope.esta_adicionando = false;
+            $("#titulo_modal_adicionar_servico").text("Alterar Serviço");
+            $("#modal_servico").val($scope.registro_selecionado.nome);
+            $("#modal_descricao").val($scope.registro_selecionado.descricao);
+        }
+
+        $scope.excluir_servico = function () {
+            var servico = $('#modal_servico').val().toUpperCase();
+            var descricao = $('#modal_descricao').val().toUpperCase();
+
+            if (confirm('Deseja mesmo excluir esse Serviço?')) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/preferencias/excluir_servico/"+$scope.registro_selecionado.id+"/",
+                    data: {
+                        servico: servico,
+                        descricao: descricao,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+
+                    success: function (data) {
+
+                        var resultado = $.parseJSON(data);
+
+                        if (resultado['success'] == true){
+                            $scope.servicos.splice($scope.servicos.indexOf($scope.registro_selecionado), 1);
+                            $scope.registro_selecionado = null;
+                            $scope.opcao_desabilitada = "desabilitado";
+                            $scope.$apply();
+                            $scope.resetar_formulario_servico();
+                            //alert(resultado['message']);
+                        }
+
+                        else{
+                            alert(resultado["message"]);
+                        }
+                    },
+                    failure: function (data) {
+                        alert('Erro! Falha na execução do ajax');
+                    }
+                });
+
+                //return true;
+            }
+            else {
+                e.preventDefault();
+
+                //return false;
+            }
+
+            $scope.verificar_servicos();
+
+        }
+    }]);
+</script>
+
+<script>
+    $(document).ready(function() {
+        angular.element(document.getElementById('controle_angular')).scope().carregar_servicos_cadastrados();
+    });
+</script>
+{% endblock %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
