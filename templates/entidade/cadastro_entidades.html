@@ -7,24 +7,23 @@
 
 {% block recrusos_necessarios %}
 {% load staticfiles %}
-
 {% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
 <!-- BOOTSTRAP 3.3.6 -->
-
-<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<!--<link href="% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>-->
 
 <!-- JQUERY UI DATAPICKER -->
-<link rel="stylesheet" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}">
 <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"> -->
 
 <!-- DATATABLE -->
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
 
-<script src="{% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
-<script src="{% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
+<script src="{% static 'custom/datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'custom/datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'custom/datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
 
 <style type="text/css">
 
@@ -418,20 +417,6 @@ $(".alert").fadeOut(6000);
 
 
 <script type="text/javascript">
-    $("#example-tabs").steps({
-        headerTag: "h3",
-        bodyTag: "section",
-        transitionEffect: "slideLeft",
-        enableFinishButton: false,
-        enablePagination: false,
-        enableAllSteps: true,
-        titleTemplate: "#title#",
-        cssClass: "tabcontrol"
-    });
-</script>
-
-
-<script type="text/javascript">
 $(function() {
 	$("#nascimento_fundacao").datepicker({
 		  dayNames: [ "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado" ],
@@ -586,10 +571,11 @@ $(document).ready(function() {
 
 <meta charset="utf-8">
 {% load staticfiles %}
-<!-- DataTables JavaScript -->
-
-<script	src="{% static 'datatable/datatables/media/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'datatable/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js' %}"></script>
+<!--<script	src="% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.js' %}"></script>-->
+<!-- DataTables JavaScript
+<script	src="{ static 'custom/datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="{ static 'custom/datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>-->
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
  
 
@@ -653,6 +639,8 @@ $("#bt_confirmar_desativacao").click(function() {
         return false;
     }
 });
+
+
 </script>
 
 {% endblock %}

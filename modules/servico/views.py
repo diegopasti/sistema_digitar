@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django.forms.models import model_to_dict
 from django.http.response import Http404
-from django.shortcuts import render_to_response, HttpResponse
+from django.shortcuts import HttpResponse, render
 from django.template import RequestContext
 from modules.servico.models import Servico, Plano
 import json
@@ -11,7 +11,7 @@ from modules.servico.formularios import formulario_adicionar_servico, formulario
 
 def cadastro_planos(request):
     formulario_plano = formulario_adicionar_plano()
-    return render_to_response("servico/controle_planos.html",{'formulario_plano': formulario_plano},context_instance=RequestContext(request))
+    return render(request,"servico/controle_planos.html",{'formulario_plano': formulario_plano},)
 
 
 def consultar_planos(request):
@@ -101,9 +101,9 @@ def cadastro_servico(request):
     servicos = []#Servico.objects.all()
     formulario_servico = formulario_adicionar_servico()
 
-    return render_to_response("preferencias/cadastro_servicos.html",
+    return render(request,"preferencias/cadastro_servicos.html",
                               {'dados': servicos,'formulario':formulario_servico,'erro':erro},
-                              context_instance=RequestContext(request))
+                              )
 
 
 def adicionar_servico(request):

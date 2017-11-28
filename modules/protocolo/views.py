@@ -13,8 +13,8 @@ from decimal import Decimal
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from django.http.response import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.http.response import HttpResponse, Http404
+from django.shortcuts import render, redirect
 from django.template.context import RequestContext
 from modules.entidade.models import entidade, contato, localizacao_simples  # , localizacao
 
@@ -62,7 +62,7 @@ def cadastro_documentos(request):
         else:
             pass
 
-    return render_to_response("protocolo/cadastro_documentos.html",
+    return render(request,"protocolo/cadastro_documentos.html",
                               {'dados': documentos,'formulario':formulario,'erro':erro},
                               context_instance=RequestContext(request))
 
@@ -248,7 +248,7 @@ def cadastro_protocolo(request, protocolo_id=None):
                                 p.data_recebimento = data_entrega
                                 p.hora_recebimento = hora_entrega
                                 p.save()
-                                return HttpResponseRedirect('/protocolo')
+                                return redirect('/protocolo')
 
                             else:
                                 messages.add_message(request, messages.SUCCESS,"Erro! Horário da entrega não pode ser anterior a emissão.")
@@ -262,11 +262,11 @@ def cadastro_protocolo(request, protocolo_id=None):
                     messages.add_message(request, messages.SUCCESS, msg)
                     erro = True
             else:
-                return HttpResponseRedirect('/protocolo')
+                return redirect('/protocolo')
             
         else:
             #print("e uma requisicao mas sem name do form")
-            return HttpResponseRedirect('protocolo/cadastro_protocolo.html')
+            return redirect('protocolo/cadastro_protocolo.html')
 
     else:
         form_entrega = formulario_confirmar_entrega()
@@ -286,7 +286,7 @@ def cadastro_protocolo(request, protocolo_id=None):
 
 
 
-    return render_to_response("protocolo/cadastro_protocolo.html",{"form_entrega":form_entrega,"form_relatorio":form_relatorio,'selecionar_protocolo':selecionar_protocolo,'clientes':clientes,'dados':dados,'erro':erro},context_instance=RequestContext(request))
+    return render(request,"protocolo/cadastro_protocolo.html",{"form_entrega":form_entrega,"form_relatorio":form_relatorio,'selecionar_protocolo':selecionar_protocolo,'clientes':clientes,'dados':dados,'erro':erro})
 
 """
 def imprimir_protocolo(request,emissor,destinatario,documentos,):
@@ -599,7 +599,7 @@ def novo_emitir_protocolo(request):
     formulario_protocolo = formulario_emitir_protocolo()
     clientes = entidade.objects.all().filter(ativo=True).exclude(id=1).order_by('-id')
     documentos = documento.objects.all()
-    return render_to_response("protocolo/novo_emitir_protocolo.html",{'operador':'Marcelo Bourguignon','formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos}, context_instance=RequestContext(request))
+    return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':'Marcelo Bourguignon','formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos}, context_instance=RequestContext(request))
 
 
 def emitir_protocolo_identificado(request,operador):
@@ -607,7 +607,7 @@ def emitir_protocolo_identificado(request,operador):
     operador = operador.replace("_"," ").title()
     clientes = entidade.objects.all().filter(ativo=True).exclude(id=1).order_by('-id')
     documentos = documento.objects.all()
-    return render_to_response("protocolo/novo_emitir_protocolo.html",{'operador':operador,'formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos}, context_instance=RequestContext(request))
+    return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':operador,'formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos}, context_instance=RequestContext(request))
 
 
 def visualizar_protocolo(request, protocolo_id):
@@ -877,7 +877,7 @@ def emitir_protocolo(request,numero_item):
         formulario_protocolo = formulario_emitir_protocolo()
         formulario_protocolo.limpar_temporarios()
                     
-    return render_to_response("protocolo/emitir_protocolo.html",{'destinatarios':destinatarios ,'documentos':documentos,'dados':formulario_protocolo.temporarios,'formulario_protocolo':formulario_protocolo,'erro':erro},context_instance=RequestContext(request))
+    return render(request,"protocolo/emitir_protocolo.html",{'destinatarios':destinatarios ,'documentos':documentos,'dados':formulario_protocolo.temporarios,'formulario_protocolo':formulario_protocolo,'erro':erro})
 
 
 def salvar_itens_protocolos(protocolo,itens_protocolo):

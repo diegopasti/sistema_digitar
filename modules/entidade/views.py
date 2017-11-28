@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect
 from django.http.response import HttpResponse  # , Http404
-from django.shortcuts import render_to_response  # , redirect
+from django.shortcuts import render, redirect
 from django.template.context import RequestContext
 from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento, \
     OperacaoRestrita  # localizacao , Endereco
@@ -38,24 +38,22 @@ def verificar_cadastro_empresa():
         return True
         #dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')
 
+
 def index(request):
     if verificar_cadastro_empresa():
-        return render_to_response("blank.html")
+        return render(request,"blank.html")
     else:
         return HttpResponseRedirect('/cadastrar_empresa')
 
 
 def buscar_fontes(request):
-    return render_to_response("index.html")
+    return render(request,"index.html")
 
 
 def cadastro_entidades(request):
     usuario_admin = False
-
-
     dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')
     print('olha os dados: ',dados)
-
     if (request.method == "POST"):
 
         """
@@ -103,9 +101,7 @@ def cadastro_entidades(request):
         form_desativar = formulario_justificar_operacao()
         # formulario_contato  = form_adicionar_contato()
 
-    return render_to_response("entidade/cadastro_entidades.html",
-                              {'dados': dados, 'form_desativar': form_desativar, 'erro': False},
-                              context_instance=RequestContext(request))
+    return render(request,"entidade/cadastro_entidades.html",{'dados': dados, 'form_desativar': form_desativar, 'erro': False})
 
 
 def desativar_cliente(request,cliente):
@@ -381,7 +377,7 @@ def link_callback(uri, rel):
             pagina = loader.get_template('novo_protocolo.html')
             
             c = Context(parametros)#{'message': 'Your message'})
-            html = pagina.render(c)
+            html = pagina.render(request,c)
             
             from django_xhtml2pdf.utils import generate_pdf
             resp = HttpResponse(content_type='application/pdf')
@@ -403,7 +399,7 @@ def link_callback(uri, rel):
         
             
             ""
-            return render_to_response("protocolo.html",{
+            return render(request,"protocolo.html",{
                                         'emissor':empresa,
                                         'destinatario':cliente,
                                         'endereco_destinatario':endereco_cliente,
@@ -412,7 +408,7 @@ def link_callback(uri, rel):
                                         'formulario_protocolo':formulario_protocolo,
                                         'erro':erro},
                                       
-                                      context_instance=RequestContext(request))
+                                      )
             ""
             
         elif 'excluir_item' in request.POST:
@@ -445,14 +441,14 @@ def link_callback(uri, rel):
             formulario_protocolo.temporarios.remove(formulario_protocolo.temporarios[numero_item])
             print("olha os temporarios depois: ",formulario_protocolo.temporarios)
             
-            return render_to_response("emitir_protocolo.html",{'destinatarios':destinatarios ,'dados':formulario_protocolo.temporarios,'formulario_protocolo':formulario_protocolo,'erro':erro},context_instance=RequestContext(request))
+            return render(request,"emitir_protocolo.html",{'destinatarios':destinatarios ,'dados':formulario_protocolo.temporarios,'formulario_protocolo':formulario_protocolo,'erro':erro})
             
             
         else:
             
         ""
                     
-    return render_to_response("emitir_protocolo.html",{'destinatarios':destinatarios ,'dados':formulario_protocolo.temporarios,'formulario_protocolo':formulario_protocolo,'erro':erro},context_instance=RequestContext(request))
+    return render(request,"emitir_protocolo.html",{'destinatarios':destinatarios ,'dados':formulario_protocolo.temporarios,'formulario_protocolo':formulario_protocolo,'erro':erro})
     
     ""
     if (request.method == "POST"):
@@ -539,7 +535,7 @@ def link_callback(uri, rel):
         print("apaguei, ve o que sobrou: ",formulario_itens.temporarios)
         
     
-    return render_to_response("emitir_protocolo.html",{'dados':formulario_itens.temporarios,'formulario_protocolo':formulario_protocolo,'formulario_itens':formulario_itens,'erro':erro},context_instance=RequestContext(request))
+    return render(request,"emitir_protocolo.html",{'dados':formulario_itens.temporarios,'formulario_protocolo':formulario_protocolo,'formulario_itens':formulario_itens,'erro':erro})
     """
 
 def validar_objeto(registro):
@@ -576,7 +572,7 @@ def consultar_entidade(request,entidade_id):
         
         
         
-    return render_to_response("consultar_entidade.html",{'dados':registro_entidade,'formulario':formulario,'erro':False},context_instance=RequestContext(request))
+    return render(request,"consultar_entidade.html",{'dados':registro_entidade,'formulario':formulario,'erro':False})
 
 
 
@@ -837,7 +833,7 @@ def visualizar_entidade(request,id):
                             }
                         )
 
-    return render_to_response("entidade/adicionar_entidade.html",
+    return render(request,"entidade/adicionar_entidade.html",
                           {'dados': [],
                           'formulario_entidade': formulario,
                            'meus_contatos':meus_contatos,
@@ -846,7 +842,7 @@ def visualizar_entidade(request,id):
                           'naturezas_juridicas':informacoes_juridicas.natureza_juridica,
                           'atividades_economicas':informacoes_tributarias.atividades_economicas,
                           'erro': False},
-                          context_instance=RequestContext(request))
+                          )
 
 
 def adicionar_entidade(request):
@@ -923,9 +919,9 @@ def adicionar_entidade(request):
         formulario = formulario_cadastro_entidade_completo()
         #formulario_contrato = FormularioContrato()
 
-    return render_to_response("entidade/adicionar_entidade.html",
+    return render(request,"entidade/adicionar_entidade.html",
                               {'dados': [], 'formulario_entidade': formulario,'naturezas_juridicas':informacoes_juridicas.natureza_juridica,'atividades_economicas':informacoes_tributarias.atividades_economicas, 'erro': False},
-                              context_instance=RequestContext(request))
+                              )
 
 def load_objects_from_form(formulario,cliente,endereco,contatos,cnaes):
     registro_localizacao = formulario.get_localizacao(formulario,endereco)
@@ -1118,9 +1114,9 @@ def verificar_erro(formulario):
     else:
         form = formulario_cadastro_entidade_completo()
 
-    #return render(request, 'contact/form.html', {'form':form})
+    #return render(request,request, 'contact/form.html', {'form':form})
     
-    return render_to_response("cadastro_entidades.html",{'formulario':form},context_instance=RequestContext(request))
+    return render(request,"cadastro_entidades.html",{'formulario':form})
     """
 
 def verificar_erros_formulario(formulario):
@@ -1304,13 +1300,13 @@ def adicionar_entidade_antigo(request):
                     messages.add_message(request, messages.SUCCESS, msg)
                     break
             
-            return render_to_response("adicionar_entidade.html",{'dados':dados,'formulario':formulario},context_instance=RequestContext(request))
+            return render(request,"adicionar_entidade.html",{'dados':dados,'formulario':formulario})
     
     else:
         formulario = formulario_cadastro_entidade_completo()
         #formulario_contato  = form_adicionar_contato()
         
-    return render_to_response("adicionar_entidade.html",{'dados':dados,'formulario':formulario},context_instance=RequestContext(request))
+    return render(request,"adicionar_entidade.html",{'dados':dados,'formulario':formulario})
         
-    #return render_to_response("adicionar_entidade.html",{'formulario_entidade':formulario_entidade,'formulario_contato':formulario_contato},context_instance=RequestContext(request))
+    #return render(request,"adicionar_entidade.html",{'formulario_entidade':formulario_entidade,'formulario_contato':formulario_contato})
         

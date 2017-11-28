@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djangobower',
     'sistema_contabil','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
 
@@ -192,6 +193,60 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
     ("imagens", os.path.join(BASE_DIR, "/static/imagens")),
     
+)
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
+    #'compressor.finders.CompressorFinder',
+]
+
+if sys.platform == 'linux':
+    BOWER_PATH = '/usr/local/bin/bower'
+else:
+    if "lucas" in BASE_DIR:
+        BOWER_PATH = 'C:/Users/lucas/AppData/Roaming/npm/bower.cmd'
+    elif "helde" in BASE_DIR:
+        BOWER_PATH = 'C:/Users/helde/AppData/Roaming/npm/bower.cmd'
+    else:
+        BOWER_PATH = 'C:/Users/diego/AppData/Roaming/npm/bower.cmd'
+
+BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'static')
+BOWER_INSTALLED_APPS = (
+    'jquery#2.2.0',
+    'angular#1.6.4',
+    'bootstrap',     #3.3.7',#3.3.2
+    'jquery-ui',
+    'font-awesome',  #4.7.0',#4.2
+    'nprogress',
+    'pnotify',
+    'datatables.net-dt',
+    'datatables.net-bs'
+
+
+    #'bootstrap#3.3.7',#3.3.2
+    #'font-awesome#4.7.0',#4.2
+    #'angular#1.6.4',
+    #'animate.css',
+    #'gauge.js',
+    #'chart.js',
+    #'bootstrap-progressbar#0.9.0',
+    #'jquery.nicescroll',
+    #'moment',
+    #"bootstrap-daterangepicker",
+    #'fastclick',
+
+
+    #'qunit',
+    #'blanket',
+    #'https://github.com/yairEO/validator.git',
+    #'smartwizard',
+    #'multiple-select', # PODE SER QUE NAO IREMOS USAR MAIS
+    #'jQuery-Smart-Wizard#3.3.1',
+    #'angular-utils-pagination',
+    #'bootstrap-select',
+    #'ng-filters-br'
 )
 
 """

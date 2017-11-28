@@ -5,7 +5,7 @@ from datetime import date
 
 from django.forms.models import model_to_dict
 from django.http.response import Http404
-from django.shortcuts import render_to_response, HttpResponse
+from django.shortcuts import render, HttpResponse
 from django.template import RequestContext
 from modules.preferencias.formularios import adicionar_salario_minimo
 
@@ -14,9 +14,7 @@ from modules.preferencias.models import SalarioMinimo
 
 def controle_preferencias(request):
     formulario_salario = adicionar_salario_minimo()
-    return render_to_response("preferencias/preferencias.html",
-                              {'formulario_salario':formulario_salario},
-                              context_instance=RequestContext(request))
+    return render(request, "preferencias/preferencias.html",{'formulario_salario':formulario_salario})
 
 def adicionar_salario(request):
     if request.is_ajax():
