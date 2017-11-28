@@ -28,7 +28,7 @@ from modules.entidade.formularios import formulario_cadastro_entidade_completo, 
 def verificar_cadastro_empresa():
     registros = entidade.objects.count()
     if registros == 0:
-        from modules.nucleo import precarregar_dados_digitar, precarregar_referencias_documentos
+        from modules.nucleo.initial_data import precarregar_dados_digitar, precarregar_referencias_documentos
         precarregar_dados_digitar()
         precarregar_referencias_documentos()
         return True
