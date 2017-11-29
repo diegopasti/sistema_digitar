@@ -227,7 +227,7 @@ BOWER_INSTALLED_APPS = (
     'jquery-maskmoney',
     'angular-utils-pagination',
     'angular-locale-pt-br',
-
+    'select2',
 
     #'bootstrap#3.3.7',#3.3.2
     #'font-awesome#4.7.0',#4.2

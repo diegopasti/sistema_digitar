@@ -597,7 +597,7 @@ def novo_emitir_protocolo(request):
     formulario_protocolo = formulario_emitir_protocolo()
     clientes = entidade.objects.all().filter(ativo=True).exclude(id=1).order_by('-id')
     documentos = documento.objects.all()
-    return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':'Marcelo Bourguignon','formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos}, context_instance=RequestContext(request))
+    return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':'Marcelo Bourguignon','formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos})
 
 
 def emitir_protocolo_identificado(request,operador):
@@ -605,7 +605,7 @@ def emitir_protocolo_identificado(request,operador):
     operador = operador.replace("_"," ").title()
     clientes = entidade.objects.all().filter(ativo=True).exclude(id=1).order_by('-id')
     documentos = documento.objects.all()
-    return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':operador,'formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos}, context_instance=RequestContext(request))
+    return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':operador,'formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos})
 
 
 def visualizar_protocolo(request, protocolo_id):
@@ -705,7 +705,7 @@ def visualizar_protocolo(request, protocolo_id):
     # RENDERIZAR PDF
     from django_xhtml2pdf.utils import generate_pdf
     resp = HttpResponse(content_type='application/pdf')
-    result = generate_pdf('protocolo/imprimir_protocolo.html', file_object=resp, context=c)
+    result = generate_pdf('protocolo/imprimir_protocolo.html', file_object=resp, context=parametros)
     return result
 
 
@@ -767,7 +767,7 @@ def salvar_protocolo(request):
         response_dict['success'] = True
         response_dict['message'] = "/protocolo/visualizar/"+str(novo_protocolo.id)+"/"
         data = json.dumps(response_dict)
-        return HttpResponse(data, content_type='application/json')
+        return render(data, content_type='application/json')
 
     else:
         raise Http404

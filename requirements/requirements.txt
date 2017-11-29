@@ -18,6 +18,7 @@ django-bower
 
 # DJANGO-XHTML2PDF
 # NEED REPLACE 'import StringIO' to 'from io import StringIO' on file utils.py
+# NEED REPLACE 'generate_pdf_template_object(tmpl, file_object, Context(context))' on file utils.py, line 66 to 'generate_pdf_template_object(tmpl, file_object, context)'
 
 #Pillow==3.3.0
 #PyPDF2==1.26.0

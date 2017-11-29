@@ -313,17 +313,17 @@ label {
 					
 						<label id="label_buscar_por" class='left_align link_desabilitado'><sub>Buscar por:</sub></label>
 						 <select id='buscar_por' class='form-control link_desabilitado '>
-                             <option value="0">Código</option>
-                             <option value="1" selected>Documento</option>
+							 <option value="0">Código</option>
+							 <option value="1" selected>Documento</option>
 						 	<option value="2">Descrição</option>
 						</select> 
 					</div>
 
 					{% if dados %}
 					<div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top: -11px;'>
-                    {% else %}
-                    <div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top: 31px;'>
-                    {% endif %}
+						{% else %}
+						<div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top: 31px;'>
+						{% endif %}
 						<input type="text" id="search" class="form-control link_desabilitado" placeholder="Consultar..">
 					</div>
 
@@ -429,12 +429,6 @@ jQuery(document).ready(function(){
     {% endif %}
 </script>
 
-
- 
-
-
-
-
 <script type="text/javascript">
 //$(document).ready(function() {
 ////	$("#datatable"+' tbody').on( 'click', 'tr', seleciona_linha("#datatable",$(this),true));
@@ -471,9 +465,6 @@ $(document).ready(function() {
 });
 </script>
 
-
-
-
 <script type="text/javascript">
 //$(document).ready(function() {
 	//alert("Olha o que temos de documentos: {{ dados }}");
@@ -495,7 +486,6 @@ $(document).ready(function() {
 //	});
 </script>
 
-
 <script type="text/javascript">
 $('#visualizar_protocolo').click( function () {
     //alert("cliquei pra visualizar protocolo"+table.cell('.selected', 0).data());
@@ -509,8 +499,6 @@ $('#visualizar_protocolo').click( function () {
  });
 </script>
 
-
-
 <script type="text/javascript">
 	//function visualizar_protocolo(){
 
@@ -519,18 +507,12 @@ $('#visualizar_protocolo').click( function () {
 	   	
 	 //   document.getElementById('visualizar_protocolo').href='/protocolo/visualizar/'+table.cell('.selected', 0).data());
 	 //   window.location.href = ('/protocolo/visualizar/'+table.cell('.selected', 0).data());
-	    
-	    
-		
-		
+
 		//$("#protocolo_id").val(table.cell('.selected', 0).data());
 		//document.getElementById('visualizar_protocolo').href='/protocolo/visualizar/'+table.cell('.selected', 0).data())';
 		//setTimeout(function(){ window.location.href = ('/protocolo/visualizar/'+table.cell('.selected', 0).data()); }, 1000);
-		
 	//}
-	
 </script>
-
 
 <script>
 $(function() {
