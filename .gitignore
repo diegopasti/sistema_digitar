@@ -56,3 +56,4 @@ static/bower_components
 util/__init__.pyc
 util/database.pyc
 util/internet.pyc
+/modules/user/migrations/

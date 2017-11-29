@@ -200,6 +200,8 @@ USE_THOUSAND_SEPARATOR = True
       e passo pro template. 
     
 """
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
