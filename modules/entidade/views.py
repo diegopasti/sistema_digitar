@@ -1070,17 +1070,28 @@ def serializar_atividades(dados):
 def verificar_erro(formulario):
     msg = ""
     for campo in formulario:
+        print("VEJA O CAMPO: ",campo.data,campo.name,campo.value(),campo.errors, campo.field)
+
+        """
+        ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', 
+        '__ge__', '__getattribute__', '__getitem__', '__gt__', '__hash__', '__html__', 
+        '__init__', '__init_subclass__', '__iter__', '__le__', '__len__', '__lt__', 
+        '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', 
+        '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 
+        'as_hidden', 'as_text', 'as_textarea', 'as_widget', 'auto_id', 'build_widget_attrs', 
+        'css_classes', 'data', 'errors', 'field', 'form', 'help_text', 'html_initial_id', 
+        'html_initial_name', 'html_name', 'id_for_label', 'initial', 'is_hidden', 'label', 
+        'label_tag', 'name', 'subwidgets', 'value']
+        """
+
+        #erros_json = campo.errors.as_json()
         erros = campo.errors.as_data()
-
         if erros != []:
-            erro = erros[0][0]
-
-            #print("olha o erro:", campo.label + " " + erro)
-
-            if "Contatos: Precisa ser Informado!" in msg:
+            if campo.name == 'contatos':
                 msg = "Erro! Pelo menos um contato deve ser informado."
 
             else:
+                erro = erros[0][0]
                 msg = campo.label + " " + erro
 
             """if 'email' in erro:
@@ -1096,15 +1107,6 @@ def verificar_erro(formulario):
             msg = campo.label + " " + erro"""
             return msg
 
-
-
-
-
-
-
-
-    
-    
     """
     if request.POST:
         form = formulario_cadastro_entidade_completo(request.POST, request.FILES)

@@ -222,7 +222,11 @@ BOWER_INSTALLED_APPS = (
     'nprogress',
     'pnotify',
     'datatables.net-dt',
-    'datatables.net-bs'
+    'datatables.net-bs',
+    'jquery-editable-select',
+    'jquery-maskmoney',
+    'angular-utils-pagination',
+    'angular-locale-pt-br',
 
 
     #'bootstrap#3.3.7',#3.3.2

@@ -62,9 +62,7 @@ def cadastro_documentos(request):
         else:
             pass
 
-    return render(request,"protocolo/cadastro_documentos.html",
-                              {'dados': documentos,'formulario':formulario,'erro':erro},
-                              context_instance=RequestContext(request))
+    return render(request,"protocolo/cadastro_documentos.html",{'dados': documentos,'formulario':formulario,'erro':erro})
 
 
 def get_documento(request, id):

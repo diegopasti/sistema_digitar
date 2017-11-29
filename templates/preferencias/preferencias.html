@@ -7,21 +7,15 @@
 {% block recrusos_necessarios %}
 {% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
 <!-- BOOTSTRAP 3.3.6 -->
-<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
 
-<!-- BASE STYLE-->
-<link href="{% static 'styles/padrao/base_format.css' %}" rel="stylesheet"/>
+<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
+<script src="{% static 'modules/preferences/preferencia.js' %}"></script>
 
-<!-- CUSTOM STYLE
-<link href="% static 'styles/padrao/base_format.css' %}" rel="stylesheet"/>-->
-
-<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
-<script src="{% static 'scripts/preferencias/preferencia.js' %}"></script>
-
-<link href="{% static 'styles/preferencias/salario_minimo.css' %}" rel="stylesheet"/>
-<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
-<script src="{% static 'angular-1.5.8/angular-locale_pt-br.js'%}"></script>
-
+<link href="{% static 'modules/preferences/salario_minimo.css' %}" rel="stylesheet"/>
+<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
+<script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
+<script src="{% static 'bower_components/angular-locale-pt-br/angular-locale_pt-br.js'%}"></script>
 {% endblock %}
 
 {% block breadcrumb_title %}Preferências{% endblock %}
@@ -254,10 +248,9 @@
 
 {% block recursos_complementares %}
 {% load staticfiles %}
-<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
-<script src="{% static 'angular-1.5.8/dirPagination.js'%}"></script>
-<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
-<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
 
 <script>
     //Declarando o módulo da aplicação

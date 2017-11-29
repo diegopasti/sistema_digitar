@@ -408,8 +408,8 @@ label {
 
 {% block recursos_complementares %}
 {% load staticfiles %}
-    <script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
-<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
 
 <script type="text/javascript">
 $(".alert").fadeOut(6000);
@@ -484,18 +484,6 @@ $('.modal').on('hidden.bs.modal', function(){
 
 </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
 <script type="text/javascript">
 $('#tipo_contato').blur(function(){
 	var campo_telefone = document.getElementById('tipo_contato');
@@ -552,7 +540,6 @@ $('.modal').on('hidden.bs.modal', function(){
 });
 </script>
 
-
 <script>
 $(document).ready(function() {
 	
@@ -586,14 +573,7 @@ jQuery(document).ready(function($) {
     });
 });
 
-
-
-
-
 $(".alert").fadeOut(4000 );
-
-
-
 </script>
 
 <script>
@@ -639,8 +619,5 @@ $("#bt_confirmar_desativacao").click(function() {
         return false;
     }
 });
-
-
 </script>
-
 {% endblock %}

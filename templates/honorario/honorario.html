@@ -9,33 +9,19 @@
 {% block recrusos_necessarios %}
 {% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
 <!-- BOOTSTRAP 3.3.6 -->
-<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
-
-<!-- DATATABLE -->
-<!--<link rel="stylesheet" type="text/css" href="% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/
-<link rel="stylesheet" type="text/css" href="% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
-
-<script src="% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
-<script src="% static 'datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
-<script src="% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>-->
+<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
 
 <!-- JQUERY UI DATAPICKER-->
-<link rel="stylesheet" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}">
-
-<!-- JQUERY AUTOCOMPLETE EDITABLE
-<link rel="stylesheet" type="text/css" href="% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}" />
-<script src="% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script> -->
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}">
 
 <!-- CUSTOM -->
-<!-- <link href="% static 'styles/menu_simples_responsivo.css' %}" rel="stylesheet"/> -->
-<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
-<script src="{% static 'scripts/protocolo/protocolo.js' %}"></script>
+<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
 
-<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
-<script src="{% static 'angular-1.5.8/dirPagination.js'%}"></script>
-<script src="{% static 'angular-1.5.8/angular-locale_pt-br.js'%}"></script>
-<link href="{% static 'styles/servico/servico.css' %}" rel="stylesheet"/>
+
+<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
+<script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
+<script src="{% static 'bower_components/angular-locale-pt-br/angular-locale_pt-br.js'%}"></script>
+<link href="{% static 'modules/service/servico.css' %}" rel="stylesheet"/>
 
 
 
@@ -870,13 +856,14 @@ color:blue;
 
 {% block recursos_complementares %}
 {% load staticfiles %}
-<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
-<script type="text/javascript" src="{% static 'honorario/honorarioController.js' %}"></script>
-<script type="text/javascript" src="{% static 'honorario/honorario.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/honorary/honorarioController.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/honorary/honorario.js' %}"></script>
 
-<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
-<script type="text/javascript" src="{% static 'sistema/core/base_api.js' %}"></script>
-<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/base_api.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
 
 
 <script>

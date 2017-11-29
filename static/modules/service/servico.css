@@ -1,0 +1,111 @@
+.desabilitado {
+     pointer-events: none;
+     cursor: not-allowed;
+     opacity: 0.6;
+    tab-index: 80;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.modal-header{
+    height: 50px;
+}
+
+.modal-body{
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.modal-body .form-group{
+    margin: 5px;
+}
+
+.modal-footer{
+    height: 65px;
+}
+
+#titulo_modal_adicionar_servico{
+    margin-top: 0px;
+}
+
+
+.caret_actived{
+    color: #007fff;
+}
+
+.caret_disabled{
+    color: #787878;
+}
+
+.caret_one{
+    position: relative;
+    left: 0px;
+    top: -2px;
+}
+
+.caret_two{
+    position: relative;
+    left:12px;
+    top: 4px;
+}
+
+
+#caret_cod{
+    display: none;
+    color: transparent;
+    font-size: 70%;
+
+
+}
+
+#caret_cod .caret_one{
+    /* Para o servidor windows
+    top: -2px;
+    left: 1px;*/
+    /* Para o servidor linux */
+    top: -3px;
+    left: 1px;
+    font-size: 130%;
+}
+
+#caret_cod .caret_two{
+    top: 3px;
+    font-size: 130%;
+}
+
+#caret_servico .caret_one{
+    /* Para o servidor windows
+    top: -1px;*/
+
+    /* Para o servidor linux */
+    left: 1px;
+    top: -1px;
+}
+
+#caret_servico .caret_two{
+    top: 5px;
+    left: 13px;
+}
+
+.selected {
+    background-color: #0283f3; !important;
+}
+
+/* Configura o evento hover sem sobrescrever o efeito da linha ja selecionada */
+.table-hover > tbody > tr.selected:hover > td,
+.selected > td {
+    background-color: #0283f3;
+}
+
+tr.linha_selecionavel{
+    cursor: pointer;
+}
