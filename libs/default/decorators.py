@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied, ValidationError
-from sistemaweb import settings
+from sistema_contabil import settings
 from functools import wraps
 
 

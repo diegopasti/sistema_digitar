@@ -23,9 +23,11 @@ from modules.honorario import views as honorario_views
 from modules.honorario import api as honorario_api
 from modules.preferencias import views as preferencias_views
 from modules.honorario.api import ProventosController
+from modules.user import views as view_usuario
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^login/$', view_usuario.login_page),
     url(r'^$', entidade_views.index), # entidade.views.index),
     url(r'^cadastrar_empresa$', nucleo_views.cadastrar_empresa), #url(r'teste/$', "endereco.views.teste),
     url(r'^index/$',  entidade_views.index),
@@ -41,7 +43,7 @@ urlpatterns = [
 
     url(r'^preferencias/protocolo/documentos/$', protocolo_views.cadastro_documentos),
     url(r'^protocolo/documento/(?P<id>\d+)/$', protocolo_views.get_documento),
-	url(r'^protocolo/documento/excluir/(?P<id>\d+)/$', protocolo_views.excluir_documento),
+    url(r'^protocolo/documento/excluir/(?P<id>\d+)/$', protocolo_views.excluir_documento),
     url(r'^api/protocolo/salvar$', protocolo_views.salvar_protocolo),
 
     url(r'^consultar_cep/(?P<codigo_postal>\d+)/$', entidade_views.consultar_cep),
@@ -51,7 +53,7 @@ urlpatterns = [
     url(r'^entidade/$', entidade_views.cadastro_entidades),
     url(r'^entidade/adicionar/$', entidade_views.adicionar_entidade),
     url(r'^entidade/desativar/(?P<cliente>\d+)/$', entidade_views.desativar_cliente),
-	url(r'^entidade/visualizar/(?P<id>\d+)/$', entidade_views.visualizar_entidade),
+    url(r'^entidade/visualizar/(?P<id>\d+)/$', entidade_views.visualizar_entidade),
     url(r'^api/entidade/lista_clientes/$', entidade_views.novo_buscar_lista_clientes),
     
     #url(r'^protocolo/$', entidade_views.protocolo),

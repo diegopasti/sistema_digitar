@@ -1,12 +1,12 @@
 from libs.default.decorators import request_ajax_required, validate_formulary
 from django.core.exceptions import ValidationError
 
-from modules.core.comunications import send_generate_activation_code
-from modules.core.config import ERRORS_MESSAGES
+from modules.nucleo.comunications import send_generate_activation_code
+from modules.nucleo.config import ERRORS_MESSAGES
 from datetime import date, datetime, timedelta
 from django.http import Http404, HttpResponse
 
-from modules.core.utils import generate_activation_code
+from modules.nucleo.utils import generate_activation_code
 from modules.user.models import Session, User
 from django.contrib.auth import login
 from django.db import IntegrityError
