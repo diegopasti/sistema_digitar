@@ -1,12 +1,11 @@
+import project_properties
 from django.conf import settings
 from django.http import HttpResponse
 import requests
 import json
 
 
-
 class WorkingApi:
-
     setup_file = settings.WORKING_CONFIGURATION
     server_api = settings.WORKING_SERVER+"/api/work/register"
     user_key = None
@@ -15,7 +14,7 @@ class WorkingApi:
     task_id = None
 
     def get_working_key(self):
-        config = json.loads(open(settings.WORKING_CONFIGURATION).read())
+        config = project_properties.working_paramters#json.loads(open(settings.WORKING_CONFIGURATION).read())
         self.user_key = config['user_key']
         self.project_key = config['project_key']
         self.task_id = config['task']
