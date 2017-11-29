@@ -1,7 +1,6 @@
 .idea
 .sonar/
 data/
-honorario/
 modules/__init__.pyc
 modules/__pycache__/
 modules/entidade/__init__.pyc
