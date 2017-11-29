@@ -56,8 +56,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djangobower',
-    'sistema_contabil','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
+    'djangobower','dropbox','dbbackup',
+    'sistema_contabil','modules','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
 
 
@@ -102,6 +102,19 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'data/db.sqlite3'),
     }
 }
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'data/backup')}
+#DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+#DBBACKUP_STORAGE_OPTIONS = {'oauth2_access_token': '','root_path': '//data/'}
+DBBACKUP_DATE_FORMAT = 'temp'#'%Y%m%d%H%M%S'
+DBBACKUP_FILENAME_TEMPLATE = '{datetime}.{extension}' #'{datetime}.{extension}'
+DBBACKUP_GPG_RECIPIENT = 'cleiton.leonel@gmail.com'
+#DBBACKUP_GPG_ALWAYS_TRUST = 'True'
+DROPBOX_OAUTH2_TOKEN = 'r2VjuxIaDQAAAAAAAAAAD7YKqJlAJSdXsRz3IWYGHs2Q_BEnim1nOc3-LA1PspKi'
+
+#DROPBOX_OAUTH2_TOKEN = '4dM4LNuAHKAAAAAAAAAACCB_3-K_tIVlAFYwTBatxMlTd_e6Y5dyiEbR7uX1dKTJ'
+DROPBOX_ROOT_PATH = '/backup'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -283,7 +296,7 @@ STATICFILES_DIRS = (
 SERVER_DIGITAR = True
 if SERVER_DIGITAR:
     WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
-    WORKING_SERVER = "http://127.0.0.1:8010"
+    WORKING_SERVER = "http://192.168.1.114:8010"
     from modules.nucleo.working_api import WorkingManager
 
     try:
