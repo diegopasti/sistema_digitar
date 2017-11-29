@@ -241,7 +241,6 @@ BOWER_INSTALLED_APPS = (
     #"bootstrap-daterangepicker",
     #'fastclick',
 
-
     #'qunit',
     #'blanket',
     #'https://github.com/yairEO/validator.git',

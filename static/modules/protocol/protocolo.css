@@ -1,0 +1,149 @@
+/* DESABILTAR E HABILITAR CAMPOS*/
+.desabilitado {
+     pointer-events: none;
+     cursor: not-allowed;
+     opacity: 0.6;
+}
+
+/* FORMATACAO DE TEXTO */
+.uppercase{
+    text-transform: uppercase;
+}
+
+.lowercase{
+    text-transform: lowercase;
+}
+
+.center_align{
+    text-align: center;
+}
+
+.left_align{
+	padding-left: 8px;
+    text-align: left;
+}
+
+.right_align{
+    text-align: right;
+}
+
+label{
+    font-weight: normal;
+    margin: 0px;
+    margin-left: 8px;
+}
+
+.label_info {
+    visibility: hidden;
+    color: #b51814;
+    width: 100%;
+}
+
+.label_help {
+    cursor: help;
+}
+
+#label_destinatario{
+    margin-top: 5px;
+    padding-right: 10px;
+}
+
+#label_documentos{
+    padding-left: 0px;
+    padding-bottom: 20px;
+}
+
+#box_documentos:hover #label_documentos, #box_destinatario:hover #label_destinatario{
+    /*display: : block; */
+    visibility: visible;
+}
+
+
+
+.field_required label:after {
+    color: #b51814;
+    content: '*';
+    display:inline;
+}
+
+.modal-header{
+    height: 50px;
+}
+
+.modal-header .titulo_modal {
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.modal-body{
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.modal-body .form-group{
+    margin: 5px;
+}
+
+.modal-footer{
+    height: 65px;
+}
+
+#myModalLabel{
+    margin-top: 0px;
+}
+
+#modal_help_protocolo_avulso .modal-body{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#modal_adicionar_documento table td:empty {
+  width: 15px;
+}
+
+#box_destinatario{
+    margin-top: -30px;
+}
+
+#box_destinatario .panel-body {
+    padding-bottom: 18px;
+    margin-top: 1px;
+}
+
+#box_documentos{
+    margin-top: -15px;
+}
+
+#box_documentos .box-body{
+    padding-bottom: -10px;
+    margin-top: -5px;
+}
+
+#box_documentos #bt_novo_documento {
+    position: relative;
+    margin-right: 2px;
+}
+
+/* TABELA DE DOCUMENTOS */
+.table_wrapper{
+    padding-top: 5px
+}
+
+#tabela_documentos{
+    border-color:#CCC;
+}
+
+.selected {
+    background-color: #0283f3; !important;
+}
+
+/* Configura o evento hover sem sobrescrever o efeito da linha ja selecionada */
+.table-hover > tbody > tr.selected:hover > td,
+.selected > td {
+    background-color: #0283f3;
+}
+
+#tabela_documentos tr.linha_selecionavel{
+    cursor: pointer;
+}
