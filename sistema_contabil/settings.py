@@ -57,7 +57,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djangobower','dropbox','dbbackup',
-    'sistema_contabil','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
+    'sistema_contabil','modules','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
 
 
@@ -296,7 +296,7 @@ STATICFILES_DIRS = (
 SERVER_DIGITAR = True
 if SERVER_DIGITAR:
     WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
-    WORKING_SERVER = "http://127.0.0.1:8010"
+    WORKING_SERVER = "http://192.168.1.114:8010"
     from modules.nucleo.working_api import WorkingManager
 
     try:
