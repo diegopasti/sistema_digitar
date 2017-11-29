@@ -235,8 +235,12 @@ BOWER_INSTALLED_APPS = (
     'nprogress',
     'pnotify',
     'datatables.net-dt',
-    'datatables.net-bs'
-
+    'datatables.net-bs',
+    'jquery-editable-select',
+    'jquery-maskmoney',
+    'angular-utils-pagination',
+    'angular-locale-pt-br',
+    'select2',
 
     #'bootstrap#3.3.7',#3.3.2
     #'font-awesome#4.7.0',#4.2
@@ -249,7 +253,6 @@ BOWER_INSTALLED_APPS = (
     #'moment',
     #"bootstrap-daterangepicker",
     #'fastclick',
-
 
     #'qunit',
     #'blanket',

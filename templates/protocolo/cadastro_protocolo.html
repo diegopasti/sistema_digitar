@@ -8,30 +8,31 @@
 {% block recrusos_necessarios %}
 {% load staticfiles %}
 <!-- BOOTSTRAP 3.3.6 -->
-<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
 
 <!-- DATATABLE -->
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
-<script src="{% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
-<script src="{% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
+
+<script src="{% static 'custom/datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'custom/datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'custom/datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
 
 <!-- JQUERY UI DATAPICKER -->
-<link rel="stylesheet" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
 <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">-->
 
 <!-- JQUERY AUTOCOMPLETE EDITABLE -->
-<link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}"></link>
-<script src="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.css' %}" />
+<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
 
 <!-- CUSTOM -->
 <!-- <link href="{% static 'styles/menu_simples_responsivo.css' %}" rel="stylesheet"/> -->
-<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
-<script src="{% static 'scripts/protocolo/protocolo.js' %}"></script>
-<link href="{% static 'select2/css/select2.min.css' %}" rel="stylesheet"/>
-<script type="text/javascript" src="{% static 'select2/js/select2.min.js' %}"></script>
+<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
+<script src="{% static 'modules/protocol/protocolo.js' %}"></script>
+<link href="{% static 'bower_components/select2/dist/css/select2.min.css' %}" rel="stylesheet"/>
+<script type="text/javascript" src="{% static 'bower_components/select2/dist/js/select2.min.js' %}"></script>
 
 <style type="text/css">
 .uppercase{
@@ -539,7 +540,7 @@ label {
 
 						<label class='left_align'><sub>Filtrar por:</sub></label>
 						 <select id='filtrar_por' class='form-control'>
-						 	<option value="emitidos" selected>Protocolos Emitidos</option>
+						 	<option value="emitidos" selected>Todos Protocolos</option>
 						 	<option value="abertos" >Protocolos em Aberto</option>
 						 	<option value="recebidos">Protocolos Confirmados</option>
 						 	<option value="avulsos">Protocolos Avulsos</option>
@@ -608,7 +609,7 @@ label {
 
 {% block recursos_complementares %}
 {% load staticfiles %}
-<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
 <!--<script src="//cdn.datatables.net/plug-ins/1.10.16/api/fnFindCellRowIndexes.js"></script>-->
 
 

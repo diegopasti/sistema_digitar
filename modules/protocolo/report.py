@@ -213,7 +213,7 @@ def report_protocols_per_documents(request, form):
         'filtro_ate':filtro_ate,
         'filtro_documento':filtro_documento,
     }
-    context = Context(parametros)
+    context = parametros
     return render_to_response('protocolo/report/report_per_documents.html', context)
 
 

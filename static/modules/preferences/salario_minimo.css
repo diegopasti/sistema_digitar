@@ -1,0 +1,242 @@
+label {
+    font-weight: normal !important;
+}
+.dataTables_paginate {
+	position: relative;
+    display: block;
+    top: 30px;
+}
+
+/* unvisited link */
+.linha_cabecalho a {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* visited link */
+.linha_cabecalho a:visited {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* mouse over link */
+.linha_cabecalho a:hover {
+    color: #222;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* selected link */
+.linha_cabecalho a:active {
+    color: #111;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#modal_adicionar_salario #modal-body{
+    padding: 30px;
+    padding-top: 20px;
+}
+
+#modal_adicionar_salario #modal-body .row{
+    padding-left: 5px;
+    padding-right: 5px
+}
+
+.modal-header{
+    height: 50px;
+}
+
+.modal-body{
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.modal-body .form-group{
+    margin: 5px;
+}
+
+.modal-footer{
+    height: 65px;
+}
+
+.caret_actived{
+    color: #007fff;
+}
+
+.caret_disabled{
+    color: #787878;
+}
+
+.caret_one{
+    position: relative;
+    left: 0px;
+    top: -2px;
+}
+
+.caret_two{
+    position: relative;
+    left:12px;
+    top: 4px;
+}
+
+
+#caret_cod{
+    display: none;
+    color: transparent;
+    font-size: 70%;
+}
+
+#caret_cod .caret_one{
+    /* Para o servidor windows
+    top: -2px;
+    left: 1px;*/
+    /* Para o servidor linux */
+    top: -3px;
+    left: 1px;
+    font-size: 130%;
+}
+
+#caret_cod .caret_two{
+    top: 3px;
+    font-size: 130%;
+}
+
+#caret_vigencia_inicio .caret_one{
+    /* Para o servidor windows
+    top: -1px;*/
+
+    /* Para o servidor linux */
+    left: 1px;
+    top: -1px;
+}
+
+#caret_valor .caret_two{
+    top: 5px;
+    left: 13px;
+}
+
+.selected {
+    background-color: #0283f3; !important;
+}
+
+/* Configura o evento hover sem sobrescrever o efeito da linha ja selecionada */
+.table-hover > tbody > tr.selected:hover > td,
+.selected > td {
+    background-color: #0283f3;
+}
+
+tr.linha_selecionavel{
+    cursor: pointer;
+}
+
+.modal-header .titulo_modal {
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.field_required label{
+  padding-left: 8px;
+}
+
+#box_salario{
+    margin-top: -25px;
+}
+
+#box_salario .box-body{
+    padding-bottom: -10px;
+    margin-top: 0px;
+}
+
+#tabela_salario .nao_vigente {
+    color: #888;
+}
+#tabela_salario .vigente{
+    color: #000;
+}
+
+#tabela_salario .vigente .glyphicon{
+    color: #5bb75b;
+}
+
+.field_required label:after {
+    color: #b51814;
+    content: '*';
+    display:inline;
+}
+
+#tabela_salario th a{
+    display: block;
+}
+#tabela_salario #coluna_codigo{
+    width: 40px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#tabela_salario #coluna_data_cadastro{
+    width: 170px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+#tabela_salario #coluna_vigencia{
+    width: 170px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#tabela_salario #coluna_salario{
+    text-align: center;
+    vertical-align: middle;
+}
+
+#box_salario #painel_opcao_consulta{
+    margin-top:6px;
+}
+
+#box_salario #painel_consulta{
+    margin-left:-20px;
+    margin-top: 31px;
+}
+
+#box_salario #painel_pagination{
+    margin-top:-54px;
+    margin-bottom: -30px;
+    margin-right: 0px;
+}
+
+#box_salario #bt_alterar{
+    margin-left: 10px;
+}
+
+#box_salario #bt_excluir{
+    position: relative;
+    margin-top: 0px;
+    margin-right: 2px;
+    margin-left: 10px;
+}
+
+#box_salario_vigente {
+    margin-top: -25px;
+}
+
+#box_salario_vigente .box-body{
+    padding-bottom: 10px;
+    margin-top: 10px;
+}
+#progress_proxima_vigencia{
+    padding-bottom: 0px;
+    margin-bottom: -20px;
+}
+
+#painel_salario_vigente {
+  position: absolute;
+  margin-top: 10px;
+  left:50%;
+  transform: translate(-50%,-50%);
+  }

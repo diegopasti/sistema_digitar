@@ -9,30 +9,30 @@
 {% load staticfiles %}
 
 <!-- JQUERY -->
-<script type="text/javascript" src="{% static 'jquery/jquery-2.2.0.min.js' %}"></script>
-<script src="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.js' %}"></script>
+<!--<script type="text/javascript" src="{% static 'jquery/jquery-2.2.0.min.js' %}"></script>
+<script src="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.js' %}"></script>-->
 
 <!-- BOOTSTRAP -->
 <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
-<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<!--<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>-->
 
 
 <!-- JQUERY AUTOCOMPLETE EDITABLE -->
-<link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}"></link>
-<script src="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.css' %}" />
+<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
 
 <!-- JQUERY UI DATAPICKER -->
 <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">-->
 <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">-->
-<link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}" />
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
 
 <!-- ANGULAR -->
-<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
+<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
 
 <!-- CUSTOM -->
-<link rel="stylesheet" href="{% static 'styles/protocolo/protocolo.css' %}">
+<link rel="stylesheet" href="{% static 'modules/protocol/protocolo.css' %}">
 <!--<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>-->
-<script src="{% static 'scripts/protocolo/new_protocolo.js' %}"></script>
+<script src="{% static 'modules/protocol/new_protocolo.js' %}"></script>
 {% endblock %}
 
 {% block breadcrumb_title %}Novo Protocolo{% endblock %}
@@ -358,10 +358,10 @@
 {% block recursos_complementares %}
 {% load staticfiles %}
 
-<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
-<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
-<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
-<script type="text/javascript" src="{% static 'scripts/entidade/validar_cpf_cnpj.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/entity/validar_cpf_cnpj.js' %}"></script>
 
 <script>
     //Declarando o módulo da aplicação

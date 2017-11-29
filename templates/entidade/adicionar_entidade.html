@@ -9,41 +9,31 @@
 {% block recrusos_necessarios %}
 {% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
 <!-- BOOTSTRAP 3.3.6 -->
-<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
 
-<!-- DATATABLE -->
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
+<!-- DATATABLE
+<link rel="stylesheet" type="text/css" href="{ static 'custom/datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{static 'custom/datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{ static 'custom/datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
 
-<script src="{% static 'datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
-<script src="{% static 'datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
+<script src="{ static 'custom/datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="{ static 'custom/datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{ static 'custom/datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script> -->
 
 <!-- JQUERY UI DATAPICKER -->
-<link rel="stylesheet" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
 <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 
 <!-- JQUERY AUTOCOMPLETE EDITABLE -->
-<link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.css' %}" />
-<script src="{% static 'jquery/jquery-editable-select/jquery.editable-select.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.css' %}" />
+<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
 
-<!-- BOOTSTRAP SWITCHER
-<link href=" static 'bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css' %}" rel="stylesheet" /> -->
-<!--<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>-->
 
-<!-- CUSTOM -->
-<!-- <link href="{% static 'styles/menu_simples_responsivo.css' %}" rel="stylesheet"/> -->
-<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>
-<script src="{% static 'scripts/protocolo/protocolo.js' %}"></script>
-
-<script src="{% static 'angular-1.5.8/angular.min.js'%}"></script>
-<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>-->
-
+<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
+<!--<script src="{% static 'modules/protocol/protocolo.js' %}"></script>-->
+<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
 
 <style type="text/css">
-
 .form-control {
     height: 28px;
 }
@@ -1021,7 +1011,7 @@ legend {
 {% load staticfiles %}
 
 <!--<script type="text/javascript" src=" static 'bootstrap-switch/dist/js/bootstrap-switch.min.js' %}" />-->
-<script src="{% static 'scripts/entidade/validar_cpf_cnpj.js' %}"></script>
+<script src="{% static 'modules/entity/validar_cpf_cnpj.js' %}"></script>
 
 <script>
         function substituir_valor_nulo(valor){
@@ -1248,8 +1238,6 @@ legend {
 
     </script>
 
-
-
 <!--
 <!
 <!    SCRIPTS NECESSARIOS PARA FORMATACAO
@@ -1264,30 +1252,21 @@ legend {
 <!
 -->
 <!-- SCRIPT PARA MANIPULACAO DE CONTROLES -->
-<script type="text/javascript" src="{% static 'scripts/padrao/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
 
-<!-- SCRIPT PARA MANIPULACAO DE MASCARAS NOS CAMPOS -->
-<script type="text/javascript" src="{% static 'scripts/mask.js' %}"></script>
-<script type="text/javascript" src="{% static 'jquery/jquery.maskMoney.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
 
 <!-- CONFIGURACAO DE COMPONENTES -->
 <script>
-
+	configurar_campo_data("nascimento_fundacao");
+	configurar_campo_data("regime_desde");
+	configurar_campo_data("atividade_desde");
+	configurar_campo_data("data_vencimento_iss");
+	configurar_campo_data("documento_vencimento");
+	configurar_campo_data("contrato_inicio");
+	configurar_campo_data("contrato_fim");
 </script>
-
-<script>
-    configurar_campo_data("nascimento_fundacao");
-    configurar_campo_data("regime_desde");
-    configurar_campo_data("atividade_desde");
-    configurar_campo_data("data_vencimento_iss");
-    configurar_campo_data("documento_vencimento");
-    configurar_campo_data("contrato_inicio");
-    configurar_campo_data("contrato_fim");
-    </script>
-
-
-
-
 
 <!-- SCRIPTS COMPLEMENTARES -->
 <script>
@@ -1440,26 +1419,26 @@ legend {
     </script>
 
 <script type="text/javascript">
-        $('#codigo_postal').blur(function(){
-            $.ajax({
-                url: '/consultar_cep/'+$('#codigo_postal').val(),
-                type: 'get', //this is the default though, you don't actually need to always mention it
-                success: function(data) {
-                    $('#endereco').val(data[0]);
-                    $('#bairro').val(data[1]);
-                    $('#municipio').val(data[2]);
-                    $('#codigo_municipio').val(data[3]);
-                    $('#estado').val(data[4]);
-                    $('#pais').val(data[5]);
-                    $('#numero_endereco').focus();
-                  //alert(data);
-                },
-                failure: function(data) {
-                    alert('Got an error dude');
-                }
-            });
-        });
-        </script>
+$('#codigo_postal').blur(function(){
+	$.ajax({
+		url: '/consultar_cep/'+$('#codigo_postal').val(),
+		type: 'get', //this is the default though, you don't actually need to always mention it
+		success: function(data) {
+			$('#endereco').val(data[0]);
+			$('#bairro').val(data[1]);
+			$('#municipio').val(data[2]);
+			$('#codigo_municipio').val(data[3]);
+			$('#estado').val(data[4]);
+			$('#pais').val(data[5]);
+			$('#numero_endereco').focus();
+			//alert(data);
+		},
+		failure: function(data) {
+				alert('Got an error dude');
+		}
+	});
+});
+</script>
 
 <script>
         jQuery(document).ready(function(){

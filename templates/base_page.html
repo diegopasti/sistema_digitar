@@ -32,10 +32,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
 
   <!-- THEME -->
-  <link href="{% static 'adminlte/css/AdminLTE.min.css' %}" rel="stylesheet"/>
-  <link href="{% static 'adminlte/css/skins/skin-blue.min.css' %}" rel="stylesheet"/>
+  <link href="{% static 'custom/adminlte/css/AdminLTE.min.css' %}" rel="stylesheet"/>
+  <link href="{% static 'custom/adminlte/css/skins/skin-blue.min.css' %}" rel="stylesheet"/>
 
-  <link href="{% static 'styles/core/base.css' %}" rel="stylesheet"/>
+  <link href="{% static 'modules/core/base.css' %}" rel="stylesheet"/>
 
   <!-- BASE
   <link href="% static 'styles/padrao/AdminLTE.min.css' %}" rel="stylesheet"/>-->
@@ -420,11 +420,11 @@ desired effect
 
 <div class="clearfix"></div>
 <!-- AdminLTE App -->
-<script type="text/javascript" src="{% static 'adminlte/js/app.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'custom/adminlte/js/app.min.js' %}"></script>
 <!-- PNotify -->
 <link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet">
 <script src="{% static 'bower_components/pnotify/dist/pnotify.js'%}"></script>
-<script src="{% static 'scripts/working.js' %}"></script>
+<script src="{% static 'modules/core/working.js' %}"></script>
 {% block recursos_complementares %}
 
 {% endblock %}

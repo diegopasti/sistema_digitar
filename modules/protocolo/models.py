@@ -69,7 +69,7 @@ class documento(models.Model):
             novo_documento = documento()
             novo_documento.nome = item
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nome
 
 
