@@ -767,7 +767,7 @@ def salvar_protocolo(request):
         response_dict['success'] = True
         response_dict['message'] = "/protocolo/visualizar/"+str(novo_protocolo.id)+"/"
         data = json.dumps(response_dict)
-        return render(data, content_type='application/json')
+        return HttpResponse(data, content_type='application/json')
 
     else:
         raise Http404
