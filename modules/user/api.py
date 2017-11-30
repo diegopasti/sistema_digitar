@@ -14,12 +14,39 @@ import json
 
 
 class UserController(BaseController):
-
+    @request_ajax_required
     def login_autentication(self, request):
-        return self.login(request, FormLogin)
+        #return self.login(request, FormLogin)
+        formulary = FormLogin
+        print("Enrando aquie")
+        form = formulary(request.POST)
+        if form.is_valid():
+            username = request.POST['username'].lower()
+            password = request.POST['password']
+            user = User.objects.get_username(username)
+            print("Consigo pega o user?", user)
+            if user is not None:
+                if user.is_active:
+                    auth = User.objects.authenticate(request,username, password=password)
+                    if auth is not None:
+                        #login(request, user)
+                        #self.__create_session(request, user)
+                        response_dict = self.notify.success(user, list_fields=['username'])
+                    else:
+                        response_dict = self.notify.error({'username': 'Usuário ou senha incorreta.'})
+                else:
+                    response_dict = self.notify.error({'username': 'Usuário não autorizado.'})
+            else:
+                response_dict = self.notify.error({'username': 'Usuário não existe.'})
+        else:
+            response_dict = self.get_exceptions(None, form)
+
+        return self.response(response_dict)
+
 
     def register_user(self, request):
-        return BaseController().signup(request, FormRegister)
+        print("VINDO AQUI")
+        return #BaseController().signup(request, FormRegister)
 
     @request_ajax_required
     def reset_password(self, request):

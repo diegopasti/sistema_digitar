@@ -24,6 +24,7 @@ from modules.honorario import api as honorario_api
 from modules.preferencias import views as preferencias_views
 from modules.honorario.api import ProventosController
 from modules.user import views as view_usuario
+from modules.user.api import UserController
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -104,6 +105,19 @@ urlpatterns = [
     url(r'^api/preferencias/salario_vigente/$', preferencias_views.get_salario_vigente),
 
     url(r'^api/working/register/$', nucleo_views.working),
+
+    #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
+    url(r'register/',view_usuario.register_page),
+    url(r'api/user/register/save', UserController().register_user),
+    url(r'login/autentication$', UserController().login_autentication),
+    url(r'reset_password$', UserController().reset_password),
+    url(r'change_password$', UserController().change_password),
+    url(r'reactivate$', UserController().resend_activation_code),
+
+    # User Administration
+    url(r'filter/', UserController.filter_users),
+    # APIs administrativas
+    url(r'register/delete/(?P<email>[^/]+)/', UserController.register_delete),
 
 
 ]

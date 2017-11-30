@@ -19,6 +19,21 @@ class FormAbstractEmail(forms.Form):
         )
     )
 
+class FormAbstractUsername (forms.Form):
+    username = forms.CharField(
+        label='Usuário',
+        max_length=150,
+        required=True,
+        validators=[],
+        error_messages=ERRORS_MESSAGES,
+        widget=forms.TextInput(
+            attrs={
+                'id':'username','name':'username','class':'form-control', 'autocomplete':'off',
+                'ng-model':'username','required':'required'
+            }
+        )
+    )
+
 
 class FormAbstractPassword(forms.Form):
     password = forms.CharField(

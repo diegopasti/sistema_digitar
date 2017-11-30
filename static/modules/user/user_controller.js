@@ -81,6 +81,7 @@ application.controller('register_controller', function($scope) {
 		});
 
     success_function = function(result,message,data_object,status){
+    	alert("CONSEGUINDO ATE ENTAO")
     	var redirect = "/register/confirm/"+$scope.email;
     	return redirect
     }
@@ -88,6 +89,7 @@ application.controller('register_controller', function($scope) {
     fail_function = function (result,message,data_object,status) {
       notify_response_message(message);
     }
+    alert("vindo aqui?\n"+JSON.stringify(data_paramters))
     request_api("/api/user/register/save",data_paramters,validate_form_register,success_function,fail_function)
   }
 
@@ -96,15 +98,15 @@ application.controller('register_controller', function($scope) {
 
     var success_function = function success_function(result,message,data_object,status){
 			success_notify("Operação realizada com Sucesso!","Verifique seu email, você receberá um email em instantes. <br><a href='/login'>Clique aqui para acessar sistema.</a>")
-    }
+    };
 
     var fail_function = function (result,message,data_object,status) {
     	notify_response_message(message);
-    }
+    };
 
     validate_function = function(){
     	return true;
-		}
+		};
 
 		alert("veja eh isso")
     request_api("/api/user/reactivate",data_paramters,validate_function,success_function,fail_function)
@@ -115,23 +117,21 @@ application.controller('login_controller', function($scope) {
 
   $scope.login_autentication = function () {
 
-  	SESSION_PARAMTERS['email'] = $scope.email
+  	SESSION_PARAMTERS['username'] = $scope.username
   	SESSION_PARAMTERS['password'] = $scope.password
 
     var data_paramters = SESSION_PARAMTERS//{email: $scope.email, password: $scope.password}
 
     function success_function(result,message,data_object,status){
-    	//alert("VEJA O QUE VEIO: "+result+" - "+message+" - "+data_object+" - "+status.request_path)
-
+    	alert("VEJA O QUE VEIO: "+result+" - "+message+" - "+data_object+" - "+status.request_path)
     	var redirect = "/"
     	return redirect
     }
 
     fail_function = function (result,message,data_object,status) {
-    	//alert("FALHA: "+result+" - "+message+" - "+data_object+" - "+status)
+    	alert("FALHA: "+result+" - "+message+" - "+data_object+" - "+status)
       notify_response_message(message);
     }
-
     request_api("/api/user/login/autentication",data_paramters,validate_form_login,success_function,fail_function)
   }
 });
@@ -370,10 +370,12 @@ application.controller('users_controller', function($scope) {
 	};
 
 	$scope.save_new_user = function () {
+		alert("venho aqui")
 		$('#password').val('1q2w3e4r')
 		$('#confirm_password').val('1q2w3e4r')
+
 		var data_paramters = {};
-  	$.each($('#form-save-user').serializeArray(), function(i, field) {
+  	$.each($('#form_register').serializeArray(), function(i, field) {
   		alert("OLHA O VALOR:"+field.value)
 			data_paramters[field.name] = field.value;
 		});

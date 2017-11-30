@@ -35,15 +35,20 @@ function validate_form_change_password(){
 }
 
 function validate_form_login(){
-  return (email_is_valid("email") && validate_password("password"));
+  	return ( validate_password("password"));
+
 }
 
 function validate_form_register(){
+	return true;
+	//Falta fazer os validadores
   return (email_is_valid("email") && validate_password("password")) && compare_passwords("password","confirm_password");
 }
 
 function validate_password(senha){
-  if (!is_empty(senha) && check_password_format(senha)){
+	return true;
+	/*FALTA CRIAR AS VALIDACOES DE USER*/
+  if (/*is_empty(senha) &&*/ check_password_format(senha)){
     return true;
   }
   else{
@@ -62,5 +67,6 @@ function compare_passwords(id_senha, id_confirma_senha){
 }
 
 function validade_new_user(){
+	return true
 	return email_is_valid("email")
 }

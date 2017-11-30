@@ -2,28 +2,47 @@ from django import forms
 
 from libs.default.core import BaseForm
 from modules.nucleo.config import ERRORS_MESSAGES
-from modules.nucleo.forms import FormAbstractPassword,FormAbstractConfirmPassword,FormAbstractEmail
+from modules.nucleo.forms import FormAbstractPassword, FormAbstractConfirmPassword, FormAbstractEmail, \
+    FormAbstractUsername
 from modules.user.validators import password_format_validator
 
 
-class FormLogin(FormAbstractEmail, FormAbstractPassword,BaseForm):
+class FormLogin(FormAbstractUsername, FormAbstractPassword,BaseForm):
 
     def __init__(self, *args, **kwargs):
         super(FormAbstractPassword, self).__init__(*args, **kwargs)
-        super(FormAbstractEmail, self).__init__(*args,**kwargs)
-        self.fields['email'].widget.attrs['placeholder'] = 'Email..'
+        super(FormAbstractUsername, self).__init__(*args,**kwargs)
+        self.fields['username'].widget.attrs['placeholder'] = 'Usuário..'
         self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
 
 
-class FormRegister(FormAbstractPassword,FormAbstractConfirmPassword,FormAbstractEmail,BaseForm):
+class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirmPassword,FormAbstractEmail,BaseForm):
+    choices = ((1, 'Gerente'), (1, 'Administrador'), (3, 'Operador'), (4, 'Sem acesso'))
+    level_permission = forms.ChoiceField(
+        label="Nivel Permissão",
+        choices=choices,
+        required=True,
+        validators=[],
+        error_messages=ERRORS_MESSAGES,
+        widget=forms.Select(
+            attrs={
+                'id': 'level_permission', 'class': "form-control", 'type': "level_permission", 'autocomplete': "off",
+                'ng-model': 'level_permission', 'required': "required"
+            }
+        )
+    )
 
     def __init__(self, *args, **kwargs):
+        super(FormAbstractUsername, self).__init__(*args,**kwargs)
         super(FormAbstractPassword, self).__init__(*args, **kwargs)
         super(FormAbstractConfirmPassword, self).__init__(*args, **kwargs)
         super(FormAbstractEmail, self).__init__(*args,**kwargs)
+        self.fields['username'].widget.attrs['placeholder'] = 'Nome do usuario'
         self.fields['email'].widget.attrs['placeholder'] = 'Email..'
         self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
         self.fields['confirm_password'].widget.attrs['placeholder'] = 'Repita a Senha..'
+
+
 
     def clean(self):
         form_data = self.cleaned_data
