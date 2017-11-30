@@ -1,0 +1,66 @@
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+/****** Style Star Rating Widget *****/
+
+.rating {
+  border: none;
+  float: left;
+}
+
+.rating > input { display: none; }
+.rating > label:before {
+  margin-right: 5px;
+  margin-left: 5px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
+
+
+
+.rating > label {
+  color: #ddd;
+ float: right;
+}
+
+/***** CSS Magic to Highlight Stars on Hover *****/
+
+.rating > input:checked ~ label, /* show gold star when clicked */
+.rating:not(:checked) > label:hover, /* hover current star */
+.rating:not(:checked) >  { color: #0099cc  !important; opacity: 0.6; } /* hover previous stars in list */
+
+.rating > input:checked + label:hover, /* hover current star when changing rating */
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+.rating > input:checked ~ label:hover ~ label { color: #66d9ff  !important;opacity: 0.6;  }
+
+
+
+.selected_rating{
+  color: #0099cc !important;
+  opacity: 0.6;
+}
+
+.unselected_rating{
+  color : #ddd !important;
+}
+
+.row_menu .col_menu_cabecario{
+  text-align: left;
+  height: 20px;
+  border: 0px;
+  padding: 0px;
+}
+.row_menu .col_menu{
+	text-align: left;
+  padding: 0px;
+  border: 0px;
+
+}
+
+.one_selected{
+  color: #0099cc !important;
+}

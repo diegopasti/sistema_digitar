@@ -57,7 +57,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djangobower','dropbox','dbbackup',
-    'sistema_contabil','modules','modules.user','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
+    'sistema_contabil','modules','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
 
 
@@ -294,6 +294,7 @@ STATICFILES_DIRS = (
 )
 """
 
+LOGIN_REDIRECT_URL = "/"
 
 SERVER_DIGITAR = True
 if SERVER_DIGITAR:

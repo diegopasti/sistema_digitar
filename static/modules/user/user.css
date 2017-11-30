@@ -1,0 +1,93 @@
+.main_content{
+	padding: 0px;
+}
+
+.main_content .x_panel{
+	padding: 10px;
+	margin-bottom: 0px;
+}
+
+.x_content {
+	margin-top: 10px;
+	padding: 10px;
+	padding-top:0px;
+	padding-bottom:0px;
+}
+
+.panel_toolbox{
+	margin-top: -2px;
+	margin-right: -5px;
+}
+
+.panel_toolbox .btn-group{
+	margin-left: 5px;
+}
+
+
+/* Style for table entities */
+#table_user{
+	width: 100%;
+}
+
+#table_user tbody{
+	font-size: 13px;
+}
+
+#table_user .row_user td{
+	padding-top: 0px;
+	padding-bottom: 0px;
+	height: 28px;
+	vertical-align: middle;
+}
+
+#table_user .row_user td span{
+	height: 26px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	vertical-align: middle;
+}
+
+#table_user .row_user .col_index{
+	width: 30px;
+	text-align: center;
+}
+
+#table_user .row_user th.col_user_email{
+	text-align: center;
+}
+
+#table_user .row_user .col_user_email{
+	text-align: left;
+	width:250px;
+	padding-left: 8px;
+}
+
+#table_user .row_user th.col_user_last_login{
+	font-size: 10px;
+}
+
+#table_user .row_user .col_user_last_login{
+	width: 150px;
+	font-size: 12px;
+	text-align: center;
+}
+
+#table_user .row_user th.col_user_last_update{
+	font-size: 10px;
+}
+
+#table_user .row_user .col_user_last_update{
+	width: 150px;
+	font-size: 12px;
+	text-align: center;
+}
+
+#table_user .row_user .col_user_date_create{
+	width: 150px;
+	text-align: center;
+}
+
+#table_user .row_user .col_user_activated{
+	width: 90px;
+	text-align: center;
+}

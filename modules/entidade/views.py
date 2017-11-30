@@ -1131,13 +1131,13 @@ def verificar_erros_formulario(formulario):
             erro = erros[0][0]
                         
             if 'email' in erro:
-                msg = "Erro! "+unicode(erro)
+                msg = "Erro! "+u''+erro
             
             elif 'data' in erro:          
-                msg = "Erro! "+unicode(erro)
+                msg = "Erro! "+u''+erro
             
             else:
-                msg = campo.label+" "+unicode(erro)
+                msg = campo.label+" "+u''+erro
             
             return msg
     

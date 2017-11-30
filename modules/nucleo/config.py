@@ -1,252 +1,64 @@
-# -*- encoding: utf-8 -*-
-from django.contrib.auth.models import User
-from django.db import models
-from rest_framework import serializers
+from django.core.exceptions import PermissionDenied
 
-MENSAGENS_ERROS = {'required': 'Campo Obrigatório!',
-                   'invalid': 'Formato Inválido!'
-                   }
+ERRORS_MESSAGES = {
+    'invalid': 'Conteúdo inválido',
+    'document_invalid': 'Documento inválido',
 
+    'required': 'Campo obrigatório',
+    'unique':"Informação já cadastrada",
 
-class natureza_juridica(models.Model):
-    codigo_natureza = models.CharField("Código:", max_length=5, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    natureza_juridica = models.CharField("Natureza Jurídica:", max_length=100, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    natureza_juridica = models.CharField("Natureza Jurídica:", max_length=100, null=False, unique=True, error_messages=MENSAGENS_ERROS)
+    'future_date':'Data de nascimento inválida',
+    'minimum_age_person':'Precisa ter mais de 18 anos.',
+    'maximum_age_person':'Precisa ter menos que 150 anos.',
 
+    'name_min_words':'Informe o nome completo',
+    'not_all_numeric':'Este campo só pode conter numeros'
+}
 
-class observacao(models.Model):
-    data = models.DateField("Data:", null=False, auto_now=True)
-    # autor     = models.ForeignKey()
 
-    descricao = models.TextField("Descrição: ", max_length=500, null=False, error_messages=MENSAGENS_ERROS)
+def verify_permission(permission_level, required_level):
+    permission_level = int(permission_level)
+    if permission_level >= required_level:
+        return True
+    else:
+        return False
 
 
-class localizacao_simples(models.Model):
-    cep = models.CharField("Codigo Postal:", max_length=8, null=False, error_messages=MENSAGENS_ERROS)
-    logradouro = models.CharField("Logradouro:", max_length=100, null=True, error_messages=MENSAGENS_ERROS)
-    numero = models.CharField("Numero:", max_length=5, null=True, error_messages=MENSAGENS_ERROS)
-    complemento = models.CharField("Complemento:", max_length=100, null=True, error_messages=MENSAGENS_ERROS)
-    # codigo_ibge = models.CharField("Codigo IBGE:",max_length=10,null=False,unique=True,error_messages=MENSAGENS_ERROS)
-    bairro = models.CharField("Bairro:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
-    codigo_ibge = models.CharField("Codigo Municipal:", max_length=7, null=False, error_messages=MENSAGENS_ERROS)
-    municipio = models.CharField("Municipio:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
-    # sigla       = models.CharField("Sigla:",max_length=2,null=False,unique=True,error_messages=MENSAGENS_ERROS)
-    estado = models.CharField("Estado:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
+class MenuOption:
+    id = None
+    title = None
+    permission_position = None
+    url = None
 
-    pais = models.CharField("País:", max_length=30, null=False, error_messages=MENSAGENS_ERROS)
+    def __init__(self, title, id, url):
+        self.title = title
+        self.id = id
+        self.url = url
 
-    # sigla       = models.CharField("Sigla:",max_length=2,null=False,unique=True,error_messages=MENSAGENS_ERROS)
 
-    def get_endereco(self):
-        return self.logradouro.title() + ", " + self.numero + ", " + self.bairro.title() + ", " + self.municipio.title() + ", " + self.estado + " - " + formatar_cep(self.cep)
+class MenuRegistration:
+    entities = MenuOption(id=0, title='Entidades', url='/entity')
+    permissions = MenuOption(id=1, title= 'Permissões', url='/permission')
+    mercadologic_group = MenuOption(id=2, title='Grupo Mercadológico', url='/mercadologic_group')
+    products = MenuOption(id=3, title='Produtos', url='/products')
+    products_relations = MenuOption(id=4, title='Vincúlo de Produtos', url='/products_relations')
+    phones = MenuOption(id=5, title='Agenda de Telefones', url='/phones')
+    complementary_tables = MenuOption(id=6, title='Tabelas Complementares', url='/complementary_tables')
 
 
-def formatar_cep(cep):
-    cep_formatado = "" + cep[:2] + "." + cep[2:5] + "-" + cep[5:]
-    return cep_formatado
-
-
-class entidade(models.Model):
-    opcoes_tipos_registros = (
-
-        ('C', 'CLIENTE'),
-        ('F', 'FORNECEDOR'),
-        ('U', 'FUNCIONARIO'),
-        ('O', 'OUTRO'),
-    )
+class MenuPurchases:
+    request_to_supplier = MenuOption(id=0, title='Pedido à Fornecedor', url='/request_to_supplier')
+    replacement_list = MenuOption(id=1, title='Lista de Reposição', url='/replacement_list')
+    request_for_quotation = MenuOption(id=2, title='Pedido para Cotação', url='/request_for_quotation')
 
-    cpf_cnpj = models.CharField("Cnpj:", max_length=18, null=False, unique=True, error_messages=MENSAGENS_ERROS)
 
-    nome_razao = models.CharField("Razão Social:", max_length=100, null=False, unique=False, error_messages=MENSAGENS_ERROS)
-    apelido_fantasia = models.CharField("Nome Fantasia:", max_length=50, null=True, blank=True, unique=False, error_messages=MENSAGENS_ERROS)
+class MainMenu:
 
-    registro_geral = models.CharField("Identidade:", max_length=12, null=True, unique=False, blank=True, error_messages=MENSAGENS_ERROS)
-    tipo_registro = models.CharField("Tipo Registro:", max_length=1, null=True, default='C', error_messages=MENSAGENS_ERROS)
-    nascimento_fundacao = models.DateField("Fundação:", null=True, blank=True)
-    inscricao_estadual = models.CharField("Inscrição Estadual:", max_length=9, null=True, blank=True, error_messages=MENSAGENS_ERROS)
-    inscricao_municipal = models.CharField("Inscrição Municipal:", max_length=20, null=True, blank=True, error_messages=MENSAGENS_ERROS)
-    inscricao_produtor_rural = models.CharField("Inscrição Rural:", max_length=20, null=True, blank=True, error_messages=MENSAGENS_ERROS)
-    inscricao_imovel_rural = models.CharField("Inscrição Imóvel Rural:", max_length=20, null=True, blank=True, error_messages=MENSAGENS_ERROS)
+    registration = MenuRegistration
+    purchases = MenuPurchases
 
-    inscricao_junta_comercial = models.CharField("NIRE:", max_length=20, null=True, unique=False, blank=True, error_messages=MENSAGENS_ERROS)
-    nome_filial = models.CharField("Identificação Filial:", max_length=20, null=True, blank=True)
-    natureza_juridica = models.CharField("Natureza Jurídica:", max_length=500, null=True, blank=True)
-    regime_apuracao = models.CharField("Regime Tributário:", max_length=20, null=True, blank=True, error_messages=MENSAGENS_ERROS)
-    regime_desde = models.DateField("Desde:", null=True, blank=True)
-    tipo_vencimento_iss = models.CharField("Tipo do Vencimento:", max_length=8, null=True, blank=True, default=None)
-    data_vencimento_iss = models.DateField("Vencimento (Anual):", null=True, blank=True)
-    dia_vencimento_iss = models.IntegerField("Vencimento (Mensal):", null=True, blank=True)
-    taxa_iss = models.DecimalField("Taxa:", max_digits=5, decimal_places=2, null=True, blank=True)
 
-    observacoes = models.TextField("Observações Administrativas", null=True, blank=True)
-
-    """ Notificações automaticas """
-    notificacao_envio = models.CharField("Notificar Automáticamente:", max_length=1, null=True, blank=True, unique=False, error_messages=MENSAGENS_ERROS)
-    notificacao_email = models.EmailField("Email do Responsável:", max_length=100, null=True, blank=True, error_messages=MENSAGENS_ERROS)
-    notificacao_responsavel = models.CharField("Nome do Responsável:", max_length=100, null=True, blank=True, unique=False, error_messages=MENSAGENS_ERROS)
-
-    """ Responsabilidade e Supervisao pelo Cliente """
-    responsavel_cliente = models.ForeignKey("self", related_name='respondido_por', null=True, error_messages=MENSAGENS_ERROS)
-    supervisor_cliente = models.ForeignKey("self", related_name='supervisionado_por', null=True, error_messages=MENSAGENS_ERROS)
-
-    """ preenchimento automatico """
-    data_cadastro = models.DateTimeField(null=True, auto_now_add=True)
-    ultima_alteracao = models.DateTimeField(null=True, auto_now=True)
-    ativo = models.BooleanField(default=True)
-    numeracao_protocolo = models.IntegerField(null=False, default=1)
-
-    """ relacionamentos """
-    endereco = models.ForeignKey(localizacao_simples, default=0)
-
-    def __str__(self):
-        return self.nome_razao
-
-
-class contato(models.Model):
-    opcoes_tipos_contatos = (
-
-        ('CELULAR', 'CELULAR'), ('COMERCIAL', 'COMERCIAL'), ('RESIDENCIAL', 'RESIDENCIAL'), ('OUTROS', 'OUTROS'),)
-
-    entidade = models.ForeignKey(entidade)
-    tipo_contato = models.CharField("Tipo:", max_length=10, null=False, default='C',
-                                    error_messages=MENSAGENS_ERROS)
-    numero = models.CharField("Numero:", max_length=20, null=False, blank=True, error_messages=MENSAGENS_ERROS)
-    nome_contato = models.CharField("Nome do Contato:", max_length=50, null=False, blank=True,
-                                    error_messages=MENSAGENS_ERROS)
-    cargo_setor = models.CharField("Cargo ou Setor:", max_length=50, null=True, blank=True,
-                                   error_messages=MENSAGENS_ERROS)
-    email = models.EmailField(max_length=100, null=True, blank=True, error_messages=MENSAGENS_ERROS)
-
-    def __unicode__(self):
-        return self.numero
-
-
-class OperacaoRestrita(models.Model):
-    opcoes_operacoes = (
-        ('ADD', 'ADIÇÃO'), ('ALT', 'ALTERAÇÃO'), ('DEL', 'EXCLUSÃO'), ('DES', 'DESATIVAÇÃO'))
-
-    user = models.ForeignKey(User, null=True)
-    tipo = models.CharField("Tipo:", max_length=3, null=False, choices=opcoes_operacoes, error_messages=MENSAGENS_ERROS)
-    tabela = models.CharField("Tabela:", max_length=50, null=False, error_messages=MENSAGENS_ERROS, default='')
-    descricao = models.TextField("Descrição da Operação: ", null=False, blank=False, default="")
-    entidade = models.ForeignKey(entidade, null=True)
-    justificativa = models.TextField("Justificativa: ", null=False, blank=False)
-    data_operacao = models.DateTimeField(auto_now_add=True)
-
-
-class Documento(models.Model):
-    # C = Certidao
-    # D = Certificado Digital
-    # A = Alvara
-    tipo = models.CharField("Tipo do Documento:", max_length=1, null=False, error_messages=MENSAGENS_ERROS)
-    nome = models.CharField("Documento:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
-    vencimento = models.DateField("Vencimento:", null=True, blank=True)
-    senha = models.CharField("Senha:", max_length=100, null=True, blank=True, error_messages=MENSAGENS_ERROS)
-    data_cadastro = models.DateTimeField(auto_now=True)
-    ativo = models.BooleanField(default=True)
-    finalizado = models.BooleanField("Finalizado:", default=False)
-    data_finalizado = models.DateTimeField(null=True)
-
-    criado_por = models.ForeignKey(entidade, related_name='criado_por', null=True)
-    finalizado_por = models.ForeignKey(entidade, related_name='finalizado_por', null=True)
-
-    notificar_cliente = models.BooleanField("Notificar Cliente:", default=False)
-    prazo_notificar = models.IntegerField("Prazo Notificação:", null=True, blank=True)
-
-    entidade = models.ForeignKey(entidade, default=0)
-
-
-class AtividadeEconomica(models.Model):
-    atividade = models.CharField("Atividade:", max_length=500, null=True)
-    desde = models.DateField("Desde:", null=True, blank=True)
-    entidade = models.ForeignKey(entidade, default=0)
-
-
-# class indicacao(models.Model):
-#    data = models.DateField(null=False,auto_now=False, input_formats=['%d/%m/%Y'],error_messages=MENSAGENS_ERROS)
-
-
-
-class Pais(models.Model):
-    nome = models.CharField("País:", max_length=100, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    sigla = models.CharField("Sigla:", max_length=2, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-
-    class Meta:
-        verbose_name = "País"
-        verbose_name_plural = "Países"
-
-    def __unicode__(self):
-        return self.nome
-
-
-class Estado(models.Model):
-    codigo_ibge = models.CharField("Codigo IBGE:", max_length=2, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    sigla = models.CharField("Sigla:", max_length=2, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    nome = models.CharField("Estado:", max_length=100, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    regiao = models.CharField("Região:", max_length=20, null=False, unique=False, error_messages=MENSAGENS_ERROS)
-    pais = models.ForeignKey(Pais)
-
-    def __unicode__(self):
-        return self.nome
-
-
-class Municipio(models.Model):
-    codigo_ibge = models.CharField("Codigo Municipal:", max_length=7, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    nome = models.CharField("Municipio:", max_length=100, null=False, unique=False, error_messages=MENSAGENS_ERROS)
-    estado = models.ForeignKey(Estado)
-
-    def __unicode__(self):
-        return self.nome
-
-
-class Bairro(models.Model):
-    codigo_ibge = models.CharField("Codigo IBGE:", max_length=10, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    nome = models.CharField("Bairro:", max_length=100, null=False, unique=False, error_messages=MENSAGENS_ERROS)
-    municipio = models.ForeignKey(Municipio)
-
-    class Meta:
-        unique_together = ('nome', 'municipio')
-
-    def __unicode__(self):
-        return self.nome
-
-
-class Logradouro(models.Model):
-    cep = models.CharField("Codigo Postal:", max_length=8, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-    nome = models.CharField("Endereço:", max_length=100, null=False, unique=False, error_messages=MENSAGENS_ERROS)
-    bairro = models.ForeignKey(Bairro)
-
-    def __unicode__(self):
-        return self.nome
-
-
-class Localizacao(models.Model):
-    logradouro = models.ForeignKey(Logradouro)
-    numero = models.CharField("Numero:", max_length=5, null=True, unique=False, error_messages=MENSAGENS_ERROS)
-    complemento = models.CharField("Complemento:", max_length=100, null=True, unique=False, error_messages=MENSAGENS_ERROS)
-
-
-class Endereco(object):
-    logradouro = None
-    bairro = None
-    municipio = None
-    estado = None
-    pais = None
-    codigo_bairro = None
-    codigo_municipio = None
-
-
-class endereco_serializer(serializers.Serializer):
-    logradouro = serializers.CharField(max_length=100)
-    bairro = serializers.CharField(max_length=100)
-    municipio = serializers.CharField(max_length=100)
-    estado = serializers.CharField(max_length=100)
-    pais = serializers.CharField(max_length=100)
-    codigo_municipio = serializers.CharField(max_length=7)
-    codigo_bairro = serializers.CharField(max_length=10)
-
-
-class informacoes_juridicas():
+class BaseConfiguration():
     natureza_juridica = [
         [
             '1. ADMINISTRAÇÃO PÚBLICA',
@@ -341,16 +153,14 @@ class informacoes_juridicas():
         ],
 
         [
-            '5.ORGANIZAÇÕES INTERNACIONAIS E OUTRAS INSTITUIÇÕES EXTRATERRITORIAIS',
+            '5. ORGANIZAÇÕES INTERNACIONAIS E OUTRAS INSTITUIÇÕES EXTRATERRITORIAIS',
             '501-0 - ORGANIZAÇÃO INTERNACIONAL',
             '502-9 - REPRESENTAÇÃO DIPLOMÁTICA ESTRANGEIRA',
             '503-7 - OUTRAS INSTITUIÇÕES EXTRATERRITORIAIS'
         ]
     ]
 
-
-class informacoes_tributarias():
-    atividades_economicas = [
+    economic_activity = [
         '﻿0111-3/01 - CULTIVO DE ARROZ',
         '0111-3/02 - CULTIVO DE MILHO',
         '0111-3/03 - CULTIVO DE TRIGO',
