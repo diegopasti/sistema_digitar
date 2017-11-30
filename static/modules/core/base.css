@@ -1,4 +1,23 @@
 input.wrong_field{
-	border: 1px solid #EE6363;
-	box-shadow: 1px 1px 5px #8B1A1A;
+	border: 1px solid #CE5454;
+	box-shadow: 1px 1px 5px #CE5454;
+}
+
+.field.bad .alert {
+  top: 0px;
+  left: 0;
+  opacity: 1;
+}
+
+.field .alert {
+	width: 90px;
+  padding: 2px;
+  text-align: right;
+  color: #CE5454;
+  font-size: 80%;
+  width: 100%;
+  position: relative;
+  opacity: 1;
+  z-index: 1;
+  transition: .05s ease-out;
 }

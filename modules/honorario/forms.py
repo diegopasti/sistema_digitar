@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django import forms
+
+from libs.default.core import BaseForm
 from modules.entidade.models import entidade
 
 from modules.entidade.formularios import MENSAGENS_ERROS
@@ -238,14 +240,15 @@ class FormIndicacao(forms.Form):
 
 
 
-class FormProventos(forms.Form):
-    opcoes_tipos_proventos = (('C', 'CRÉDITO'), ('D', 'DÉBITO'))
+class FormProventos(forms.Form, BaseForm):
+    model = Proventos
+    opcoes_tipos_proventos = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
 
     tipo = forms.ChoiceField(
         label="Tipo do Provento", choices=opcoes_tipos_proventos, initial='C',
         required=True, error_messages=MENSAGENS_ERROS,
         widget=forms.Select(
-            attrs={'id': 'tipo', 'class': "form-control"}
+            attrs={'id': 'tipo', 'class': "form-control", 'required':''}
         )
     )
 

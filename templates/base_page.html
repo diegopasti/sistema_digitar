@@ -16,12 +16,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
   {% load staticfiles %}
-  <!-- NProgress -->
-  <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
-
   <!-- JQUERY 2.2.3 -->
   <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'modules/core/viewport_controll.js'%}"></script>
   <script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
+
+  <!-- NProgress -->
+  <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
+  <script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
+  <script>
+    NProgress.start();
+  </script>
 
   <!-- BOOTSTRAP 3.3.6 -->
   <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
@@ -92,12 +97,6 @@ desired effect
 
 <div class="clearfix"></div>
 <body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
-<!-- NProgress -->
-<script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
-<script>
-  NProgress.start();
-</script>
-
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -429,7 +428,7 @@ desired effect
 {% endblock %}
 <script>
   working();
-   NProgress.done();
+  NProgress.done();
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

@@ -127,23 +127,6 @@ color:blue;
 	border: 0px;
 }
 
-.field.bad .alert {
-  top: 0px;
-  left: 0;
-  opacity: 1;
-}
-.field .alert {
-  padding: 2px;
-  text-align: right;
-  color: #CE5454;
-  font-size: 80%;
-  width: 100%;
-  position: relative;
-  opacity: 0;
-  z-index: 1;
-  transition: .15s ease-out;
-}
-
 .responsive-text{
 	white-space: nowrap;
 	overflow: hidden;
@@ -183,33 +166,34 @@ color:blue;
 					<div class="modal-body" style="padding: 35px;padding-top: 10px;">
 						<div class="row no-gutter fluid">
 							<div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group">
-									<sub><label>{{ formulario_proventos.tipo.label }}*</label></sub>
+
+								<div class="form-group field" id="field_tipo">
+									<sub><label id="lb_tipo" for="tipo">{{ formulario_proventos.tipo.label }}*</label> </sub>
 									{{ formulario_proventos.tipo }}
 								</div>
 							</div>
 
 							<div class="col-lg-6 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group">
-									<sub><label>{{ formulario_proventos.nome.label }}*</label></sub>
+								<div class="form-group field" id="field_nome">
+									<sub><label id="lb_nome" for="nome">{{ formulario_proventos.nome.label }}*</label></sub>
 									{{ formulario_proventos.nome }}
 								</div>
 							</div>
 
 							<div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group">
-									<sub><label>{{ formulario_proventos.valor.label }}*</label></sub>
-										{{ formulario_proventos.valor }}
+								<div class="form-group field" id="field_valor">
+									<sub><label id="lb_valor" for="valor">{{ formulario_proventos.valor.label }}*</label> </sub>
+									{{ formulario_proventos.valor }}
 								</div>
 							</div>
 						</div>
 
 						<hr>
 
-						<div class="row no-gutter  fluid">
+						<div class="row no-gutter fluid">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<div class="form-group">
-									<sub><label>{{ formulario_proventos.descricao.label }}</label></sub>
+								<div class="form-group field" id="field_descricao">
+									<sub><label id="lb_descricao" for="descricao">{{ formulario_proventos.descricao.label }}</label> </sub>
 									{{ formulario_proventos.descricao }}
 								</div>
 							</div>
@@ -296,8 +280,9 @@ color:blue;
 											</td>
 
 											<td class='center' style="width: 80px;">
-												<span ng-if="contrato.tipo=='C'">CRÉDITO</span>
-												<span ng-if="contrato.tipo=='D'">DÉBITO</span>
+												<span ng-if="contrato.tipo=='P'">PROVENTO</span>
+												<span ng-if="contrato.tipo=='D'">DESCONTO</span>
+												<span ng-if="contrato.tipo=='R'">RESSARCIMENTO</span>
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'right': contrato.valor, 'center': !contrato.plano  }" style="width: 130px;">
@@ -330,6 +315,7 @@ color:blue;
 							<select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
 								<option value="0">Código</option>
 								<option value="1" selected>Provento</option>
+								<option value="2" selected>Descrição</option>
 							</select>
 						</div>
 
@@ -361,12 +347,13 @@ color:blue;
 
 {% block recursos_complementares %}
 {% load staticfiles %}
+<script type="text/javascript" src="{% static 'modules/core/base_controller.js' %}"></script>
 <script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
 <script type="text/javascript" src="{% static 'modules/honorary/proventosController.js' %}"></script>
 <script type="text/javascript" src="{% static 'modules/honorary/proventos.js' %}"></script>
 
 <script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/core/base_api.js' %}"></script>
+
 
 <script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
 
@@ -380,7 +367,7 @@ color:blue;
 		});
 
 		angular.element(document.getElementById('controle_angular')).scope().carregar_clientes();
-		angular.element(document.getElementById('controle_angular')).scope().get_salario_vigente();
+		//angular.element(document.getElementById('controle_angular')).scope().get_salario_vigente();
 		configurar_formulario_padrao()
 		NProgress.done();
 	});

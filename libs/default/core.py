@@ -1,16 +1,17 @@
 from libs.default.decorators import request_ajax_required, validate_formulary
 from django.core.exceptions import ValidationError
 
-from modules.core.comunications import send_generate_activation_code
-from modules.core.config import ERRORS_MESSAGES
+#from modules.core.comunications import send_generate_activation_code
+from modules.nucleo.config import ERRORS_MESSAGES
 from datetime import date, datetime, timedelta
 from django.http import Http404, HttpResponse
 
-from modules.core.utils import generate_activation_code
-from modules.user.models import Session, User
+#from modules.core.utils import generate_activation_code
 from django.contrib.auth import login
 from django.db import IntegrityError
 from django.core import serializers
+
+from modules.user.models import Session, User
 from sistema_contabil import settings
 import datetime
 import json
@@ -142,8 +143,8 @@ class BaseController(Notify):
             if User.objects.check_available_email(email):
                 user = User.objects.create_contracting_user(email, senha)
                 if user is not None:
-                    activation_code = generate_activation_code(email)
-                    send_generate_activation_code(email, activation_code)
+                    #activation_code = generate_activation_code(email)
+                    #send_generate_activation_code(email, activation_code)
                     response_dict = self.notify.success(user, list_fields=['email'])
                 else:
                     response_dict = self.notify.error({'email': 'Nao foi possivel criar objeto.'})
@@ -156,6 +157,7 @@ class BaseController(Notify):
     @request_ajax_required
     @validate_formulary
     def save(self, request, formulary=None):
+        print("VEJA O OBJECT: ", self.object)
         if self.full_exceptions == {}:
             response_dict = self.execute(self.object, self.object.save)
         else:

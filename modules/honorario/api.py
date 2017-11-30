@@ -4,6 +4,7 @@ import json
 from django.core import serializers
 from django.http import HttpResponse, Http404
 
+from libs.default.core import BaseController
 from modules.entidade.models import entidade
 from modules.honorario.forms import FormContrato, FormProventos
 from modules.honorario.models import Contrato, Indicacao, Proventos
@@ -317,10 +318,29 @@ def atualizar_contrato(request):
     return HttpResponse(json.dumps(response_dict))
 
 
+#class EntityController(BaseController):
+#    """
+#    Obs: Se o metodo for estatico deve usar o @login_required, se nao usar o @method_decorator(login_required)
+#    """
+#
+#    @login_required
+#    @user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied', redirect_field_name=None)
+#    def filter(request):
+#        return BaseController().filter(request, Entity)
 
-class ProventosController:
+class ProventosController(BaseController):
 
-    def get_lista_proventos(self,request):
+    #login_required
+    #user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied', redirect_field_name=None)
+    def filter(request):
+        return BaseController().filter(request, Proventos)
+
+    #login_required
+    #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)
+    def save(request):
+        return BaseController().save(request, FormProventos)
+
+    def get_lista_proventos_old(self,request):
         lista_proventos = Proventos.objects.filter(ativo=True).order_by('-id')
 
         response_dict = []
@@ -339,7 +359,8 @@ class ProventosController:
             response_dict.append(response_object)
         return HttpResponse(json.dumps(response_dict))
 
-    def adicionar_provento(self,request):
+    def adicionar_provento_old(self,request):
+        """
         print("VEJA O QUE VEIO: ",request.POST['tipo'])
         result, form = filter_request(request, FormProventos)
         if result:
@@ -353,6 +374,7 @@ class ProventosController:
                     texto = texto+'- '+str(erro)+'<br>'
             response_dict = response_format_error_message(form.errors)
         return HttpResponse(json.dumps(response_dict))
+        """
 
 
 """

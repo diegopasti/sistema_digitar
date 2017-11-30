@@ -99,50 +99,86 @@ app.controller('MeuController', ['$scope', function($scope) {
 		$scope.$apply();
 	}
 
-	// Carrega os dados ja cadastrados
-	$scope.carregar_clientes = function() {
-		$.ajax({
-			type: "GET",
-				url: "/api/proventos",
-				success: function (data) {
-					$scope.contratos = JSON.parse(data);//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
-					$scope.contratos_carregados = true;
-					$scope.$apply();
-					$scope.reajustar_tela();
-
-				},
-				failure: function (data) {
-					$scope.contratos = [];
-					$scope.desabilitar = 'link_desabilitado';
-					alert('Erro! Não foi possivel carregar a lista de serviços');
-				}
+	$scope.adicionar_provento = function() {
+		var data_paramters = {};
+		$.each($('#form_adicionar_contrato').serializeArray(), function(i, field) {
+			data_paramters[field.name] = field.value.toUpperCase();
 		});
+
+		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".")
+
+    success_function = function(result,message,object,status){
+			$scope.contratos.splice(0, 0, object);
+			$scope.$apply();
+			check_response_message_form('#form_adicionar_contrato', message);
+			$("#modal_adicionar_contrato").modal('hide');
+			reset_formulary(form_adicionar_contrato);
+		}
+
+    fail_function = function (result,message,data_object,status) {
+      check_response_message_form('#form_adicionar_contrato', message);
+    }
+
+    validate_function = function () {
+     return check_required_fields('form_adicionar_contrato');//validate_form_regiter_person(); //validate_date($scope.birth_date_foundation);
+    }
+
+
+		request_api("/api/proventos/adicionar",data_paramters,validate_function,success_function,fail_function)
 	}
 
-	/*Carregar Lista Indicacoes*/
-	$scope.carregar_indicacao = function () {
-		$scope.total_desconto_fidelidade = 0;
-		$scope.indicacoes_carregadas = false;
-		$.ajax({
-			type: 'GET',
-			url: "/api/honorario/lista_indicacao/" + $scope.registro_selecionado.cliente_id,
-
-			success: function (data) {
-				//alert("VEJA A RESPOSTA: "+JSON.stringify(data))
-				$scope.registro_selecionado.indicacoes = JSON.parse(data);
-				//alert(JSON.stringify($scope.registro_selecionado.indicacoes))
-				$scope.indicacoes_carregadas = true;
-				$scope.$apply();
-				//alert("VEJA O QUE TEMOS NAS INDICACOES: "+$scope.registro_selecionado.indicacoes[0].cliente_id)
-			},
-			failure: function (data) {
-				$scope.indicacao = [];
-				$scope.indicacoes_carregadas = true;
-				$scope.$apply();
-				alert("Não foi possivel carregar a lista de indicacoes")
-			}
-		});
+	/*
+	var data_paramters = $scope.get_data_from_form();
+	function validate_function(){
+		if(data_paramters){
+			if(data_paramters['tipo'] && data_paramters['nome'] && data_paramters['valor'])
+				return true
+		}
+		alert("Preencha os campos obrigatórios!")
+		return false;
 	}
+
+	function success_function(message) {
+		var registro = message.fields
+		registro.id = message.pk
+		$scope.contratos.splice(0,0, registro)
+		$scope.$apply()
+		resetar_formulario()
+		$('#modal_adicionar_contrato').modal('hide');
+	}
+
+	function fail_function(message) {
+		$.each(message, function( index, value ) {
+			alert("ERRO: "+index + ": " + value );
+			notificar('error','Falha na Operação',value);
+			marcar_campo_errado(index)
+			$("#"+index).focus();
+		});
+	}*/
+
+
+	$scope.carregar_clientes = function () {
+    $.ajax({
+      type: 'GET',
+      url: "/api/proventos",
+
+      success: function (data) {
+        $scope.contratos = JSON.parse(data).object;
+        $("#loading_tbody").fadeOut();
+        $scope.$apply();
+        $scope.contratos_carregados = true;
+        $scope.reajustar_tela();
+        $scope.$apply();
+      },
+
+      failure: function (data) {
+      	$scope.contratos = [];
+        $scope.loaded_entities = true;
+        alert("Não foi possivel carregar a lista")
+      },
+    })
+	}
+
 
 	$scope.adicionar_indicacao = function () {
 		var empresa = $('#indicacao').val()
@@ -210,41 +246,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 		request_api("/api/honorario/atualizar_contrato/",data,validate_function,success_function,fail_function)
 	}
 
-	$scope.adicionar_provento = function() {
-		var data_paramters = $scope.get_data_from_form();
-		function validate_function(){
-			if(data_paramters){
-				if(data_paramters['tipo'] && data_paramters['nome'] && data_paramters['valor'])
-					return true
-			}
-			alert("Preencha os campos obrigatórios!")
-			return false;
-		}
 
-		function success_function(message) {
-			var registro = message.fields
-			registro.id = message.pk
-			$scope.contratos.splice(0,0, registro)
-			$scope.$apply()
-			resetar_formulario()
-			$('#modal_adicionar_contrato').modal('hide');
-		}
-
-		function fail_function(message) {
-			$.each(message, function( index, value ) {
-				alert("ERRO: "+index + ": " + value );
-				notificar('error','Falha na Operação',value);
-				marcar_campo_errado(index)
-				$("#"+index).focus();
-			});
-		}
-
-		request_api("/api/proventos/adicionar",data_paramters,validate_function,success_function,fail_function)
-	}
-
-	$scope.carregar_provento = function() {
-
-	}
 
 	$scope.alterar_contrato = function() {
 		var data_paramters = $scope.get_data_from_form();

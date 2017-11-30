@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied, ValidationError
-from sistemaweb import settings
+from sistema_contabil import settings
 from functools import wraps
 
 
@@ -10,7 +10,6 @@ def validate_formulary(view):
         """ request via ajax verifiy need settings.DEBUG=True for running view tests."""
         form = formulary(request.POST)
         if not form.is_valid():
-            #print("DA UMA VERIFICADA NO FORM: ",form.errors)
             controller.object = form.get_object()
             controller.get_exceptions(controller.object, form)
         else:
