@@ -94,8 +94,8 @@ class BackupManager:
         self.data = []
         data = {}
         temp_file = DBBACKUP_STORAGE_OPTIONS['location']+'/temp.dump.gz'
-        shutil.copy(temp_file,'data/backup/last_backup.dump.gz')
         time = datetime.datetime.now()
+        shutil.copy(temp_file,'data/backup/'+time.strftime("%Y%m%d%H%M%S")+'.dump.gz')
         export_name = DROPBOX_ROOT_PATH+'/'+time.strftime("%Y%m%d%H%M%S")+'.dump.gz'
 
         with open(temp_file, 'rb') as f:
