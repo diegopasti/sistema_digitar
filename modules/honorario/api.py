@@ -128,11 +128,11 @@ def get_lista_contratos(request):
 
 
 def atualizar_servicos(request):
-    print("VIM AQUI ATUALIZAR OS SERVICO DO CONTRATO DO CLIENTE: ",request.POST['cliente_id'])
+    #print("VIM AQUI ATUALIZAR OS SERVICO DO CONTRATO DO CLIENTE: ",request.POST['cliente_id'])
     cliente_id = request.POST['cliente_id']
     novos_servicos = request.POST['servicos']
     contrato = Contrato.objects.get(cliente_id=int(cliente_id))
-    print("ENCONTREI O CONTRATO: ",contrato)
+    #print("ENCONTREI O CONTRATO: ",contrato)
     contrato.servicos_contratados = novos_servicos
     contrato.save()
     response_dict = response_format_success_message(contrato, [])
@@ -255,7 +255,6 @@ def deletar_indicacao (request):
         indicacao_bd.indicacao.delete()
         response_dict = response_format_success_message(indicacao_bd,[])
     except:
-        print("N deu")
         response_dict = response_format_error_message(False)
 
     return HttpResponse(json.dumps(response_dict))
@@ -318,16 +317,6 @@ def atualizar_contrato(request):
     return HttpResponse(json.dumps(response_dict))
 
 
-#class EntityController(BaseController):
-#    """
-#    Obs: Se o metodo for estatico deve usar o @login_required, se nao usar o @method_decorator(login_required)
-#    """
-#
-#    @login_required
-#    @user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied', redirect_field_name=None)
-#    def filter(request):
-#        return BaseController().filter(request, Entity)
-
 class ProventosController(BaseController):
 
     #login_required
@@ -340,42 +329,48 @@ class ProventosController(BaseController):
     def save(request):
         return BaseController().save(request, FormProventos)
 
-    def get_lista_proventos_old(self,request):
-        lista_proventos = Proventos.objects.filter(ativo=True).order_by('-id')
+    #login_required
+    #user_passes_test(lambda u: u.permissions.can_update_entity(), login_url='/error/access_denied', redirect_field_name=None)
+    def update(request):
+        print("VEJA COMO ESTA: ", request.POST)
+        return BaseController().update(request, FormProventos)
 
-        response_dict = []
-        for item in lista_proventos:
-            response_object = {}
-            response_object['id'] = item.id
-            response_object['tipo'] = item.tipo
-            response_object['nome'] = item.nome
-            response_object['descricao'] = item.descricao
-            response_object['valor'] = float(item.valor)
-            response_object['data_cadastro'] = str(item.data_cadastro.strftime('%d/%m/%Y'))
-            response_object['cadastrado_por'] = item.cadastrado_por.nome_razao
-            response_object['ultima_alteracao'] = str(item.ultima_alteracao.strftime('%d/%m/%Y'))
-            response_object['alterado_por'] = item.alterado_por.nome_razao
-            response_object['selecionado'] = ""
-            response_dict.append(response_object)
-        return HttpResponse(json.dumps(response_dict))
+"""
+def get_lista_proventos_old(self,request):
+    lista_proventos = Proventos.objects.filter(ativo=True).order_by('-id')
 
-    def adicionar_provento_old(self,request):
-        """
-        print("VEJA O QUE VEIO: ",request.POST['tipo'])
-        result, form = filter_request(request, FormProventos)
-        if result:
-            provento = form.form_to_object()
-            provento.save()
-            response_dict = response_format_success_message(provento, None)
-        else:
-            texto = ""
-            for item in form.errors.items():
-                for erro in item[1]:
-                    texto = texto+'- '+str(erro)+'<br>'
-            response_dict = response_format_error_message(form.errors)
-        return HttpResponse(json.dumps(response_dict))
-        """
+    response_dict = []
+    for item in lista_proventos:
+        response_object = {}
+        response_object['id'] = item.id
+        response_object['tipo'] = item.tipo
+        response_object['nome'] = item.nome
+        response_object['descricao'] = item.descricao
+        response_object['valor'] = float(item.valor)
+        response_object['data_cadastro'] = str(item.data_cadastro.strftime('%d/%m/%Y'))
+        response_object['cadastrado_por'] = item.cadastrado_por.nome_razao
+        response_object['ultima_alteracao'] = str(item.ultima_alteracao.strftime('%d/%m/%Y'))
+        response_object['alterado_por'] = item.alterado_por.nome_razao
+        response_object['selecionado'] = ""
+        response_dict.append(response_object)
+    return HttpResponse(json.dumps(response_dict))
 
+def adicionar_provento_old(self,request):
+    
+    print("VEJA O QUE VEIO: ",request.POST['tipo'])
+    result, form = filter_request(request, FormProventos)
+    if result:
+        provento = form.form_to_object()
+        provento.save()
+        response_dict = response_format_success_message(provento, None)
+    else:
+        texto = ""
+        for item in form.errors.items():
+            for erro in item[1]:
+                texto = texto+'- '+str(erro)+'<br>'
+        response_dict = response_format_error_message(form.errors)
+    return HttpResponse(json.dumps(response_dict))
+"""
 
 """
 class ContratoAPI:

@@ -127,6 +127,37 @@ app.controller('MeuController', ['$scope', function($scope) {
 		request_api("/api/proventos/adicionar",data_paramters,validate_function,success_function,fail_function)
 	}
 
+	$scope.update = function() {
+		var data_paramters = {};
+		data_paramters['id'] = $scope.entity_selected.id;
+
+		$.each($('#form-save-entity').serializeArray(), function(i, field) {
+			data_paramters[field.name] = field.value.toUpperCase();
+		});
+
+    success_function = function(result,message,object,status){
+      if(result == true){
+				//alert("QUERO MECHER NO ELEMENTO:"+$scope.list_entities.findIndex(x => x.id==$scope.entity_selected.id))
+				$scope.list_entities[$scope.list_entities.findIndex(x => x.id==$scope.entity_selected.id)] = object;
+				$scope.entity_selected = null;
+				$scope.$apply();
+				document.getElementById("form-save-entity").reset();
+				check_response_message_form('#form-save-entity', message);
+				$("#modal_identification").modal('hide');
+      }
+		}
+
+    fail_function = function (result,message,data_object,status) {
+      check_response_message_form('#form-save-entity', message);
+    }
+
+    validade_function = function () {
+     return  true;//validate_form_regiter_person(); //validate_date($scope.birth_date_foundation);
+    }
+
+    request_api("/api/entity/update",data_paramters,validade_function,success_function,fail_function)
+	}
+
 	/*
 	var data_paramters = $scope.get_data_from_form();
 	function validate_function(){
