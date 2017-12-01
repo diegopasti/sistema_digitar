@@ -245,14 +245,14 @@ class FormProventos(forms.Form, BaseForm):
     opcoes_tipos_proventos = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
 
     tipo = forms.ChoiceField(
-        label="Tipo do Provento", choices=opcoes_tipos_proventos, initial='C',
+        label="Tipo", choices=opcoes_tipos_proventos, initial='C',
         required=True, error_messages=MENSAGENS_ERROS,
         widget=forms.Select(
             attrs={'id': 'tipo', 'class': "form-control", 'required':''}
         )
     )
 
-    nome = forms.CharField(label="Provento", max_length=100, required=True, error_messages=MENSAGENS_ERROS,
+    nome = forms.CharField(label="Nome", max_length=100, required=True, error_messages=MENSAGENS_ERROS,
                               widget=forms.TextInput(attrs={'class': 'form-control uppercase', 'id': 'nome', 'ng-model': 'nome'}))
 
     descricao = forms.CharField(label="Descrição (Opcional): ", max_length=500, required=False, error_messages=MENSAGENS_ERROS,

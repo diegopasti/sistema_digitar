@@ -196,10 +196,9 @@ def cadastrar_empresa(request):
         
     return render_to_response("nucleo/cadastrar_empresa.html",{'dados':dados,'formulario':formulario},context_instance=RequestContext(request))
 
+
 def working(request):
     if request.is_ajax():
-        print("TO INDO LA SAVLAR")
         return WorkingManager().register_programming_frontend(request.GET['request_page'])
-        print("SALVEI")
     else:
         raise Http404

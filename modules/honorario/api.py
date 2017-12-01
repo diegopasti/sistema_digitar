@@ -321,19 +321,21 @@ class ProventosController(BaseController):
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied', redirect_field_name=None)
-    def filter(request):
+    def filter_provents(request):
         return BaseController().filter(request, Proventos)
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)
-    def save(request):
+    def save_provent(request):
         return BaseController().save(request, FormProventos)
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_update_entity(), login_url='/error/access_denied', redirect_field_name=None)
-    def update(request):
-        print("VEJA COMO ESTA: ", request.POST)
-        return BaseController().update(request, FormProventos)
+    def update_provent(request):
+        print("VO LA ATUALIZAR O OBJETO")
+        x = BaseController().update(request, FormProventos)
+        print("DEU CERTO O X? ",x)
+        return x
 
 """
 def get_lista_proventos_old(self,request):

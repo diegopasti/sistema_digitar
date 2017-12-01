@@ -99,3 +99,5 @@ function register(working_key,request_page){
   });
   */
 }
+
+working();

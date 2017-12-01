@@ -12,7 +12,7 @@ def honorario_page(request):
 def proventos_page(request):
     form_contrato = FormContrato()
     form_proventos = FormProventos()
-    return render(request,"honorario/cadastro_proventos.html",{'formulario_contrato':form_contrato, 'formulario_proventos':form_proventos})
+    return render(request,"honorario/provents.html",{'formulario_contrato':form_contrato, 'formulario_proventos':form_proventos})
 
 
 def contrato_page(request):

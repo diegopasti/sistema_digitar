@@ -99,7 +99,7 @@ class Indicacao (models.Model):
 
 class Proventos(models.Model):
     opcoes_tipos_provento = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
-    tipo = models.CharField("Tipo do Provento:", max_length=1, null=False, default='C', choices=opcoes_tipos_provento, error_messages=MENSAGENS_ERROS)
+    tipo = models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_provento, error_messages=MENSAGENS_ERROS)
     nome = models.CharField("Nome:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
     descricao = models.CharField("Descrição:", max_length=500, null=True,blank=True, error_messages=MENSAGENS_ERROS)
     valor = models.DecimalField("Valor:", max_digits=7, decimal_places=2, null=True, blank=False)

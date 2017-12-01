@@ -89,9 +89,11 @@ urlpatterns = [
     url(r'^api/honorario/alterar_boolean_indicacao/', honorario_api.alterar_boolean_indicacao),
     url(r'^api/honorario/deletar_indicacao/', honorario_api.deletar_indicacao),
 
-    url(r'^proventos/$', honorario_views.proventos_page),
-    url(r'^api/proventos$', ProventosController.filter),#"honorario.api.ProventosController().get_lista_proventos),
-    url(r'^api/proventos/adicionar$', ProventosController.save),
+    url(r'^provents/$', honorario_views.proventos_page),
+    url(r'^api/provents$', ProventosController.filter_provents),
+    url(r'^api/provents/save$', ProventosController.save_provent),
+    url(r'^api/provents/update$', ProventosController.update_provent),
+
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),
     #url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', "preferencias.views.excluir_salario),
     #url(r'^api/preferencias/salario_vigente/$', "preferencias.views.get_salario_vigente),

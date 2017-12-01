@@ -2,8 +2,8 @@
     Campos desabilitados devem ter seu evento de clicd
 */
 $(".disabled").click(function (e) {
-        e.preventDefault();
-        return false;
+	e.preventDefault();
+	return false;
 });
 
 /*
@@ -18,8 +18,6 @@ function habilitar(campo){
   $("#"+campo+ ' input').attr('disabled', false);
   $("#"+campo).removeClass('desabilitado noselect');
 }
-
-
 /*
     Desabilita/Habilita fieldset container.
 */
@@ -32,7 +30,6 @@ function habilitar_fieldset(campo){
     habilitar_botao("#"+campo);
     //$("#lb_"+campo).removeClass('label_desabilitado');
 }
-
 
 /*
     Desabilita/Habilita o input e o label de um determinado

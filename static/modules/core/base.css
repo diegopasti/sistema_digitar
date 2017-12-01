@@ -1,3 +1,50 @@
+.uppercase{
+    text-transform: uppercase;
+}
+
+.lowercase{
+    text-transform: uppercase;
+}
+
+.center{
+    text-align: center;
+}
+
+.left{
+	padding-left: 8px;
+	text-align: left;
+}
+
+.right{
+    text-align: right;
+}
+
+.selected {
+background-color: #08C !important ;
+}
+
+.desabilitado {
+	pointer-events: none;
+	cursor: not-allowed;
+	opacity: 0.6;
+	tab-index: 80;
+}
+
+.link_desabilitado {
+	pointer-events: none;
+	cursor: default;
+	opacity: 0.6;
+}
+
+tr.linha_selecionavel{
+    cursor: pointer;
+}
+
+.form-group label{
+	font-weight: normal !important;
+	margin-left: 8px;
+}
+
 input.wrong_field{
 	border: 1px solid #CE5454;
 	box-shadow: 1px 1px 5px #CE5454;

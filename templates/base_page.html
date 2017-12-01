@@ -16,57 +16,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
   {% load staticfiles %}
+  <script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
   <!-- JQUERY 2.2.3 -->
   <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-  <script src="{% static 'modules/core/viewport_controll.js'%}"></script>
-  <script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'modules/core/viewport/viewport_controll.min.js'%}"></script>
+  <!--<script src="{ static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>-->
 
   <!-- NProgress -->
   <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
   <script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
-  <script>
-    NProgress.start();
-  </script>
-
-  <!-- BOOTSTRAP 3.3.6 -->
-  <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
-  <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-
-  <!-- Font Awesome -->
-  <link href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
 
   <!-- THEME -->
   <link href="{% static 'custom/adminlte/css/AdminLTE.min.css' %}" rel="stylesheet"/>
   <link href="{% static 'custom/adminlte/css/skins/skin-blue.min.css' %}" rel="stylesheet"/>
 
+  <!-- BOOTSTRAP 3.3.6 -->
+  <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+  <!-- Font Awesome -->
+  <link href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+
   <link href="{% static 'modules/core/base.css' %}" rel="stylesheet"/>
-
-  <!-- BASE
-  <link href="% static 'styles/padrao/AdminLTE.min.css' %}" rel="stylesheet"/>-->
-
-  <!-- Font Awesome
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"> -->
-
-  <!-- Ionicons
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"> -->
-
-  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-        page. However, you can choose any other skin. Make sure you
-        apply the skin class to the body tag so the changes take effect.
-  -->
 
   {% block recrusos_necessarios %}
 
-
   {% endblock %}
-
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
-
 <style>
     .content-wrapper, .right-side {
         background-color: #ecf0f5;
@@ -97,6 +71,9 @@ desired effect
 
 <div class="clearfix"></div>
 <body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+<script>
+  NProgress.start();
+</script>
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -343,7 +320,7 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li><a href="/honorario">Contratos</a></li>
-            <li><a href="/proventos">Proventos</a></li>
+            <li><a href="/provents">Proventos</a></li>
             <li><a href="/planos">Planos</a></li>
             <li><a href="/preferencias/servicos">Serviços</a></li>
           </ul>
@@ -417,22 +394,43 @@ desired effect
 
 
 <div class="clearfix"></div>
-<!-- AdminLTE App -->
-<script type="text/javascript" src="{% static 'custom/adminlte/js/app.min.js' %}"></script>
-<!-- PNotify -->
-<link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet">
-<script src="{% static 'bower_components/pnotify/dist/pnotify.js'%}"></script>
-<script src="{% static 'modules/core/working.js' %}"></script>
-{% block recursos_complementares %}
 
-{% endblock %}
-<script>
-  working();
-  NProgress.done();
-</script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
      user experience. Slimscroll is required when using the
      fixed layout. -->
 </body>
+<script>
+  function load_file(file_path, file_type){
+		if (file_type=='js'){
+			var scriptElement = document.createElement('script');
+			scriptElement.type = 'text/javascript';
+			scriptElement.src = file_path;
+			document.head.appendChild(scriptElement);
+			return true;
+		}
+		else if(file_type=='css'){
+		  var styleElement = document.createElement('link');
+			styleElement.rel = 'stylesheet';
+			styleElement.href = file_path;
+			document.head.appendChild(styleElement);
+		}
+		else{
+		}
+	}
+</script>
+
+<script>
+  $(document).ready(function() {
+    load_file("{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}","js")
+		load_file("{% static 'custom/adminlte/js/app.min.js' %}","js")
+		load_file("{% static 'bower_components/pnotify/dist/pnotify.css' %}","css")
+		load_file("{% static 'bower_components/pnotify/dist/pnotify.js' %}","js")
+		load_file("{% static 'modules/core/working.js' %}","js")
+	});
+NProgress.done();
+</script>
+{% block recursos_complementares %}
+
+{% endblock %}
 </html>

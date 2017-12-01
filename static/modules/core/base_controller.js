@@ -58,6 +58,14 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
   });
 }
 
+function create_data_paramters(formulary_id){
+	var data_paramters = {};
+	$.each($('#'+formulary_id).serializeArray(), function(i, field) {
+		data_paramters[field.name] = field.value.toUpperCase();
+	});
+	return data_paramters;
+}
+
 function check_response_message_form(form_id, response_message){
   $(form_id +" input, textarea").each(function () {
     var id = $(this).attr("id");
@@ -80,7 +88,6 @@ function notify_response_message(response_message){
 function check_required_fields(form_id){
 	var form_is_valid = true;
 	$.each($('#form_adicionar_contrato').serializeArray(), function(i, field) {
-		//alert("VEJA O ELEMENTO: "+i+" - "+field.name+": "+field.value)
 		try{
 			var required = document.getElementById(field.name).required
 			if(required){
@@ -88,17 +95,12 @@ function check_required_fields(form_id){
 					clean_wrong_field(field.name)
 				}
 				else{
-					//alert("NAO TEM NADA "+field.value)
 					form_is_valid = false;
 					set_wrong_field(field.name, 'Campo Obrigatório')
 				}
 			}
-			else{
-				//alert("NAO EH OBRIGATORIO")
-			}
 		}
 		catch (err){
-			//alert("NAO DEU")
 		}
 	});
 	return form_is_valid
@@ -111,7 +113,7 @@ function set_wrong_field(id, erro_value){
 	if(myDivs.length === 0){
 			myDivs = $('<div class="alert"></div>')
 					.appendTo("#field_"+id);
-					//.css('opacity', 0);
+					//.css('opacity', 0);f
 	}
 	$("#field_"+id+" .alert").html(erro_value);
 	$("#"+id).addClass('wrong_field')

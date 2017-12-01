@@ -185,13 +185,15 @@ class BaseController(Notify):
         pass
 
     @request_ajax_required
+    @validate_formulary
     def update(self, request, formulary):
-        self.request = request
-        print("Atualizar:")
-        result, form = self.filter_request(request, formulary)
-        object = form.get_object(int(request.POST['id']))
-        response_dict = self.execute(object, object.save)
-        return HttpResponse(json.dumps(response_dict))
+        print("COMECANDO:")
+        if self.full_exceptions == {}:
+            response_dict = self.execute(self.object, self.object.save)
+        else:
+            response_dict = self.notify.error(self.full_exceptions)
+        print("HORA DE SAIR FORA..",response_dict)
+        return self.response(response_dict)
 
     @request_ajax_required
     def delete(self, request, model, object_id):
@@ -281,10 +283,10 @@ class BaseController(Notify):
         response_dict['status']['server_processing_time_duration'] = self.server_processing_time.total_seconds()  # datetime.datetime.now()
         response_dict['status']['cliente_processing_time_duration'] = ''
 
-        print("VEJA O RESPONSE NO FINAL: ", response_dict)
         data = json.dumps(response_dict, default=json_serial)
         data = data.replace('RESPONSE_SIZE', str(sys.getsizeof(data) - 16))
         response = HttpResponse(data)  # after generate response noramlization reduce size in 16 bytes
+        print("RESPONSE: ",response)
         return response
 
     def filter_request(self, request, formulary=None):
@@ -323,13 +325,20 @@ class BaseForm:
             object = self.model()
 
         for attribute in self.data:
-            value = self.data[attribute]
             if attribute != 'csrfmiddlewaretoken':
-                field = self.fields[attribute.replace("[]","")]
-                try:
-                    value = field.to_python(value)
-                except:
-                    value = [int(n) for n in value.split(',')]
-
+                if '[]' in attribute:
+                    options_selected = self.request.POST.getlist(attribute)
+                    if options_selected is not None:
+                        value = ';'.join(map(str, self.request.POST.getlist(attribute)))
+                    attribute = attribute.replace("[]", "")
+                else:
+                    if attribute != 'id':
+                        if self.data[attribute] != "null":
+                            field = self.fields[attribute]
+                            value = field.to_python(self.data[attribute])
+                        else:
+                            value = None
+                    else:
+                        value = int(self.data[attribute])
                 setattr(object, attribute, value)
         return object
