@@ -1,0 +1,48 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block titulo_pagina %}Sistema Digitar - Login{% endblock %}
+
+{% block recursos_necessarios %}
+{% endblock %}
+
+{% block conteudo_principal %}
+<div ng-controller="login_controller">
+    <form id="form_login" ng-submit="login_autentication()">
+      {% csrf_token %}
+      <h1><!--<i class="fa fa-paw"></i>--> Sistema Digitar </h1>
+
+      <div>
+        {{ formulario_login.username }}
+      </div>
+
+      <div>
+        {{ formulario_login.password }}
+      </div>
+
+      <div>
+      <button id="button_send" type="submit" class="btn btn-primary submit form-control" ng-click="">Entrar</button>
+    </div>
+
+   </form>
+
+
+  <div class="clearfix"></div>
+
+  <div class="separator">
+      <a id='button_reset_password' href="/reset_password">Não consigo entrar</a>
+    </p>
+
+    <div class="clearfix"></div>
+    <br />
+
+    <div>
+      <p>©2016 All Rights Reserved. Privacy and Terms</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block recursos_complementares %}
+<script src="{% static 'modules/user/user_controller.js' %}"></script>
+<script src="{% static 'modules/user/user.js' %}"></script>
+{% endblock %}

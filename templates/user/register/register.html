@@ -1,0 +1,68 @@
+{% extends 'user/base.html' %}
+{% block titulo_pagina %}SistemaWeb - Novo Usuário{% endblock %}
+
+{% block recursos_necessarios %}
+{% endblock %}
+
+{% block conteudo_principal %}
+<div ng-controller="register_controller">
+  <form id='form_register' method="POST" autocomplete="off" ng-submit="save_user()" novalidate>
+    {% csrf_token %}
+    <h1><!--<i class="fa fa-paw></i>--> SistemaWeb</h1>
+    <div>
+      {{ formulario_register.username }}
+    </div>
+
+		<div>
+      {{ formulario_register.email }}
+    </div>
+
+    <div>
+      {{ formulario_register.password }}
+    </div>
+
+    <div>
+      {{ formulario_register.confirm_password }}
+    </div>
+
+		<div>
+      {{ formulario_register.level_permission }}
+    </div>
+
+    <br>
+
+    <div>
+      <button id='button_register' type="submit" class="btn btn-primary submit form-control">Cadastrar</button>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="separator">
+      <p class="text-center">Já tem uma conta?
+        <a href="/login" class=""> Acesse aqui.</a><br>
+        <a class="" href="/reset_password">Esqueci minha senha</a>
+      </p>
+
+      <div class="clearfix"></div>
+      <br />
+
+      <div>
+        <p>©2016 All Rights Reserved. Privacy and Terms</p>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block recursos_complementares %}
+  {% load static %}
+  <script src="{% static 'modules/user/user_controller.js' %}"></script>
+  <script src="{% static 'modules/user/user.js' %}"></script>
+{% endblock %}
+
+<script>
+    $('#form_change_password').submit(function(e){
+      e.preventDefault();
+      notify("REGISTRO","Enviaremos um email com sua chave de registro.Acesse o link para confirmar o registro");
+    });
+</script>

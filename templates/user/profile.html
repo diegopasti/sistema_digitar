@@ -1,0 +1,75 @@
+{% extends 'base_page.html' %}
+{% block titulo_pagina %}SistemaWeb - Perfil do Usuário {% endblock %}
+
+{% block recursos_necessarios %}
+{% endblock %}
+
+{% block titulo_cabecalho %} Perfil {% endblock %}
+{% block conteudo_principal %}
+<div id="angular_content" ng-cloak ng-app="modules.user">
+  <div ng-controller="change_password_controller">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Trocar Senha <!--<small>Click to validate</small>--></h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">Settings 1</a>
+              </li>
+              <li><a href="#">Settings 2</a>
+              </li>
+            </ul>
+          </li>
+          <li><a class="close-link"><i class="fa fa-close"></i></a>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+        <!-- start form for validation -->
+        <form id="form_change_password" autocomplete="off" ng-submit="save_password()" novalidate>
+          {% csrf_token %}
+          <fieldset>
+            <div id="field_old_password" class="field">
+              <label for="old_password">{{ form_change_password.old_password.label }}</label>
+              {{ form_change_password.old_password }}
+              <div class="alert">
+              </div>
+            </div>
+
+            <br>
+
+            <div id="field_password" class="field">
+              <label for="password">{{ form_change_password.password.label }}</label>
+              {{ form_change_password.password }}
+              <div class="alert">
+              </div>
+            </div>
+
+            <br>
+
+            <div id="field_confirm_password" class="field">
+              <label for="confirm_password">{{ form_change_password.confirm_password.label }}</label>
+              {{ form_change_password.confirm_password }}
+              <div class="alert">
+              </div>
+            </div>
+            <br><br>
+            <button id="button_send" type="submit" class="submit btn btn-success pull-right">Enviar</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load static %}
+<script src="{% static 'modules/user/user_controller.js' %}"></script>
+<script src="{% static 'modules/user/user.js' %}"></script>
+{% endblock %}
