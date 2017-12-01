@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block titulo_pagina %}Sistema Digitar - Base Login{% endblock %}</title>
+
+    <!-- Bootstrap -->
+     <script type="text/javascript">
+        //<![CDATA[
+        //try{if (!window.CloudFlare) {var CloudFlare=[{verbose:0,p:0,byc:0,owlid:"cf",bag2:1,mirage2:0,oracle:0,paths:{cloudflare:"/cdn-cgi/nexp/dok3v=1613a3a185/"},atok:"f94eb94be6b8c1dd0513cc63dec89225",petok:"300ac209155f5721cfbd88ce2b113cea7bb55b5f-1493505352-1800",zone:"colorlib.com",rocket:"a",apps:{}}];document.write('<script type="text/javascript" src="//ajax.cloudflare.com/cdn-cgi/nexp/dok3v=85b614c0f6/cloudflare.min.js"><'+'\/script>');}}catch(e){};
+        //]]>
+      </script>
+
+    {% load static %}
+
+
+
+    <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="{% static 'modules/core/base.css' %}" rel="stylesheet">
+    <!-- Angular -->
+    <script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
+
+    <script src="{% static 'bower_components/moment/min/moment-with-locales.min.js' %}"></script>
+
+
+    {% block recursos_necessarios %}
+    {% endblock %}
+
+  </head>
+
+  <body class="login">
+		<!-- NProgress -->
+    <script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
+    <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
+
+    <script>
+      NProgress.start();
+    </script>
+
+    <div id="angular_content" ng-cloak ng-app="modules.user">
+      <div>
+      <a class="hiddenanchor" id="signup"></a>
+      <a class="hiddenanchor" id="signin"></a>
+
+      <div class="login_wrapper">
+        <div class="animate form login_form">
+          <section class="login_content">
+            {% block conteudo_principal %}
+
+            {% endblock %}
+          </section>
+        </div>
+      </div>
+    </div>
+    </div>
+
+
+  </body>
+  <!-- jQuery -->
+  <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+  <!-- PNotify -->
+  <link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet">
+
+	<!-- Custom Theme Style -->
+	<link href="{% static 'custom/gentelella/custom.css' %}" rel="stylesheet">
+
+  <script src="{% static 'modules/core/viewport_controll.js'%}"></script>
+
+  <script src="{% static 'modules/core/base_api.js'%}"></script>
+
+  <script src="{% static 'modules/core/working.js' %}"></script>
+
+  <!-- PNotify -->
+  <script src="{% static 'bower_components/pnotify/dist/pnotify.js' %}"></script>
+
+
+  <script>
+    //moment.lang(navigator.language)
+    terminate_load_page()
+    NProgress.done();
+    working();
+  </script>
+
+  {% block recursos_complementares %}
+
+  {% endblock %}
+  <script>
+    verify_session_paramters()
+    terminate_setup()
+  </script>
+</html>

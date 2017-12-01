@@ -1,0 +1,42 @@
+{% extends 'user/base.html' %}
+{% block Titulo %}SistemaWeb{% endblock %}
+
+{% block recursos_necessarios %}
+{% endblock %}
+
+{% block conteudo_principal %}
+<div ng-controller="register_controller" ng-init="email='{{ email }}'">
+  <form id='form_new_register' method="POST" autocomplete="off" >
+    {% csrf_token %}
+    <h1><!--<i class="fa fa-paw></i>--> SistemaWeb</h1>
+    <div>
+        <strong>Conta de email inválida!</strong>
+    </div>
+
+    <br>
+
+    <div class="clearfix"></div>
+
+    <div class="separator">
+      <p class="text-center panel-options">
+        Se já possui uma conta <a href="/login">Acesse aqui</a><br>
+        ou <a href="/register">Cadastre-se</a>
+      </p>
+
+      <div class="clearfix"></div>
+      <br />
+
+      <div>
+        <p>©2016 All Rights Reserved. Privacy and Terms</p>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block recursos_complementares %}
+  {% load static %}
+  <script src="{% static 'modules/user/user_controller.js' %}"></script>
+  <script src="{% static 'modules/user/user.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,89 @@
+{% extends 'base_page.html' %}
+{% block titulo_pagina %}SistemaWeb - Autonomias {% endblock %}
+
+{% block recursos_necessarios %}
+{% endblock %}
+
+{% block conteudo_principal %}
+	<div id="angular_content">
+		<div class="x_panel" style="margin-top: -30px;padding:10px;">
+			<div class="x_title">
+      	<h2>Adicionar Autonomia</h2>
+      	<ul class="nav navbar-right panel_toolbox">
+       	 <li><a class=""><i class="fa fa-question-circle"></i> Ajuda</a>
+      	</ul>
+      	<div class="clearfix"></div>
+			</div>
+
+			<div class="x_content" style="margin-top: 10px;padding: 10px;padding-top:0px;padding-bottom:0px;">
+				<form id="form-save-entity" autocomplete="off"  novalidate> <!--#ng-submit="save_person()"-->
+					<div class="row">
+						<div class="col-lg-3 col-xs-12 col-sm-3">
+							<div class="form-group field field_required" id="field_id_company">
+								<sub><label id="lb_id_compay" for="id_company">{{ form_autonomy.id_company.label }}</label></sub>
+									{{ form_autonomy.id_company }}
+									<div class="alert">/div>
+							</div>
+							</div>
+						</div>
+
+						<div class="col-lg-3 col-xs-12 col-sm-3">
+							<div class="form-group field field_required" id="field_id_user">
+								<sub><label id="lb_id_user" for="id_user">{{ form_autonomy.id_user.label }}</label></sub>
+									{{ form_autonomy.id_user }}
+								<div class="alert">/div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-3">
+							<div class="form-group field" id="field_menu_01">
+								<sub><label id="lb_menu_01" for="id_menu_01">{{ form_autonomy.menu_01.label }}</label> </sub>
+									<select id="access_level" multiple="multiple" class="form-control">
+                    <option value="Sem_acesso">Sem acesso</option>
+                    <option value="Vizualizar">Nível Básico</option>
+                    <option value="Adicionar">Nível Médio</option>
+										<option value="Adicionar">Nível Alto</option>
+										<option value="Alterar">Administrador</option>
+									</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-3">
+							<div class="form-group field" id="field_menu_02">
+								<sub><label id="lb_menu_02" for="id_menu_02">{{ form_autonomy.menu_02.label }}</label> </sub>
+									<select id="access_level" multiple="multiple" class="form-control">
+                    <option value="Sem_acesso">Sem acesso</option>
+                    <option value="Vizualizar">Vizualizar</option>
+                    <option value="Adicionar">Adicionar</option>
+										<option value="Alterar">Alterar</option>
+									</select>
+									<script type="text/javascript">
+                  $(document).ready(function() {
+                    $('#access_level').multiselect({
+                      numberDisplayed: 10  ,
+                      nonSelectedText: 'Selecione permições',
+                      buttonWidth: '100%',
+                    });
+                  });
+                  </script>
+							</div>
+						</div>
+					</div>
+
+
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block recursos_complementares %}
+  {% load static %}
+  <script src="{% static 'modules/user/usuario_controller.js' %}"></script>
+  <script src="{% static 'modules/user/usuario.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'custom/smartwizard/jQuery-Multiple-Select-Plugin-For-Bootstrap-Bootstrap-Multiselect/bootstrap-multiselect.css' %}" type="text/css">
+	<script type="text/javascript" src="{% static 'custom/smartwizard/jQuery-Multiple-Select-Plugin-For-Bootstrap-Bootstrap-Multiselect/bootstrap-multiselect.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block titulo_pagina %}SistemaWeb - Verifique seu Email{% endblock %}
+{% block recursos_necessarios %}
+{% endblock %}
+
+{% block conteudo_principal %}
+<div ng-controller="register_controller" ng-init="email='{{ email }}'">
+    <form>
+      {% csrf_token %}
+      <h1><!--<i class="fa fa-paw"></i>--> SistemaWeb</h1>
+
+      <div>
+        Sua conta no sistema foi criada com sucesso!<br>
+        Você receberá um email em instantes
+      </div>
+
+
+      <div>
+        <!--<button type="submit" class="btn btn-primary submit form-control" ng-click="">Entrar</button>-->
+      </div>
+   </form>
+
+
+  <div class="clearfix"></div>
+
+  <div class="separator">
+    <p class="text-center">Não recebeu nosso email?
+      <a ng-click="resend_activation_code()" style="cursor: pointer">Reenviar email</a><br>
+      Voltar para o <a href="/login">Login</a>
+      {{ formulary_confirm_register.email }}
+    </p>
+
+    <div class="clearfix"></div>
+    <br />
+
+    <div>
+      <p>©2016 All Rights Reserved. Privacy and Terms</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block recursos_complementares %}
+<script src="{% static 'modules/user/user_controller.js' %}"></script>
+<script src="{% static 'modules/user/user.js' %}"></script>
+{% endblock %}
