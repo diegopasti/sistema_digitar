@@ -4,6 +4,7 @@ from libs.default.core import BaseForm
 from modules.nucleo.config import ERRORS_MESSAGES
 from modules.nucleo.forms import FormAbstractPassword, FormAbstractConfirmPassword, FormAbstractEmail, \
     FormAbstractUsername
+from modules.user.models import User
 from modules.user.validators import password_format_validator
 
 
@@ -17,7 +18,9 @@ class FormLogin(FormAbstractUsername, FormAbstractPassword,BaseForm):
 
 
 class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirmPassword,FormAbstractEmail,BaseForm):
-    choices = ((1, 'Gerente'), (1, 'Administrador'), (3, 'Operador'), (4, 'Sem acesso'))
+    model = User
+
+    choices = ((1, 'Gerente'), (2, 'Administrador'), (3, 'Operador'), (4, 'Sem acesso'))
     level_permission = forms.ChoiceField(
         label="Nivel Permissão",
         choices=choices,

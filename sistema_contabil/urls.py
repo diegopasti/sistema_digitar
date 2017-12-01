@@ -109,7 +109,7 @@ urlpatterns = [
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'register/',view_usuario.register_page),
-    url(r'api/user/register/save', UserController().register_user),
+    url(r'^api/user/register/save', UserController.register_user),
     url(r'login/autentication$', UserController().login_autentication),
     url(r'reset_password$', UserController().reset_password),
     url(r'change_password$', UserController().change_password),

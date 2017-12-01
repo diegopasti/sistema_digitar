@@ -44,9 +44,9 @@ class UserController(BaseController):
         return self.response(response_dict)
 
 
-    def register_user(self, request):
+    def register_user(request):
         print("VINDO AQUI")
-        return #BaseController().signup(request, FormRegister)
+        return BaseController().signup(request, FormRegister)
 
     @request_ajax_required
     def reset_password(self, request):

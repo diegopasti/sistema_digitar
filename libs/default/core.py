@@ -138,6 +138,7 @@ class BaseController(Notify):
 
     @request_ajax_required
     def signup(self, request, formulary):
+        print("VENHO ATE AQUI NO SINGUP?")
         form = formulary(request.POST)
         if form.is_valid():
             username = request.POST['username']

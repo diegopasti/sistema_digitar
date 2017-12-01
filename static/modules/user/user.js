@@ -42,18 +42,18 @@ function validate_form_login(){
 function validate_form_register(){
 	return true;
 	//Falta fazer os validadores
-  return (email_is_valid("email") && validate_password("password")) && compare_passwords("password","confirm_password");
+  //return (email_is_valid("email") && validate_password("password")) && compare_passwords("password","confirm_password");
 }
 
 function validate_password(senha){
 	return true;
 	/*FALTA CRIAR AS VALIDACOES DE USER*/
-  if (/*is_empty(senha) &&*/ check_password_format(senha)){
+  /*if (/*is_empty(senha) && check_password_format(senha)){
     return true;
   }
   else{
     return error_notify("password","Senhas Insegura","Informe uma senha com ao menos 8 caracteres contendo letras e numeros.");
-  }
+  }*/
 }
 
 function check_password_format(senha){
@@ -68,5 +68,5 @@ function compare_passwords(id_senha, id_confirma_senha){
 
 function validade_new_user(){
 	return true
-	return email_is_valid("email")
+	//return email_is_valid("email")
 }

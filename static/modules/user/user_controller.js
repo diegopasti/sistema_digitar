@@ -69,29 +69,29 @@ application.controller('change_password_controller', function($scope) {
 
 application.controller('register_controller', function($scope) {
 
-  $scope.email = "";
-  $scope.password = "";
-  $scope.confirm_password = "";
+	$scope.save_user = function () {
 
-  $scope.save_user = function () {
 
+		$scope.email = "";
+		$scope.password = "";
+		$scope.confirm_password = "";
 		var data_paramters = {};
-  	$.each($('#form_register').serializeArray(), function(i, field) {
-			data_paramters[field.name] = field.value;
+
+		$.each($('#form_register').serializeArray(), function(i, field) {
+				data_paramters[field.name] = field.value;
 		});
 
-    success_function = function(result,message,data_object,status){
-    	alert("CONSEGUINDO ATE ENTAO")
-    	var redirect = "/register/confirm/"+$scope.email;
-    	return redirect
-    }
+		success_function = function(result,message,data_object,status){
+				alert("CONSEGUINDO ATE ENTAO")
+				var redirect = "/register/confirm/"+$scope.email;
+				return redirect
+			}
 
-    fail_function = function (result,message,data_object,status) {
-      notify_response_message(message);
-    }
-    alert("vindo aqui?\n"+JSON.stringify(data_paramters))
-    request_api("/api/user/register/save",data_paramters,validate_form_register,success_function,fail_function)
-  }
+		fail_function = function (result,message,data_object,status) {
+				notify_response_message(message);
+			}
+			request_api("/api/user/register/save",data_paramters,validate_form_register,success_function,fail_function)
+		}
 
   $scope.resend_activation_code = function () {
   	var data_paramters = {email: $scope.email}
@@ -111,7 +111,8 @@ application.controller('register_controller', function($scope) {
 		alert("veja eh isso")
     request_api("/api/user/reactivate",data_paramters,validate_function,success_function,fail_function)
   }
-});
+})
+
 
 application.controller('login_controller', function($scope) {
 

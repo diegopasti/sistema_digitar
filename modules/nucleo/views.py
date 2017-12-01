@@ -10,7 +10,6 @@ from modules.entidade.utilitarios import remover_simbolos
 from modules.entidade.formularios import formulario_cadastro_entidade_completo
 from modules.nucleo.working_api import WorkingManager
 
-print('OIIII')
 def system_configurations(request):
     return render(request, "core/configurations/backup/configurations.html")
 
@@ -33,7 +32,7 @@ def cadastrar_empresa(request):
             print("Formulario foi validado..")
             
             #print(request.POST)
-            
+
             endereco_valido = False
             entidade_valido = False
             contato_valido  = False
