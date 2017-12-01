@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.http.response import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.context import RequestContext
 from modules.entidade.models import entidade, contato, localizacao_simples  # , Logradouro, Localizacao,
 from modules.entidade.utilitarios import remover_simbolos
@@ -9,6 +10,8 @@ from modules.entidade.utilitarios import remover_simbolos
 from modules.entidade.formularios import formulario_cadastro_entidade_completo
 from modules.nucleo.working_api import WorkingManager
 
+def system_configurations(request):
+    return render(request, "core/configurations/backup/configurations.html")
 
 def cadastrar_empresa(request):  
     dados = entidade.objects.all()
@@ -29,7 +32,7 @@ def cadastrar_empresa(request):
             print("Formulario foi validado..")
             
             #print(request.POST)
-            
+
             endereco_valido = False
             entidade_valido = False
             contato_valido  = False

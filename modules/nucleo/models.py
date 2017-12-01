@@ -1,9 +1,20 @@
 # -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
 
+from modules.nucleo.config import ERRORS_MESSAGES, BaseConfiguration
 from django.db import models
 
 # Create your models here.
+
+
+print('VENHO AQUI???')
+class Backup(models.Model):
+    created_date = models.DateTimeField(auto_now_add=True, null=False)
+    backup_file_name = models.CharField("Nome do Arquivo", null=False, blank=False, max_length=100, validators=[],error_messages=ERRORS_MESSAGES)
+    backup_size = models.PositiveIntegerField("Tamanho do Arquivo", null=False, error_messages=ERRORS_MESSAGES)
+    backup_link = models.CharField("Endereço", null=False, blank=False, max_length=100, validators=[], error_messages=ERRORS_MESSAGES)
+
+
 class estados_brasileiros:
 
     lista_estados = (

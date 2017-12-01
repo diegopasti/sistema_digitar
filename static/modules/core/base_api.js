@@ -35,6 +35,7 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
     url: url,
     data: data_paramters,
     success: function(data) {
+      alert("OLHA O DATA:\n"+JSON.stringify(data))
     	var response = $.parseJSON(data);
       var message = response['message']
       var resultado = response['success']

@@ -21,11 +21,11 @@ opcoes_tipos_usuarios = (
 
 class UserManager(BaseUserManager):
 
-    def _create_user(self, email, password, super_user, account_activated, active, tipo):
+    def _create_user(self,username, email, password, super_user, active, level_permission):
         if check_password_format(password):
             now = timezone.now()
             email = self.normalize_email(email)
-            user = self.model(email=email, account_activated=account_activated, active_user=active,type_user=tipo, last_update=now, joined_date=now)#, **extra_fields)
+            user = self.model(name=username,email=email, active_user=active, level_permission=level_permission, last_update=now, joined_date=now)#, **extra_fields)
             user.set_password(password)
             try:
                 user.full_clean()
@@ -72,6 +72,8 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def create_user(self,username,email,password,level_permission):
+        user = self._create_user(username,email,False,True,level_permission)
     def check_available_email(self, email):
         if len(self.model.objects.filter(email=email)) == 0:
             return True
@@ -85,9 +87,9 @@ class UserManager(BaseUserManager):
         else:
             return False
 
-    def authenticate(self,request, email=None, password=None):
+    def authenticate(self,request, username=None, password=None):
         try:
-            user = User.objects.get_user_email(email)
+            user = User.objects.get_username(username)
             if user.check_password(password):
                 return user
             return None
@@ -95,9 +97,10 @@ class UserManager(BaseUserManager):
         except:
             return None
 
-    def get_user_email(self,email):
+    def get_username(self,username):
         try:
-            result = User.objects.get(email=email)
+            print("ESTOU TENTANDO PEGAR:",username)
+            result = User.objects.get(name=username)
             return result
         except User.DoesNotExist:
             return None
@@ -110,12 +113,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    name              = models.CharField(_('Username'),max_length=150,unique=True,validators=[],error_messages=ERRORS_MESSAGES)
     email             = models.EmailField(_('Email'), max_length=255, unique=True, validators=[email_format_validator, email_dangerous_symbols_validator], error_messages=ERRORS_MESSAGES)
     type_user         = models.CharField("Tipo de Usuário:", max_length=1, null=False, default='F', error_messages=ERRORS_MESSAGES)
     joined_date       = models.DateTimeField(null=True, auto_now_add=True)
     last_update       = models.DateTimeField(null=True, auto_now=True)
-    account_activated = models.BooleanField(default=False)
-    activation_code   = models.CharField(max_length=46, null=True, blank=True, error_messages=ERRORS_MESSAGES)
     active_user       = models.BooleanField(default=True)
     level_permission  = models.IntegerField('Nivel Permissão',default=1)
 
