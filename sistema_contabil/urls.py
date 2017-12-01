@@ -105,6 +105,7 @@ urlpatterns = [
     url(r'^api/preferencias/salario_vigente/$', preferencias_views.get_salario_vigente),
 
     url(r'^api/working/register/$', nucleo_views.working),
+    url(r'^system/configurations', nucleo_views.system_configurations),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'register/',view_usuario.register_page),
