@@ -235,11 +235,6 @@ class FormIndicacao(forms.Form):
         )
     )
 
-
-
-
-
-
 class FormProventos(forms.Form, BaseForm):
     model = Proventos
     opcoes_tipos_proventos = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
@@ -255,7 +250,7 @@ class FormProventos(forms.Form, BaseForm):
     nome = forms.CharField(label="Nome", max_length=100, required=True, error_messages=MENSAGENS_ERROS,
                               widget=forms.TextInput(attrs={'class': 'form-control uppercase', 'id': 'nome', 'ng-model': 'nome'}))
 
-    descricao = forms.CharField(label="Descrição (Opcional): ", max_length=500, required=False, error_messages=MENSAGENS_ERROS,
+    descricao = forms.CharField(label="Descrição (Opcional)", max_length=500, required=False, error_messages=MENSAGENS_ERROS,
                                 widget=forms.Textarea(attrs={'class': "form-control uppercase", 'id': 'descricao', 'ng-model': 'descricao'}))
 
     valor = forms.CharField(label="Valor", max_length=30, required=True, error_messages=MENSAGENS_ERROS,

@@ -1,44 +1,30 @@
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html>
 <head>
-  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
+  <meta charset="utf-8">
   {% block Titulo %}
     <title>Digitar Acessoria Contábil</title>
   {% endblock %}
 
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-
   {% load staticfiles %}
+  {% load compress %}
+  {% compress js %}
   <script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
-  <!-- JQUERY 2.2.3 -->
   <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
   <script src="{% static 'modules/core/viewport/viewport_controll.min.js'%}"></script>
-  <!--<script src="{ static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>-->
-
-  <!-- NProgress -->
-  <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
   <script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
+  {% endcompress %}
 
-  <!-- THEME -->
+  {% compress css %}
+  <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
   <link href="{% static 'custom/adminlte/css/AdminLTE.min.css' %}" rel="stylesheet"/>
   <link href="{% static 'custom/adminlte/css/skins/skin-blue.min.css' %}" rel="stylesheet"/>
-
-  <!-- BOOTSTRAP 3.3.6 -->
   <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
-
-  <!-- Font Awesome -->
   <link href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-
-  <link href="{% static 'modules/core/base.css' %}" rel="stylesheet"/>
-
-  {% block recrusos_necessarios %}
+  {% endcompress %}
+  {% block recursos_necessarios %}
 
   {% endblock %}
 <style>
@@ -366,9 +352,7 @@ desired effect
     <!-- Main content -->
     <section class="content" style="margin-top:30px;">
     {% block conteudo %}
-
-
-	{% endblock %}
+	  {% endblock %}
     </section>
     <!-- /.content -->
   </div>
@@ -388,7 +372,7 @@ desired effect
   <!-- /.control-sidebar -->
   <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
+  <!--<div class="control-sidebar-bg"></div>-->
 </div>
 <!-- ./wrapper -->
 
@@ -400,8 +384,22 @@ desired effect
      user experience. Slimscroll is required when using the
      fixed layout. -->
 </body>
+{% load staticfiles %}
+{% load compress %}
+{% compress js %}
+<script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'custom/adminlte/js/app.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/pnotify/dist/pnotify.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/working/working.min.js' %}"></script>
+{% endcompress %}
+
+{% compress css %}
+<link href="{% static 'modules/core/base.css' %}" rel="stylesheet"/>
+<link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet"/>
+{% endcompress %}
+
 <script>
-  function load_file(file_path, file_type){
+   function load_file(file_path, file_type){
 		if (file_type=='js'){
 			var scriptElement = document.createElement('script');
 			scriptElement.type = 'text/javascript';
@@ -422,11 +420,12 @@ desired effect
 
 <script>
   $(document).ready(function() {
-    load_file("{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}","js")
-		load_file("{% static 'custom/adminlte/js/app.min.js' %}","js")
-		load_file("{% static 'bower_components/pnotify/dist/pnotify.css' %}","css")
-		load_file("{% static 'bower_components/pnotify/dist/pnotify.js' %}","js")
-		load_file("{% static 'modules/core/working.js' %}","js")
+    //load_file("{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}","js");
+		//load_file("{% static 'custom/adminlte/js/app.min.js' %}","js");
+		//load_file("{% static 'bower_components/pnotify/dist/pnotify.js' %}","js");
+		//load_file("{% static 'modules/core/working/working.min.js' %}","js");
+    //load_file("{% static 'modules/core/base.min.css' %}","css");
+		//load_file("{% static 'bower_components/pnotify/dist/pnotify.css' %}","css");
 	});
 NProgress.done();
 </script>

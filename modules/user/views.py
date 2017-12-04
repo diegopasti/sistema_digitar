@@ -9,7 +9,6 @@ from modules.user.models import User, Session
 from modules.user.validators import check_email_format
 
 
-
 def register_page(request):
     form_register = FormRegister()
     return render(request, "user/register/register.html", {'formulario_register': form_register})
@@ -20,7 +19,6 @@ def login_page(request):
     return render(request, "user/login.html", {'formulario_login': form})
 
 
-
 def logout_page(request):
     user = request.user
     if not user.close_session(request):
@@ -28,9 +26,11 @@ def logout_page(request):
     logout(request)
     return redirect("/login")
 
+
 def reset_password_page(request):
     form = FormResetPassword()
     return render(request, "user/reset_password.html", {'formulario_send': form})
+
 
 def register_confirm_page(request, email):
     form = FormConfirmRegister()

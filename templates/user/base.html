@@ -8,26 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>{% block titulo_pagina %}Sistema Digitar - Base Login{% endblock %}</title>
-
-    <!-- Bootstrap -->
-     <script type="text/javascript">
-        //<![CDATA[
-        //try{if (!window.CloudFlare) {var CloudFlare=[{verbose:0,p:0,byc:0,owlid:"cf",bag2:1,mirage2:0,oracle:0,paths:{cloudflare:"/cdn-cgi/nexp/dok3v=1613a3a185/"},atok:"f94eb94be6b8c1dd0513cc63dec89225",petok:"300ac209155f5721cfbd88ce2b113cea7bb55b5f-1493505352-1800",zone:"colorlib.com",rocket:"a",apps:{}}];document.write('<script type="text/javascript" src="//ajax.cloudflare.com/cdn-cgi/nexp/dok3v=85b614c0f6/cloudflare.min.js"><'+'\/script>');}}catch(e){};
-        //]]>
-      </script>
-
     {% load static %}
-
-
 
     <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="{% static 'modules/core/base.css' %}" rel="stylesheet">
     <!-- Angular -->
     <script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
-
-    <script src="{% static 'bower_components/moment/min/moment-with-locales.min.js' %}"></script>
-
 
     {% block recursos_necessarios %}
     {% endblock %}
@@ -70,7 +57,7 @@
 	<!-- Custom Theme Style -->
 	<link href="{% static 'custom/gentelella/custom.css' %}" rel="stylesheet">
 
-  <script src="{% static 'modules/core/viewport_controll.js'%}"></script>
+  <script src="{% static 'modules/core/viewport/viewport_controll.js'%}"></script>
 
   <script src="{% static 'modules/core/base_api.js'%}"></script>
 
@@ -81,10 +68,9 @@
 
 
   <script>
-    //moment.lang(navigator.language)
     terminate_load_page()
     NProgress.done();
-    working();
+
   </script>
 
   {% block recursos_complementares %}

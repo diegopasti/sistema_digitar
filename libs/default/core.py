@@ -162,7 +162,7 @@ class BaseController(Notify):
     @request_ajax_required
     @validate_formulary
     def save(self, request, formulary=None):
-        print("VEJA O OBJECT: ", self.object)
+        print("SALVAR OBJETO",self.object)
         if self.full_exceptions == {}:
             response_dict = self.execute(self.object, self.object.save)
         else:

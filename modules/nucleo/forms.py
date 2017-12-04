@@ -29,7 +29,7 @@ class FormAbstractUsername (forms.Form):
         widget=forms.TextInput(
             attrs={
                 'id':'username','name':'username','class':'form-control', 'autocomplete':'off',
-                'ng-model':'username','required':'required'
+                'required':'required'
             }
         )
     )

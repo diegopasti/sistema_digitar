@@ -26,6 +26,9 @@ SECRET_KEY = 'a33ryhl1tch=ql&a32o!+92%akmtem5%s7bhs_tj0#s3q$e4$%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+HTML_MINIFY = False
+COMPRESS_ENABLED = False
+COMPRESS_ROOT = os.path.join(BASE_DIR,"static/compress")
 """
 LOGGING = {
     'version': 1,
@@ -44,7 +47,7 @@ LOGGING = {
     },
 }
 """
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -57,7 +60,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djangobower','dropbox','dbbackup',
+    'djangobower','compressor','dropbox','dbbackup',
     'sistema_contabil','modules','modules.user','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
 
@@ -71,6 +74,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
+    #'django.middleware.cache.UpdateCacheMiddleware',
+    #'htmlmin.middleware.HtmlMinifyMiddleware',
+    # other middleware classes
+    #'django.middleware.cache.FetchFromCacheMiddleware',
+    #'htmlmin.middleware.MarkRequestMiddleware',
 )
 
 ROOT_URLCONF = 'sistema_contabil.urls'
@@ -215,7 +224,7 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
-    #'compressor.finders.CompressorFinder',
+    'compressor.finders.CompressorFinder',
 ]
 
 if sys.platform == 'linux':

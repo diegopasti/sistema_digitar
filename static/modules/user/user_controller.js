@@ -70,8 +70,6 @@ application.controller('change_password_controller', function($scope) {
 application.controller('register_controller', function($scope) {
 
 	$scope.save_user = function () {
-
-
 		$scope.email = "";
 		$scope.password = "";
 		$scope.confirm_password = "";
@@ -79,6 +77,7 @@ application.controller('register_controller', function($scope) {
 
 		$.each($('#form_register').serializeArray(), function(i, field) {
 				data_paramters[field.name] = field.value;
+				//alert("VEJA: "+field.name+" - "+field.value)
 		});
 
 		success_function = function(result,message,data_object,status){

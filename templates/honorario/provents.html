@@ -1,18 +1,13 @@
 {% extends 'base_page.html' %}
-
 {% block Titulo %}
-<meta charset="utf-8">
 <title>Digitar - Proventos</title>
 {% endblock %}
 
 {% load staticfiles %}
-{% block recrusos_necessarios %}
-
-<link href="{% static 'modules/honorary/provents/css/provents.min.css' %}" rel="stylesheet"/>
+{% block recursos_necessarios %}
 {% endblock %}
 
 {% block breadcrumb_title %}Honorário{% endblock %}
-
 {% block breadcrumb_block %}
 <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
 <li><a href="/honorario">Honorário</a></li>
@@ -20,7 +15,64 @@
 {% endblock %}
 
 {% block conteudo %}
-<div id="controle_angular" ng-app="app" ng-controller="MeuController" ng-init="contratos_carregados=false">
+<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+	<div class="modal-dialog" style="width: 70%">
+		<form id="form_adicionar_contrato" method="post" novalidate autocomplete="off" ng-submit="esta_adicionando? save_provent() : update_provent()">
+			{% csrf_token %}
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h5 id="titulo_modal_adicionar_contrato" class='modal_title' style="font-weight: bold">Adicionar Provento</h5>
+				</div>
+
+				<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
+					<div class="row no-gutter fluid">
+						<div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+							<div class="form-group field" id="field_tipo">
+								<sub><label id="lb_tipo" for="tipo">{{ formulario_proventos.tipo.label }}</label> </sub>
+								{{ formulario_proventos.tipo }}
+							</div>
+						</div>
+
+						<div class="col-lg-6 col-md-3 col-sm-12 col-xs-12">
+							<div class="form-group field" id="field_nome">
+								<sub><label id="lb_nome" for="nome">{{ formulario_proventos.nome.label }}*</label></sub>
+								{{ formulario_proventos.nome }}
+							</div>
+						</div>
+
+						<div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
+							<div class="form-group field" id="field_valor">
+								<sub><label id="lb_valor" for="valor">{{ formulario_proventos.valor.label }}*</label> </sub>
+								{{ formulario_proventos.valor }}
+							</div>
+						</div>
+					</div>
+
+					<div class="row no-gutter fluid">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="form-group field" id="field_descricao">
+								<sub><label id="lb_descricao" for="descricao">{{ formulario_proventos.descricao.label }}</label> </sub>
+								{{ formulario_proventos.descricao }}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<div class="row">
+						<div class="col-md-2 col-md-push-10" >
+							<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<div id="controle_angular" ng-app="app" ng-controller="MeuController" ng-init="contratos_carregados=false;">
 	<div class="row" style="margin-top: -40px;">
 		<div class="col-lg-12 col-md-12 col-xs-12">
 			<div class="box box-default" >
@@ -31,21 +83,24 @@
 							<div class="btn-group" role="group" aria-label="...">
 								<button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_contrato" ng-disabled="registro_selecionado!=null">Adicionar</button>
 								<button id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</button>
+								<button id='bt_desativar' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" data-toggle="modal" data-target="#modal_justificativa" ng-click="" style='margin-left: 5px;'>Excluir</button>
 
-								<div class="btn-group" role="group" style='margin-left: 5px;'>
-									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
+								<!--
+								<div class="btn-group" role="group" style='margin-left: 5px;' >
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right">
-										<!--<li role="separator" class="divider"></li>-->
-										<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Excluir</a></li>
+										<!--<li role="separator" class="divider"></li>->
+										<button id='bt_desativar' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" data-toggle="modal" data-target="#modal_justificativa" ng-click="" style='margin-left: 5px;'>Desativar</button>
+										<!--<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal" ng-disabled="registro_selecionado==null"><i class="fa fa-trash-o"></i> Excluir</a></li>->
 									</ul>
-								</div>
+								</div>-->
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="box-body" style="padding-bottom: -10px; margin-top: 0px;">
+				<div class="box-body" style="margin-bottom: -10px; margin-top: 0px;">
 					<div class="dataTable_wrapper">
 						<div class='row'>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -53,13 +108,13 @@
 								<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
 									<thead>
 										<tr class="linha_cabecalho">
-											<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse">N°</th>
+											<th class='text-center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse">N°</th>
 
-											<th class='center' ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Provento</th>
+											<th class='text-center' ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Provento</th>
 
-											<th class='center' ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Tipo</th>
+											<th class='text-center' style="width: 120px;" ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Tipo</th>
 
-											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Valor (R$)</th>
+											<th class='text-center' style="width: 120px;" ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Valor (R$)</th>
 										</tr>
 									</thead>
 
@@ -74,19 +129,19 @@
 										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato);" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado">
 											<!--<tr ng-repeat='contrato in contratos' class="linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos">-->
 
-											<td class='center' style="width: 30px;">{{ contrato.id }}</td> <!-- {{ $index+1 }} -->
-											<td class="col-cliente" class="left">
+											<td class='text-center' style="width: 40px;">{{ contrato.id }}</td> <!-- {{ $index+1 }} -->
+											<td class="col-cliente" class="text-left">
 												{{ contrato.nome }}
 												<!--<div class="responsive-text"  style="max-width: {{ col_cliente_size }}px">{{ contrato.cliente_nome }}</div> isso faz cortar as palavras mas temos um problema com alinhamento que nao fica perfeito dependendo de como a largura foi carregada inicialmente -->
 											</td>
 
-											<td class='center' style="width: 80px;">
+											<td class='text-center' style="width: 120px;">
 												<span ng-if="contrato.tipo=='P'">PROVENTO</span>
 												<span ng-if="contrato.tipo=='D'">DESCONTO</span>
 												<span ng-if="contrato.tipo=='R'">RESSARCIMENTO</span>
 											</td>
 
-											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'right': contrato.valor, 'center': !contrato.plano  }" style="width: 130px;">
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'text-right': contrato.valor, 'text-center': !contrato.plano  }" style="width: 130px;">
 												<span ng-if="contrato.valor">{{ contrato.valor | currency:"" }}</span>
 												<span ng-if="!contrato.plano"></span>
 											</td>
@@ -95,23 +150,15 @@
 										<tr ng-cloak ng-if='contratos_carregados'  ng-repeat="k in minimal_quantity_rows.slice(contratos.length,minimal_quantity_rows.length)">
 											<td style="width:30px;"></td>
 											<td></td>
-											<td style="width: 80px;"></td>
+											<td style="width: 120px;"></td>
 											<td style="width:120px;"></td>
 										</tr>
 
 										<tr ng-cloak ng-if="resultado.length === 0 && (contratos|filter:filterIds()).length > 0">
-											<td colspan="3" class='center'>Nenhum resultado Encontrado</td>
+											<td colspan="3" class='text-center'>Nenhum resultado Encontrado</td>
 										</tr>
 									</tbody>
 								</table>
-
-								<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" >
-									<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
-										<dir-pagination-controls pagination-id="paginate_contratos" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
-
-										</dir-pagination-controls>
-									</span>
-								</div>
 								{% endverbatim %}
 							</div>
 						</div>
@@ -132,7 +179,7 @@
 							<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
 						</div>
 
-						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" >
+						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="contratos_carregados == true" >
 							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
 								<dir-pagination-controls pagination-id="paginate_contratos" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
 
@@ -149,31 +196,24 @@
 	</div>
 </div>
 
-{% include "honorario/provents/form_provent.html" %}
+
 {% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
 
 {% block recursos_complementares %}
 {% load staticfiles %}
+{% load compress %}
+{% compress js %}
 <script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
 <script type="text/javascript" src="{% static 'modules/core/base_controller.js' %}"></script>
 <script type="text/javascript" src="{% static 'modules/honorary/proventsController.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/honorary/provents.js' %}"></script>
+{% endcompress %}
 
 <script>
 $(document).ready(function() {
-	//$.getScript("{% static 'modules/honorary/proventsController.js' %}",function(){
-	//	angular.element(document.getElementById('controle_angular')).scope().load_provents();
-	//});
-
-	$.getScript("{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}",function(){
-		$.getScript("{% static 'modules/honorary/provents.js' %}", function(){
-			configurar_formulario_padrao()
-		});
-	);
-
-	window.onresize = function(event){
-		//angular.element(document.getElementById('controle_angular')).scope().reajustar_tela();
-	};
+	init();
 });
 </script>
 {% endblock %}

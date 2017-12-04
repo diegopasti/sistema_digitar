@@ -36,13 +36,23 @@ background-color: #08C !important ;
 	opacity: 0.6;
 }
 
+
+.modal-header{
+	height: 45px;
+}
+
+.modal-header .modal_title{
+	margin-top: 0px;
+}
+
+
 tr.linha_selecionavel{
     cursor: pointer;
 }
 
 .form-group label{
 	font-weight: normal !important;
-	margin-left: 8px;
+	margin-left: 4px;
 }
 
 input.wrong_field{
@@ -92,24 +102,48 @@ li.disabled a{
 
 }
 
-.uppercase {
-	text-transform: uppercase;
-}
-
-.lowercase {
-	text-transform: lowercase;
-}
-
 form label{
-  padding-left: 8px;
+  padding-left: 4px;
 }
 
-form label::after{
+/*form label::after{
   content: ':';
+}*/
+
+.table td{
+	height: 26px;
 }
 
-button[type="submit"] {
-  width: 140px;
+.linha_cabecalho th{
+	cursor: pointer;
+}
+
+/* unvisited link */
+.linha_cabecalho a {
+	color: #666;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* visited link */
+.linha_cabecalho a:visited {
+	color: #666;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* mouse over link */
+.linha_cabecalho a:hover {
+	color: #222;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* selected link */
+.linha_cabecalho a:active {
+	color: #111;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 .selected td{
@@ -235,10 +269,14 @@ padding: 0px;
 	padding:0px;
 }
 
-/*
-.row.no-gutters > [class^="col-"],
-.row.no-gutters > [class*=" col-"] {
-  padding-right: 0;
-  padding-left: 0;
+
+.no-gutter > [class*='col-'] {
+	padding-right:3px;
+	padding-left:3px;
 }
-*/
+
+.responsive-text{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

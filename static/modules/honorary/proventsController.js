@@ -1,25 +1,24 @@
 var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 app.controller('MeuController', ['$scope', function($scope) {
 
-	$scope.screen_height = null  // screen.availHeight; - PEGA O TAMANHO DA TELA DO DISPOSITIVO
-	$scope.screen_width  = null  // PEGA O TAMANHO DA JANELA DO BROWSER
+	$scope.screen_height = null;  // screen.availHeight; - PEGA O TAMANHO DA TELA DO DISPOSITIVO
+	$scope.screen_width  = null;  // PEGA O TAMANHO DA JANELA DO BROWSER
 
-	$scope.sortType           = 'codigo';    // set the default sort type
-	$scope.sortReverse        = false;  // set the default sort order
+	$scope.sortType           = 'codigo'; // set the default sort type
+	$scope.sortReverse        = false;    // set the default sort order
 	$scope.filter_by          = '1';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","provento", "descricao"];
-	$scope.search             = '';     // set the default search/filter term
-	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10]
-	$scope.teste = "DIEGO"
-
+	$scope.search             = '';
+	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10];
 	$scope.opcao_desabilitada = "desabilitado";
 	$scope.registro_selecionado 	= null;
 	$scope.esta_adicionando     	= true;
+	$scope.contratos = [];
 
 	$scope.save_provent = function() {
-		var data_paramters = create_data_paramters('form_adicionar_contrato')
-		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".")
+		var data_paramters = create_data_paramters('form_adicionar_contrato');
+		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".");
 
 		success_function = function(result,message,object,status){
 			$scope.contratos.splice(0, 0, object);
@@ -37,13 +36,16 @@ app.controller('MeuController', ['$scope', function($scope) {
 		 return check_required_fields('form_adicionar_contrato');//validate_form_regiter_person(); //validate_date($scope.birth_date_foundation);
 		}
 
-		request_api("/api/provents/save",data_paramters,validate_function,success_function,fail_function)
+		//var base_controller = new BaseController();
+		//base_controller.request("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
+		alert("hora de chamar a api")
+		request_api("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
 	}
 
 	$scope.update_provent = function() {
 		var data_paramters = create_data_paramters('form_adicionar_contrato');
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
-		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".")
+		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".");
 
 		success_function = function(result,message,object,status){
       if(result == true){
@@ -66,17 +68,19 @@ app.controller('MeuController', ['$scope', function($scope) {
      return  true;
     }
 
-    request_api("/api/provents/update",data_paramters,validade_function,success_function,fail_function)
+    request_api("/api/provents/update",data_paramters,validade_function,success_function,fail_function);
 	}
 
 	$scope.load_provents = function () {
-		alert('indo baixar')
     $.ajax({
       type: 'GET',
       url: "/api/provents",
 
       success: function (data) {
-        $scope.contratos = JSON.parse(data).object;
+				data = data.replace("<html><head></head><body>{","{")
+				data = data.replace("}</body></html>","}")
+				$scope.contratos = JSON.parse(data).object;
+
         $("#loading_tbody").fadeOut();
         $scope.$apply();
         $scope.contratos_carregados = true;
@@ -87,32 +91,35 @@ app.controller('MeuController', ['$scope', function($scope) {
       failure: function (data) {
       	$scope.contratos = [];
         $scope.loaded_entities = true;
-        alert("Não foi possivel carregar a lista")
+        alert("Não foi possivel carregar a lista");
       },
     })
 	}
 
+	$scope.disable = function(){
+
+	}
+
 	$scope.open_object = function(){
-		reset_formulary('form_adicionar_contrato')
+		reset_formulary('form_adicionar_contrato');
 		for (var key in $scope.registro_selecionado) {
 			try{
-				$("#"+key).val($scope.registro_selecionado[key])
+				$("#"+key).val($scope.registro_selecionado[key]);
 			}
 			catch (err){
 			}
 		}
-		$("#valor").maskMoney('mask', $scope.registro_selecionado.valor)
+		$("#valor").maskMoney('mask', $scope.registro_selecionado.valor);
 	}
 
 	$scope.reajustar_tela = function (){
-		alert('viu cheguei aqui')
-		$scope.screen_height = SCREEN_PARAMTERS['screen_height']
-		$scope.screen_width  = SCREEN_PARAMTERS['screen_width']
-		$scope.screen_model  = SCREEN_PARAMTERS['screen_model']
+		$scope.screen_height = SCREEN_PARAMTERS['screen_height'];
+		$scope.screen_width  = SCREEN_PARAMTERS['screen_width'];
+		$scope.screen_model  = SCREEN_PARAMTERS['screen_model'];
 
-		$scope.table_maximun_items_per_page = SCREEN_PARAMTERS['table_maximun_items_per_page']
-		$scope.table_minimun_items          = SCREEN_PARAMTERS['table_minimun_items']
-		$scope.table_maximun_body_heigth    = SCREEN_PARAMTERS['table_maximun_body_heigth']
+		$scope.table_maximun_items_per_page = SCREEN_PARAMTERS['table_maximun_items_per_page'];
+		$scope.table_minimun_items          = SCREEN_PARAMTERS['table_minimun_items'];
+		$scope.table_maximun_body_heigth    = SCREEN_PARAMTERS['table_maximun_body_heigth'];
 		$scope.$apply();
 	}
 
@@ -184,5 +191,4 @@ app.controller('MeuController', ['$scope', function($scope) {
 			$scope.opcao_desabilitada = "desabilitado";
 			//$scope.apply();
 	}
-
 }]);
