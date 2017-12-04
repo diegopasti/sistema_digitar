@@ -38,7 +38,6 @@ app.controller('MeuController', ['$scope', function($scope) {
 
 		//var base_controller = new BaseController();
 		//base_controller.request("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
-		alert("hora de chamar a api")
 		request_api("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
 	}
 
