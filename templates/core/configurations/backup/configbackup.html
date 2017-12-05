@@ -1,0 +1,213 @@
+{% extends 'base_page.html' %}
+{% block Titulo %}
+    <title>Digitar - Configurações</title>
+{% endblock %}
+
+{% load staticfiles %}
+{% block recrusos_necessarios %}
+{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
+<!-- BOOTSTRAP 3.3.6 -->
+<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
+<script src="{% static 'modules/core/configurations/configurations_controller.js' %}"></script>
+<script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
+<script src="{% static 'bower_components/angular-locale-pt-br/angular-locale_pt-br.js'%}"></script>
+{% endblock %}
+
+{% block breadcrumb_title %}Configurações{% endblock %}
+
+{% block breadcrumb_block %}
+<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+<li class="active">Configurações</li>
+{% endblock %}
+
+{% block conteudo %}
+
+<div id="angular_content" ng-cloak ng-app="modules.configurations">
+  <div id="configuration_controller" ng-controller="configurations_controller">
+
+	<div class="main_content" style="padding: 0px;padding-top: 0px;margin-top:0px;">
+		<div class="tab-content">
+			<div id="entity_identification" class="tab-pane fade in active">
+				<div class="box box-default">
+
+					<div class="box-heading">
+						<div class="box-header with-border">
+							<h5 class="box-title">Controle de Backup</h5>
+
+							<div class="pull-right">
+								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup()"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Criar Backup</a>
+
+								<a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Restaurar Backup</a>
+								<a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-trash-o" aria-hidden="true"></i> Baixar</a>
+							</div>
+						</div>
+					</div>
+
+				  <div class="box-body">
+						<div class="dataTable_wrapper">
+							<div class='row'>
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pull-left">
+
+									{% verbatim %}
+									<div class="row">
+										<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
+											<div ng-if="(backups|filter:filterIds()).length == 0" style="text-align: center;">
+												<p style='background: blue;'>
+													<div style=""><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
+												<div style="margin-left: 0px;">Atenção! Nenhum backup encontrado.<br><a style="cursor: pointer;font-weight: bold;" ng-click="create_backup()">Clique aqui para gerar um backup imediatamente.</a></div>
+													</p>
+											</div>
+										</div>
+									</div>
+
+
+									<style>
+										#table_backups tr td{
+											padding: 0px;
+											height: 26px;
+										}
+
+										#table_backups tr td:first-child{
+											padding-left: 8px;
+										}
+
+										#table_backups tr td:last-child,th:last-child{
+											width: 140px;
+											 text-align: center;
+										}
+									</style>
+
+
+									<div class="row">
+										<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
+											<table class="table table-bordered table-striped">
+												<tr>
+													<th colspan="2" style="text-align: left; padding-left: 8px;">Armazenamento em Nuvem</th>
+												</tr>
+
+												<tr>
+													<td>
+														<br>
+
+														<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+															<div class="left" style="left: 0px;">Espaço utilizado</div>
+															<div class="pull-right" style="right: 0px;">{{ backups_informations.used_percent_space }}%</div>
+															<div class="progress progress_sm" style="width: 100%;">
+																<div class="progress-bar bg-green pull-left" role="progressbar" data-transitiongoal="{{ backups_informations.used_percent_space }}" style="width: {{ backups_informations.used_percent_space }}%;" aria-valuenow="{{ backups_informations.used_percent_space }}"></div>
+															</div>
+														</div>
+
+														<br>
+
+														<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+															<div class="row">
+
+																<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
+																	<div class="left" style="left: 0px;">Arquivos armazenados: {{ backups_informations.total_files }} itens</div>
+																	<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }}</div>
+																	<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
+																	<!--<div class="pull-left">Plano de Armazenamento: Básico</div>
+																	<div class="pull-left">Agendamento de Backups: Diário - 00:00</div>
+																	<div class="pull-left">Reciclagem automática: Ativada</div>
+																	<div class="pull-left">Limpeza manual de arquivos</div>-->
+																</div>
+
+																<!--<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
+																	<div class="left" style="left: 0px;">Arquivos armazenados: {{ backups_informations.total_files }} itens</div>
+																	<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }}</div>
+																	<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
+																	<div class="left" style="left: 0px;">Espaço Promocional: 500 Mb</div>
+																	<br>
+
+																</div>-->
+															</div>
+															<br>
+
+															<div class="row">
+																<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">Clique aqui para saber como obter espaço adicional gratuitamente</div>
+															</div>
+
+															<!--<div class="pull-right" style="right: 0px;">Limpeza automática: Ativada</div>-->
+														</div>
+													</td>
+												</tr>
+											</table>
+										</div>
+
+										<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
+											<table id='table_backups' class="table table-hover table-striped table-bordered">
+												<tr>
+													<th>Ultimos arquivos</th>
+													<th>Data de Criação</th>
+												</tr>
+												<tr class="list-unstyled " ng-repeat="item in backups">
+													<td><span class="pull-left" style="">{{ item.backup_file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{ item.backup_size }} Kb</span></span></td>
+													<td><span>{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span></td>
+
+
+													<!--<td>
+														<div class="block" style=" border-bottom: 0px solid #DDDDDD">
+															<div class="block_content" style="overflow: hidden;text-overflow: ellipsis;">
+															<span class="title">
+																<a style="color:#999;"><b>{{ item.backup_file_name }}</b><span style="color: #B3C1C3; font-size: 11px; alignment:center "> { item.backup_size | Filesize }</span></a>
+																	<span class="pull-right" style="color:#B3C1C3;font-size: 11px;padding-bottom:0px;margin-top: 3px" >{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span>
+															</span>
+															</div>
+														</div>
+													</td>
+
+													<td>
+
+													</td>-->
+												</tr>
+											</table>
+										</div>
+									</div>
+									{% endverbatim %}
+									</div>
+								</div>
+							</div>
+						</div>
+				  </div>
+				</div>
+			</div>
+
+			<div id="entity_contact" class="tab-pane fade">
+				nada 1
+			</div>
+
+			<div id="entity_endereco" class="tab-pane fade">
+				nada 2
+			</div>
+		</div>
+	</div>
+
+  </div>
+</div>
+
+{% include "componentes/mensagem.html" with messages=messages %}
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
+
+<script src="{% static 'modules/core/configurations/configurations.js' %}"></script>
+
+
+  <script type="text/javascript">
+	function post_screen_verified(){
+	}
+
+	$(document).ready(function(){
+		post_screen_verified();
+		angular.element(document.getElementById('configuration_controller')).scope().load()
+		angular.element(document.getElementById('configuration_controller')).scope().load_backups_informations()
+  	terminate_setup()
+	});
+</script>
+{% endblock %}
