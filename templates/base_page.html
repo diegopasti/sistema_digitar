@@ -8,9 +8,9 @@
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
-<script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
+<script src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
 <script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
-<script src="{% static 'modules/core/viewport/viewport_controll.js'%}"></script>
+<script defer src="{% static 'modules/core/viewport/viewport_controll.js'%}"></script>
 {% endcompress %}
 {% compress css %}
 <link defer href="{% static 'custom/adminlte/css/AdminLTE.min.css' %}" rel="stylesheet"/>
@@ -232,15 +232,14 @@
 <script defer type="text/javascript" src="{% static 'bower_components/angular-locale-pt-br/angular-locale_pt-br.js' %}"></script>
 <script defer type="text/javascript" src="{% static 'bower_components/pnotify/dist/pnotify.js' %}"></script>
 <script defer type="text/javascript" src="{% static 'modules/core/working/working.js' %}"></script>
+<script defer src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
 {% endcompress %}
 
 {% compress css %}
 <link defer href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-<link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet"/>
+<link defer href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet"/>
 <link defer href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
-<script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
-<link href="{% static 'modules/core/base.css' %}" rel="stylesheet"/>
-
+<link defer href="{% static 'modules/core/base.css' %}" rel="stylesheet"/>
 {% endcompress %}
 <script>
 
@@ -250,7 +249,7 @@
 {% endblock %}
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-	//init();
+	init();
 	//load_images();
 });
 </script>

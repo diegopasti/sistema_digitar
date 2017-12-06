@@ -27,7 +27,7 @@ SECRET_KEY = 'a33ryhl1tch=ql&a32o!+92%akmtem5%s7bhs_tj0#s3q$e4$%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 HTML_MINIFY = False
-COMPRESS_ENABLED = False
+COMPRESS_ENABLED = True
 COMPRESS_ROOT = os.path.join(BASE_DIR,"static/compress")
 
 ALLOWED_HOSTS = ['*']

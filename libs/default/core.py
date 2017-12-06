@@ -138,7 +138,7 @@ class BaseController(Notify):
 
     @request_ajax_required
     def signup(self, request, formulary):
-        print("VENHO ATE AQUI NO SINGUP?")
+        #print("VENHO ATE AQUI NO SINGUP?")
         form = formulary(request.POST)
         if form.is_valid():
             username = request.POST['username']
@@ -162,7 +162,6 @@ class BaseController(Notify):
     @request_ajax_required
     @validate_formulary
     def save(self, request, formulary=None):
-        print("SALVAR OBJETO",self.object)
         if self.full_exceptions == {}:
             response_dict = self.execute(self.object, self.object.save)
         else:
@@ -192,12 +191,10 @@ class BaseController(Notify):
     @request_ajax_required
     @validate_formulary
     def update(self, request, formulary):
-        print("COMECANDO:")
         if self.full_exceptions == {}:
             response_dict = self.execute(self.object, self.object.save)
         else:
             response_dict = self.notify.error(self.full_exceptions)
-        print("HORA DE SAIR FORA..",response_dict)
         return self.response(response_dict)
 
     @request_ajax_required
@@ -271,12 +268,12 @@ class BaseController(Notify):
         self.__request_path = request.path
         self.__request_bytes = sys.getsizeof(request.body)
         self.server_startup_time_process = datetime.datetime.now()
-        print("Processo iniciado em ", self.server_startup_time_process)
+        #print("Processo iniciado em ", self.server_startup_time_process)
 
     def terminate_process(self):
         self.server_terminate_time_process = datetime.datetime.now()
         self.server_processing_time = self.server_terminate_time_process - self.server_startup_time_process
-        print("Processo executado em", self.server_processing_time)  # ,"ou",self.server_processing_time.total_seconds())
+        #print("Processo executado em", self.server_processing_time)  # ,"ou",self.server_processing_time.total_seconds())
 
     def response(self, response_dict):
         import sys
@@ -291,7 +288,7 @@ class BaseController(Notify):
         data = json.dumps(response_dict, default=json_serial)
         data = data.replace('RESPONSE_SIZE', str(sys.getsizeof(data) - 16))
         response = HttpResponse(data)  # after generate response noramlization reduce size in 16 bytes
-        print("RESPONSE: ",response)
+        #print("RESPONSE: ",response)
         return response
 
     def filter_request(self, request, formulary=None):

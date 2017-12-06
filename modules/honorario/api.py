@@ -326,16 +326,16 @@ class ProventosController(BaseController):
     def filter_provents(self,request):
         #django.utils.cache.get_cache_key
         #olha = cache.get_cache_key(request)
-        print("VEJA SE CONSEGUI: ",request.get_raw_uri())
+        #print("VEJA SE CONSEGUI: ",request.get_raw_uri())
         cache_page = cache.has_key(request.get_raw_uri())
-        print("VEJA SE TEMOS CACHE: ",cache_page)
+        #print("VEJA SE TEMOS CACHE: ",cache_page)
         return BaseController().filter(request, Proventos)
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)
     def save_provent(request):
         cache_page = cache.has_key('http://localhost:8020/api/provents')
-        print("VEJA SE TEM CACHE: ",cache_page)
+        #print("VEJA SE TEM CACHE: ",cache_page)
         return BaseController().save(request, FormProventos)
 
     #login_required
