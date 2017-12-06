@@ -198,14 +198,12 @@
     <section class="content-header">
       <h1 style="padding-bottom: 10px;">
       {% block breadcrumb_title %}
-
       {% endblock %}
       </h1>
 
       <ol class="breadcrumb">
-          {% block breadcrumb_block %}
-
-          {% endblock %}
+        {% block breadcrumb_block %}
+        {% endblock %}
       </ol>
     </section>
 
@@ -241,11 +239,7 @@
 <link defer href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
 <link defer href="{% static 'modules/core/base.css' %}" rel="stylesheet"/>
 {% endcompress %}
-<script>
-
-</script>
 {% block recursos_complementares %}
-
 {% endblock %}
 <script>
 document.addEventListener("DOMContentLoaded", function(){
