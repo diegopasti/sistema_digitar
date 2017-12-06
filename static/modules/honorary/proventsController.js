@@ -35,7 +35,6 @@ app.controller('MeuController', ['$scope', function($scope) {
 		validate_function = function () {
 		 return check_required_fields('form_adicionar_contrato');//validate_form_regiter_person(); //validate_date($scope.birth_date_foundation);
 		}
-
 		//var base_controller = new BaseController();
 		//base_controller.request("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
 		request_api("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
@@ -66,7 +65,6 @@ app.controller('MeuController', ['$scope', function($scope) {
     validade_function = function () {
      return  true;
     }
-
     request_api("/api/provents/update",data_paramters,validade_function,success_function,fail_function);
 	}
 

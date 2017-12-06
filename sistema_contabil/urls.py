@@ -91,7 +91,7 @@ urlpatterns = [
     url(r'^api/honorario/deletar_indicacao/', honorario_api.deletar_indicacao),
 
     url(r'^provents/$', honorario_views.proventos_page),
-    url(r'^api/provents$', ProventosController.filter_provents),
+    url(r'^api/provents$', ProventosController().filter_provents),
     url(r'^api/provents/save$', ProventosController.save_provent),
     url(r'^api/provents/update$', ProventosController.update_provent),
 

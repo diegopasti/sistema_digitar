@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
-import json
-
-from django.core import serializers
+from modules.honorario.models import Contrato, Indicacao, Proventos
+from modules.honorario.forms import FormContrato, FormProventos
+#from django.views.decorators.cache import never_cache
+from modules.servico.models import Plano, Servico
 from django.http import HttpResponse, Http404
-
 from libs.default.core import BaseController
 from modules.entidade.models import entidade
-from modules.honorario.forms import FormContrato, FormProventos
-from modules.honorario.models import Contrato, Indicacao, Proventos
-from modules.servico.models import Plano, Servico
 from sistema_contabil import settings
+from django.core import serializers
+from django.core.cache import cache
+import json
 
 
 def filter_request(request, formulary=None):
@@ -321,12 +321,21 @@ class ProventosController(BaseController):
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied', redirect_field_name=None)
-    def filter_provents(request):
+
+    #never_cache - Para usar esse decorador precisamos usar esse metodo com o self e consequentemente instancia-lo no urls.
+    def filter_provents(self,request):
+        #django.utils.cache.get_cache_key
+        #olha = cache.get_cache_key(request)
+        print("VEJA SE CONSEGUI: ",request.get_raw_uri())
+        cache_page = cache.has_key(request.get_raw_uri())
+        print("VEJA SE TEMOS CACHE: ",cache_page)
         return BaseController().filter(request, Proventos)
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)
     def save_provent(request):
+        cache_page = cache.has_key('http://localhost:8020/api/provents')
+        print("VEJA SE TEM CACHE: ",cache_page)
         return BaseController().save(request, FormProventos)
 
     #login_required

@@ -29,31 +29,12 @@ DEBUG = True
 HTML_MINIFY = False
 COMPRESS_ENABLED = False
 COMPRESS_ROOT = os.path.join(BASE_DIR,"static/compress")
-"""
-LOGGING = {
-    'version': 1,
-    'handlers': {
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django.request': {
-            'handlers':['console'],
-            'propagate': True,
-            'level':'DEBUG',
-        }
-    },
-}
-"""
+
 ALLOWED_HOSTS = ['*']
-
-
-# Application definition
+ROOT_URLCONF = 'sistema_contabil.urls'
+WSGI_APPLICATION = 'sistema_contabil.wsgi.application'
 
 INSTALLED_APPS = (
-    #'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -63,7 +44,6 @@ INSTALLED_APPS = (
     'djangobower','compressor','dropbox','dbbackup',
     'sistema_contabil','modules','modules.user','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
-
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -82,8 +62,6 @@ MIDDLEWARE_CLASSES = (
     #'htmlmin.middleware.MarkRequestMiddleware',
 )
 
-ROOT_URLCONF = 'sistema_contabil.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -99,12 +77,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'sistema_contabil.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -122,15 +94,10 @@ DBBACKUP_FILENAME_TEMPLATE = '{datetime}.{extension}' #'{datetime}.{extension}'
 DBBACKUP_GPG_RECIPIENT = 'cleiton.leonel@gmail.com'
 #DBBACKUP_GPG_ALWAYS_TRUST = 'True'
 DROPBOX_OAUTH2_TOKEN = 'r2VjuxIaDQAAAAAAAAAAD7YKqJlAJSdXsRz3IWYGHs2Q_BEnim1nOc3-LA1PspKi'
-
 #DROPBOX_OAUTH2_TOKEN = '4dM4LNuAHKAAAAAAAAAACCB_3-K_tIVlAFYwTBatxMlTd_e6Y5dyiEbR7uX1dKTJ'
 DROPBOX_ROOT_PATH = '/backup'
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
-
 LANGUAGE_CODE = 'pt-br'
-
 # NA MAQUINA DE DESENVOLVIMEMTO WINDWOS O HORARIO CORRETO DEVE UTILIZAR:
 #TIME_ZONE = 'UTC'
 

@@ -182,8 +182,6 @@
 		</div>
 	</div>
 </div>
-
-
 {% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
 
@@ -191,16 +189,10 @@
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
-<script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
-<script type="text/javascript" src="{% static 'modules/core/base_controller.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/honorary/proventsController.js' %}"></script>
-<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/honorary/provents.js' %}"></script>
+<script defer src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
+<script defer type="text/javascript" src="{% static 'modules/core/base_controller.js' %}"></script>
+<script defer type="text/javascript" src="{% static 'modules/honorary/proventsController.js' %}"></script>
+<script defer type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script defer type="text/javascript" src="{% static 'modules/honorary/provents.js' %}"></script>
 {% endcompress %}
-
-<script>
-$(document).ready(function() {
-	init();
-});
-</script>
 {% endblock %}

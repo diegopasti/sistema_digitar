@@ -134,9 +134,6 @@ function report_session_paramters(){
   });
 }
 
-
-
-
 function verify_screen_paramters(){
 	screen_width = window.innerWidth;
 	screen_height = window.innerHeight;
@@ -174,7 +171,6 @@ function verify_screen_paramters(){
 	table_minimal_rows = Array.apply(null, Array(pagination_itens_per_page)).map(function (x, i) { return i; });
 	total_rows_height = pagination_itens_per_page*28;
 
-
 	SCREEN_PARAMTERS['table_maximun_items_per_page'] = pagination_itens_per_page;
 	SCREEN_PARAMTERS['table_maximun_body_height'] = total_rows_height;
 	SCREEN_PARAMTERS['table_minimun_items'] = table_minimal_rows;
@@ -190,33 +186,6 @@ function configure_screen(){
 	}
 }
 
-function start_load_page(){
-	SESSION_PARAMTERS['init_load_page'] = Date.now();
-}
-
-function terminate_load_page(){
-	SESSION_PARAMTERS['load_page_duration'] = Date.now() - SESSION_PARAMTERS['init_load_page'];
-	try{
-		document.getElementById('session_action_info').innerHTML = 'Página carregada em '+SESSION_PARAMTERS['load_page_duration']+"ms.";
-		$("#footer_session_action").fadeIn(100);
-		setTimeout(function(){$("#footer_session_action").fadeOut(5000);},5000);
-	}
-	catch(err) {
-	}
-}
-
-function terminate_setup(){
-	SESSION_PARAMTERS['setup_page_duration'] = Date.now() - SESSION_PARAMTERS['init_load_page'];
-	SESSION_PARAMTERS['setup_page_duration'] = SESSION_PARAMTERS['setup_page_duration'] - SESSION_PARAMTERS['load_page_duration']
-	try{
-		document.getElementById('session_action_info').innerHTML = 'Página carregada em '+SESSION_PARAMTERS['load_page_duration']+'ms e finalizada em '+SESSION_PARAMTERS['setup_page_duration']+"ms.";
-		$("#footer_session_action").fadeIn(100);
-		setTimeout(function(){$("#footer_session_action").fadeOut(5000);},5000)
-	}
-	catch(err) {
-	}
-}
-
 function register_action(start_request, status_request){
 	var terminate_request = Date.now();
 	var duration_request = terminate_request - start_request
@@ -225,25 +194,45 @@ function register_action(start_request, status_request){
 	try{
 		document.getElementById('session_action_info').innerHTML = 'Requisição processado em '+duration_request+'ms.';
 		$("#footer_session_action").fadeIn(100);
-		setTimeout(function(){$("#footer_session_action").fadeOut(5000);},5000)
+		setTimeout(function(){alert('ja passou 5 segundos');$("#footer_session_action").fadeOut(5000);},5000)
 	}
 	catch(err) {
 	}
 }
 
+function load_images(){
+	var allimages= document.getElementsByTagName('img');
+  for (var i=0; i<allimages.length; i++) {
+    if (allimages[i].getAttribute('data-src')) {
+      allimages[i].setAttribute('src', allimages[i].getAttribute('data-src'));
+    }
+  }
+}
+
 window.onresize = function(event) {
 	SCREEN_PARAMTERS = verify_screen_paramters();
 	configure_screen();
-
 	try{
 		post_screen_verified();
 	}
-
 	catch(err){
 	}
-
 };
 
-start_load_page();
-verify_screen_paramters();
-alert("FIM DO VIEW");
+function measureCRP() {
+  var time = window.performance.timing;
+  var time_dom_loading = time.domLoading;
+  var complete = time.domComplete - time_dom_loading;
+  var load_event_end = time.loadEventEnd  - time_dom_loading;
+  SESSION_PARAMTERS['load_page_duration'] = complete;
+	SESSION_PARAMTERS['setup_page_duration'] = load_event_end;
+	SESSION_PARAMTERS['status_message'] = 'Página carregada em '+SESSION_PARAMTERS['load_page_duration']+'ms e finalizada em '+SESSION_PARAMTERS['setup_page_duration']+"ms.";
+  document.getElementById('session_action_info').innerHTML = SESSION_PARAMTERS['status_message'];
+	$("#footer_session_action").fadeIn(100);
+	setTimeout(function(){$("#footer_session_action").fadeOut(5000);},8000)
+}
+
+window.addEventListener("load", function(){
+ setTimeout(function(){measureCRP();/*working()*/;}, 0);
+});
+//verify_screen_paramters();
