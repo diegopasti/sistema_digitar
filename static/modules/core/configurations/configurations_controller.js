@@ -50,6 +50,15 @@ application.controller('configurations_controller', function ($scope) {
 
       	NProgress.done();
       },
+      new PNotify({
+            title: "WorkingAPI was updated",
+            text: texto,
+            type: 'success',
+            hide: true,
+            delay: 2000,
+            mouse_reset: false,
+            styling: 'bootstrap3'
+        });
 
       failure: function () {
       	alert("Não foi possivel carregar a lista");

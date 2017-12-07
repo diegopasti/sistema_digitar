@@ -9,3 +9,4 @@ class Backup(models.Model):
     backup_file_name = models.CharField("Nome do Arquivo", null=False, blank=False, max_length=100, validators=[],error_messages=ERRORS_MESSAGES)
     backup_size = models.PositiveIntegerField("Tamanho do Arquivo", null=False, error_messages=ERRORS_MESSAGES)
     backup_link = models.CharField("Endereço", null=False, blank=False, max_length=100, validators=[], error_messages=ERRORS_MESSAGES)
+    #backup_link_folder = models.CharField("Link da Pasta Compartilhada", null=False, blank=False, max_length=100, validators=[], error_messages=ERRORS_MESSAGES)

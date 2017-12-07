@@ -25,6 +25,7 @@ class ConfigurationsController(BaseController):
         backup.backup_file_name = backup_paramters['file_name']
         backup.backup_link = backup_paramters['link']
         backup.backup_size = backup_paramters['size']
+        #backup.backup_link_folder = backup_paramters['folder_link']
         self.get_exceptions(backup, None)
         if self.full_exceptions == {}:
             response_dict = self.execute(backup, backup.save)
@@ -49,7 +50,7 @@ class ConfigurationsController(BaseController):
 
     def check_available_space(self,request):
         self.start_process(request)
-        backup_list = Backup.objects.all()
+        backup_list = BackupManager().list_backup()
         response_dict = {}
         response_dict['result'] = True
         response_dict['message'] = ""
@@ -57,13 +58,27 @@ class ConfigurationsController(BaseController):
         response_dict['object']['total_files'] = len(backup_list)
         response_dict['object']['total_space'] = 2000000000
         response_dict['object']['used_space'] = 0
-
+        response_dict['object']['last_update'] = None
         for item in backup_list:
-            response_dict['object']['used_space'] = response_dict['object']['used_space'] + item.backup_size
+            response_dict['object']['used_space'] = response_dict['object']['used_space'] + float(item['size'])
         response_dict['object']['used_percent_space'] = round((response_dict['object']['used_space'] / response_dict['object']['total_space']) * 100, 2)
-
+        print("PERCENTUAL: ",response_dict['object']['used_space'] / response_dict['object']['total_space'])
         print("ESPACO DE ARMAZENAMENTO: ",response_dict)
         return self.response(response_dict)
+
+
+    """def shared_folder(self,request):
+        self.start_process(request)
+        backup_paramters = BackupManager().shared_folder()
+        backup = Backup()
+        backup.backup_link_folder = backup_paramters['folder_link']
+        self.get_exceptions(backup, None)
+        if self.full_exceptions == {}:
+            response_dict = self.execute(backup, backup.save)
+        else:
+            response_dict = self.notify.error(self.full_exceptions)
+        return self.response(response_dict)
+        """
 
 
 
