@@ -1,22 +1,18 @@
 {% extends 'base_page.html' %}
-{% block Titulo %}
-<title>Digitar - Proventos</title>
+{% block Titulo %}<title>Digitar - Proventos</title>{% endblock %}
+{% load staticfiles %}{% block recursos_necessarios %}
 {% endblock %}
-
-{% load staticfiles %}
-{% block recursos_necessarios %}
-{% endblock %}
-
-{% block breadcrumb_title %}Honorário{% endblock %}
-{% block breadcrumb_block %}
+<!--
+{ block breadcrumb_title %}Honorário { endblock %}
+{ block breadcrumb_block %}
 <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
 <li><a href="/honorario">Honorário</a></li>
 <li class="active">Proventos</li>
-{% endblock %}
-
+{ endblock %}
+-->
 {% block conteudo %}
 <div id="controle_angular" ng-app="app" ng-controller="MeuController" ng-init="contratos_carregados=false;">
-	<div class="row" style="margin-top: -40px;">
+	<div class="row" style="margin-top: -55px;">
 		<div class="col-lg-12 col-md-12 col-xs-12">
 			<div class="box box-default" >
 				<div class="box-heading">
@@ -32,7 +28,7 @@
 					</div>
 				</div>
 
-				<div class="box-body" style="margin-bottom: -10px; margin-top: 0px;">
+				<div class="box-body" style="margin-bottom: -10px;margin-top: 0px;">
 					<div class="dataTable_wrapper">
 						<div class='row'>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -40,32 +36,23 @@
 								<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
 									<thead>
 										<tr class="linha_cabecalho">
-											<th class='text-center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse">N°</th>
-
-											<th class='text-center' ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Provento</th>
-
-											<th class='text-center' style="width: 120px;" ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Tipo</th>
-
-											<th class='text-center' style="width: 120px;" ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Valor (R$)</th>
+											<th class='text-center' style="width: 40px;" ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
+											<th class='text-center' ng-click="sortType='cliente';sortReverse=!sortReverse">Provento</th>
+											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Tipo</th>
+											<th class='text-center' style="width: 120px;" ng-hide='screen0 || screen1 || screen2' ng-click="sortType='plano';sortReverse=!sortReverse" >Valor (R$)</th>
 										</tr>
 									</thead>
 
 									<tbody style="font-size: 11px;">
-
 										<tr id="divCarregando" ng-if="contratos_carregados == false">
-											<td colspan="8" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
+											<td colspan="8" style='height: 260px;background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
 												<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><br><br>Aguarde.. Carregando...
 											</td>
 										</tr>
 
 										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato);" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado">
-											<!--<tr ng-repeat='contrato in contratos' class="linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos">-->
-
-											<td class='text-center' style="width: 40px;">{{ contrato.id }}</td> <!-- {{ $index+1 }} -->
-											<td class="col-cliente" class="text-left">
-												{{ contrato.nome }}
-												<!--<div class="responsive-text"  style="max-width: {{ col_cliente_size }}px">{{ contrato.cliente_nome }}</div> isso faz cortar as palavras mas temos um problema com alinhamento que nao fica perfeito dependendo de como a largura foi carregada inicialmente -->
-											</td>
+											<td class='text-center' style="width: 40px;">{{ contrato.id }}</td>
+											<td class="col-cliente" class="text-left">{{ contrato.nome }}</td>
 
 											<td class='text-center' style="width: 120px;">
 												<span ng-if="contrato.tipo=='P'">PROVENTO</span>
@@ -74,16 +61,12 @@
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'text-right': contrato.valor, 'text-center': !contrato.plano  }" style="width: 130px;">
-												<span ng-if="contrato.valor">{{ contrato.valor | currency:"" }}</span>
-												<span ng-if="!contrato.plano"></span>
+												<span ng-if="contrato.valor">{{ contrato.valor | currency:"" }}</span><span ng-if="!contrato.plano"></span>
 											</td>
 										</tr>
 
 										<tr ng-cloak ng-if='contratos_carregados'  ng-repeat="k in minimal_quantity_rows.slice(contratos.length,minimal_quantity_rows.length)">
-											<td style="width:30px;"></td>
-											<td></td>
-											<td style="width: 120px;"></td>
-											<td style="width:120px;"></td>
+											<td style="width:30px;"></td><td></td><td style="width: 120px;"></td><td style="width:120px;"></td>
 										</tr>
 
 										<tr ng-cloak ng-if="resultado.length === 0 && (contratos|filter:filterIds()).length > 0">
@@ -114,7 +97,6 @@
 						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="contratos_carregados == true" >
 							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
 								<dir-pagination-controls pagination-id="paginate_contratos" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
-
 								</dir-pagination-controls>
 							</span>
 						</div>
@@ -122,9 +104,7 @@
 					</div>
 				</div>
 			</div>
-			<!-- /.panel -->
 		</div>
-		<!-- /.row -->
 	</div>
 	<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 70%">
@@ -182,17 +162,12 @@
 		</div>
 	</div>
 </div>
-{% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
-
 {% block recursos_complementares %}
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
-<script defer src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
-<script defer type="text/javascript" src="{% static 'modules/core/base_controller.js' %}"></script>
-<script defer type="text/javascript" src="{% static 'modules/honorary/proventsController.js' %}"></script>
-<script defer type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script defer type="text/javascript" src="{% static 'modules/honorary/provents.js' %}"></script>
+<script src="{% static 'modules/honorary/proventsController.js' %}"/>
+<script src="{% static 'modules/honorary/provents.js' %}"/>
 {% endcompress %}
 {% endblock %}

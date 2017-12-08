@@ -1,4 +1,4 @@
-// Modulo de controle de parametros da tela
+
 var SCREEN_PARAMTERS = {};
 SCREEN_PARAMTERS['screen_width']  = '';
 SCREEN_PARAMTERS['screen_height'] = '';
@@ -23,7 +23,6 @@ SESSION_PARAMTERS['zip_code'] = '';
 SESSION_PARAMTERS['time_zone'] = '';
 SESSION_PARAMTERS['latitude'] = '';
 SESSION_PARAMTERS['longitude'] = '';
-
 
 function get_session_paramters_freegeoip(){
 	// MAX QUERIES 15000 PER HOUR
@@ -51,7 +50,6 @@ function get_session_paramters_freegeoip(){
     }
   });
 }
-
 
 function get_session_paramters_ip_api(){
 	// MAX QUERIES 9000 POR HOUR
@@ -126,10 +124,10 @@ function report_session_paramters(){
     url: url,
     data: SESSION_PARAMTERS,
     success: function(data) {
-    	alert("olha o que veio: "+JSON.stringify(data));
+    	//alert("olha o que veio: "+JSON.stringify(data));
     },
     failure: function(data){
-			alert("Erro na hora de salvar a sessao");
+			//alert("Erro na hora de salvar a sessao");
     }
   });
 }
@@ -194,7 +192,7 @@ function register_action(start_request, status_request){
 	try{
 		document.getElementById('session_action_info').innerHTML = 'Requisição processado em '+duration_request+'ms.';
 		$("#footer_session_action").fadeIn(100);
-		setTimeout(function(){alert('ja passou 5 segundos');$("#footer_session_action").fadeOut(5000);},5000)
+		setTimeout(function(){$("#footer_session_action").fadeOut(5000);},5000)
 	}
 	catch(err) {
 	}
@@ -233,6 +231,6 @@ function measureCRP() {
 }
 
 window.addEventListener("load", function(){
- setTimeout(function(){measureCRP();/*working()*/;}, 0);
+ setTimeout(function(){measureCRP();working();}, 0);
 });
 //verify_screen_paramters();
