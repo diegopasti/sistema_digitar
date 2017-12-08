@@ -17,6 +17,14 @@
       {{ formulario_register.email }}
     </div>
 
+		<div>
+      {{ formulario_register.nome }}
+    </div>
+
+		<div>
+      {{ formulario_register.sobrenome }}
+    </div>
+
     <div>
       {{ formulario_register.password }}
     </div>
@@ -65,4 +73,7 @@
       e.preventDefault();
       notify("REGISTRO","Enviaremos um email com sua chave de registro.Acesse o link para confirmar o registro");
     });
+
+    	$('#level_permission').val('Operador')
+		alert("Venho?")
 </script>

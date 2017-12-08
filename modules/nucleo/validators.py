@@ -2,7 +2,7 @@ import re
 
 
 def check_password_format(value):
-    if value is not None and not is_empty(value) and contain_minimal_size(value, 8) and contain_numbers(value) and contain_alpha(value):
+    if value is not None and not is_empty(value) and contain_minimal_size(value, 6):
         return True
     else:
         return False

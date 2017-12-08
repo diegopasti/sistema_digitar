@@ -113,22 +113,19 @@ class BaseController(Notify):
         if form.is_valid():
             username = request.POST['username'].lower()
             password = request.POST['password']
-            user = User.objects.get_user_email(name=username)
+            user = User.objects.get_user_username(username=username)
             print("Consigo pega o user?",user)
             if user is not None:
-                if user.account_activated:
-                    if user.is_active:
-                        auth = User.objects.authenticate(request, name=username, password=password)
-                        if auth is not None:
-                            login(request, user)
-                            self.__create_session(request, user)
-                            response_dict = self.notify.success(user, list_fields=['username'])
-                        else:
-                            response_dict = self.notify.error({'username': 'Usuário ou senha incorreta.'})
+                if user.is_active:
+                    auth = User.objects.authenticate(request, username=username, password=password)
+                    if auth is not None:
+                        login(request, user)
+                        #self.__create_session(request, user)
+                        response_dict = self.notify.success(user, list_fields=['username'])
                     else:
-                        response_dict = self.notify.error({'username': 'Usuário não autorizado.'})
+                        response_dict = self.notify.error({'username': 'Usuário ou senha incorreta.'})
                 else:
-                    response_dict = self.notify.error({'usename': 'Usuário não confirmado.'})
+                    response_dict = self.notify.error({'username': 'Usuário não autorizado.'})
             else:
                 response_dict = self.notify.error({'username': 'Usuário não existe.'})
         else:
@@ -138,23 +135,24 @@ class BaseController(Notify):
 
     @request_ajax_required
     def signup(self, request, formulary):
-        print("VENHO ATE AQUI NO SINGUP?")
         form = formulary(request.POST)
         if form.is_valid():
             username = request.POST['username']
             email = request.POST['email'].lower()
             senha = request.POST['password']
-            level_perm = request = request['level_permission']
+            level_perm = request.POST['level_permission']
+            nome = request.POST['nome'].lower()
+            sobrenome = request.POST['sobrenome'].lower()
             if User.objects.check_available_email(email):
-                user = User.objects._create_user(username, email, senha,)
+                user = User.objects._create_user(username, email, senha,True,level_permission=level_perm,nome=nome,sobrenome=sobrenome)
                 if user is not None:
                     #activation_code = generate_activation_code(email)
                     #send_generate_activation_code(email, activation_code)
-                    response_dict = self.notify.success(user, list_fields=['email'])
+                    response_dict = self.notify.success(user, list_fields=['username'])
                 else:
-                    response_dict = self.notify.error({'email': 'Nao foi possivel criar objeto.'})
+                    response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
             else:
-                response_dict = self.notify.error({'email': 'Email já cadastrado.'})
+                response_dict = self.notify.error({'username': 'Username já cadastrado.'})
         else:
             response_dict = self.get_exceptions(None, form) #self.notify.error({'email': 'Formulário com dados inválidos.'})
         return self.response(response_dict)

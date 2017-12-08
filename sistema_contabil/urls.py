@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url, include
 from modules.nucleo import views as nucleo_views
-from modules.core import views as core_views
+from modules.nucleo import views as core_views
 from modules.entidade import views as entidade_views
 from modules.protocolo import views as protocolo_views
 from modules.servico import views as servico_views
@@ -105,14 +105,14 @@ urlpatterns = [
     url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', preferencias_views.excluir_salario),
     url(r'^api/preferencias/salario_vigente/$', preferencias_views.get_salario_vigente),
 
-    url(r'^api/core/', include('modules.core.urls')),
+    #url(r'^api/core/', include('modules.nucleo.urls')),
 
     url(r'^api/working/register/$', nucleo_views.working),
-    url(r'^system/configurations', core_views.system_configurations),
+  #  url(r'^system/configurations', core_views.system_configurations),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'register/',view_usuario.register_page),
-    url(r'^api/user/register/save', UserController.register_user),
+    url(r'save/register',UserController().salvar_registro),
     url(r'login/autentication$', UserController().login_autentication),
     url(r'reset_password$', UserController().reset_password),
     url(r'change_password$', UserController().change_password),

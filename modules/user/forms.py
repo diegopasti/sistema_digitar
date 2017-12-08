@@ -9,7 +9,7 @@ from modules.user.validators import password_format_validator
 
 
 class FormLogin(FormAbstractUsername, FormAbstractPassword,BaseForm):
-
+    model = User
     def __init__(self, *args, **kwargs):
         super(FormAbstractPassword, self).__init__(*args, **kwargs)
         super(FormAbstractUsername, self).__init__(*args,**kwargs)
@@ -22,7 +22,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
 
     choices = ((1, 'Gerente'), (2, 'Administrador'), (3, 'Operador'), (4, 'Sem acesso'))
     level_permission = forms.ChoiceField(
-        label="Nivel Permissão",
+        label="Nivel Permissão..",
         choices=choices,
         required=True,
         validators=[],
@@ -35,13 +35,41 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         )
     )
 
+    nome = forms.CharField(
+        label="Primeiro Nome..",
+        required=True,
+        validators=[],
+        error_messages=ERRORS_MESSAGES,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'primeiro_nome', 'name': 'primeiro_nome', 'class': "form-control ",
+                'autocomplete': "off", 'ng-model': 'primeiro_nome', 'required': "required",
+            }
+        )
+    )
+
+    sobrenome = forms.CharField(
+        label="Sobrenome..",
+        required=True,
+        validators=[],
+        error_messages=ERRORS_MESSAGES,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'sobrenome', 'name': 'sobrenome', 'class': "form-control ",
+                'autocomplete': "off", 'ng-model': 'sobrenome', 'required': "required",
+            }
+        )
+    )
+
     def __init__(self, *args, **kwargs):
         super(FormAbstractUsername, self).__init__(*args,**kwargs)
         super(FormAbstractPassword, self).__init__(*args, **kwargs)
         super(FormAbstractConfirmPassword, self).__init__(*args, **kwargs)
         super(FormAbstractEmail, self).__init__(*args,**kwargs)
-        self.fields['username'].widget.attrs['placeholder'] = 'Nome do usuario'
+        self.fields['username'].widget.attrs['placeholder'] = 'Login..'
         self.fields['email'].widget.attrs['placeholder'] = 'Email..'
+        self.fields['nome'].widget.attrs['placeholder'] = 'Primeiro nome..'
+        self.fields['sobrenome'].widget.attrs['placeholder'] = 'Sobrenome..'
         self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
         self.fields['confirm_password'].widget.attrs['placeholder'] = 'Repita a Senha..'
 

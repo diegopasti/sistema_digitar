@@ -40,9 +40,16 @@ function validate_form_login(){
 }
 
 function validate_form_register(){
-	return true;
+	//return true;
 	//Falta fazer os validadores
   //return (email_is_valid("email") && validate_password("password")) && compare_passwords("password","confirm_password");
+	alert(username_is_valid("username"));
+	return username_is_valid("username");
+}
+
+function username_is_valid(username){
+	var name = $('#'+username+'').val();
+	return (name.length > 6 && name != null)
 }
 
 function validate_password(senha){
