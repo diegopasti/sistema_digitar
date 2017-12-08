@@ -111,9 +111,7 @@ function set_wrong_field(id, erro_value){
   $("#field_"+id).addClass('bad')
   var myDivs = $("#field_"+id).children('div.alert');
 	if(myDivs.length === 0){
-			myDivs = $('<div class="alert"></div>')
-					.appendTo("#field_"+id);
-					//.css('opacity', 0);f
+			myDivs = $('<div class="alert"></div>').appendTo("#field_"+id);
 	}
 	$("#field_"+id+" .alert").html(erro_value);
 	$("#"+id).addClass('wrong_field')
@@ -127,4 +125,8 @@ function clean_wrong_field(id){
 
 function reset_formulary(formulary_id){
 	document.getElementById(formulary_id).reset();
+	$("#"+formulary_id +" input, textarea").each(function () {
+    var id = $(this).attr("id");
+    clean_wrong_field(id);
+  });
 }

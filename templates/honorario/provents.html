@@ -14,7 +14,7 @@
 							<div class="btn-group" role="group" aria-label="...">
 								<button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_contrato" ng-disabled="registro_selecionado!=null">Adicionar</button>
 								<button id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</button>
-								<button id='bt_desativar' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" data-toggle="modal" data-target="#modal_justificativa" ng-click="" style='margin-left: 5px;'>Excluir</button>
+								<button id='bt_disable' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_disable();" style='margin-left: 5px;'>Excluir</button>
 							</div>
 						</div>
 					</div>
@@ -98,6 +98,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 70%">
 			<form id="form_adicionar_contrato" novalidate autocomplete="off" ng-submit="alert('EH AQUI JOVEM');esta_adicionando? save_provent() : update_provent()" onsubmit="return false;">
@@ -151,6 +152,76 @@
 					</div>
 				</div>
 			</form>
+		</div>
+	</div>
+
+	<div id="modal_justify_action" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 60%">
+			<div class="modal-content">
+				<form id="form_justify_action" ng-submit="disable();">
+					<div class="modal-header" style="padding-top:2px;"><!-- style="height: 48px;"> -->
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top:10px;">×</button>
+						<h4 id="myModalLabel">Desativar Provento</h4>
+					</div>
+
+					<div class="modal-body">
+						<style>
+							.only_bottom_border{
+								background-color: #fff !important;
+								border-bottom: 1px solid #ccc !important;
+								box-shadow:none !important;
+								cursor: default;
+							}
+						</style>
+						<div style="margin-top: 0px;">
+							<div class="row">
+								<div class="col-lg-12">
+									<p id="action_info" style="padding: 10px; padding-bottom: 4px;">
+										Por questões de segurança e integridade das informações esse registro não pode ser excluido definitivamente, apenas
+										desativado para que não esteja disponiveis em operações futuras. Justificativa obrigatória para prosseguir.
+									</p>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-4 col-md-2">
+									<sub style='padding-left: 2px'><label>Operação:</label></sub>
+									<input id="action_type" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+								</div>
+
+
+								<div class="col-lg-4 col-md-3">
+									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
+									<input id="action_user" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+								</div>
+
+
+								<div class="col-lg-4 col-md-7">
+									<sub style='padding-left: 2px'><label>Registro:</label></sub>
+									<input id="action_object" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="form-group field" id="field_action_justify">
+										<sub>
+											<label>{{ form_desativar.justificativa.label }}</label>
+										</sub>
+										<textarea id="action_justify" rows="5" class="form-control uppercase"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="form-group">
+							<button type='submit' id="bt_confirmar_desativacao" class="btn btn-danger pull-right">Desativar</button>
+						</div>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
 </div>

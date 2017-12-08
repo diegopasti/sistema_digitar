@@ -329,7 +329,7 @@ class ProventosController(BaseController):
         #print("VEJA SE CONSEGUI: ",request.get_raw_uri())
         cache_page = cache.has_key(request.get_raw_uri())
         #print("VEJA SE TEMOS CACHE: ",cache_page)
-        return BaseController().filter(request, Proventos)
+        return BaseController().filter(request, Proventos, queryset=Proventos.objects.filter(is_active=True).order_by('-id'))
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)
@@ -341,10 +341,10 @@ class ProventosController(BaseController):
     #login_required
     #user_passes_test(lambda u: u.permissions.can_update_entity(), login_url='/error/access_denied', redirect_field_name=None)
     def update_provent(request):
-        print("VO LA ATUALIZAR O OBJETO")
-        x = BaseController().update(request, FormProventos)
-        print("DEU CERTO O X? ",x)
-        return x
+        return BaseController().update(request, FormProventos)
+
+    def disable_provent(request):
+        return BaseController().disable(request, Proventos)
 
 """
 def get_lista_proventos_old(self,request):

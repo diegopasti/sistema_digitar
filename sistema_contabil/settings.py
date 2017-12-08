@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djangobower','compressor','dropbox','dbbackup',
+    'grappelli','filebrowser',
     'sistema_contabil','modules','modules.user','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
 
@@ -273,10 +274,22 @@ STATICFILES_DIRS = (
 
 LOGIN_REDIRECT_URL = "/"
 
+FILER_DEBUG = True
+FILER_ENABLE_LOGGING = True
+FILER_CANONICAL_URL = 'sharing/'
+THUMBNAIL_HIGH_RESOLUTION = True
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    #'easy_thumbnails.processors.scale_and_crop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters',
+)
+
 SERVER_DIGITAR = True
 if SERVER_DIGITAR:
     WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
-    WORKING_SERVER = "http://192.168.25.7:8010"
+    WORKING_SERVER = "http://127.0.0.1:8010"
     from modules.nucleo.working_api import WorkingManager
 
     try:

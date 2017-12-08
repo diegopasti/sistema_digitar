@@ -94,7 +94,34 @@ app.controller('MeuController', ['$scope', function($scope) {
 	}
 
 	$scope.disable = function(){
+		var data_paramters = create_data_paramters('form_justify_action');
+		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
 
+		success_function = function(result,message,object,status){
+			var index = $scope.contratos.indexOf($scope.registro_selecionado);
+  		$scope.contratos.splice(index, 1);
+			$scope.registro_selecionado = null;
+			$scope.esta_adicionando = true;
+			$scope.$apply();
+			$("#modal_justify_action").modal('hide');
+		}
+
+		fail_function = function (result,message,data_object,status) {
+			check_response_message_form('#form_justify_action', message);
+		}
+
+		validate_function = function () {
+		 return validate_justify();
+		}
+		request_api("/api/provents/disable",data_paramters,validate_function,success_function,fail_function);
+		validate_justify
+	}
+
+	$scope.confirm_disable = function(){
+		var object_name = $scope.registro_selecionado.nome;
+		$('#action_type').val('Desativar')
+		$('#action_object').val(object_name)
+		$('#action_user').val('Operador')
 	}
 
 	$scope.open_object = function(){

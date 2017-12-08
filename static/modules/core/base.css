@@ -68,7 +68,7 @@ tr.linha_selecionavel{
 	margin-left: 4px;
 }
 
-input.wrong_field{
+.wrong_field{
 	border: 1px solid #CE5454;
 	box-shadow: 1px 1px 5px #CE5454;
 }

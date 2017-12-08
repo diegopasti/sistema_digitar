@@ -206,9 +206,9 @@ class BaseController(Notify):
         return HttpResponse(json.dumps(response_dict))
 
     @request_ajax_required
-    def disable(self, request, model, object_id):
-        print("Desativar: ", model, '[', object_id, ']')
-        object = model.objects.get(pk=object_id)
+    def disable(self, request, model):
+        object = model.objects.get(pk=int(request.POST['id']))
+        print("Desativar: ", object, '[', object.is_active, ']')
         object.is_active = False
         response_dict = self.execute(object, object.save)
         return HttpResponse(json.dumps(response_dict))

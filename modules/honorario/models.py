@@ -107,4 +107,4 @@ class Proventos(models.Model):
     cadastrado_por = models.ForeignKey(entidade, related_name='provento_cadastrado_por',  default=1)
     ultima_alteracao = models.DateTimeField(null=True, auto_now=True)
     alterado_por = models.ForeignKey(entidade, related_name='provento_alterado_por', default=1)
-    ativo = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)

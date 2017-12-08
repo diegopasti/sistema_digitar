@@ -26,8 +26,14 @@ from modules.preferencias import views as preferencias_views
 from modules.honorario.api import ProventosController
 from modules.user import views as view_usuario
 from modules.user.api import UserController
+from filebrowser.sites import site
+site.directory = "data/backup/"
 
 urlpatterns = [
+    url(r'^admin/filebrowser/', include(site.urls)),
+    #url(r'^adminurl/filebrowser/', include(site.urls)),
+    url(r'^grappelli/', include('grappelli.urls')),
+
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', view_usuario.login_page),
     url(r'^$', entidade_views.index), # entidade.views.index),
@@ -95,6 +101,7 @@ urlpatterns = [
     url(r'^api/provents$', ProventosController().filter_provents),
     url(r'^api/provents/save$', ProventosController.save_provent),
     url(r'^api/provents/update$', ProventosController.update_provent),
+    url(r'^api/provents/disable$', ProventosController.disable_provent),
 
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),
     #url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', "preferencias.views.excluir_salario),
@@ -122,6 +129,7 @@ urlpatterns = [
 
     # User Administration
     url(r'filter/', UserController.filter_users),
+
     # APIs administrativas
     url(r'register/delete/(?P<email>[^/]+)/', UserController.register_delete),
 
