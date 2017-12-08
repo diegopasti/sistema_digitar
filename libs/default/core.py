@@ -238,7 +238,7 @@ class BaseController(Notify):
         if form is not None:
             self.form_exceptions = form.format_validate_response()
         else:
-            form_exceptions = {}
+            self.form_exceptions = {}
 
         print("FORM EXCEPTIONS: ", self.form_exceptions)
         print("MODEL EXCEPTIONS: ", self.model_exceptions)

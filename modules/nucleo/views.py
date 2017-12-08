@@ -13,6 +13,7 @@ from modules.nucleo.working_api import WorkingManager
 def system_configurations(request):
     return render(request, "core/configurations/backup/configurations.html")
 
+
 def cadastrar_empresa(request):  
     dados = entidade.objects.all()
     if (request.method == "POST"):
@@ -199,9 +200,9 @@ def cadastrar_empresa(request):
         
     return render_to_response("nucleo/cadastrar_empresa.html",{'dados':dados,'formulario':formulario},context_instance=RequestContext(request))
 
-
 def working(request):
     if request.is_ajax():
+        print("TO INDO LA SALVAR")
         return WorkingManager().register_programming_frontend(request.GET['request_page'])
     else:
         raise Http404
