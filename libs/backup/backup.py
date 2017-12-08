@@ -61,8 +61,8 @@ class BackupManager:
             path_name = entry.path_lower
             size = entry.size
             filesize = '{0:.2f}'.format(size/1024)
-            print(filesize)
-            print(int(float(filesize)))
+            #print(filesize)
+            #print(int(float(filesize)))
             link = self.dropbox.sharing_create_shared_link(path_name)  # Mesmo estando obsoleto,esse é o único modo de retornar o link de arquivos já compartilhados...
             url = link.url
             dl_url = re.sub(r"\?dl\=0", "?dl=1", url)
@@ -70,13 +70,13 @@ class BackupManager:
             time = datetime.timedelta(hours=2)
             hora = datetime.datetime.strptime(str(modified), '%Y-%m-%d %H:%M:%S')
             now = hora - time
-            #print(display, now , size, '\n'+dl_url)
+            print(display, now , filesize, '\n'+dl_url)
             data['file_name'] = filename
             data['link'] = dl_url
             data['client_modified'] = entry.client_modified
             data['size'] = filesize
             metadata.append(data)
-            print(metadata)
+            #print(metadata)
             #print(data)
         return metadata
 

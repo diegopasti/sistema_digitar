@@ -8,13 +8,11 @@ application.controller('configurations_controller', function ($scope) {
 	$scope.loaded_backups = false;
 
 	$scope.load = function () {
-	alert("TO INDO BUSCAR OS DADOS")
     $.ajax({
       type: 'GET',
       url: "/api/core/configurations/backup",
 
       success: function (data) {
-        alert("VEJA O QUE VEIO: "+JSON.stringify(data))
         $scope.backups = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.loaded_backups = true;
@@ -23,8 +21,6 @@ application.controller('configurations_controller', function ($scope) {
       },
 
       failure: function () {
-        alert("FALHOU")
-        $scope.backups = [];
         $scope.loaded_backups = true;
         alert("Não foi possivel carregar a lista")
       }
@@ -50,15 +46,6 @@ application.controller('configurations_controller', function ($scope) {
 
       	NProgress.done();
       },
-      new PNotify({
-            title: "WorkingAPI was updated",
-            text: texto,
-            type: 'success',
-            hide: true,
-            delay: 2000,
-            mouse_reset: false,
-            styling: 'bootstrap3'
-        });
 
       failure: function () {
       	alert("Não foi possivel carregar a lista");

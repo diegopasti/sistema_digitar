@@ -57,7 +57,6 @@ function working(){
       $("#porcaria").html(data)
       alert(data)
       //var resultado = data;//$.parseJSON(data);
-
     },
     failure: function (data) {
       alert('Erro! Falha na execução do ajax');
