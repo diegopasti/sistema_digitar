@@ -26,151 +26,192 @@
 
 <div id="angular_content" ng-cloak ng-app="modules.configurations">
   <div id="configuration_controller" ng-controller="configurations_controller">
+		<div class="main_content" style="padding: 0px;padding-top: 0px;margin-top:0px;">
+			<div class="tab-content">
+				<div id="entity_identification" class="tab-pane fade in active">
+					<div class="row">
+						<div class="col-lg-6">
 
-	<div class="main_content" style="padding: 0px;padding-top: 0px;margin-top:0px;">
-		<div class="tab-content">
-			<div id="entity_identification" class="tab-pane fade in active">
-				<div class="box box-default">
+							<div class="box box-default">
+								<div class="box-heading">
+									<div class="box-header with-border">
+										<h5 class="box-title">Informações do Sistema</h5>
+										<div class="pull-right">
+											<!--<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup()"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Criar Backup</a>
 
-					<div class="box-heading">
-						<div class="box-header with-border">
-							<h5 class="box-title">Controle de Backup</h5>
-
-							<div class="pull-right">
-								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup()"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Criar Backup</a>
-
-								<a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Restaurar Backup</a>
-								<a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-trash-o" aria-hidden="true"></i> Baixar</a>
-							</div>
-						</div>
-					</div>
-
-				  <div class="box-body">
-						<div class="dataTable_wrapper">
-							<div class='row'>
-								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pull-left">
-
-									{% verbatim %}
-									<div class="row">
-										<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
-											<div ng-if="(backups|filter:filterIds()).length == 0" style="text-align: center;">
-												<p style='background: blue;'>
-													<div style=""><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
-												<div style="margin-left: 0px;">Atenção! Nenhum backup encontrado.<br><a style="cursor: pointer;font-weight: bold;" ng-click="create_backup()">Clique aqui para gerar um backup imediatamente.</a></div>
-													</p>
-											</div>
+											<a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Restaurar Backup</a>-->
+											<a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Atualizar</a>
 										</div>
 									</div>
+								</div>
 
+								<div class="box-body">
 
-									<style>
-										#table_backups tr td{
-											padding: 0px;
-											height: 26px;
-										}
+								</div>
+							</div>
 
-										#table_backups tr td:first-child{
-											padding-left: 8px;
-										}
+							<div class="box box-default">
+								<div class="box-heading">
+									<div class="box-header with-border">
+										<h5 class="box-title">Controle de Backup</h5>
 
-										#table_backups tr td:last-child,th:last-child{
-											width: 140px;
-											 text-align: center;
-										}
-									</style>
+										<div class="pull-right">
+											<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup()"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Criar Backup</a>
 
+											<a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Restaurar Backup</a>
 
-									<div class="row">
-										<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
-											<table class="table table-bordered table-striped">
-												<tr>
-													<th colspan="2" style="text-align: left; padding-left: 8px;">Armazenamento em Nuvem</th>
-												</tr>
+											<a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-trash-o" aria-hidden="true"></i> Baixar</a>
+										</div>
+									</div>
+								</div>
 
-												<tr>
-													<td>
-														<br>
+								<div class="box-body">
+									<div class="dataTable_wrapper">
+										<div class='row'>
+											<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pull-left">
 
-														<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
-															<div class="left" style="left: 0px;">Espaço utilizado</div>
-															<div class="pull-right" style="right: 0px;">{{ backups_informations.used_percent_space }}%</div>
-															<div class="progress progress_sm" style="width: 100%;">
-																<div class="progress-bar bg-green pull-left" role="progressbar" data-transitiongoal="{{ backups_informations.used_percent_space }}" style="width: {{ backups_informations.used_percent_space }}%;" aria-valuenow="{{ backups_informations.used_percent_space }}"></div>
-															</div>
+												{% verbatim %}
+												<div class="row">
+													<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
+														<div ng-if="(backups|filter:filterIds()).length == 0" style="text-align: center;">
+															<p style='background: blue;'>
+																<div style=""><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
+																<div style="margin-left: 0px;">Atenção! Nenhum backup encontrado.<br><a style="cursor: pointer;font-weight: bold;" ng-click="create_backup()">Clique aqui para gerar um backup imediatamente.</a></div>
+															</p>
 														</div>
+													</div>
+												</div>
 
-														<br>
+												<style>
+													#table_backups tr td{
+														padding: 0px;
+														height: 26px;
+													}
 
-														<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
-															<div class="row">
+													#table_backups tr td:first-child{
+														padding-left: 8px;
+													}
 
-																<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
-																	<div class="left" style="left: 0px;">Arquivos armazenados: {{ backups_informations.total_files }} itens</div>
-																	<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }} Kb</div>
-																	<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
-																	<!--<div class="pull-left">Plano de Armazenamento: Básico</div>
-																	<div class="pull-left">Agendamento de Backups: Diário - 00:00</div>
-																	<div class="pull-left">Reciclagem automática: Ativada</div>
-																	<div class="pull-left">Limpeza manual de arquivos</div>-->
-																</div>
+													#table_backups tr td:last-child,th:last-child{
+														width: 140px;
+														 text-align: center;
+													}
+												</style>
 
-																<!--<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
-																	<div class="left" style="left: 0px;">Arquivos armazenados: {{ backups_informations.total_files }} itens</div>
-																	<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }}</div>
-																	<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
-																	<div class="left" style="left: 0px;">Espaço Promocional: 500 Mb</div>
+												<div class="row">
+													<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+														<table class="table table-bordered table-striped">
+															<tr>
+																<th colspan="2" style="text-align: left; padding-left: 8px;">Armazenamento em Nuvem</th>
+															</tr>
+
+															<tr>
+																<td>
 																	<br>
 
-																</div>-->
-															</div>
-															<br>
+																	<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+																		<div class="left" style="left: 0px;">Espaço utilizado</div>
+																		<div class="pull-right" style="right: 0px;">{{ backups_informations.used_percent_space }}%</div>
+																		<div class="progress progress_sm" style="width: 100%;">
+																			<div class="progress-bar bg-green pull-left" role="progressbar" data-transitiongoal="{{ backups_informations.used_percent_space }}" style="width: {{ backups_informations.used_percent_space }}%;" aria-valuenow="{{ backups_informations.used_percent_space }}"></div>
+																		</div>
+																	</div>
 
-															<div class="row">
-																<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;"> </div>
-															</div>
+																	<br>
 
-															<!--<div class="pull-right" style="right: 0px;">Limpeza automática: Ativada</div>-->
-														</div>
-													</td>
-												</tr>
-											</table>
+																	<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+																		<div class="row">
+
+																			<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
+																				<div class="left" style="left: 0px;">Arquivos armazenados: {{ backups_informations.total_files }} itens</div>
+																				<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }} Kb</div>
+																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
+																				<!--<div class="pull-left">Plano de Armazenamento: Básico</div>
+																				<div class="pull-left">Agendamento de Backups: Diário - 00:00</div>
+																				<div class="pull-left">Reciclagem automática: Ativada</div>
+																				<div class="pull-left">Limpeza manual de arquivos</div>-->
+																			</div>
+
+																			<!--<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
+																				<div class="left" style="left: 0px;">Arquivos armazenados: {{ backups_informations.total_files }} itens</div>
+																				<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }}</div>
+																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
+																				<div class="left" style="left: 0px;">Espaço Promocional: 500 Mb</div>
+																				<br>
+
+																			</div>-->
+																		</div>
+																		<br>
+
+																		<div class="row">
+																			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;"> </div>
+																		</div>
+
+																		<!--<div class="pull-right" style="right: 0px;">Limpeza automática: Ativada</div>-->
+																	</div>
+																</td>
+															</tr>
+														</table>
+													</div>
+
+													<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+														<table id='table_backups' class="table table-hover table-striped table-bordered">
+															<tr>
+																<th>Ultimos arquivos</th>
+																<th>Data de Criação</th>
+															</tr>
+															<tr class="list-unstyled " ng-repeat="item in backups">
+																<td><span class="pull-left" style="">{{ item.backup_file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{ item.backup_size }} Kb</span></span></td>
+																<td><span>{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span></td>
+
+
+																<!--<td>
+																	<div class="block" style=" border-bottom: 0px solid #DDDDDD">
+																		<div class="block_content" style="overflow: hidden;text-overflow: ellipsis;">
+																		<span class="title">
+																			<a style="color:#999;"><b>{{ item.backup_file_name }}</b><span style="color: #B3C1C3; font-size: 11px; alignment:center "> { item.backup_size | Filesize }</span></a>
+																				<span class="pull-right" style="color:#B3C1C3;font-size: 11px;padding-bottom:0px;margin-top: 3px" >{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span>
+																		</span>
+																		</div>
+																	</div>
+																</td>
+
+																<td>
+
+																</td>-->
+															</tr>
+														</table>
+													</div>
+												</div>
+												{% endverbatim %}
+											</div>
 										</div>
-
-										<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
-											<table id='table_backups' class="table table-hover table-striped table-bordered">
-												<tr>
-													<th>Ultimos arquivos</th>
-													<th>Data de Criação</th>
-												</tr>
-												<tr class="list-unstyled " ng-repeat="item in backups">
-													<td><span class="pull-left" style="">{{ item.backup_file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{ item.backup_size }} Kb</span></span></td>
-													<td><span>{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span></td>
-
-
-													<!--<td>
-														<div class="block" style=" border-bottom: 0px solid #DDDDDD">
-															<div class="block_content" style="overflow: hidden;text-overflow: ellipsis;">
-															<span class="title">
-																<a style="color:#999;"><b>{{ item.backup_file_name }}</b><span style="color: #B3C1C3; font-size: 11px; alignment:center "> { item.backup_size | Filesize }</span></a>
-																	<span class="pull-right" style="color:#B3C1C3;font-size: 11px;padding-bottom:0px;margin-top: 3px" >{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span>
-															</span>
-															</div>
-														</div>
-													</td>
-
-													<td>
-
-													</td>-->
-												</tr>
-											</table>
-										</div>
-									</div>
-									{% endverbatim %}
 									</div>
 								</div>
 							</div>
 						</div>
-				  </div>
+
+
+						<div class="col-lg-6">
+							<div class="box box-default">
+								<div class="box-heading">
+									<div class="box-header with-border">
+										<h5 class="box-title">Auditoria</h5>
+										<div class="pull-right">
+											<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup()"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Criar Backup</a>
+
+											<a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Restaurar Backup</a>
+											<a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-trash-o" aria-hidden="true"></i> Baixar</a>
+										</div>
+									</div>
+								</div>
+
+								<div class="box-body">
+
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -183,9 +224,8 @@
 			</div>
 		</div>
 	</div>
-
-  </div>
 </div>
+
 
 {% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}

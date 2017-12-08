@@ -3,6 +3,7 @@ from django.http import Http404
 from django.utils.decorators import method_decorator
 
 from libs.backup.backup import BackupManager
+from libs.backup.pygit import check_update
 from libs.default.core import BaseController
 from modules.core.models import Backup
 from modules.user.models import User
@@ -25,7 +26,6 @@ class ConfigurationsController(BaseController):
         backup.backup_file_name = backup_paramters['file_name']
         backup.backup_link = backup_paramters['link']
         backup.backup_size = backup_paramters['size']
-        #backup.backup_link_folder = backup_paramters['folder_link']
         self.get_exceptions(backup, None)
         if self.full_exceptions == {}:
             response_dict = self.execute(backup, backup.save)
@@ -64,6 +64,18 @@ class ConfigurationsController(BaseController):
         response_dict['object']['used_percent_space'] = round((response_dict['object']['used_space'] / response_dict['object']['total_space']) * 100, 2)
         print("PERCENTUAL: ",response_dict['object']['used_space'] / response_dict['object']['total_space'])
         print("ESPACO DE ARMAZENAMENTO: ",response_dict)
+        return self.response(response_dict)
+
+    def version_update(self,request):
+        self.start_process(request)
+        version_paramters = check_update()
+        backup = Backup()
+        backup.backup_link_folder = version_paramters['']
+        self.get_exceptions(backup, None)
+        if self.full_exceptions == {}:
+            response_dict = self.execute(backup, backup.save)
+        else:
+            response_dict = self.notify.error(self.full_exceptions)
         return self.response(response_dict)
 
 
