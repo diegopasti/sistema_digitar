@@ -8,11 +8,10 @@ from django.contrib.auth import logout, login
 from modules.user.models import User, Session
 from modules.user.validators import check_email_format
 
-
-
-def register_page(request):
+def register_first_user(request):
     form_register = FormRegister()
-    return render(request, "user/register/register.html", {'formulario_register': form_register})
+    print("VINDO AQUI")
+    return render(request, "user/register/register_first.html", {'formulario_register': form_register})
 
 
 def login_page(request):

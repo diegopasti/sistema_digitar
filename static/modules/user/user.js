@@ -25,7 +25,7 @@ function validate_form_change_password(){
 		password_repeat : 'Senhas não conferem!',
 		no_match        : 'no match',
 		complete        : 'input is not complete'
-	}
+	};
 
 	var validator = new FormValidator();
 	validator.texts = messages;
@@ -35,32 +35,57 @@ function validate_form_change_password(){
 }
 
 function validate_form_login(){
-  	return ( validate_password("password"));
+  	return ( validate_size("password",6));
 
 }
 
 function validate_form_register(){
-	//return true;
-	//Falta fazer os validadores
-  //return (email_is_valid("email") && validate_password("password")) && compare_passwords("password","confirm_password");
-	alert(username_is_valid("username"));
-	return username_is_valid("username");
+	var retorno = (validate_size("username",6) & validate_size("password",6) & validate_size("confirm_password",6) &
+		confirm_pass_valid("password","confirm_password") & validate_size("primeiro_nome",3)  & validate_size("sobrenome", 3)  & validate_email("")) ;
+	return retorno
 }
 
-function username_is_valid(username){
-	var name = $('#'+username+'').val();
-	return (name.length > 6 && name != null)
+function validate_size (campo,tamanho_minimo){
+	var retorno = ($('#'+campo+'').val().length >= tamanho_minimo)
+	if (!retorno){
+		alert('Dados inválidos no campo:'+campo)
+	}
+	return retorno
 }
 
-function validate_password(senha){
-	return true;
-	/*FALTA CRIAR AS VALIDACOES DE USER*/
-  /*if (/*is_empty(senha) && check_password_format(senha)){
-    return true;
+function validate_email(){
+	var retorno = false;
+	var email = $('#email').val()
+	if (email.length > 0 && email != null){
+		retorno =  email_is_valid('email')
+	}
+	return retorno;
+}
+
+function email_is_valid(id) {
+  var filter = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+  if(!is_empty(id)){
+    if(filter.test(document.getElementById(id).value)){
+      return true;
+    }
+    else{
+			alert("error"+" Email Inválido"+" Verifique se o email foi digitado corretamente.")
+			return false
+    }
   }
   else{
-    return error_notify("password","Senhas Insegura","Informe uma senha com ao menos 8 caracteres contendo letras e numeros.");
-  }*/
+    return true;
+  }
+}
+
+function is_empty(id){
+  return (document.getElementById(id).value.length == 0 ? true : false)
+}
+
+function confirm_pass_valid(password, confirm_password){
+	var pass = $('#'+password+'').val()
+	var conf_pass =  $('#'+confirm_password+'').val()
+	return (pass == conf_pass)
 }
 
 function check_password_format(senha){

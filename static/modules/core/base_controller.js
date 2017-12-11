@@ -58,6 +58,19 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
   });
 }
 
+function notify(type,title,text){
+ new PNotify({
+  title: title,
+  addclass: 'visible',
+  text: text,
+  hide: true,
+  delay: 2000,
+  mouse_reset: false,
+  type: type,
+  styling: 'bootstrap3'
+ });
+}
+
 function check_response_message_form(form_id, response_message){
   $(form_id +" input, textarea").each(function () {
     var id = $(this).attr("id");

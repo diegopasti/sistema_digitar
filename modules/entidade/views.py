@@ -38,7 +38,7 @@ def verificar_cadastro_empresa():
         return True
         #dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')
 
-
+@login_required
 def index(request):
     if verificar_cadastro_empresa():
         return render(request,"blank.html")
