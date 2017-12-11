@@ -10,8 +10,7 @@ from django.http.response import Http404, HttpResponseRedirect
 from django.http.response import HttpResponse  # , Http404
 from django.shortcuts import render, redirect
 from django.template.context import RequestContext
-from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento, \
-    OperacaoRestrita  # localizacao , Endereco
+from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco
 from modules.entidade.models import entidade, contato
 from modules.entidade.service import consultar_codigo_postal_viacep  # consultar_codigo_postal_default
 from modules.entidade.utilitarios import remover_simbolos  # formatar_codificacao,

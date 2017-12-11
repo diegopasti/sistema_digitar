@@ -3,10 +3,9 @@ app.controller('MeuController', ['$scope', function($scope) {
 	$scope.screen_height = window.innerHeight;
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
-	//alert("VEJA A CONTINHA: "+parseInt($scope.screen_height/26)-12)
 
-	$scope.sortType           = 'codigo'; // set the default sort type
-	$scope.sortReverse        = false;    // set the default sort order
+	$scope.sortType           = 'codigo';
+	$scope.sortReverse        = false;
 	$scope.filter_by          = '1';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","provento", "descricao"];
@@ -16,8 +15,6 @@ app.controller('MeuController', ['$scope', function($scope) {
 	$scope.registro_selecionado 	= null;
 	$scope.esta_adicionando     	= true;
 	$scope.contratos = [];
-
-	$scope.tdboy = 0;
 
 	$scope.save_provent = function() {
 		var data_paramters = create_data_paramters('form_adicionar_contrato');
@@ -80,26 +77,11 @@ app.controller('MeuController', ['$scope', function($scope) {
 				data = data.replace("<html><head></head><body>{","{")
 				data = data.replace("}</body></html>","}")
 				$scope.contratos = JSON.parse(data).object;
-
         $("#loading_tbody").fadeOut();
         $scope.$apply();
         $scope.contratos_carregados = true;
         $scope.tdboy = $("#table_contratos tbody").height();
-
         $scope.$apply();
-        alert("ALTURA DO TBODY: "+$("#table_contratos tbody").height())
-
-        /*
-         52 >  54: +2 ou 3,84615%
-         78 >  81  +3 ou 3,84615%
-        104 > 108  +4 ou 3,84615%
-        182 > 188  +6 ou 3,29670%
-        208 > 215  +7 ou 3,36538%
-        234 > 241  +7 ou 2,99145%
-        338 > 345  +7 ou 2,07100%
-
-        */
-
       },
 
       failure: function (data) {
@@ -157,7 +139,6 @@ app.controller('MeuController', ['$scope', function($scope) {
 		$scope.screen_height = SCREEN_PARAMTERS['screen_height'];
 		$scope.screen_width  = SCREEN_PARAMTERS['screen_width'];
 		$scope.screen_model  = SCREEN_PARAMTERS['screen_model'];
-		$scope.tdboy = $("#table_contratos tbody").height();
 
 		$scope.table_maximun_items_per_page = SCREEN_PARAMTERS['table_maximun_items_per_page'];
 		$scope.table_minimun_items          = SCREEN_PARAMTERS['table_minimun_items'];

@@ -11,6 +11,7 @@ from django.contrib.auth import login
 from django.db import IntegrityError
 from django.core import serializers
 
+from modules.nucleo.models import RestrictedOperation
 from modules.user.models import Session, User
 from sistema_contabil import settings
 import datetime
@@ -211,7 +212,28 @@ class BaseController(Notify):
         object = model.objects.get(pk=int(request.POST['id']))
         object.is_active = False
         response_dict = self.execute(object, object.save)
-        return HttpResponse(json.dumps(response_dict))
+        if response_dict['result']:
+            self.report_operation(request, model)
+        return self.response(response_dict)
+
+    def report_operation(self, request, model):
+        audit_register = RestrictedOperation()
+        audit_register.type = audit_register.get_type(request.POST['action_type'])
+        audit_register.object_id = int(request.POST['id'])
+        audit_register.object_name = request.POST['action_object']
+        audit_register.table = model._meta.db_table
+        audit_register.user_id = 1
+        audit_register.justify = request.POST['action_justify']
+
+        try:
+            audit_register.description = request.POST['action_description']
+        except:
+            audit_register.description = None
+        audit_register.save()
+
+
+
+
 
     def execute(self, object, action):
         try:

@@ -43,7 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'djangobower','compressor','dropbox','dbbackup',
     'grappelli','filebrowser',
-    'sistema_contabil','modules','modules.user','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
+    'sistema_contabil','modules','modules.nucleo','modules.user','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
 
 MIDDLEWARE_CLASSES = (
