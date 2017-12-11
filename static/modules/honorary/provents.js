@@ -1,9 +1,11 @@
 function init(){
+	verify_screen_paramters();
 	angular.element(document.getElementById('controle_angular')).scope().load_provents();
 	configurar_formulario_padrao()
-	window.onresize = function(event){
-		angular.element(document.getElementById('controle_angular')).scope().reajustar_tela();
-	};
+}
+
+function post_screen_verified(){
+	angular.element(document.getElementById('controle_angular')).scope().reajustar_tela();
 }
 
 function configurar_formulario_padrao(){

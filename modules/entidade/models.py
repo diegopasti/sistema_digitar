@@ -128,8 +128,8 @@ class OperacaoRestrita(models.Model):
     user = models.ForeignKey(User, null=True)
     tipo = models.CharField("Tipo:", max_length=3, null=False, choices=opcoes_operacoes, error_messages=MENSAGENS_ERROS)
     tabela = models.CharField("Tabela:", max_length=50, null=False, error_messages=MENSAGENS_ERROS, default='')
+    object_id = models.IntegerField("Registro",null=False) #models.ForeignKey(entidade, null=True)
     descricao = models.TextField("Descrição da Operação: ", null=False, blank=False, default="")
-    entidade = models.ForeignKey(entidade, null=True)
     justificativa = models.TextField("Justificativa: ", null=False, blank=False)
     data_operacao = models.DateTimeField(auto_now_add=True)
 

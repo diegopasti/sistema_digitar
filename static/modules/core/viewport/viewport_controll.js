@@ -1,4 +1,3 @@
-
 var SCREEN_PARAMTERS = {};
 SCREEN_PARAMTERS['screen_width']  = '';
 SCREEN_PARAMTERS['screen_height'] = '';
@@ -137,6 +136,7 @@ function verify_screen_paramters(){
 	screen_height = window.innerHeight;
 	SCREEN_PARAMTERS['screen_width'] = screen_width;
 	SCREEN_PARAMTERS['screen_height'] = screen_height;
+
 	/*
 	$scope.S9 = false;  // Giant Screen:   1921 or more
 	$scope.S8 = false;  // Larger Screen:  1680 ~ 1920
@@ -167,13 +167,23 @@ function verify_screen_paramters(){
 	}
 
 	table_minimal_rows = Array.apply(null, Array(pagination_itens_per_page)).map(function (x, i) { return i; });
-	total_rows_height = pagination_itens_per_page*28;
-
+	total_rows_height = pagination_itens_per_page*26;
 	SCREEN_PARAMTERS['table_maximun_items_per_page'] = pagination_itens_per_page;
 	SCREEN_PARAMTERS['table_maximun_body_height'] = total_rows_height;
 	SCREEN_PARAMTERS['table_minimun_items'] = table_minimal_rows;
-	return SCREEN_PARAMTERS;
+	post_screen_verified();
+	//return SCREEN_PARAMTERS;
 }
+
+window.onresize = function(event) {
+	verify_screen_paramters();
+	try{
+		post_screen_verified();
+	}
+	catch(err){
+	}
+};
+
 
 function configure_screen(){
 	if(SCREEN_PARAMTERS['screen_width'] < 600){
@@ -206,16 +216,6 @@ function load_images(){
     }
   }
 }
-
-window.onresize = function(event) {
-	SCREEN_PARAMTERS = verify_screen_paramters();
-	configure_screen();
-	try{
-		post_screen_verified();
-	}
-	catch(err){
-	}
-};
 
 function measureCRP() {
   var time = window.performance.timing;

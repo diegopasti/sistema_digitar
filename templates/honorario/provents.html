@@ -1,6 +1,12 @@
 {% extends 'base_page.html' %}
 {% block Titulo %}<title>Digitar - Proventos</title>{% endblock %}
-{% load staticfiles %}{% block recursos_necessarios %}
+{% load staticfiles %}
+{% block recursos_necessarios %}
+<style>
+	table td{
+		height: 26px;
+	}
+</style>
 {% endblock %}
 {% block conteudo %}
 <div id="controle_angular" ng-app="app" ng-controller="MeuController" ng-init="contratos_carregados=false;">
@@ -25,44 +31,50 @@
 						<div class='row'>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 								{% verbatim %}
+
 								<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
 									<thead>
 										<tr class="linha_cabecalho">
 											<th class='text-center' style="width: 40px;" ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
+											<th ng-hide='screen_model <= 3' class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Tipo</th>
 											<th class='text-center' ng-click="sortType='cliente';sortReverse=!sortReverse">Provento</th>
-											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Tipo</th>
+											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Tipo do Valor</th>
 											<th class='text-center' style="width: 120px;" ng-hide='screen0 || screen1 || screen2' ng-click="sortType='plano';sortReverse=!sortReverse" >Valor (R$)</th>
 										</tr>
 									</thead>
 
 									<tbody style="font-size: 11px;">
-										<tr id="divCarregando" ng-if="contratos_carregados == false">
-											<td colspan="8" style='height: 260px;background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
+										<tr id="divCarregando" ng-if="contratos_carregados == false" style='height:{{ table_maximun_body_heigth }}px;'>
+											<td colspan="5" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
 												<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><br><br>Aguarde.. Carregando...
 											</td>
 										</tr>
 
-										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato);" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado">
+										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato);" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
 											<td class='text-center' style="width: 40px;">{{ contrato.id }}</td>
-											<td class="col-cliente" class="text-left">{{ contrato.nome }}</td>
-
-											<td class='text-center' style="width: 120px;">
+											<td ng-hide='screen_model <= 3' class='text-center' style="width: 120px;">
 												<span ng-if="contrato.tipo=='P'">PROVENTO</span>
 												<span ng-if="contrato.tipo=='D'">DESCONTO</span>
 												<span ng-if="contrato.tipo=='R'">RESSARCIMENTO</span>
 											</td>
+											<td class="col-cliente" class="text-left">{{ contrato.nome }}</td>
 
-											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'text-right': contrato.valor, 'text-center': !contrato.plano  }" style="width: 130px;">
+											<td class='text-center' style="width: 120px;">
+												<span ng-if="contrato.tipo_valor=='R'">REAIS</span>
+												<span ng-if="contrato.tipo_valor=='P'">PERCENTUAL</span>
+											</td>
+
+											<td ng-class="{'text-right': contrato.valor, 'text-center': !contrato.plano  }" style="width: 130px;">
 												<span ng-if="contrato.valor">{{ contrato.valor | currency:"" }}</span><span ng-if="!contrato.plano"></span>
 											</td>
 										</tr>
 
-										<tr ng-cloak ng-if='contratos_carregados'  ng-repeat="k in minimal_quantity_rows.slice(contratos.length,minimal_quantity_rows.length)">
-											<td style="width:30px;"></td><td></td><td style="width: 120px;"></td><td style="width:120px;"></td>
+										<tr ng-cloak ng-if='contratos_carregados'  ng-repeat="k in table_minimun_items.slice(contratos.length,table_minimun_items.length)">
+											<td style="width:30px;"></td><td></td><td></td><td style="width: 120px;"></td><td style="width:120px;"></td>
 										</tr>
 
 										<tr ng-cloak ng-if="resultado.length === 0 && (contratos|filter:filterIds()).length > 0">
-											<td colspan="3" class='text-center'>Nenhum resultado Encontrado</td>
+											<td colspan="4" class='text-center'>Nenhum resultado Encontrado</td>
 										</tr>
 									</tbody>
 								</table>
@@ -101,7 +113,7 @@
 
 	<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 70%">
-			<form id="form_adicionar_contrato" novalidate autocomplete="off" ng-submit="alert('EH AQUI JOVEM');esta_adicionando? save_provent() : update_provent()" onsubmit="return false;">
+			<form id="form_adicionar_contrato" novalidate autocomplete="off" ng-submit="esta_adicionando? save_provent() : update_provent()" onsubmit="return false;">
 				{% csrf_token %}
 				<div class="modal-content">
 					<div class="modal-header">
@@ -111,7 +123,7 @@
 
 					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
 						<div class="row no-gutter fluid">
-							<div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+							<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
 								<div class="form-group field" id="field_tipo">
 									<sub><label id="lb_tipo" for="tipo">{{ formulario_proventos.tipo.label }}</label> </sub>
 									{{ formulario_proventos.tipo }}
@@ -122,6 +134,13 @@
 								<div class="form-group field" id="field_nome">
 									<sub><label id="lb_nome" for="nome">{{ formulario_proventos.nome.label }}*</label></sub>
 									{{ formulario_proventos.nome }}
+								</div>
+							</div>
+
+							<div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_tipo_valor">
+									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_proventos.tipo_valor.label }}</label> </sub>
+									{{ formulario_proventos.tipo_valor }}
 								</div>
 							</div>
 
@@ -198,7 +217,7 @@
 
 								<div class="col-lg-4 col-md-7">
 									<sub style='padding-left: 2px'><label>Registro:</label></sub>
-									<input id="action_object" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+									<input id="action_object" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();">
 								</div>
 							</div>
 
@@ -206,7 +225,7 @@
 								<div class="col-lg-12">
 									<div class="form-group field" id="field_action_justify">
 										<sub>
-											<label>{{ form_desativar.justificativa.label }}</label>
+											<label>Justificativa:</label>
 										</sub>
 										<textarea id="action_justify" rows="5" class="form-control uppercase"></textarea>
 									</div>

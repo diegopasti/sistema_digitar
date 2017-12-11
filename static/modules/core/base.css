@@ -123,10 +123,6 @@ form label{
   content: ':';
 }*/
 
-.table td{
-	height: 26px;
-}
-
 .linha_cabecalho th{
 	cursor: pointer;
 }

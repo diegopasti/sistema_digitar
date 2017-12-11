@@ -253,6 +253,16 @@ class FormProventos(forms.Form, BaseForm):
     descricao = forms.CharField(label="Descrição (Opcional)", max_length=500, required=False, error_messages=MENSAGENS_ERROS,
                                 widget=forms.Textarea(attrs={'class': "form-control uppercase", 'id': 'descricao', 'ng-model': 'descricao'}))
 
+    opcoes_tipo_valor = (('R', 'REAIS'), ('P', 'PERCENTUAL'))
+
+    tipo_valor = forms.ChoiceField(
+        label="Tipo do Valor", choices=opcoes_tipo_valor,
+        required=False, error_messages=MENSAGENS_ERROS,
+        widget=forms.Select(
+            attrs={'id': 'tipo_valor', 'class': "form-control", 'onchange': 'verificar_tipo_valor()'}
+        )
+    )
+
     valor = forms.CharField(label="Valor", max_length=30, required=True, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={

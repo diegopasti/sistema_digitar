@@ -324,11 +324,7 @@ class ProventosController(BaseController):
 
     #never_cache - Para usar esse decorador precisamos usar esse metodo com o self e consequentemente instancia-lo no urls.
     def filter_provents(self,request):
-        #django.utils.cache.get_cache_key
-        #olha = cache.get_cache_key(request)
-        #print("VEJA SE CONSEGUI: ",request.get_raw_uri())
         cache_page = cache.has_key(request.get_raw_uri())
-        #print("VEJA SE TEMOS CACHE: ",cache_page)
         return BaseController().filter(request, Proventos, queryset=Proventos.objects.filter(is_active=True).order_by('-id'))
 
     #login_required

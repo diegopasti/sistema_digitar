@@ -102,9 +102,13 @@ class Proventos(models.Model):
     tipo = models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_provento, error_messages=MENSAGENS_ERROS)
     nome = models.CharField("Nome:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
     descricao = models.CharField("Descrição:", max_length=500, null=True,blank=True, error_messages=MENSAGENS_ERROS)
+
+    opcoes_tipos_valor = (('R', 'REAIS'), ('P', 'PERCENTUAL'))
+    tipo_valor = models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valor, error_messages=MENSAGENS_ERROS)
     valor = models.DecimalField("Valor:", max_digits=7, decimal_places=2, null=True, blank=False)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     cadastrado_por = models.ForeignKey(entidade, related_name='provento_cadastrado_por',  default=1)
     ultima_alteracao = models.DateTimeField(null=True, auto_now=True)
     alterado_por = models.ForeignKey(entidade, related_name='provento_alterado_por', default=1)
+
     is_active = models.BooleanField(default=True)

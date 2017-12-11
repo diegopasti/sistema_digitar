@@ -207,8 +207,8 @@ class BaseController(Notify):
 
     @request_ajax_required
     def disable(self, request, model):
+        print("VEJA O REQUEST: ",request.POST)
         object = model.objects.get(pk=int(request.POST['id']))
-        print("Desativar: ", object, '[', object.is_active, ']')
         object.is_active = False
         response_dict = self.execute(object, object.save)
         return HttpResponse(json.dumps(response_dict))
