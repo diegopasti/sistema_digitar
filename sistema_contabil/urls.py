@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+
+from modules.core.api import ConfigurationsController
 from modules.nucleo import views as nucleo_views
-from modules.nucleo import views as core_views
+from modules.core import views as core_views
 from modules.entidade import views as entidade_views
 from modules.protocolo import views as protocolo_views
 from modules.servico import views as servico_views
@@ -108,7 +110,11 @@ urlpatterns = [
     #url(r'^api/core/', include('modules.nucleo.urls')),
 
     url(r'^api/working/register/$', nucleo_views.working),
-  #  url(r'^system/configurations', core_views.system_configurations),
+    url(r'^system/configurations', core_views.system_configurations),
+    url(r'configurations/backup$', ConfigurationsController().load_backups),
+    url(r'configurations/backup/info$', ConfigurationsController().check_available_space),
+    url(r'configurations/backup/create$', ConfigurationsController().create_backup),
+    url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'register/',view_usuario.register_page),

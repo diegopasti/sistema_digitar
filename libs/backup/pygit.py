@@ -17,7 +17,6 @@ def check_update():
     data['local'] = local_ref
     data['remote'] = remote_commit
     print(data)
-    return data
     #log = porcelain.log(LOCAL_REPO)
     #print(log)
     #changes = porcelain.get_tree_changes(LOCAL_REPO)
@@ -32,7 +31,9 @@ def check_update():
     else:
         pass
         print('\nVC JÁ ESTÁ COM A ÚLTIMA VERSÃO INSTALADA.')
-        
+
+
+    return data
         
 def update():
 
