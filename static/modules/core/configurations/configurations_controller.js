@@ -57,12 +57,12 @@ application.controller('configurations_controller', function ($scope) {
 	}
 
 	$scope.load_backups_informations = function(){
-		$.ajax({
+    $.ajax({
       type: 'GET',
       url: "/api/core/configurations/backup/info",
 
       success: function (data) {
-      	$scope.backups_informations = JSON.parse(data).object;
+        $scope.backups_informations = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();
       },
@@ -72,6 +72,24 @@ application.controller('configurations_controller', function ($scope) {
       }
     })
 	}
+
+  $scope.load_version_informations = function(){
+    $.ajax({
+      type: 'GET',
+      url: "/api/core/configurations/version/info",
+
+      success: function (data) {
+        alert('E AQUI')
+        $scope.version_informations = JSON.parse(data).object;
+        $("#loading_tbody").fadeOut();
+        $scope.$apply();
+      },
+
+      failure: function () {
+        alert("Não foi possivel carregar a lista")
+      }
+    })
+  }
 });
 
 angular.module('filters', [])

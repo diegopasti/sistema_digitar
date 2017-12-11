@@ -40,8 +40,21 @@
 											<!--<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup()"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Criar Backup</a>
 
 											<a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Restaurar Backup</a>-->
-											<a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Atualizar</a>
+
+                      <a ng-show='version_informations.available_update==false' role="button" class="btn btn-sm btn-default pull-right" id="bt_atualizar" ng-click="update();"> Atualizar</a>
+                      <a ng-show='version_informations.available_update==false' role="button" class="btn btn-sm btn-default pull-right" disabled> Atualizar</a>
 										</div>
+                        <br>
+                        <div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+
+                          {% verbatim %}
+                          <div class="row">
+                            <div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
+                              <div class="left" style="left: 0px;">Versão: {{ version_informations.available_update }} - {{ version_informations.local }} </div>
+                            </div>
+                          </div>
+                         {% endverbatim %}
+                        </div>
 									</div>
 								</div>
 
@@ -247,7 +260,9 @@
 		post_screen_verified();
 		angular.element(document.getElementById('configuration_controller')).scope().load()
 		angular.element(document.getElementById('configuration_controller')).scope().load_backups_informations()
-  	terminate_setup()
+		angular.element(document.getElementById('configuration_controller')).scope().load_version_informations()
+
+    terminate_setup()
 	});
 </script>
 {% endblock %}
