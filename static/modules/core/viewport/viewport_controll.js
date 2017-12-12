@@ -175,16 +175,6 @@ function verify_screen_paramters(){
 	//return SCREEN_PARAMTERS;
 }
 
-window.onresize = function(event) {
-	verify_screen_paramters();
-	try{
-		post_screen_verified();
-	}
-	catch(err){
-	}
-};
-
-
 function configure_screen(){
 	if(SCREEN_PARAMTERS['screen_width'] < 600){
 		$("#profile_email_active").hide();
@@ -230,7 +220,18 @@ function measureCRP() {
 	setTimeout(function(){$("#footer_session_action").fadeOut(5000);},8000)
 }
 
+$(".alert").fadeOut(8000);
+
+window.onresize = function(event) {
+	verify_screen_paramters();
+	try{
+		post_screen_verified();
+	}
+	catch(err){
+	}
+};
+
 window.addEventListener("load", function(){
- setTimeout(function(){measureCRP();working();}, 0);
+ setTimeout(function(){measureCRP();}, 0);
 });
 //verify_screen_paramters();

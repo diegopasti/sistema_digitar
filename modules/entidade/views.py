@@ -7,9 +7,8 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect
-from django.http.response import HttpResponse  # , Http404
-from django.shortcuts import render, redirect
-from django.template.context import RequestContext
+from django.http.response import HttpResponse
+from django.shortcuts import render
 from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco
 from modules.entidade.models import entidade, contato
 from modules.entidade.service import consultar_codigo_postal_viacep  # consultar_codigo_postal_default

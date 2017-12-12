@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
 {% block Titulo %}<title>Digitar Acessoria Contábil</title>{% endblock %}
 {% load staticfiles %}
@@ -198,19 +198,14 @@
   <div class="clearfix"></div>
   <div class="content-wrapper">
     <section class="content-header">
-      <h1 style="padding-bottom:10px;">
-      {% block breadcrumb_title %}
-      {% endblock %}
-      </h1>
+      <h1 style="padding-bottom:10px;">{% block breadcrumb_title %}{% endblock %}</h1>
 
-      <ol class="breadcrumb">
-        {% block breadcrumb_block %}
-        {% endblock %}
-      </ol>
+      <ol class="breadcrumb">{% block breadcrumb_block %}{% endblock %}</ol>
     </section>
 
     <section class="content" style="margin-top:30px;">
     {% block conteudo %}
+
 	  {% endblock %}
     </section>
   </div>
@@ -223,11 +218,13 @@
   </footer>
 </div>
 <div class="clearfix"></div>
+
+
 </body>
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
-<script src="{% static 'bower_components/jquery/dist/jquery.js' %}"/>
+<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"/>
 <script src="{% static 'bower_components/angular/angular.min.js'%}"/>
 <script src="{% static 'modules/core/viewport/viewport_controll.js'%}"/>
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"/>
