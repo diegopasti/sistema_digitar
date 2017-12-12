@@ -27,14 +27,14 @@ from modules.honorario import api as honorario_api
 from modules.preferencias import views as preferencias_views
 from modules.honorario.api import ProventosController
 from modules.user import views as view_usuario
-from modules.user import view_firt_access as view_admin
 from modules.user.api import UserController
 
 urlpatterns = [
     url(r'admin/register/first_user',view_usuario.register_first_user),
-    url(r'^base/$', core_views.index), # entidade.views.index)
+    url(r'^$', core_views.index), # entidade.views.index)
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', view_usuario.login_page),
+    url(r'^logout', view_usuario.logout_page),
     url(r'^cadastrar_empresa$', nucleo_views.cadastrar_empresa), #url(r'teste/$', "endereco.views.teste),
     url(r'^index/$',  entidade_views.index),
     url(r'^gerar_pdf/$', protocolo_views.gerar_pdf),
@@ -121,18 +121,9 @@ urlpatterns = [
     url(r'configurations/version/update$', ConfigurationsController().update),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
-    url(r'register/',view_admin.register_page),
+    url(r'^api/user/', include('modules.user.urls')),
+    url(r'register/$', view_usuario.register_first_user)
 
-    url(r'save/register',UserController().salvar_registro),
-    url(r'login/autentication$', UserController().login_autentication),
-    url(r'reset_password$', UserController().reset_password),
-    url(r'change_password$', UserController().change_password),
-    url(r'reactivate$', UserController().resend_activation_code),
-
-    # User Administration
-    url(r'filter/', UserController.filter_users),
-    # APIs administrativas
-    url(r'register/delete/(?P<email>[^/]+)/', UserController.register_delete),
 
 
 ]

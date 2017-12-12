@@ -9,7 +9,7 @@
 <div ng-controller="login_controller">
     <form id="form_login" ng-submit="login_autentication()">
       {% csrf_token %}
-      <h1><!--<i class="fa fa-paw"></i>--> Sistema Digitar </h1>
+      <h1><!--<i class="fa fa-paw"></i>--> Sistema Digitar - {% if request.user.is_authenticated %} usuario conectado {{ request.user.username }} {% else %} Nao concetado {% endif %}</h1>
 
       <div>
         {{ formulario_login.username }}

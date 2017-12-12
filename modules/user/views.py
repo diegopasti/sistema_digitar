@@ -5,13 +5,13 @@ from libs.default.decorators import request_get_required
 from modules.nucleo.utils import check_valid_activation_code
 from modules.user.forms import FormRegister, FormLogin, FormChangePassword, FormResetPassword, FormActivationCode, FormConfirmRegister
 from django.contrib.auth import logout, login
-from modules.user.models import User, Session
+from modules.user.models import Session
+from django.contrib.auth.models import Permission, User
 from modules.user.validators import check_email_format
 
 def register_first_user(request):
     form_register = FormRegister()
-    print("VINDO AQUI")
-    return render(request, "user/register/register_first.html", {'formulario_register': form_register})
+    return render(request, "user/register/register.html", {'formulario_register': form_register})
 
 
 def login_page(request):
@@ -22,8 +22,8 @@ def login_page(request):
 
 def logout_page(request):
     user = request.user
-    if not user.close_session(request):
-        print("Erro! Sessão de usuário não foi encerrada corretamente.")
+    #if not user.close_session(request):
+    #   print("Erro! Sessão de usuário não foi encerrada corretamente.")
     logout(request)
     return redirect("/login")
 

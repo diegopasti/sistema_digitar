@@ -17,7 +17,7 @@ django-bower
 django-xhtml2pdf==0.0.3
 dropbox
 django-dbbackup
-dulwich
+#dulwich
 
 # DJANGO-XHTML2PDF
 # NEED REPLACE 'import StringIO' to 'from io import StringIO' on file utils.py

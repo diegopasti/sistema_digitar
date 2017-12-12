@@ -4,7 +4,8 @@ from libs.default.core import BaseForm
 from modules.nucleo.config import ERRORS_MESSAGES
 from modules.nucleo.forms import FormAbstractPassword, FormAbstractConfirmPassword, FormAbstractEmail, \
     FormAbstractUsername
-from modules.user.models import User
+#from modules.user.models import User
+from django.contrib.auth.models import Permission, User
 from modules.user.validators import password_format_validator
 
 
@@ -20,7 +21,7 @@ class FormLogin(FormAbstractUsername, FormAbstractPassword,BaseForm):
 class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirmPassword,FormAbstractEmail,BaseForm):
     model = User
 
-    choices = ((1, 'Gerente'), (2, 'Administrador'), (3, 'Operador'), (4, 'Sem acesso'))
+    """choices = ((1, 'Gerente'), (2, 'Administrador'), (3, 'Operador'), (4, 'Sem acesso'))
     level_permission = forms.ChoiceField(
         label="Nivel Permissão..",
         choices=choices,
@@ -33,9 +34,9 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
                 'ng-model': 'level_permission', 'required': "required"
             }
         )
-    )
+    )"""
 
-    nome = forms.CharField(
+    first_name = forms.CharField(
         label="Primeiro Nome..",
         required=True,
         validators=[],
@@ -48,7 +49,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         )
     )
 
-    sobrenome = forms.CharField(
+    last_name = forms.CharField(
         label="Sobrenome..",
         required=True,
         validators=[],
@@ -68,10 +69,9 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         super(FormAbstractEmail, self).__init__(*args,**kwargs)
         self.fields['username'].widget.attrs['placeholder'] = 'Login..'
         self.fields['email'].widget.attrs['placeholder'] = 'Email..'
-        self.fields['nome'].widget.attrs['placeholder'] = 'Primeiro nome..'
-        self.fields['sobrenome'].widget.attrs['placeholder'] = 'Sobrenome..'
+        self.fields['first_name'].widget.attrs['placeholder'] = 'Primeiro nome..'
+        self.fields['last_name'].widget.attrs['placeholder'] = 'Sobrenome..'
         self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
-        self.fields['confirm_password'].widget.attrs['placeholder'] = 'Repita a Senha..'
 
 
 

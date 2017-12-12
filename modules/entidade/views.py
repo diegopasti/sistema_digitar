@@ -4,6 +4,7 @@ import datetime
 import json
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect
@@ -38,7 +39,6 @@ def verificar_cadastro_empresa():
         return True
         #dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')
 
-@login_required
 def index(request):
     if verificar_cadastro_empresa():
         return render(request,"blank.html")

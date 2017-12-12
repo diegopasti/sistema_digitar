@@ -45,8 +45,9 @@ DEBUG = True
 '''
 ALLOWED_HOSTS = []
 
-
 # Application definition
+#AUTH_USER_MODEL = 'modules.user.User'
+#AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 INSTALLED_APPS = (
     #'django_admin_bootstrapped',
@@ -200,8 +201,8 @@ USE_THOUSAND_SEPARATOR = True
       e passo pro template. 
     
 """
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = "/"
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (

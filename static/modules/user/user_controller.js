@@ -121,14 +121,14 @@ application.controller('login_controller', function($scope) {
     var data_paramters = SESSION_PARAMTERS//{email: $scope.email, password: $scope.password}
 
     function success_function(result,message,data_object,status){
-    	notify('success','Login realizado','Usuário apto para entrar no Sistema')
-
-    	var redirect = "/base/"
+    	//alert('success'+'Login realizado'+'Usuário apto para entrar no Sistema')
+			notify_success_message(message);
+    	var redirect = "/"
     	return redirect
     }
 
     fail_function = function (result,message,data_object,status) {
-    	alert("FALHA: "+result+" - "+message+" - "+data_object+" - "+status)
+    	//alert("FALHA: "+result+" - "+message+" - "+data_object+" - "+status)
       notify_response_message(message);
     }
     request_api("/api/user/login/autentication",data_paramters,validate_form_login,success_function,fail_function)
