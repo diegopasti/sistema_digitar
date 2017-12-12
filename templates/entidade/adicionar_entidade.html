@@ -6,32 +6,12 @@
 {% endblock %}
 
 {% load staticfiles %}
-{% block recrusos_necessarios %}
-{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
-<!-- BOOTSTRAP 3.3.6 -->
-<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
-
-<!-- DATATABLE
-<link rel="stylesheet" type="text/css" href="{ static 'custom/datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{static 'custom/datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{ static 'custom/datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
-
-<script src="{ static 'custom/datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
-<script src="{ static 'custom/datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
-<script src="{ static 'custom/datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script> -->
-
-<!-- JQUERY UI DATAPICKER -->
+{% block recursos_necessarios %}
+{% load compress %}
+{% compress css %}
 <link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
-<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-
-<!-- JQUERY AUTOCOMPLETE EDITABLE -->
-<link rel="stylesheet" type="text/css" href="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.css' %}" />
-<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
-
-
-<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
-<!--<script src="{% static 'modules/protocol/protocolo.js' %}"></script>-->
-<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
+<!--<link rel="stylesheet" type="text/css" href="% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.css' %}" />-->
+{% endcompress %}
 
 <style type="text/css">
 .form-control {
@@ -1009,16 +989,23 @@ legend {
 
 {% block recursos_complementares %}
 {% load staticfiles %}
-
-<!--<script type="text/javascript" src=" static 'bootstrap-switch/dist/js/bootstrap-switch.min.js' %}" />-->
+{% load compress %}
+{% compress js %}
+<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
 <script src="{% static 'modules/entity/validar_cpf_cnpj.js' %}"></script>
+<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
+<script src="{% static 'modules/core/mask.js' %}"></script>
+{% endcompress %}
 
 <script>
-        function substituir_valor_nulo(valor){
-            if (valor == null){ valor = ""; }
-            return valor;
-        }
-    </script>
+function substituir_valor_nulo(valor){
+	if (valor == null){ valor = ""; }
+	return valor;
+}
+</script>
 
 <script>
         //Declarando o módulo da aplicação
@@ -1238,26 +1225,8 @@ legend {
 
     </script>
 
-<!--
-<!
-<!    SCRIPTS NECESSARIOS PARA FORMATACAO
-<!
--->
 
 
-
-<!--
-<!
-<!    SCRIPTS POS CARREGAMENTO
-<!
--->
-<!-- SCRIPT PARA MANIPULACAO DE CONTROLES -->
-<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
-
-<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-
-<!-- CONFIGURACAO DE COMPONENTES -->
 <script>
 	configurar_campo_data("nascimento_fundacao");
 	configurar_campo_data("regime_desde");
@@ -1268,7 +1237,6 @@ legend {
 	configurar_campo_data("contrato_fim");
 </script>
 
-<!-- SCRIPTS COMPLEMENTARES -->
 <script>
         $(function() {
           $('#tipo_honorario').change(function() {

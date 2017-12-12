@@ -5,34 +5,15 @@
     <title>Digitar - Emitir Protocolo</title>
 {% endblock %}
 
-{% block recrusos_necessarios %}
+{% block recursos_necessarios %}
 {% load staticfiles %}
-
-<!-- JQUERY -->
-<!--<script type="text/javascript" src="{% static 'jquery/jquery-2.2.0.min.js' %}"></script>
-<script src="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.js' %}"></script>-->
-
-<!-- BOOTSTRAP -->
-<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
-<!--<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>-->
-
-
-<!-- JQUERY AUTOCOMPLETE EDITABLE -->
+{% load compress %}
+{% compress css %}
 <link rel="stylesheet" type="text/css" href="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.css' %}" />
-<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
-
-<!-- JQUERY UI DATAPICKER -->
-<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">-->
-<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">-->
 <link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
-
-<!-- ANGULAR -->
-<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
-
-<!-- CUSTOM -->
 <link rel="stylesheet" href="{% static 'modules/protocol/protocolo.css' %}">
-<!--<script src="{% static 'scripts/padrao/controle_botoes.js' %}"></script>-->
-<script src="{% static 'modules/protocol/new_protocolo.js' %}"></script>
+{% endcompress %}
+
 {% endblock %}
 
 {% block breadcrumb_title %}Novo Protocolo{% endblock %}
@@ -44,25 +25,17 @@
 {% endblock %}
 
 {% block conteudo %}
-
-<div id="controle_angular" ng-app="app" ng-controller="MeuController"
-     ng-init='lista_clientes = [{"id": "1", "name": "1 - DIGITAR ASSESSORIA CONTABIL LTDA ME"}, {"id": "2", "name": "2 - DIEGO P\u00c3STI"}, {"id": "3", "name": "3 - CLINICA DO RITMO LTDA - EPP (FILIAL VIT\u00d3RIA)"}]'
-    >
+<div id="controle_angular" ng-app="app" ng-controller="MeuController" ng-init='lista_clientes = [{"id": "1", "name": "1 - DIGITAR ASSESSORIA CONTABIL LTDA ME"}, {"id": "2", "name": "2 - DIEGO P\u00c3STI"}, {"id": "3", "name": "3 - CLINICA DO RITMO LTDA - EPP (FILIAL VIT\u00d3RIA)"}]'>
     <div id="modal_adicionar_documento" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
         <div class="modal-dialog">
-            <!--  style="width: 90%"> -->
-
             <form id="form_adicionar_documento" autocomplete="off" ng-submit="esta_adicionando? adicionar_documento() : alterar_documento()">
                 <div class="modal-content">
-
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         <h5 id="titulo_modal_adicionar_documento" class='titulo_modal'>Novo Documento</h5>
                     </div>
 
                     <div class="modal-body">
-
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group field_required">
@@ -350,18 +323,20 @@
         </div>
     </div>
 </div>
-
 {% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
-
-
 {% block recursos_complementares %}
 {% load staticfiles %}
-
-<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
-<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/entity/validar_cpf_cnpj.js' %}"></script>
+{% load compress %}
+{% compress js %}
+<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script src="{% static 'modules/core/mask.js' %}"></script>
+<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script src="{% static 'modules/entity/validar_cpf_cnpj.js' %}"></script>
+<script src="{% static 'modules/protocol/new_protocolo.js' %}"></script>
+{% endcompress %}
 
 <script>
     //Declarando o módulo da aplicação

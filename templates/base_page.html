@@ -239,10 +239,15 @@
 {% endcompress %}
 {% block recursos_complementares %}
 {% endblock %}
+</html>
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-	init();
+  try{
+    init();
+  }
+  catch(err){
+  }
 	load_images();
+	working();
 });
 </script>
-</html>

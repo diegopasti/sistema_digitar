@@ -171,7 +171,12 @@ function verify_screen_paramters(){
 	SCREEN_PARAMTERS['table_maximun_items_per_page'] = pagination_itens_per_page;
 	SCREEN_PARAMTERS['table_maximun_body_height'] = total_rows_height;
 	SCREEN_PARAMTERS['table_minimun_items'] = table_minimal_rows;
-	post_screen_verified();
+	try{
+		post_screen_verified();
+	}
+	catch(err){
+	}
+
 	//return SCREEN_PARAMTERS;
 }
 
