@@ -79,8 +79,25 @@ application.controller('configurations_controller', function ($scope) {
       url: "/api/core/configurations/version/info",
 
       success: function (data) {
-        alert('E AQUI')
         $scope.version_informations = JSON.parse(data).object;
+        $("#loading_tbody").fadeOut();
+        $scope.$apply();
+      },
+
+      failure: function () {
+        alert("Não foi possivel carregar a lista")
+      }
+    })
+  }
+
+  $scope.update = function(){
+    $.ajax({
+      type: 'GET',
+      url: "/api/core/configurations/version/update",
+
+      success: function (data) {
+        alert('FAÇO O UPDATE???')
+        $scope.update = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();
       },

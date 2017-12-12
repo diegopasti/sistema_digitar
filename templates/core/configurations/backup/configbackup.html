@@ -41,7 +41,7 @@
 
 											<a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Restaurar Backup</a>-->
 
-                      <a ng-show='version_informations.available_update==false' role="button" class="btn btn-sm btn-default pull-right" id="bt_atualizar" ng-click="update();"> Atualizar</a>
+                      <a ng-show='version_informations.available_update==true' role="button" class="btn btn-sm btn-default pull-right" id="bt_atualizar" ng-click="update();"> Atualizar</a>
                       <a ng-show='version_informations.available_update==false' role="button" class="btn btn-sm btn-default pull-right" disabled> Atualizar</a>
 										</div>
                         <br>
