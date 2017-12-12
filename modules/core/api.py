@@ -3,12 +3,11 @@ from django.http import Http404
 from django.utils.decorators import method_decorator
 
 from libs.backup.backup import BackupManager
-from libs.backup.pygit import check_update
+from libs.backup.pygit import check_update, update
 from libs.default.core import BaseController
 from modules.core.models import Backup
 from modules.user.models import User
 from sistema_contabil import settings
-
 
 class ConfigurationsController(BaseController):
 
@@ -83,6 +82,10 @@ class ConfigurationsController(BaseController):
         print("VEJA A VERSÃO: ",response_dict)
         return self.response(response_dict)
 
+    def updating(self,request):
+        self.start_process(request)
+        loading = update()
+        print('DICT VERSION:',loading)
 
     """def shared_folder(self,request):
         self.start_process(request)

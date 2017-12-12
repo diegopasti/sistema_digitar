@@ -79,7 +79,6 @@ application.controller('configurations_controller', function ($scope) {
       url: "/api/core/configurations/version/info",
 
       success: function (data) {
-        alert('E AQUI')
         $scope.version_informations = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();
@@ -87,6 +86,27 @@ application.controller('configurations_controller', function ($scope) {
 
       failure: function () {
         alert("Não foi possivel carregar a lista")
+      }
+    })
+  }
+
+  $scope.load_updating = function(){
+    NProgress.start();
+    $.ajax({
+      type: 'GET',
+      url: "/api/core/configurations/version/updating",
+
+      success: function (data) {
+        alert('FAÇO O UPDATE???')
+        $scope.updating = JSON.parse(data).object;
+        $("#loading_tbody").fadeOut();
+        $scope.$apply();
+      	NProgress.done();
+      },
+
+      failure: function () {
+        alert("Não foi possivel carregar a lista")
+      	NProgress.done();
       }
     })
   }
