@@ -90,8 +90,7 @@ application.controller('configurations_controller', function ($scope) {
     })
   }
 
-  $scope.load_updating = function(){
-    NProgress.start();
+  $scope.update = function(){
     $.ajax({
       type: 'GET',
       url: "/api/core/configurations/version/updating",
@@ -101,7 +100,6 @@ application.controller('configurations_controller', function ($scope) {
         $scope.updating = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();
-      	NProgress.done();
       },
 
       failure: function () {
