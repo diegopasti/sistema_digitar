@@ -82,10 +82,10 @@ class ConfigurationsController(BaseController):
         print("VEJA A VERSÃO: ",response_dict)
         return self.response(response_dict)
 
-    def updating(self,request):
+    def update(self,request):
         self.start_process(request)
-        loading = update()
-        print('DICT VERSION:',loading)
+        updating = update()
+        print('DICT VERSION:',updating)
 
     """def shared_folder(self,request):
         self.start_process(request)
