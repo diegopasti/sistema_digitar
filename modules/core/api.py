@@ -101,12 +101,6 @@ class ConfigurationsController(BaseController):
         """
 
 
-
-
-
-
-
-
 class AbstractAPI:
 
     def filter_request(request, formulary=None):
