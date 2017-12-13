@@ -1,5 +1,5 @@
-from dulwich import porcelain
-from dulwich.repo import Repo
+#from dulwich import porcelain
+#from dulwich.repo import Repo
 from datetime import datetime
 import time
 import os
@@ -91,9 +91,10 @@ def update():
         except:
             pass
         
-
-if __name__ == '__main__':
-    import sys
-    arguments = sys.argv
-    if "update" in arguments:
-        check_update()
+'''
+#if __name__ == '__main__':
+#    import sys
+#    arguments = sys.argv
+#    if "update" in arguments:
+#        check_update()
+'''

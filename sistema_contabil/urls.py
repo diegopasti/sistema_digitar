@@ -132,6 +132,7 @@ urlpatterns = [
     url(r'configurations/version/update$', ConfigurationsController().update),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
+    url(r'users/',view_usuario.user_page),
     url(r'^api/user/', include('modules.user.urls')),
     url(r'register/$', view_usuario.register_first_user),
 

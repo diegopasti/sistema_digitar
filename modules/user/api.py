@@ -98,6 +98,7 @@ class UserController(BaseController):
             response_dict = response_format_error("Usuario nao existe.")
         return HttpResponse(json.dumps(response_dict))
 
-    @user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
+    #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
+
     def filter_users(request):
-        return BaseController().filter(request, User,list_fields=['last_login','email','type_user','joined_date','last_update','active_user','id'],extra_fields=['permissions'])
+        return BaseController().filter(request, User,list_fields=['email','username','joined_date','last_update','first_name','last_name','id'])

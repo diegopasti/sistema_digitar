@@ -21,6 +21,7 @@ django-dbbackup
 
 rcssmin==1.0.6 --install-option="--without-c-extensions"
 rjsmin==1.0.12 --install-option="--without-c-extensions"
+django-appconf==1.0
 django_compressor
 django-htmlmin
 
