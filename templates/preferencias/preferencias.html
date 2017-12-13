@@ -1,21 +1,15 @@
 {% extends 'base_page.html' %}
-{% block Titulo %}
-    <title>Digitar - Preferências</title>
-{% endblock %}
+{% block Titulo %}<title>Digitar - Preferências</title>{% endblock %}
 
 {% load staticfiles %}
-{% block recrusos_necessarios %}
-{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
-<!-- BOOTSTRAP 3.3.6 -->
-<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
-
-<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
-<script src="{% static 'modules/preferences/preferencia.js' %}"></script>
-
+{% block recursos_necessarios %}
+{% load compress %}
+{% compress css %}
 <link href="{% static 'modules/preferences/salario_minimo.css' %}" rel="stylesheet"/>
-<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
-<script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
-<script src="{% static 'bower_components/angular-locale-pt-br/angular-locale_pt-br.js'%}"></script>
+{% endcompress %}
+
+
+
 {% endblock %}
 
 {% block breadcrumb_title %}Preferências{% endblock %}
@@ -140,7 +134,8 @@
                                             <td class="center_align">{{ salario.inicio_vigencia | date :  "dd/MM/yyyy" }}</td>
                                             <td class="right_align">
 
-                                                <span ng-show="salario.id == id_salario_vigencia_atual" data-toggle="tooltip" data-placement="bottom" title="Salário Mínimo Vigente" class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                                                <span ng-show="salario.id == id_salario_vigencia_atual" data-toggle="tooltip" data-placement="bottom" title="Salário Mínimo Vigente" aria-hidden="true"><i class="fa fa-check-square-o" style='color: green;' aria-hidden="true"></i>
+</span>
                                                 {{ salario.valor | currency:""}}
 
 
@@ -243,14 +238,18 @@
     </div>
 </div>
 <br>
-{% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
 
 {% block recursos_complementares %}
 {% load staticfiles %}
-<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
-<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
+{% load compress %}
+{% compress js %}
+<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script src="{% static 'modules/core/mask.js' %}"></script>
+<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
+<script src="{% static 'modules/preferences/preferencia.js' %}"></script>
+{% endcompress %}
 
 <script>
     //Declarando o módulo da aplicação
@@ -400,7 +399,6 @@
                     });
                 }
                 else{
-                    e.preventDefault();
                 }
             }
             else{
@@ -412,7 +410,7 @@
 
         $scope.select_filter_by = function (index) {
             $scope.filter_by_index = parseInt($scope.filter_by);
-            $scope.apply();
+
         }
 
         $scope.get_filter_column = function(){
@@ -455,7 +453,6 @@
 
         $scope.selecionar_linha = function(registro) {
             //alert("veja o index: "+registro.id+"-"+registro.nome);
-
             if ($scope.registro_selecionado != null){
                 //alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
                 if (registro.selecionado=='selected'){
@@ -481,14 +478,13 @@
                 $scope.registro_selecionado = registro;
                 $scope.opcao_desabilitada = "";
             }
-            $scope.apply();
         }
 
         $scope.desmarcar_linha_selecionada = function(){
             $scope.registro_selecionado.selecionado = "";
             $scope.registro_selecionado = null;
             $scope.opcao_desabilitada = "desabilitado";
-            $scope.apply();
+
         }
 
         $scope.configurar_inclusao_salario = function(){
@@ -498,11 +494,9 @@
             $("#inicio_vigencia").val("");
             $scope.salario_valor = "";
             $scope.inicio_vigencia = "";
-            $scope.apply();
         }
 
         $scope.configurar_alteracao_salario = function(){
-            alert("Olha o modal:"+$('#modal_adicionar_salario').modal);
             $scope.esta_adicionando = false;
             var data = formatar_data($scope.registro_selecionado.inicio_vigencia,"BR");
             //$scope.inicio_vigencia = $scope.registro_selecionado.inicio_vigencia;
@@ -559,14 +553,10 @@
                 //return true;
             }
             else {
-                e.preventDefault();
-                //return false;
             }
-
             $scope.verificar_salarios();
             $scope.carregar_salario_vigente()
         }
-
     }]);
 </script>
 
