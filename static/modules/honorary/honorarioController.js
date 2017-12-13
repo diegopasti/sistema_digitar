@@ -328,8 +328,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 	}
 
 	$scope.select_filter_by = function (index) {
-			$scope.filter_by_index = parseInt($scope.filter_by);
-			$scope.apply();
+		$scope.filter_by_index = parseInt($scope.filter_by);
 	}
 
 	$scope.get_filter_column = function(){
@@ -398,14 +397,12 @@ app.controller('MeuController', ['$scope', function($scope) {
 						$scope.esta_adicionando = true;
 					}
 			}
-			$scope.apply();
 	}
 
 	$scope.desmarcar_linha_selecionada = function(){
 			$scope.registro_selecionado.selecionado = "";
 			$scope.registro_selecionado = null;
 			$scope.opcao_desabilitada = "desabilitado";
-			//$scope.apply();
 	}
 
 	$scope.excluir_servico = function () {
@@ -503,10 +500,9 @@ app.controller('MeuController', ['$scope', function($scope) {
 		$('#desconto_inicio').val($scope.registro_selecionado.contrato.desconto_inicio)
 		$('#desconto_fim').val($scope.registro_selecionado.contrato.desconto_fim)
 		$('#desconto_temporario').val($scope.registro_selecionado.contrato.desconto_temporario)
-		alert("VEJA O TOTAL: "+$scope.registro_selecionado.contrato.valor_total)
+		//alert("VEJA O TOTAL: "+$scope.registro_selecionado.contrato.valor_total)
 		$('#total').val($scope.registro_selecionado.contrato.valor_total)
 		//calcular_total();
-		$scope.apply();
 	}
 
 	$scope.load_clientes = function () {
@@ -548,8 +544,6 @@ app.controller('MeuController', ['$scope', function($scope) {
 			$scope.esta_indicando = true;
 			$scope.carregar_indicacao_selecionada();
 		}
-		//alert(JSON.stringify($scope.indicacao_selecionada))
-		$scope.apply();
 	}
 
 	$scope.desmarcar_linha_indicacao = function () {
@@ -562,12 +556,10 @@ app.controller('MeuController', ['$scope', function($scope) {
 
 	$scope.incrementar_desconto_fidelidade = function(valor){
 		$scope.total_desconto_fidelidade = $scope.total_desconto_fidelidade + parseFloat(valor)
-		$scope.$apply();
 	}
 
 	$scope.decrementar_desconto_fidelidade = function(valor){
 		$scope.total_desconto_fidelidade = $scope.total_desconto_fidelidade - parseFloat(valor)
-		$scope.$apply();
 	}
 
 	$scope.carregar_indicacao_selecionada = function(){
@@ -718,10 +710,10 @@ app.controller('MeuController', ['$scope', function($scope) {
 
 		function success_function(message) {
 			$scope.atualizar_contrato(cliente_id)
-			alert("Veja o status: "+$scope.registro.indicacao.indicacao_ativa)
+			//alert("Veja o status: "+$scope.registro.indicacao.indicacao_ativa)
 			//$scope.decrementar_desconto_fidelidade($scope.indicacao_selecionada.taxa_desconto)
 			//$scope.incrementar_desconto_fidelidade(taxa_desconto)
-			$scope.$apply()
+			//$scope.$apply()
 		}
 
 		function fail_function() {

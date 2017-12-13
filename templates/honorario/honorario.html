@@ -6,22 +6,12 @@
 {% endblock %}
 
 {% load staticfiles %}
-{% block recrusos_necessarios %}
-{% comment %} Reimportar a biblioteca bootstrap no arquivo filho corrige o problema de fonte turva {% endcomment %}
-<!-- BOOTSTRAP 3.3.6 -->
-<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
-
-<!-- JQUERY UI DATAPICKER-->
+{% block recursos_necessarios %}
+{% load compress %}
+{% compress css %}
 <link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}">
-
-<!-- CUSTOM -->
-<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
-
-
-<script src="{% static 'bower_components/angular/angular.min.js'%}"></script>
-<script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
-<script src="{% static 'bower_components/angular-locale-pt-br/angular-locale_pt-br.js'%}"></script>
 <link href="{% static 'modules/service/servico.css' %}" rel="stylesheet"/>
+{% endcompress %}
 
 
 
@@ -167,7 +157,6 @@ color:blue;
 {% endblock %}
 
 {% block conteudo %}
-
 <div id="controle_angular" ng-app="app" ng-cloak ng-controller="MeuController" ng-init="contratos_carregados=false">
 
 	<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
@@ -834,7 +823,7 @@ color:blue;
 
 
 
-						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" >
+						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="contratos_carregados == true" >
 							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
 								<dir-pagination-controls pagination-id="paginate_contratos" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
 
@@ -851,26 +840,24 @@ color:blue;
 	</div>
 </div>
 <br>
-{% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
 
 {% block recursos_complementares %}
 {% load staticfiles %}
-<script type="text/javascript" src="{% static 'modules/core/controle_componentes.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/honorary/honorarioController.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/honorary/honorario.js' %}"></script>
-
-
-<script type="text/javascript" src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/core/base_api.js' %}"></script>
-<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
-
+{% load compress %}
+{% compress js %}
+<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
+<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
+<script src="{% static 'modules/core/base_api.js' %}"></script>
+<script src="{% static 'modules/core/mask.js' %}"></script>
+<script src="{% static 'modules/honorary/honorarioController.js' %}"></script>
+<script src="{% static 'modules/honorary/honorario.js' %}"></script>
+{% endcompress %}
 
 <script>
 	$(document).ready(function() {
-
-
-
 		$("#divCarregando").show();
 		$(window).load(function () {
 				// Quando a página estiver totalmente carregada, remove o id
