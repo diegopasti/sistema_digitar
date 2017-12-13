@@ -85,8 +85,8 @@ urlpatterns = [
     url(r'^api/planos/atualizar', servico_views.atualizar_plano),
     url(r'^api/planos/excluir', servico_views.excluir_plano),
 
-    url(r'^honorario/$', honorario_views.honorario_page),
-    url(r'^honorario/contrato$', honorario_views.contrato_page),
+    url(r'^contract/$', honorario_views.contract_page),
+    #url(r'^honorario/contrato$', honorario_views.contract_page),
     url(r'^api/honorario/lista_contratos$', honorario_api.get_lista_contratos),
     url(r'^api/honorario/salvar_contrato', honorario_api.salvar_contrato),
     url(r'^api/honorario/alterar_contrato', honorario_api.alterar_contrato),
@@ -106,6 +106,8 @@ urlpatterns = [
     url(r'^api/provents/save$', ProventosController.save_provent),
     url(r'^api/provents/update$', ProventosController.update_provent),
     url(r'^api/provents/disable$', ProventosController.disable_provent),
+
+    url(r'^honorary/$', honorario_views.honorary_page),
 
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),
     #url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', "preferencias.views.excluir_salario),
@@ -131,7 +133,7 @@ urlpatterns = [
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'^api/user/', include('modules.user.urls')),
-    url(r'register/$', view_usuario.register_first_user)
+    url(r'register/$', view_usuario.register_first_user),
 
     # User Administration
     url(r'filter/', UserController.filter_users),

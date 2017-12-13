@@ -2,7 +2,7 @@
 
 {% block Titulo %}
 <meta charset="utf-8">
-<title>Digitar - Honorários</title>
+<title>Digitar - Contratos</title>
 {% endblock %}
 
 {% load staticfiles %}
@@ -12,8 +12,6 @@
 <link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}">
 <link href="{% static 'modules/service/servico.css' %}" rel="stylesheet"/>
 {% endcompress %}
-
-
 
 <style type="text/css">
 .uppercase{
@@ -148,14 +146,6 @@ color:blue;
 }
 </style>
 {% endblock %}
-
-{% block breadcrumb_title %}Honorários {% endblock %}
-
-{% block breadcrumb_block %}
-<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-<li class="active">Honorários</li>
-{% endblock %}
-
 {% block conteudo %}
 <div id="controle_angular" ng-app="app" ng-cloak ng-controller="MeuController" ng-init="contratos_carregados=false">
 
@@ -172,54 +162,7 @@ color:blue;
 					</div>
 
 					<div class="modal-body" style="padding: 35px;padding-top: 10px;">
-						<!--
-						<div class="row">
-							<div class="col-md-3">
-								<div class="row no-gutter">
-									<div class="col-md-12">
-										<div class="form-group">
-											<sub><label>{{ formulario_contrato.tipo_contrato.label }}</label></sub>
-											<div id="select_tipo_contrato" style="border-radius: 4px;">
-												{{ formulario_contrato.tipo_contrato }}
-											</div>
-										</div>
-									</div>
-								</div>
 
-								<div class="row no-gutter">
-									<div class="col-md-12">
-										<div class="form-group">
-											<sub><label>{{ formulario_contrato.plano.label }}</label></sub>
-											<div id="select_plano" style="border-radius: 4px;">
-												{{ formulario_contrato.plano }}
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-9">
-								<div class="row">
-									<div class="col-md-12" style="margin-top: 8px;height: 115px;">
-
-
-											<div>
-												<span style="">
-													<b>Plano Básico</b>
-													<br>
-													<sub>
-													serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.serviços para empresas na primeira faixa do simples nacional com menos de cinco funcionários.
-													</sub>
-
-												</span>
-
-											</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-						-->
 						<div class="row no-gutter fluid">
 							<div class="col-md-3 col-xs-12 col-sm-12">
 								<div class="form-group">
@@ -227,7 +170,6 @@ color:blue;
 										<div id="select_tipo_cliente" style="border-radius: 4px;">
 											{{ formulario_contrato.tipo_cliente }}
 										</div>
-									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 								</div>
 							</div>
 
@@ -237,7 +179,6 @@ color:blue;
 										<div id="select_plano" style="border-radius: 4px;">
 											{{ formulario_contrato.plano }}
 										</div>
-									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 								</div>
 							</div>
 						</div>
@@ -249,7 +190,6 @@ color:blue;
 								<div class="form-group">
 									<sub><label>{{ formulario_contrato.vigencia_inicio.label }}</label></sub>
 									{{ formulario_contrato.vigencia_inicio }}
-									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 								</div>
 							</div>
 
@@ -267,8 +207,6 @@ color:blue;
 									<div id="select_tipo_vencimento" style="border-radius: 4px;">
 										{{ formulario_contrato.tipo_vencimento }}
 									</div>
-
-
 								</div>
 							</div>
 
@@ -278,7 +216,6 @@ color:blue;
 									<div id="select_dia_vencimento" style="border-radius: 4px;">
 										{{ formulario_contrato.dia_vencimento }}
 									</div>
-									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 								</div>
 							</div>
 
@@ -286,7 +223,6 @@ color:blue;
 								<div class="form-group" id="group_data_venvimento">
 									<sub><label>{{ formulario_contrato.data_vencimento.label }}</label></sub>
 									{{ formulario_contrato.data_vencimento }}
-									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 								</div>
 							</div>
 
@@ -296,8 +232,6 @@ color:blue;
 									<div id="select_tipo_honorario" style="border-radius: 4px;">
 										{{ formulario_contrato.tipo_honorario }}
 									</div>
-
-									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 								</div>
 							</div>
 						</div>
@@ -329,7 +263,6 @@ color:blue;
 								<div class="form-group">
 									<sub><label>{{ formulario_contrato.desconto_fim.label }}</label></sub>
 									{{ formulario_contrato.desconto_fim }}
-									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 								</div>
 							</div>
 
@@ -337,7 +270,6 @@ color:blue;
 								<div class="form-group">
 									<sub><label>{{ formulario_contrato.desconto_temporario.label }}</label></sub>
 									{{ formulario_contrato.desconto_temporario }}
-									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 								</div>
 							</div>
 
@@ -400,12 +332,6 @@ color:blue;
 									<button type="button" ng-click="deletar_indicacao()" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash-o" aria-hidden="true"></i> Apagar</button>
 									<button type="submit" id="bt_adicionar_indicacao" class="btn btn-sm btn-primary" data-toggle="modal"><i class="fa fa-check-square-o" aria-hidden="true"></i> Salvar</button>
 								</div>
-								<!--<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  style="">
-									<button type="button" ng-click="deletar_indicacao()" class="btn btn-sm btn-primary" style="background-color:#ff3824; border:#ff3824"; data-toggle="modal">Excluir</button>
-								</div>
-								<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  style=>
-
-								</div>-->
 							</span>
 							{% endverbatim %}
 							</div>
@@ -420,7 +346,6 @@ color:blue;
 									<table class="table table-condensed  table-striped table-bordered table-hover" id="datatable">
 										<thead>
 											<tr class="linha_cabecalho">
-												<!--<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>-->
 
 												<th class='center'>Empresa Indicada</th>
 
@@ -515,8 +440,6 @@ color:blue;
 															<span class="slider round" ></span>
 														</label>
 													</td>
-													<!--<td class="center" style="width: 30px" ng-if="registro.indicacao.indicacao_ativa">Bolo</td>
-													<td class="center" style="width: 30px" ng-if="!(registro.indicacao.indicacao_ativa)">Pudim</td>-->
 												</tr>
 
 												<tr ng-if="indicacoes_carregadas == true" ng-repeat="k in minimal_quantity_rows.slice(registro_selecionado.indicacoes.length,minimal_quantity_rows.length)">
@@ -674,7 +597,7 @@ color:blue;
 		</div>
 	</div>
 
-	<div class="row" style="margin-top: -40px;">
+	<div class="row" style="margin-top: -55px;">
 		<div class="col-lg-12 col-md-12 col-xs-12">
 			<div class="box box-default" >
 				<div class="box-heading">
@@ -730,7 +653,6 @@ color:blue;
 									</thead>
 
 									<tbody style="font-size: 11px;">
-
 										<tr ng-if="(contratos|filter:filterIds()).length == 0">
 											<td colspan="8" class="center">Nenhum Cliente Cadastrado!</td>
 										</tr>
@@ -796,10 +718,7 @@ color:blue;
 										<tr ng-if="resultado.length === 0 && (contratos|filter:filterIds()).length > 0">
 											<td colspan="3" class='center'>Nenhum resultado Encontrado</td>
 										</tr>
-
 									</tbody>
-
-
 									</table>
 								{% endverbatim %}
 							</div>
@@ -820,8 +739,6 @@ color:blue;
 						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 31px;'>
 							<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
 						</div>
-
-
 
 						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="contratos_carregados == true" >
 							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
