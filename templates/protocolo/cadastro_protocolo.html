@@ -5,34 +5,19 @@
     <title>Digitar - Protocolo</title>
 {% endblock %}
 
-{% block recrusos_necessarios %}
+{% block recursos_necessarios %}
 {% load staticfiles %}
-<!-- BOOTSTRAP 3.3.6 -->
-<link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
-
-<!-- DATATABLE -->
 <link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
 <link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
 <link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
-
-<script src="{% static 'custom/datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'custom/datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
-<script src="{% static 'custom/datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
-
-<!-- JQUERY UI DATAPICKER -->
+<link href="{% static 'bower_components/select2/dist/css/select2.min.css' %}" rel="stylesheet"/>
 <link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
-<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">-->
-
-<!-- JQUERY AUTOCOMPLETE EDITABLE -->
 <link rel="stylesheet" type="text/css" href="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.css' %}" />
-<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
+
 
 <!-- CUSTOM -->
 <!-- <link href="{% static 'styles/menu_simples_responsivo.css' %}" rel="stylesheet"/> -->
-<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
-<script src="{% static 'modules/protocol/protocolo.js' %}"></script>
-<link href="{% static 'bower_components/select2/dist/css/select2.min.css' %}" rel="stylesheet"/>
-<script type="text/javascript" src="{% static 'bower_components/select2/dist/js/select2.min.js' %}"></script>
+
 
 <style type="text/css">
 .uppercase{
@@ -400,7 +385,100 @@ label {
 					</table>
 				</div>
 
-				<script>
+
+
+				<div class='row'>
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-top:{% if dados|length > 0 %}-36px;{% else %}6px;{% endif %}'>
+						<label class='left_align'><sub>Buscar por:</sub></label>
+						 <select id='buscar_por' class='form-control'>
+							<option value="2" selected>Nome do Destinátario</option>
+							<option value="5">Nome do Recebedor</option>
+							<option value="1">Código Protocolo</option>
+							<option value="3">Data Emissão</option>
+							<option value="4">Data Entrega</option>
+						</select>
+					</div>
+
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-left:-20px;margin-top:{% if dados|length > 0 %}-36px;{% else %}6px;{% endif %}'>
+						<label class='left_align'><sub>Filtrar por:</sub></label>
+						 <select id='filtrar_por' class='form-control'>
+						 	<option value="emitidos" selected>Todos Protocolos</option>
+						 	<option value="abertos" >Protocolos em Aberto</option>
+						 	<option value="recebidos">Protocolos Confirmados</option>
+						 	<option value="avulsos">Protocolos Avulsos</option>
+						</select>
+					</div>
+
+					<div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top:{% if dados|length > 0 %}-11px;{% else %}31px;{% endif %}'>
+						<input type="text" id="search" class="form-control" autofocus placeholder="Consultar..">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<br>
+
+<div class="row div_desabilitado" id='painel_detalhes'>
+	<div class="col-lg-12">
+		<div class="box box-default" style="margin-top: 0px; margin-left: 0px; margin-right: 0px; ">
+			<div class="box-heading">
+				<div class="box-header with-border">
+					<h5 class="box-title">Detalhes</h5><!-- (Emitido por: <label id="lb_emitido_por"></label>)</h5> -->
+					<div class="pull-right">
+						<a href='/protocolo' role="button" class="btn btn-sm btn-primary pull-right" id="visualizar_protocolo" target="_blank" style="position: relative; margin-top: 0px;"><i class="fa fa-search fa-1x" aria-hidden="true"></i> Visualizar Protocolo</a>
+					</div>
+				</div>
+			</div>
+			<!-- /.panel-heading -->
+
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-condensed table-bordered" cellspacing="0" width="100%"  id="datatable_detalhes">
+
+						<thead>
+						<tr class="linha_cabecalho">
+							<th style="text-align: center;vertical-align: middle;">Documento</th>
+							<th style="text-align: center;vertical-align: middle;">Complemento</th>
+							<th style="text-align: center;vertical-align: middle;">Referência</th>
+							<th style="text-align: center;vertical-align: middle;">Vencimento</th>
+							<th style="text-align: center;vertical-align: middle;">Valor</th>
+						</tr>
+						</thead>
+
+						<tbody>
+
+						</tbody>
+					</table>
+					<!-- /.table-responsive -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% include "componentes/mensagem.html" with messages=messages %}
+
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load staticfiles %}
+{% load compress %}
+{% compress js %}
+<script src="{% static 'custom/datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'custom/datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'custom/datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-editable-select/dist/jquery-editable-select.min.js' %}"></script>
+<script src="{% static 'bower_components/select2/dist/js/select2.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
+<script src="{% static 'modules/core/mask.js' %}"></script>
+<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
+<script src="{% static 'modules/protocol/protocolo.js' %}"></script>
+{% endcompress %}
+
+<script>
 					$('#datatable').DataTable({
 
 						"pagingType": "simple_numbers",
@@ -515,107 +593,6 @@ label {
 					} );
 				</script>
 
-				<div class='row'>
-					{% if dados %}
-					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-top:-36px;'>
-					{% else %}
-					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-top:6px;'>
-					{% endif %}
-
-					<label class='left_align'><sub>Buscar por:</sub></label>
-					 <select id='buscar_por' class='form-control'>
-						<option value="2" selected>Nome do Destinátario</option>
-						<option value="5">Nome do Recebedor</option>
-						<option value="1">Código Protocolo</option>
-						<option value="3">Data Emissão</option>
-						<option value="4">Data Entrega</option>
-					</select>
-					</div>
-
-					{% if dados %}
-					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-left:-20px;margin-top:-36px;'>
-					{% else %}
-					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-left:-20px;margin-top:6px;'>
-					{% endif %}
-
-						<label class='left_align'><sub>Filtrar por:</sub></label>
-						 <select id='filtrar_por' class='form-control'>
-						 	<option value="emitidos" selected>Todos Protocolos</option>
-						 	<option value="abertos" >Protocolos em Aberto</option>
-						 	<option value="recebidos">Protocolos Confirmados</option>
-						 	<option value="avulsos">Protocolos Avulsos</option>
-						</select>
-					</div>
-
-					{% if dados %}
-					<div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top: -11px;'>
-					{% else %}
-					<div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top: 31px;'>
-					{% endif %}
-						<input type="text" id="search" class="form-control" autofocus placeholder="Consultar..">
-					</div>
-
-				</div>
-			</div>
-		</div>
-		<!-- /.panel -->
-	</div>
-	<!-- /.row -->
-</div>
-
-<br>
-
-<div class="row div_desabilitado" id='painel_detalhes'>
-	<div class="col-lg-12">
-		<div class="box box-default" style="margin-top: 0px; margin-left: 0px; margin-right: 0px; ">
-			<div class="box-heading">
-				<div class="box-header with-border">
-					<h5 class="box-title">Detalhes</h5><!-- (Emitido por: <label id="lb_emitido_por"></label>)</h5> -->
-					<div class="pull-right">
-						<a href='/protocolo' role="button" class="btn btn-sm btn-primary pull-right" id="visualizar_protocolo" target="_blank" style="position: relative; margin-top: 0px;"><i class="fa fa-search fa-1x" aria-hidden="true"></i> Visualizar Protocolo</a>
-					</div>
-				</div>
-			</div>
-			<!-- /.panel-heading -->
-
-			<div class="panel-body">
-				<div class="table-responsive">
-					<table class="table table-condensed table-bordered" cellspacing="0" width="100%"  id="datatable_detalhes">
-
-						<thead>
-						<tr class="linha_cabecalho">
-							<th style="text-align: center;vertical-align: middle;">Documento</th>
-							<th style="text-align: center;vertical-align: middle;">Complemento</th>
-							<th style="text-align: center;vertical-align: middle;">Referência</th>
-							<th style="text-align: center;vertical-align: middle;">Vencimento</th>
-							<th style="text-align: center;vertical-align: middle;">Valor</th>
-						</tr>
-						</thead>
-
-						<tbody>
-
-						</tbody>
-					</table>
-					<!-- /.table-responsive -->
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-{% include "componentes/mensagem.html" with messages=messages %}
-
-{% endblock %}
-
-{% block recursos_complementares %}
-{% load staticfiles %}
-<script type="text/javascript" src="{% static 'modules/core/mask.js' %}"></script>
-<!--<script src="//cdn.datatables.net/plug-ins/1.10.16/api/fnFindCellRowIndexes.js"></script>-->
-
-
-
-
-
 <script>
 jQuery(document).ready(function(){
 	$("#data_entrega").mask("99/99/9999");
@@ -696,18 +673,11 @@ $('#buscar_por').change(function() {
 });
 </script>
 
-
-
-
-
-
-
 <script type="text/javascript">
 //$(document).ready(function() {
 ////	$("#datatable"+' tbody').on( 'click', 'tr', seleciona_linha("#datatable",$(this),true));
 //});
 </script>
-
 
 <script>
 $('.modal').on('hidden.bs.modal', function(){
@@ -738,9 +708,6 @@ $(document).ready(function() {
 });
 </script>
 
-
-
-
 <script type="text/javascript">
 //$(document).ready(function() {
 	//alert("Olha o que temos de documentos: {{ dados }}");
@@ -762,7 +729,6 @@ $(document).ready(function() {
 //	});
 </script>
 
-
 <script type="text/javascript">
 $('#visualizar_protocolo').click( function () {
     //alert("cliquei pra visualizar protocolo"+table.cell('.selected', 0).data());
@@ -780,8 +746,6 @@ $('#visualizar_protocolo').click( function () {
 
  });
 </script>
-
-
 
 <script type="text/javascript">
 	//function visualizar_protocolo(){
@@ -802,7 +766,6 @@ $('#visualizar_protocolo').click( function () {
 	//}
 
 </script>
-
 
 <script>
 $(function() {

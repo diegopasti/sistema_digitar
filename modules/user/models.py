@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, User
 from modules.nucleo.config import ERRORS_MESSAGES
 from modules.nucleo.utils import generate_activation_code
 from modules.nucleo.validators import check_password_format
@@ -18,7 +18,7 @@ opcoes_tipos_usuarios = (
         ('F', 'FUNCIONARIO'),
 )
 
-
+"""
 class UserManager(BaseUserManager):
 
     def _create_user(self,username, email, password, active, level_permission, nome, sobrenome):
@@ -99,7 +99,6 @@ class UserManager(BaseUserManager):
 
     def get_username(self,username):
         try:
-            print("ESTOU TENTANDO PEGAR:",username)
             result = User.objects.get(username=username)
             return result
         except User.DoesNotExist:
@@ -178,7 +177,7 @@ class User(AbstractBaseUser):
         else:
             print("Erro! Nao faz sentido existir duas sessões abertas, com a mesma chave e usuario abertas.")
 
-
+"""
 class Session(models.Model):
     class Meta:
         db_table = 'user_session'
@@ -187,7 +186,7 @@ class Session(models.Model):
 
     session_key = models.CharField("Chave de Sessão", max_length=32, null=False, error_messages=ERRORS_MESSAGES)
 
-    user = models.ForeignKey('User')
+    user = models.ForeignKey(User)
     internal_ip = models.GenericIPAddressField("IP Interno:", null=False, error_messages=ERRORS_MESSAGES)
     external_ip = models.GenericIPAddressField("IP Externo:", null=False, error_messages=ERRORS_MESSAGES)
     country_name = models.CharField("País", max_length=50, null=False, error_messages=ERRORS_MESSAGES)

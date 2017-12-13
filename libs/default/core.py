@@ -11,7 +11,10 @@ from django.contrib.auth import login
 from django.db import IntegrityError
 from django.core import serializers
 
-from modules.user.models import Session, User
+from modules.nucleo.models import RestrictedOperation
+from django.contrib.auth.models import Permission, User
+from django.contrib.auth import authenticate, login
+from modules.user.models import Session
 from sistema_contabil import settings
 import datetime
 import json
@@ -108,26 +111,19 @@ class BaseController(Notify):
 
     @request_ajax_required
     def login(self, request, formulary):
-        print("Enrando aquie")
         form = formulary(request.POST)
         if form.is_valid():
-            username = request.POST['username'].lower()
+            username = request.POST['username']
             password = request.POST['password']
-            user = User.objects.get_user_username(username=username)
-            print("Consigo pega o user?",user)
+            user = authenticate(username=username, password=password)
             if user is not None:
                 if user.is_active:
-                    auth = User.objects.authenticate(request, username=username, password=password)
-                    if auth is not None:
-                        login(request, user)
-                        #self.__create_session(request, user)
-                        response_dict = self.notify.success(user, list_fields=['username'])
-                    else:
-                        response_dict = self.notify.error({'username': 'Usuário ou senha incorreta.'})
+                    login(request, user)
+                    response_dict = self.notify.success(user, list_fields=['username'])
                 else:
                     response_dict = self.notify.error({'username': 'Usuário não autorizado.'})
             else:
-                response_dict = self.notify.error({'username': 'Usuário não existe.'})
+                response_dict = self.notify.error({'username': 'Usuário e senha não conferem, ou não existem.'})
         else:
             response_dict = self.get_exceptions(None, form)
 
@@ -140,19 +136,17 @@ class BaseController(Notify):
             username = request.POST['username']
             email = request.POST['email'].lower()
             senha = request.POST['password']
-            level_perm = request.POST['level_permission']
-            nome = request.POST['nome'].lower()
-            sobrenome = request.POST['sobrenome'].lower()
-            if User.objects.check_available_email(email):
-                user = User.objects._create_user(username, email, senha,True,level_permission=level_perm,nome=nome,sobrenome=sobrenome)
-                if user is not None:
-                    #activation_code = generate_activation_code(email)
-                    #send_generate_activation_code(email, activation_code)
-                    response_dict = self.notify.success(user, list_fields=['username'])
-                else:
-                    response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
+            nome = request.POST['first_name'].lower()
+            sobrenome = request.POST['last_name'].lower()
+
+            user = User.objects._create_user(username, email, senha,first_name=nome, last_name=sobrenome)
+            if user is not None:
+                #activation_code = generate_activation_code(email)
+                #send_generate_activation_code(email, activation_code)
+                response_dict = self.notify.success(user, list_fields=['username'])
             else:
-                response_dict = self.notify.error({'username': 'Username já cadastrado.'})
+                response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
+
         else:
             response_dict = self.get_exceptions(None, form) #self.notify.error({'email': 'Formulário com dados inválidos.'})
         return self.response(response_dict)
@@ -160,7 +154,6 @@ class BaseController(Notify):
     @request_ajax_required
     @validate_formulary
     def save(self, request, formulary=None):
-        print("VEJA O OBJECT: ", self.object)
         if self.full_exceptions == {}:
             response_dict = self.execute(self.object, self.object.save)
         else:
@@ -188,13 +181,13 @@ class BaseController(Notify):
         pass
 
     @request_ajax_required
+    @validate_formulary
     def update(self, request, formulary):
-        self.request = request
-        print("Atualizar:")
-        result, form = self.filter_request(request, formulary)
-        object = form.get_object(int(request.POST['id']))
-        response_dict = self.execute(object, object.save)
-        return HttpResponse(json.dumps(response_dict))
+        if self.full_exceptions == {}:
+            response_dict = self.execute(self.object, self.object.save)
+        else:
+            response_dict = self.notify.error(self.full_exceptions)
+        return self.response(response_dict)
 
     @request_ajax_required
     def delete(self, request, model, object_id):
@@ -205,12 +198,33 @@ class BaseController(Notify):
         return HttpResponse(json.dumps(response_dict))
 
     @request_ajax_required
-    def disable(self, request, model, object_id):
-        print("Desativar: ", model, '[', object_id, ']')
-        object = model.objects.get(pk=object_id)
+    def disable(self, request, model):
+        print("VEJA O REQUEST: ",request.POST)
+        object = model.objects.get(pk=int(request.POST['id']))
         object.is_active = False
         response_dict = self.execute(object, object.save)
-        return HttpResponse(json.dumps(response_dict))
+        if response_dict['result']:
+            self.report_operation(request, model)
+        return self.response(response_dict)
+
+    def report_operation(self, request, model):
+        audit_register = RestrictedOperation()
+        audit_register.type = audit_register.get_type(request.POST['action_type'])
+        audit_register.object_id = int(request.POST['id'])
+        audit_register.object_name = request.POST['action_object']
+        audit_register.table = model._meta.db_table
+        audit_register.user_id = 1
+        audit_register.justify = request.POST['action_justify']
+
+        try:
+            audit_register.description = request.POST['action_description']
+        except:
+            audit_register.description = None
+        audit_register.save()
+
+
+
+
 
     def execute(self, object, action):
         try:
@@ -267,12 +281,12 @@ class BaseController(Notify):
         self.__request_path = request.path
         self.__request_bytes = sys.getsizeof(request.body)
         self.server_startup_time_process = datetime.datetime.now()
-        print("Processo iniciado em ", self.server_startup_time_process)
+        #print("Processo iniciado em ", self.server_startup_time_process)
 
     def terminate_process(self):
         self.server_terminate_time_process = datetime.datetime.now()
         self.server_processing_time = self.server_terminate_time_process - self.server_startup_time_process
-        print("Processo executado em", self.server_processing_time)  # ,"ou",self.server_processing_time.total_seconds())
+        #print("Processo executado em", self.server_processing_time)  # ,"ou",self.server_processing_time.total_seconds())
 
     def response(self, response_dict):
         import sys
@@ -284,10 +298,10 @@ class BaseController(Notify):
         response_dict['status']['server_processing_time_duration'] = self.server_processing_time.total_seconds()  # datetime.datetime.now()
         response_dict['status']['cliente_processing_time_duration'] = ''
 
-        print("VEJA O RESPONSE NO FINAL: ", response_dict)
         data = json.dumps(response_dict, default=json_serial)
         data = data.replace('RESPONSE_SIZE', str(sys.getsizeof(data) - 16))
         response = HttpResponse(data)  # after generate response noramlization reduce size in 16 bytes
+        #print("RESPONSE: ",response)
         return response
 
     def filter_request(self, request, formulary=None):
@@ -326,13 +340,20 @@ class BaseForm:
             object = self.model()
 
         for attribute in self.data:
-            value = self.data[attribute]
             if attribute != 'csrfmiddlewaretoken':
-                field = self.fields[attribute.replace("[]","")]
-                try:
-                    value = field.to_python(value)
-                except:
-                    value = [int(n) for n in value.split(',')]
-
+                if '[]' in attribute:
+                    options_selected = self.request.POST.getlist(attribute)
+                    if options_selected is not None:
+                        value = ';'.join(map(str, self.request.POST.getlist(attribute)))
+                    attribute = attribute.replace("[]", "")
+                else:
+                    if attribute != 'id':
+                        if self.data[attribute] != "null":
+                            field = self.fields[attribute]
+                            value = field.to_python(self.data[attribute])
+                        else:
+                            value = None
+                    else:
+                        value = int(self.data[attribute])
                 setattr(object, attribute, value)
         return object

@@ -16,16 +16,21 @@ import os
 import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'a33ryhl1tch=ql&a32o!+92%akmtem5%s7bhs_tj0#s3q$e4$%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+HTML_MINIFY = False
+COMPRESS_ENABLED = True
+COMPRESS_ROOT = os.path.join(BASE_DIR,"static/compress")
+
+ALLOWED_HOSTS = ['*']
+ROOT_URLCONF = 'sistema_contabil.urls'
+WSGI_APPLICATION = 'sistema_contabil.wsgi.application'
+
 '''LOGGING = {
     'version': 1,
     'handlers': {
@@ -45,21 +50,21 @@ DEBUG = True
 '''
 ALLOWED_HOSTS = []
 
-
 # Application definition
+#AUTH_USER_MODEL = 'modules.user.User'
+#AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 INSTALLED_APPS = (
-    #'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djangobower','dropbox','dbbackup',
-    'sistema_contabil','modules','modules.user','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
+    'djangobower','compressor','dropbox','dbbackup',
+    'grappelli','filebrowser',
+    'sistema_contabil','modules','modules.nucleo','modules.user','modules.entidade','modules.protocolo','modules.honorario','modules.servico','modules.preferencias'
 )
-
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -70,10 +75,15 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
+    #'django.middleware.cache.UpdateCacheMiddleware',
+    #'htmlmin.middleware.HtmlMinifyMiddleware',
+    # other middleware classes
+    #'django.middleware.cache.FetchFromCacheMiddleware',
+    #'htmlmin.middleware.MarkRequestMiddleware',
 )
 
 ROOT_URLCONF = 'sistema_contabil.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -89,12 +99,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'sistema_contabil.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -112,15 +116,10 @@ DBBACKUP_FILENAME_TEMPLATE = '{datetime}.{extension}' #'{datetime}.{extension}'
 DBBACKUP_GPG_RECIPIENT = 'cleiton.leonel@gmail.com'
 #DBBACKUP_GPG_ALWAYS_TRUST = 'True'
 DROPBOX_OAUTH2_TOKEN = 'r2VjuxIaDQAAAAAAAAAAD7YKqJlAJSdXsRz3IWYGHs2Q_BEnim1nOc3-LA1PspKi'
-
 #DROPBOX_OAUTH2_TOKEN = '4dM4LNuAHKAAAAAAAAAACCB_3-K_tIVlAFYwTBatxMlTd_e6Y5dyiEbR7uX1dKTJ'
 DROPBOX_ROOT_PATH = '/backup'
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
-
 LANGUAGE_CODE = 'pt-br'
-
 # NA MAQUINA DE DESENVOLVIMEMTO WINDWOS O HORARIO CORRETO DEVE UTILIZAR:
 #TIME_ZONE = 'UTC'
 
@@ -200,8 +199,8 @@ USE_THOUSAND_SEPARATOR = True
       e passo pro template. 
     
 """
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = "/"
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
@@ -214,7 +213,7 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
-    #'compressor.finders.CompressorFinder',
+    'compressor.finders.CompressorFinder',
 ]
 
 if sys.platform == 'linux':
@@ -243,6 +242,7 @@ BOWER_INSTALLED_APPS = (
     'angular-utils-pagination',
     'angular-locale-pt-br',
     'select2',
+    'labelauty',
 
     #'bootstrap#3.3.7',#3.3.2
     #'font-awesome#4.7.0',#4.2
@@ -294,7 +294,18 @@ STATICFILES_DIRS = (
 )
 """
 
-LOGIN_REDIRECT_URL = "/"
+
+FILER_DEBUG = True
+FILER_ENABLE_LOGGING = True
+FILER_CANONICAL_URL = 'sharing/'
+THUMBNAIL_HIGH_RESOLUTION = True
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    #'easy_thumbnails.processors.scale_and_crop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters',
+)
 
 SERVER_DIGITAR = True
 if SERVER_DIGITAR:

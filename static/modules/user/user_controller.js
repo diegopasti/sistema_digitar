@@ -73,10 +73,13 @@ application.controller('register_controller', function($scope) {
 	$scope.confirm_password = "";
 
 	$scope.save_user = function () {
-
+		$scope.email = "";
+		$scope.password = "";
+		$scope.confirm_password = "";
 		var data_paramters = {};
 		$.each($('#form_register').serializeArray(), function(i, field) {
 				data_paramters[field.name] = field.value;
+				//alert("VEJA: "+field.name+" - "+field.value)
 		});
 
 		success_function = function(data_object){
@@ -84,11 +87,9 @@ application.controller('register_controller', function($scope) {
     	return redirect
 			};
 
-		fail_function = function (result,message,data_object,status) {
-				notify_response_message(message);
-			};
-
-		alert("Estou indo tentar Salvar o seguninte data:\n"+JSON.stringify(data_paramters))
+		fail_function = function () {
+				notify('error','Usuario não cadastrado','Formulário com campos inválidos')
+		}
 		request_api("/api/user/save/register",data_paramters,validate_form_register,success_function,fail_function)
 
 	};
@@ -123,12 +124,14 @@ application.controller('login_controller', function($scope) {
     var data_paramters = SESSION_PARAMTERS//{email: $scope.email, password: $scope.password}
 
     function success_function(result,message,data_object,status){
+    	//alert('success'+'Login realizado'+'Usuário apto para entrar no Sistema')
+			notify_success_message(message);
     	var redirect = "/"
     	return redirect
     }
 
     fail_function = function (result,message,data_object,status) {
-    	alert("FALHA: "+result+" - "+message+" - "+data_object+" - "+status)
+    	//alert("FALHA: "+result+" - "+message+" - "+data_object+" - "+status)
       notify_response_message(message);
     }
     request_api("/api/user/login/autentication",data_paramters,validate_form_login,success_function,fail_function)

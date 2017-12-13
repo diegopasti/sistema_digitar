@@ -1,4 +1,74 @@
-input.wrong_field{
+.glyphicon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'arial' !important;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.uppercase{
+    text-transform: uppercase;
+}
+
+.lowercase{
+    text-transform: uppercase;
+}
+
+.center{
+    text-align: center;
+}
+
+.left{
+	padding-left: 8px;
+	text-align: left;
+}
+
+.right{
+    text-align: right;
+}
+
+.selected {
+background-color: #08C !important ;
+}
+
+.desabilitado {
+	pointer-events: none;
+	cursor: not-allowed;
+	opacity: 0.6;
+	tab-index: 80;
+}
+
+.link_desabilitado {
+	pointer-events: none;
+	cursor: default;
+	opacity: 0.6;
+}
+
+
+.modal-header{
+	height: 45px;
+}
+
+.modal-header .modal_title{
+	margin-top: 0px;
+}
+
+
+tr.linha_selecionavel{
+    cursor: pointer;
+}
+
+.form-group label{
+	font-weight: normal !important;
+	margin-left: 4px;
+}
+
+.wrong_field{
 	border: 1px solid #CE5454;
 	box-shadow: 1px 1px 5px #CE5454;
 }
@@ -45,24 +115,44 @@ li.disabled a{
 
 }
 
-.uppercase {
-	text-transform: uppercase;
-}
-
-.lowercase {
-	text-transform: lowercase;
-}
-
 form label{
-  padding-left: 8px;
+  padding-left: 4px;
 }
 
-form label::after{
+/*form label::after{
   content: ':';
+}*/
+
+.linha_cabecalho th{
+	cursor: pointer;
 }
 
-button[type="submit"] {
-  width: 140px;
+/* unvisited link */
+.linha_cabecalho a {
+	color: #666;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* visited link */
+.linha_cabecalho a:visited {
+	color: #666;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* mouse over link */
+.linha_cabecalho a:hover {
+	color: #222;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* selected link */
+.linha_cabecalho a:active {
+	color: #111;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 .selected td{
@@ -188,10 +278,14 @@ padding: 0px;
 	padding:0px;
 }
 
-/*
-.row.no-gutters > [class^="col-"],
-.row.no-gutters > [class*=" col-"] {
-  padding-right: 0;
-  padding-left: 0;
+
+.no-gutter > [class*='col-'] {
+	padding-right:3px;
+	padding-left:3px;
 }
-*/
+
+.responsive-text{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

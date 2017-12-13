@@ -2,8 +2,8 @@
     Campos desabilitados devem ter seu evento de clicd
 */
 $(".disabled").click(function (e) {
-        e.preventDefault();
-        return false;
+	e.preventDefault();
+	return false;
 });
 
 /*
@@ -18,8 +18,6 @@ function habilitar(campo){
   $("#"+campo+ ' input').attr('disabled', false);
   $("#"+campo).removeClass('desabilitado noselect');
 }
-
-
 /*
     Desabilita/Habilita fieldset container.
 */
@@ -32,7 +30,6 @@ function habilitar_fieldset(campo){
     habilitar_botao("#"+campo);
     //$("#lb_"+campo).removeClass('label_desabilitado');
 }
-
 
 /*
     Desabilita/Habilita o input e o label de um determinado
@@ -74,18 +71,17 @@ function desabilitar_nav_page(tab){
     aos campos para digitação de datas.
 */
 function configurar_campo_data(campo){
+	$("#"+campo).datepicker({
+		dayNames: [ "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado" ],
+		monthNames: [ "Janeiro", "Fevereiro", "março", "Abril", "Maio", "Junho", "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro" ],
+		dayNamesMin: [ "D", "S", "T", "Q", "Q", "S", "S" ],
+		dateFormat: 'dd/mm/yy'
+	}).on('change', function() {
+			$(this).valid();  // triggers the validation test
+			// '$(this)' refers to '$("#datepicker")'
+	});
 
-    $("#"+campo).datepicker({
-          dayNames: [ "Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado" ],
-          monthNames: [ "Janeiro", "Fevereiro", "março", "Abril", "Maio", "Junho", "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro" ],
-          dayNamesMin: [ "D", "S", "T", "Q", "Q", "S", "S" ],
-          dateFormat: 'dd/mm/yy'
-    }).on('change', function() {
-        $(this).valid();  // triggers the validation test
-        // '$(this)' refers to '$("#datepicker")'
-    });
-
-    $("#"+campo).mask("99/99/9999");
+	$("#"+campo).mask("99/99/9999");
 }
 
 $('.decimal').keydown(function(e){

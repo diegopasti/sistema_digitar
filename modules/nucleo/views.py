@@ -10,6 +10,9 @@ from modules.entidade.utilitarios import remover_simbolos
 from modules.entidade.formularios import formulario_cadastro_entidade_completo
 from modules.nucleo.working_api import WorkingManager
 
+def system_configurations(request):
+    return render(request, "core/configurations/backup/configurations.html")
+
 
 def cadastrar_empresa(request):  
     dados = entidade.objects.all()
@@ -201,6 +204,5 @@ def working(request):
     if request.is_ajax():
         print("TO INDO LA SALVAR")
         return WorkingManager().register_programming_frontend(request.GET['request_page'])
-        print("SALVEI")
     else:
         raise Http404

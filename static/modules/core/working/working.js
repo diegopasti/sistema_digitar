@@ -9,17 +9,16 @@ function working_qunit(){
     },
 
     complete : function(data) {
-      //alert("Olha a data: "+JSON.stringify(data))
       new PNotify({
-            title: "WorkingAPI was updated",
-            addclass: 'visible',
-            text: '',
-            hide: true,
-            delay: 2000,
-            mouse_reset: false,
-            type: 'success',
-            styling: 'bootstrap3'
-        });
+				title: "WorkingAPI was updated",
+				addclass: 'visible',
+				text: '',
+				hide: true,
+				delay: 2000,
+				mouse_reset: false,
+				type: 'success',
+				styling: 'bootstrap3'
+			});
     }
   });
 }
@@ -52,18 +51,8 @@ function working(){
         alert("Erro! WorkingApi failed to register job.")
       }
     }
-
-    /*success: function (data){
-      $("#porcaria").html(data)
-      alert(data)
-      //var resultado = data;//$.parseJSON(data);
-    },
-    failure: function (data) {
-      alert('Erro! Falha na execução do ajax');
-    }*/
   });
 }
-
 
 function register(working_key,request_page){
   $.ajax({
@@ -82,19 +71,4 @@ function register(working_key,request_page){
     }
 
   });
-
-  /*$.ajax({
-    type: "GET",
-    url: "/api/working/register",
-    data: {
-      request_page: request_page,
-    },
-    success: function (data) {
-      $("#porcaria").html = data;
-    },
-    failure: function (data) {
-      alert("Erro! Configuration for WorkingApi not avaible.");
-    }
-  });
-  */
 }

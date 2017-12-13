@@ -18,11 +18,11 @@
     </div>
 
 		<div>
-      {{ formulario_register.nome }}
+      {{ formulario_register.first_name }}
     </div>
 
 		<div>
-      {{ formulario_register.sobrenome }}
+      {{ formulario_register.last_name }}
     </div>
 
     <div>
@@ -34,7 +34,7 @@
     </div>
 
 		<div>
-      {{ formulario_register.level_permission }}
+      <h2>CRIAR CAMPO DE SELECAO DE GRUPO</h2>
     </div>
 
     <br>
@@ -63,10 +63,9 @@
 {% endblock %}
 
 {% block recursos_complementares %}
-  {% load static %}
-  <script src="{% static 'modules/user/user_controller.js' %}"></script>
-  <script src="{% static 'modules/user/user.js' %}"></script>
-{% endblock %}
+{% load static %}
+<script src="{% static 'modules/user/user_controller.js' %}"></script>
+<script src="{% static 'modules/user/user.js' %}"></script>
 
 <script>
     $('#form_change_password').submit(function(e){
@@ -77,3 +76,5 @@
     	$('#level_permission').val('Operador')
 		alert("Venho?")
 </script>
+{% endblock %}
+

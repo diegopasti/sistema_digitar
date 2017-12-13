@@ -28,11 +28,19 @@ from modules.preferencias import views as preferencias_views
 from modules.honorario.api import ProventosController
 from modules.user import views as view_usuario
 from modules.user.api import UserController
+from filebrowser.sites import site
+site.directory = "data/backup/"
 
 urlpatterns = [
+    url(r'admin/register/first_user',view_usuario.register_first_user),
+    url(r'^$', core_views.index), # entidade.views.index)
+    url(r'^admin/filebrowser/', include(site.urls)),
+    #url(r'^adminurl/filebrowser/', include(site.urls)),
+    url(r'^grappelli/', include('grappelli.urls')),
+
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', view_usuario.login_page),
-    url(r'^$', entidade_views.index), # entidade.views.index),
+    url(r'^logout', view_usuario.logout_page),
     url(r'^cadastrar_empresa$', nucleo_views.cadastrar_empresa), #url(r'teste/$', "endereco.views.teste),
     url(r'^index/$',  entidade_views.index),
     url(r'^gerar_pdf/$', protocolo_views.gerar_pdf),
@@ -93,9 +101,12 @@ urlpatterns = [
     url(r'^api/honorario/alterar_boolean_indicacao/', honorario_api.alterar_boolean_indicacao),
     url(r'^api/honorario/deletar_indicacao/', honorario_api.deletar_indicacao),
 
-    url(r'^proventos/$', honorario_views.proventos_page),
-    url(r'^api/proventos$', ProventosController.filter),#"honorario.api.ProventosController().get_lista_proventos),
-    url(r'^api/proventos/adicionar$', ProventosController.save),
+    url(r'^provents/$', honorario_views.proventos_page),
+    url(r'^api/provents$', ProventosController().filter_provents),
+    url(r'^api/provents/save$', ProventosController.save_provent),
+    url(r'^api/provents/update$', ProventosController.update_provent),
+    url(r'^api/provents/disable$', ProventosController.disable_provent),
+
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),
     #url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', "preferencias.views.excluir_salario),
     #url(r'^api/preferencias/salario_vigente/$', "preferencias.views.get_salario_vigente),
@@ -119,15 +130,12 @@ urlpatterns = [
     url(r'configurations/version/update$', ConfigurationsController().update),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
-    url(r'register/',view_usuario.register_page),
-    url(r'save/register',UserController().salvar_registro),
-    url(r'login/autentication$', UserController().login_autentication),
-    url(r'reset_password$', UserController().reset_password),
-    url(r'change_password$', UserController().change_password),
-    url(r'reactivate$', UserController().resend_activation_code),
+    url(r'^api/user/', include('modules.user.urls')),
+    url(r'register/$', view_usuario.register_first_user)
 
     # User Administration
     url(r'filter/', UserController.filter_users),
+
     # APIs administrativas
     url(r'register/delete/(?P<email>[^/]+)/', UserController.register_delete),
 

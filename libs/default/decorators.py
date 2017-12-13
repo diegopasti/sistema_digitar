@@ -1,5 +1,4 @@
-from django.contrib.auth.decorators import user_passes_test
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied
 from sistema_contabil import settings
 from functools import wraps
 
@@ -9,13 +8,19 @@ def validate_formulary(view):
     def _wrapped_view(controller, request, formulary, *args, **kwargs):
         """ request via ajax verifiy need settings.DEBUG=True for running view tests."""
         form = formulary(request.POST)
+        form.request = request
         if not form.is_valid():
-            controller.object = form.get_object()
-            controller.get_exceptions(controller.object, form)
+            if 'id' in request.POST:
+                controller.object = form.get_object(int(request.POST['id']))
+            else:
+                controller.object = form.get_object()
         else:
-            controller.object = form.get_object()
-            controller.get_exceptions(controller.object, form)
-            #print("FORMULARIO TA VALIDO MAS QUERO VER TBM O MODELO: ", controller.full_exceptions)
+            if 'id' in request.POST:
+                controller.object = form.get_object(int(request.POST['id']))
+            else:
+                controller.object = form.get_object()
+
+        controller.get_exceptions(controller.object, form)
         return view(controller, request, formulary, *args, **kwargs)
     return _wrapped_view
 

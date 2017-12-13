@@ -20,10 +20,10 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
     data: data_paramters,
     success: function(data) {
 			var response = $.parseJSON(data);
-      var message = response['message']
-      var result = response['result']
+      var message = response['message'];
+      var result = response['result'];
       var data_object = response['object'];//$.parseJSON()
-      var status = response['status']
+      var status = response['status'];
 
       if (result == true) {
         //var moment_date = moment(data_object['fields']['joined_date']).format("DD/MM/YYYY - HH:mm:ss")
@@ -58,6 +58,29 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
   });
 }
 
+function notify(type,title,text){
+	new PNotify({
+		title: title,
+		addclass: 'visible',
+		text: text,
+		hide: true,
+		delay: 2000,
+		mouse_reset: false,
+		type: type,
+		styling: 'bootstrap3'
+	});
+}
+
+function create_data_paramters(formulary_id){
+	var data_paramters = {};
+	$("#"+formulary_id+' input, '+"#"+formulary_id+' select, '+"#"+formulary_id+' textarea').each(function(index){
+		var input = $(this);
+		data_paramters[input.attr('id')] = input.val().toUpperCase();
+		//alert('Name: '+input.attr('id')+'  Value: ' + input.val());
+	});
+	return data_paramters;
+}
+
 function check_response_message_form(form_id, response_message){
   $(form_id +" input, textarea").each(function () {
     var id = $(this).attr("id");
@@ -76,11 +99,15 @@ function notify_response_message(response_message){
     notify('error',"Falha na operação",response_message[key])
 	}
 }
+function notify_success_message(response_message){
+	for (var key in response_message) {
+    notify('success',"Operação Concluída",response_message[key])
+	}
+}
 
 function check_required_fields(form_id){
 	var form_is_valid = true;
 	$.each($('#form_adicionar_contrato').serializeArray(), function(i, field) {
-		//alert("VEJA O ELEMENTO: "+i+" - "+field.name+": "+field.value)
 		try{
 			var required = document.getElementById(field.name).required
 			if(required){
@@ -88,17 +115,12 @@ function check_required_fields(form_id){
 					clean_wrong_field(field.name)
 				}
 				else{
-					//alert("NAO TEM NADA "+field.value)
 					form_is_valid = false;
 					set_wrong_field(field.name, 'Campo Obrigatório')
 				}
 			}
-			else{
-				//alert("NAO EH OBRIGATORIO")
-			}
 		}
 		catch (err){
-			//alert("NAO DEU")
 		}
 	});
 	return form_is_valid
@@ -109,9 +131,7 @@ function set_wrong_field(id, erro_value){
   $("#field_"+id).addClass('bad')
   var myDivs = $("#field_"+id).children('div.alert');
 	if(myDivs.length === 0){
-			myDivs = $('<div class="alert"></div>')
-					.appendTo("#field_"+id);
-					//.css('opacity', 0);
+			myDivs = $('<div class="alert"></div>').appendTo("#field_"+id);
 	}
 	$("#field_"+id+" .alert").html(erro_value);
 	$("#"+id).addClass('wrong_field')
@@ -125,4 +145,8 @@ function clean_wrong_field(id){
 
 function reset_formulary(formulary_id){
 	document.getElementById(formulary_id).reset();
+	$("#"+formulary_id +" input, textarea").each(function () {
+    var id = $(this).attr("id");
+    clean_wrong_field(id);
+  });
 }

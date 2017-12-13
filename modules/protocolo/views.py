@@ -384,11 +384,11 @@ def gerar_relatorio_simples(request,resultado):
         'hora_emissao':hora
 
     }
-    context = Context(parametros)
-    
+    #context = Context(parametros)
+
     
     resp = HttpResponse(content_type='application/pdf')
-    result = generate_pdf('protocolo/imprimir_relatorio_simples.html', file_object=resp,context=context)
+    result = generate_pdf('protocolo/imprimir_relatorio_simples.html', file_object=resp,context=parametros)
     return result
 
 
