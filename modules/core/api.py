@@ -3,7 +3,7 @@ from django.http import Http404
 from django.utils.decorators import method_decorator
 
 from libs.backup.backup import BackupManager
-#from libs.backup.pygit import check_update
+from libs.backup.pygit import check_update, update
 from libs.default.core import BaseController
 from modules.core.models import Backup
 #from modules.user.models import User
