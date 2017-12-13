@@ -37,7 +37,9 @@
                           {% verbatim %}
                           <div class="row">
                             <div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
-                              <div class="left" style="left: 0px;">Versão: {{ version_informations.available_update }} - {{ version_informations.local }} </div>
+                              <!--<div class="left" style="left: 0px;">Versão: {{ version_informations.available_update }} - {{ version_informations.local }} </div>-->
+															<div class="left" style="left: 0px;">Id: {{ version_informations.local }} </div>
+															<div class="left" style="left: 0px;">Último Update: {{ version_informations.last_update }} </div>
                             </div>
                           </div>
                          {% endverbatim %}

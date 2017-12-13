@@ -80,6 +80,7 @@ class ConfigurationsController(BaseController):
             response_dict['object']['available_update'] = False
         response_dict['object']['local'] = version_check['local']
         response_dict['object']['remote'] = version_check['remote']
+        response_dict['object']['last_update'] = version_check['last_update']
         print("VEJA A VERSÃO: ",response_dict)
         return self.response(response_dict)
 
