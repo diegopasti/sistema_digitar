@@ -131,7 +131,7 @@ urlpatterns = [
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'^api/user/', include('modules.user.urls')),
-    url(r'register/$', view_usuario.register_first_user)
+    url(r'register/$', view_usuario.register_first_user),
 
     # User Administration
     url(r'filter/', UserController.filter_users),

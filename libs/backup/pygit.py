@@ -23,12 +23,12 @@ def check_update():
         for entry in walker:
             message = str(entry.commit.message)[2:-3]
             author = str(entry.commit.author)
-            #print(author)
+            print(author)
             if message.startswith('Merge'):
                 continue
 
-            timestamp = datetime.utcfromtimestamp(entry.commit.commit_time)
-            print(timestamp)
+    timestamp = datetime.utcfromtimestamp(entry.commit.commit_time)
+    print(timestamp)
 
     data['local'] = local_ref
     data['remote'] = remote_commit
