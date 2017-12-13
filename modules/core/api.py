@@ -100,7 +100,6 @@ class ConfigurationsController(BaseController):
         return self.response(response_dict)
         """
 
-
 class AbstractAPI:
 
     def filter_request(request, formulary=None):
