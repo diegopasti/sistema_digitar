@@ -20,10 +20,10 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
     data: data_paramters,
     success: function(data) {
 			var response = $.parseJSON(data);
-      var message = response['message']
-      var result = response['result']
+      var message = response['message'];
+      var result = response['result'];
       var data_object = response['object'];//$.parseJSON()
-      var status = response['status']
+      var status = response['status'];
 
       if (result == true) {
         //var moment_date = moment(data_object['fields']['joined_date']).format("DD/MM/YYYY - HH:mm:ss")
@@ -97,6 +97,11 @@ function check_response_message_form(form_id, response_message){
 function notify_response_message(response_message){
 	for (var key in response_message) {
     notify('error',"Falha na operação",response_message[key])
+	}
+}
+function notify_success_message(response_message){
+	for (var key in response_message) {
+    notify('success',"Operação Concluída",response_message[key])
 	}
 }
 

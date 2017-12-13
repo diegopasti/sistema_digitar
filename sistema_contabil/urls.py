@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+
+from modules.core.api import ConfigurationsController
 from modules.nucleo import views as nucleo_views
 from modules.core import views as core_views
 from modules.entidade import views as entidade_views
@@ -30,13 +32,15 @@ from filebrowser.sites import site
 site.directory = "data/backup/"
 
 urlpatterns = [
+    url(r'admin/register/first_user',view_usuario.register_first_user),
+    url(r'^$', core_views.index), # entidade.views.index)
     url(r'^admin/filebrowser/', include(site.urls)),
     #url(r'^adminurl/filebrowser/', include(site.urls)),
     url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', view_usuario.login_page),
-    url(r'^$', entidade_views.index), # entidade.views.index),
+    url(r'^logout', view_usuario.logout_page),
     url(r'^cadastrar_empresa$', nucleo_views.cadastrar_empresa), #url(r'teste/$', "endereco.views.teste),
     url(r'^index/$',  entidade_views.index),
     url(r'^gerar_pdf/$', protocolo_views.gerar_pdf),
@@ -114,18 +118,20 @@ urlpatterns = [
     url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', preferencias_views.excluir_salario),
     url(r'^api/preferencias/salario_vigente/$', preferencias_views.get_salario_vigente),
 
-    url(r'^api/core/', include('modules.core.urls')),
+    #url(r'^api/core/', include('modules.nucleo.urls')),
 
     url(r'^api/working/register/$', nucleo_views.working),
     url(r'^system/configurations', core_views.system_configurations),
+    url(r'configurations/backup$', ConfigurationsController().load_backups),
+    url(r'configurations/backup/info$', ConfigurationsController().check_available_space),
+    url(r'configurations/backup/create$', ConfigurationsController().create_backup),
+    url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),
+    url(r'configurations/version/info$', ConfigurationsController().version_update),
+    url(r'configurations/version/update$', ConfigurationsController().update),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
-    url(r'register/',view_usuario.register_page),
-    url(r'^api/user/register/save', UserController.register_user),
-    url(r'login/autentication$', UserController().login_autentication),
-    url(r'reset_password$', UserController().reset_password),
-    url(r'change_password$', UserController().change_password),
-    url(r'reactivate$', UserController().resend_activation_code),
+    url(r'^api/user/', include('modules.user.urls')),
+    url(r'register/$', view_usuario.register_first_user)
 
     # User Administration
     url(r'filter/', UserController.filter_users),

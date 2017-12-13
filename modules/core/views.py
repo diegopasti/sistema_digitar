@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 #from modules.core.models import NaturezaJuridica, EconomicActivity
-from modules.core.working_api import WorkingApi, WorkingManager
+from modules.nucleo.working_api import WorkingApi, WorkingManager
 from django.http.response import Http404
 
 #from modules.entity.permissions import EntityPermissions
@@ -10,6 +10,7 @@ from django.http.response import Http404
 
 @login_required
 def index(request):
+    print("VENHO AQUI NO INDEX TO BASE?")
     return render(request,"base_page.html")
 
 

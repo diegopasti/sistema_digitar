@@ -12,7 +12,9 @@ from django.db import IntegrityError
 from django.core import serializers
 
 from modules.nucleo.models import RestrictedOperation
-from modules.user.models import Session, User
+from django.contrib.auth.models import Permission, User
+from django.contrib.auth import authenticate, login
+from modules.user.models import Session
 from sistema_contabil import settings
 import datetime
 import json
@@ -109,29 +111,19 @@ class BaseController(Notify):
 
     @request_ajax_required
     def login(self, request, formulary):
-        print("Enrando aquie")
         form = formulary(request.POST)
         if form.is_valid():
-            username = request.POST['username'].lower()
+            username = request.POST['username']
             password = request.POST['password']
-            user = User.objects.get_user_email(name=username)
-            print("Consigo pega o user?",user)
+            user = authenticate(username=username, password=password)
             if user is not None:
-                if user.account_activated:
-                    if user.is_active:
-                        auth = User.objects.authenticate(request, name=username, password=password)
-                        if auth is not None:
-                            login(request, user)
-                            self.__create_session(request, user)
-                            response_dict = self.notify.success(user, list_fields=['username'])
-                        else:
-                            response_dict = self.notify.error({'username': 'Usuário ou senha incorreta.'})
-                    else:
-                        response_dict = self.notify.error({'username': 'Usuário não autorizado.'})
+                if user.is_active:
+                    login(request, user)
+                    response_dict = self.notify.success(user, list_fields=['username'])
                 else:
-                    response_dict = self.notify.error({'usename': 'Usuário não confirmado.'})
+                    response_dict = self.notify.error({'username': 'Usuário não autorizado.'})
             else:
-                response_dict = self.notify.error({'username': 'Usuário não existe.'})
+                response_dict = self.notify.error({'username': 'Usuário e senha não conferem, ou não existem.'})
         else:
             response_dict = self.get_exceptions(None, form)
 
@@ -139,23 +131,22 @@ class BaseController(Notify):
 
     @request_ajax_required
     def signup(self, request, formulary):
-        #print("VENHO ATE AQUI NO SINGUP?")
         form = formulary(request.POST)
         if form.is_valid():
             username = request.POST['username']
             email = request.POST['email'].lower()
             senha = request.POST['password']
-            level_perm = request = request['level_permission']
-            if User.objects.check_available_email(email):
-                user = User.objects._create_user(username, email, senha,)
-                if user is not None:
-                    #activation_code = generate_activation_code(email)
-                    #send_generate_activation_code(email, activation_code)
-                    response_dict = self.notify.success(user, list_fields=['email'])
-                else:
-                    response_dict = self.notify.error({'email': 'Nao foi possivel criar objeto.'})
+            nome = request.POST['first_name'].lower()
+            sobrenome = request.POST['last_name'].lower()
+
+            user = User.objects._create_user(username, email, senha,first_name=nome, last_name=sobrenome)
+            if user is not None:
+                #activation_code = generate_activation_code(email)
+                #send_generate_activation_code(email, activation_code)
+                response_dict = self.notify.success(user, list_fields=['username'])
             else:
-                response_dict = self.notify.error({'email': 'Email já cadastrado.'})
+                response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
+
         else:
             response_dict = self.get_exceptions(None, form) #self.notify.error({'email': 'Formulário com dados inválidos.'})
         return self.response(response_dict)

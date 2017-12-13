@@ -8,45 +8,21 @@ from libs.default.decorators import request_ajax_required
 from modules.nucleo.utils import response_format_success, response_format_error, generate_activation_code, generate_random_password
 from modules.nucleo.comunications import send_generate_activation_code, resend_generate_activation_code ,send_reset_password
 from modules.user.forms import FormRegister, FormLogin, FormChangePassword, FormResetPassword
-from modules.user.models import User
+from django.contrib.auth.models import Permission, User
 from django.http import HttpResponse
 import json
 
 
 class UserController(BaseController):
+
+    @request_ajax_required
+    def salvar_registro(self, request):
+        return self.signup(request,FormRegister)
+
     @request_ajax_required
     def login_autentication(self, request):
-        #return self.login(request, FormLogin)
-        formulary = FormLogin
-        print("Enrando aquie")
-        form = formulary(request.POST)
-        if form.is_valid():
-            username = request.POST['username'].lower()
-            password = request.POST['password']
-            user = User.objects.get_username(username)
-            print("Consigo pega o user?", user)
-            if user is not None:
-                if user.is_active:
-                    auth = User.objects.authenticate(request,username, password=password)
-                    if auth is not None:
-                        #login(request, user)
-                        #self.__create_session(request, user)
-                        response_dict = self.notify.success(user, list_fields=['username'])
-                    else:
-                        response_dict = self.notify.error({'username': 'Usuário ou senha incorreta.'})
-                else:
-                    response_dict = self.notify.error({'username': 'Usuário não autorizado.'})
-            else:
-                response_dict = self.notify.error({'username': 'Usuário não existe.'})
-        else:
-            response_dict = self.get_exceptions(None, form)
+        return self.login(request, FormLogin)
 
-        return self.response(response_dict)
-
-    @request_ajax_required
-    def register_user(request):
-        print("VINDO AQUI", request.POST)
-        #return BaseController().signup(request, FormRegister)
 
     @request_ajax_required
     def reset_password(self, request):
@@ -61,7 +37,7 @@ class UserController(BaseController):
                     try:
                         user.save()
                         send_reset_password(new_password, email)
-                        response_dict = BaseController.notify.success(user, list_fields=['email'])
+                        response_dict = BaseController.notify.success(user, list_fields=['username'])
 
                     except Exception as erro:
                         print("Erro! Verifique a excecao: ", erro)
@@ -122,7 +98,6 @@ class UserController(BaseController):
             response_dict = response_format_error("Usuario nao existe.")
         return HttpResponse(json.dumps(response_dict))
 
-    @login_required
     @user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
     def filter_users(request):
         return BaseController().filter(request, User,list_fields=['last_login','email','type_user','joined_date','last_update','active_user','id'],extra_fields=['permissions'])

@@ -35,15 +35,14 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
     url: url,
     data: data_paramters,
     success: function(data) {
-      alert("OLHA O DATA:\n"+JSON.stringify(data))
     	var response = $.parseJSON(data);
-      var message = response['message']
-      var resultado = response['success']
+      var message = response['message'];
+      var resultado = response['result'];
       if (resultado == true) {
-        var data_object = $.parseJSON(response['data-object'])
+        var data_object = response['object'];
         //var moment_date = moment(data_object['fields']['joined_date']).format("DD/MM/YYYY - HH:mm:ss")
         if (success_function != null) {
-          success_function(data_object);
+          var redirect = success_function(data_object);
         }
       }
 
@@ -56,7 +55,11 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
           fail_function(message);
         }
       }
+      //register_action(start_request, status)
       NProgress.done();
+      if (redirect){
+      	window.location = redirect;
+      }
       return true;
     },
     failure: function(data){

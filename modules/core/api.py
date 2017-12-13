@@ -3,10 +3,10 @@ from django.http import Http404
 from django.utils.decorators import method_decorator
 
 from libs.backup.backup import BackupManager
-from libs.backup.pygit import check_update
+from libs.backup.pygit import check_update, update
 from libs.default.core import BaseController
 from modules.nucleo.models import Backup
-from modules.user.models import User
+#from modules.user.models import User
 from sistema_contabil import settings
 
 
@@ -68,16 +68,25 @@ class ConfigurationsController(BaseController):
 
     def version_update(self,request):
         self.start_process(request)
-        version_paramters = check_update()
-        backup = Backup()
-        backup.backup_link_folder = version_paramters['']
-        self.get_exceptions(backup, None)
-        if self.full_exceptions == {}:
-            response_dict = self.execute(backup, backup.save)
+        version_check = check_update()
+        print('DICT VERSION:',version_check)
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['message'] = ""
+        response_dict['object'] = {}
+        if version_check['local'] != version_check['remote']:
+            response_dict['object']['available_update'] = True
         else:
-            response_dict = self.notify.error(self.full_exceptions)
+            response_dict['object']['available_update'] = False
+        response_dict['object']['local'] = version_check['local']
+        response_dict['object']['remote'] = version_check['remote']
+        print("VEJA A VERSÃO: ",response_dict)
         return self.response(response_dict)
 
+    def update(self,request):
+        self.start_process(request)
+        updating = update()
+        print('DICT VERSION:',updating)
 
     """def shared_folder(self,request):
         self.start_process(request)
@@ -91,13 +100,6 @@ class ConfigurationsController(BaseController):
             response_dict = self.notify.error(self.full_exceptions)
         return self.response(response_dict)
         """
-
-
-
-
-
-
-
 
 class AbstractAPI:
 

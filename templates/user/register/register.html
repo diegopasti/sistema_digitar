@@ -17,6 +17,14 @@
       {{ formulario_register.email }}
     </div>
 
+		<div>
+      {{ formulario_register.first_name }}
+    </div>
+
+		<div>
+      {{ formulario_register.last_name }}
+    </div>
+
     <div>
       {{ formulario_register.password }}
     </div>
@@ -26,7 +34,7 @@
     </div>
 
 		<div>
-      {{ formulario_register.level_permission }}
+      <h2>CRIAR CAMPO DE SELECAO DE GRUPO</h2>
     </div>
 
     <br>
@@ -60,12 +68,13 @@
 <script src="{% static 'modules/user/user.js' %}"></script>
 
 <script>
-  document.getElementById('username').value='DIEGO PASTI';
-  alert("VEJA O QUE TEM NO USER: "+$("#username").val())
-  $("#email").val('diegopasti@gmail.com')
-  $("#password").val('1q2w3e4r')
-  $("#confirm_password").val('1q2w3e4r')
-  $("#level_permission").val(3)
+    $('#form_change_password').submit(function(e){
+      e.preventDefault();
+      notify("REGISTRO","Enviaremos um email com sua chave de registro.Acesse o link para confirmar o registro");
+    });
+
+    	$('#level_permission').val('Operador')
+		alert("Venho?")
 </script>
 {% endblock %}
 

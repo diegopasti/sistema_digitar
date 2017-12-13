@@ -31,6 +31,29 @@ ALLOWED_HOSTS = ['*']
 ROOT_URLCONF = 'sistema_contabil.urls'
 WSGI_APPLICATION = 'sistema_contabil.wsgi.application'
 
+'''LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers':['console'],
+            'propagate': True,
+            'level':'DEBUG',
+        }
+    },
+}
+'''
+ALLOWED_HOSTS = []
+
+# Application definition
+#AUTH_USER_MODEL = 'modules.user.User'
+#AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,6 +83,7 @@ MIDDLEWARE_CLASSES = (
     #'htmlmin.middleware.MarkRequestMiddleware',
 )
 
+ROOT_URLCONF = 'sistema_contabil.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -175,8 +199,8 @@ USE_THOUSAND_SEPARATOR = True
       e passo pro template. 
     
 """
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = "/"
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
@@ -270,7 +294,6 @@ STATICFILES_DIRS = (
 )
 """
 
-LOGIN_REDIRECT_URL = "/"
 
 FILER_DEBUG = True
 FILER_ENABLE_LOGGING = True
@@ -287,7 +310,7 @@ THUMBNAIL_PROCESSORS = (
 SERVER_DIGITAR = True
 if SERVER_DIGITAR:
     WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
-    WORKING_SERVER = "http://127.0.0.1:8010"
+    WORKING_SERVER = "http://192.168.1.114:8010"
     from modules.nucleo.working_api import WorkingManager
 
     try:

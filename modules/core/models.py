@@ -1,6 +1,6 @@
 from django.db import models
 
-from modules.core.config import ERRORS_MESSAGES, BaseConfiguration
+from modules.nucleo.config import ERRORS_MESSAGES, BaseConfiguration
 #from modules.entity.models import BaseModel
 
 

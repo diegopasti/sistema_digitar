@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, User
 from modules.nucleo.config import ERRORS_MESSAGES
 from modules.nucleo.utils import generate_activation_code
 from modules.nucleo.validators import check_password_format
@@ -18,14 +18,14 @@ opcoes_tipos_usuarios = (
         ('F', 'FUNCIONARIO'),
 )
 
-
+"""
 class UserManager(BaseUserManager):
 
-    def _create_user(self,username, email, password, super_user, active, level_permission):
+    def _create_user(self,username, email, password, active, level_permission, nome, sobrenome):
         if check_password_format(password):
             now = timezone.now()
             email = self.normalize_email(email)
-            user = self.model(name=username,email=email, active_user=active, level_permission=level_permission, last_update=now, joined_date=now)#, **extra_fields)
+            user = self.model(username=username,email=email, active_user=active, level_permission=level_permission, last_update=now, joined_date=now, nome=nome, sobrenome=sobrenome)#, **extra_fields)
             user.set_password(password)
             try:
                 user.full_clean()
@@ -99,8 +99,13 @@ class UserManager(BaseUserManager):
 
     def get_username(self,username):
         try:
-            print("ESTOU TENTANDO PEGAR:",username)
-            result = User.objects.get(name=username)
+            result = User.objects.get(username=username)
+            return result
+        except User.DoesNotExist:
+            return None
+    def get_user_username(self,username):
+        try:
+            result = User.objects.get(username=username)
             return result
         except User.DoesNotExist:
             return None
@@ -113,7 +118,9 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    name              = models.CharField(_('Username'),max_length=150,unique=True,validators=[],error_messages=ERRORS_MESSAGES)
+    username          = models.CharField(_('Username'),max_length=150,unique=True,validators=[],error_messages=ERRORS_MESSAGES)
+    nome              = models.CharField("Primeiro Nome",max_length=20,validators=[],error_messages=ERRORS_MESSAGES)
+    sobrenome         = models.CharField("Sobrenome",max_length=100,validators=[],error_messages=ERRORS_MESSAGES)
     email             = models.EmailField(_('Email'), max_length=255, unique=True, validators=[email_format_validator, email_dangerous_symbols_validator], error_messages=ERRORS_MESSAGES)
     type_user         = models.CharField("Tipo de Usuário:", max_length=1, null=False, default='F', error_messages=ERRORS_MESSAGES)
     joined_date       = models.DateTimeField(null=True, auto_now_add=True)
@@ -121,7 +128,7 @@ class User(AbstractBaseUser):
     active_user       = models.BooleanField(default=True)
     level_permission  = models.IntegerField('Nivel Permissão',default=1)
 
-    USERNAME_FIELD    = 'email'
+    USERNAME_FIELD    = 'username'
     REQUIRED_FIELDS   = []
 
     objects = UserManager()
@@ -170,7 +177,7 @@ class User(AbstractBaseUser):
         else:
             print("Erro! Nao faz sentido existir duas sessões abertas, com a mesma chave e usuario abertas.")
 
-
+"""
 class Session(models.Model):
     class Meta:
         db_table = 'user_session'
@@ -179,7 +186,7 @@ class Session(models.Model):
 
     session_key = models.CharField("Chave de Sessão", max_length=32, null=False, error_messages=ERRORS_MESSAGES)
 
-    user = models.ForeignKey('User')
+    user = models.ForeignKey(User)
     internal_ip = models.GenericIPAddressField("IP Interno:", null=False, error_messages=ERRORS_MESSAGES)
     external_ip = models.GenericIPAddressField("IP Externo:", null=False, error_messages=ERRORS_MESSAGES)
     country_name = models.CharField("País", max_length=50, null=False, error_messages=ERRORS_MESSAGES)
