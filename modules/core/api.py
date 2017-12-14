@@ -48,6 +48,16 @@ class ConfigurationsController(BaseController):
             response_dict = self.notify.error(self.full_exceptions)
         return self.response(response_dict)
 
+    def list_backup(self,request):
+        self.start_process(request)
+        backup_list = BackupManager().list_backup()
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['message'] = ""
+        response_dict['object'] = {}
+        response_dict['object']['list_backups'] = backup_list
+        return self.response(response_dict)
+
     def check_available_space(self,request):
         self.start_process(request)
         backup_list = BackupManager().list_backup()
@@ -78,8 +88,8 @@ class ConfigurationsController(BaseController):
             response_dict['object']['available_update'] = True
         else:
             response_dict['object']['available_update'] = False
-        response_dict['object']['local'] = version_check['local']
-        response_dict['object']['remote'] = version_check['remote']
+        response_dict['object']['local'] = version_check['local'][0:8]
+        response_dict['object']['remote'] = version_check['remote'][0:8]
         response_dict['object']['last_update'] = version_check['last_update']
         print("VEJA A VERSÃO: ",response_dict)
         return self.response(response_dict)

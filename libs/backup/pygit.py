@@ -1,6 +1,7 @@
 from dulwich import porcelain
 from dulwich.repo import Repo
-from datetime import datetime
+from dulwich.porcelain import tag_list
+from datetime import datetime,timedelta
 import time
 import os
 
@@ -12,29 +13,30 @@ MASTER = '.git\\refs\\remotes\\HEAD'
 
 def check_update():
     data = {}
-    ref = Repo('.')
-    local_ref = ref.head().decode('utf-8')
+    repo = Repo('.')
+    local_ref = repo.head().decode('utf-8')
     print('Versão local: ', local_ref)
     remote_commit = porcelain.ls_remote(REMOTE_REPO)[b"HEAD"].decode('utf-8')
     print('\nVersão remota: ', remote_commit)
 
-    with porcelain.open_repo_closing(ref) as r:
+    with porcelain.open_repo_closing(repo) as r:
         walker = r.get_walker(max_entries=1)
         for entry in walker:
             message = str(entry.commit.message)[2:-3]
             author = str(entry.commit.author)
-            print(author)
             if message.startswith('Merge'):
                 continue
 
-    timestamp = datetime.utcfromtimestamp(entry.commit.commit_time)
-    print(timestamp)
-
+    stamp = datetime.utcfromtimestamp(entry.commit.commit_time)
+    delta = timedelta(hours=2)
+    last_update = (stamp - delta).strftime('%Y-%m-%d'+' ás '+'%H:%M:%S')
     data['local'] = local_ref
     data['remote'] = remote_commit
-    data['last_update'] = timestamp.strftime('%Y-%m-%d'+' ás '+'%H:%M:%S')
+    data['last_update'] = last_update
     print(data)
 
+    #tag_labels = tag_list(repo)
+    #print(tag_labels)
     #for i in ref.get_walker(include=[local_ref]):
         #print(i)
     #import git
