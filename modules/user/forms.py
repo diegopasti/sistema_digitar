@@ -43,7 +43,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'id': 'primeiro_nome', 'name': 'primeiro_nome', 'class': "form-control ",
+                'id': 'first_name', 'name': 'primeiro_nome', 'class': "form-control ",
                 'autocomplete': "off", 'ng-model': 'primeiro_nome', 'required': "required",
             }
         )
@@ -56,7 +56,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'id': 'sobrenome', 'name': 'sobrenome', 'class': "form-control ",
+                'id': 'last_name', 'name': 'sobrenome', 'class': "form-control ",
                 'autocomplete': "off", 'ng-model': 'sobrenome', 'required': "required",
             }
         )
@@ -72,6 +72,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         self.fields['first_name'].widget.attrs['placeholder'] = 'Primeiro nome..'
         self.fields['last_name'].widget.attrs['placeholder'] = 'Sobrenome..'
         self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
+        self.fields['confirm_password'].widget.attrs['placeholder'] = 'Confirmar senha..'
 
 
 

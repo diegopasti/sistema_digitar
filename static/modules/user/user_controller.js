@@ -111,7 +111,7 @@ application.controller('register_controller', function($scope) {
 		alert("OLHA o meu DP:"+JSON.stringify(data_paramters))
 		request_api("/api/user/reactivate",data_paramters,validate_function,success_function,fail_function)
   }
-})
+});
 
 
 application.controller('login_controller', function($scope) {
@@ -121,8 +121,10 @@ application.controller('login_controller', function($scope) {
   	SESSION_PARAMTERS['username'] = $scope.username;
   	SESSION_PARAMTERS['password'] = $scope.password;
 
-    var data_paramters = SESSION_PARAMTERS//{email: $scope.email, password: $scope.password}
-
+    var data_paramters = {};
+		$.each($('#form_login').serializeArray(), function(i, field) {
+				data_paramters[field.name] = field.value;
+		});
     function success_function(result,message,data_object,status){
     	//alert('success'+'Login realizado'+'Usuário apto para entrar no Sistema')
 			notify_success_message(message);

@@ -10,10 +10,9 @@ from django.http.response import Http404
 
 @login_required
 def index(request):
-    print("VENHO AQUI NO INDEX TO BASE?")
     return render(request,"base_page.html")
 
-
+@login_required
 def system_configurations(request):
     return render(request, "core/configurations/backup/configbackup.html")
 

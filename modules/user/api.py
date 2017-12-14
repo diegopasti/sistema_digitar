@@ -23,6 +23,29 @@ class UserController(BaseController):
     def login_autentication(self, request):
         return self.login(request, FormLogin)
 
+    @request_ajax_required
+    def register_delete(self, request):
+        #return self.delete(request,User,request.POST['id'])
+        print("Olha o request:",request.POST)
+        user = User.objects.get(id = request.POST['id'])
+        print("Olha o obj:",user)
+        set_active = True
+        if request.POST['action_type'] == 'DESATIVAR':
+            set_active = False
+        try:
+            user.is_active = set_active
+            user.save()
+            print("Uhul consegui")
+            response_dict = BaseController.notify.success(user,'Consegui')
+        except Exception as e:
+            print("é n deu: ",e)
+            response_dict = BaseController.notify.error(e)
+        return self.response(response_dict)
+
+
+    @request_ajax_required
+    def upate_user(self,request):
+        return self.update(request,FormRegister)
 
     @request_ajax_required
     def reset_password(self, request):
@@ -89,15 +112,9 @@ class UserController(BaseController):
             print("VEJA OS ERROS: ",response_dict)
         return self.response(response_dict)
 
-    def register_delete(request, email):
-        user = User.objects.get_user_email(email)
-        if user is not None:
-            user.delete()
-            response_dict = response_format_error("Usuario deletado com sucesso.")
-        else:
-            response_dict = response_format_error("Usuario nao existe.")
-        return HttpResponse(json.dumps(response_dict))
 
-    @user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
+
+    #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
+
     def filter_users(request):
-        return BaseController().filter(request, User,list_fields=['last_login','email','type_user','joined_date','last_update','active_user','id'],extra_fields=['permissions'])
+        return BaseController().filter(request, User,list_fields=['email','username','is_active','joined_date','last_update','first_name','last_name','id'])

@@ -80,3 +80,7 @@ def activate_user(request, email, activation_code):
 def user_administration (request):
     form_register = FormRegister()
     return render(request, "user/administration/user_administration.html",{'formulario_register': form_register})
+
+def user_page (request):
+    form_register = FormRegister()
+    return render(request, "user/cadastro_usuario.html",{'formulario_register': form_register})

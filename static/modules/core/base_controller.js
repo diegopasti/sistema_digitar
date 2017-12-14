@@ -72,12 +72,14 @@ function notify(type,title,text){
 }
 
 function create_data_paramters(formulary_id){
+	alert("chegando no base")
 	var data_paramters = {};
 	$("#"+formulary_id+' input, '+"#"+formulary_id+' select, '+"#"+formulary_id+' textarea').each(function(index){
 		var input = $(this);
 		data_paramters[input.attr('id')] = input.val().toUpperCase();
 		//alert('Name: '+input.attr('id')+'  Value: ' + input.val());
 	});
+	alert("Vou sair com isso:"+JSON.stringify(data_paramters))
 	return data_paramters;
 }
 

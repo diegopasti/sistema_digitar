@@ -1,0 +1,254 @@
+{% extends 'base_page.html' %}
+{% block Titulo %}<title>Digitar - Cadastro Usuários</title>{% endblock %}
+{% load staticfiles %}
+{% block recursos_necessarios %}
+<style>
+	table td{
+		height: 26px;
+	}
+</style>
+{% endblock %}
+{% block conteudo %}
+<div id="controle_angular_cadastro_user" ng-app="app" ng-controller="Cadastro_usuario" ng-init="contratos_carregados=false;">
+	<div class="row" style="margin-top: -55px;">
+		<div class="col-lg-12 col-md-12 col-xs-12">
+			<div class="box box-default" >
+				<div class="box-heading">
+					<div class="box-header with-border">
+						<h5 class="box-title">Cadastro de Usuários</h5>
+						<div class="pull-right">
+							<div class="btn-group" role="group" aria-label="...">
+								<button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-disabled="registro_selecionado!=null">Adicionar</button>
+								<button id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_adicionar_usuario" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</button>
+								<button id='bt_disable' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null ||  registro_selecionado.is_active==false" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_disable()" style='margin-left: 5px;'>Desativar</button>
+								<button id='bt_ative' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null || registro_selecionado.is_active==true" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_active();" style='margin-left: 5px;'>Reativar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-body" style="margin-bottom: -10px;margin-top: 0px;">
+					<div class="dataTable_wrapper">
+						<div class='row'>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								{% verbatim %}
+
+								<table class="table table-condensed  table-striped table-bordered table-hover" id="table_usuarios" style="width: 100%;">
+									<thead>
+										<tr class="linha_cabecalho">
+											<th class='text-center' style="width: 40px;" ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
+											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">username</th>
+											<th class='text-center' ng-click="sortType='cliente';sortReverse=!sortReverse">Nome Completo</th>
+											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">email</th>
+											<th class='text-center' style="width: 40px;" ng-click="sortType='ativo';sortReverse=!sortReverse">Ativo</th>
+										</tr>
+									</thead>
+
+									<tbody style="font-size: 11px;">
+										<tr id="divCarregando" ng-if="contratos_carregados == false" style='height:{{ table_maximun_body_heigth }}px;'>
+											<td colspan="5" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
+												<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><br><br>Aguarde.. Carregando...
+											</td>
+										</tr>
+
+										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ usuario.selecionado }}" ng-click="selecionar_linha(usuario);" pagination-id="paginate_contratos" dir-paginate="usuario in usuarios |itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
+											<td class='text-center' style="width: 40px;">{{ usuario.id }}</td>
+											<td class="col-cliente text-left">{{ usuario.username }}</td>
+											<td class='text-left' style="width: 120px;">{{ usuario.first_name }} {{ usuario.last_name }}</td>
+											<td class='text-left' style="width: 120px;">{{ usuario.email }}</td>
+											<td class="text-center"> {{ usuario.is_active }}</td>
+										</tr>
+
+										<tr ng-cloak ng-if='contratos_carregados'  ng-repeat="k in table_minimun_items.slice(usuarios.length,table_minimun_items.length)">
+											<td style="width:30px;"></td><td></td><td></td><td style="width: 120px;"></td><td style="width:120px;"></td>
+										</tr>
+
+										<tr ng-cloak ng-if="resultado.length === 0 && (usuarios|filter:filterIds()).length > 0">
+											<td colspan="4" class='text-center'>Nenhum resultado Encontrado</td>
+										</tr>
+									</tbody>
+								</table>
+								{% endverbatim %}
+							</div>
+						</div>
+					</div>
+
+					<div class='row no-gutter' style="padding: 0px 10px 0px 10px;">
+						{% verbatim %}
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
+							<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
+							<select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
+								<option value="0">Código</option>
+								<option value="1" selected>Provento</option>
+								<option value="2" selected>Descrição</option>
+							</select>
+						</div>
+
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 31px;'>
+							<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
+						</div>
+
+						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="contratos_carregados == true" >
+							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
+								<dir-pagination-controls pagination-id="paginate_contratos" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
+								</dir-pagination-controls>
+							</span>
+						</div>
+						{% endverbatim %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="modal_adicionar_usuario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 50%">
+			<form id="form_adicionar_usuario" novalidate autocomplete="off" ng-submit="esta_adicionando? save_usuario() : update_usuario()" onsubmit="return false;">
+				{% csrf_token %}
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h5 id="titulo_modal_adicionar_contrato" class='modal_title' style="font-weight: bold">Adicionar Usuário</h5>
+					</div>
+
+					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
+						<div class="row no-gutter fluid">
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_tipo">
+									<sub><label id="lb_tipo" for="tipo">{{ formulario_register.username.label }}</label> </sub>
+									{{ formulario_register.username }}
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_valor">
+									<sub><label id="lb_valor" for="valor">{{ formulario_register.email.label }}</label> </sub>
+									{{ formulario_register.email }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row no-gutter fluid" ng-class="esta_adicionando? 'show':'hidden' ">
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_password">
+									<sub><label id="lb_password" for="password">{{ formulario_register.password.label }}</label> </sub>
+									{{ formulario_register.password }}
+								</div>
+							</div>
+
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_confirm_password">
+									<sub><label id="lb_tipo_confirm_password" for="confirm_password">{{ formulario_register.confirm_password.label }}</label> </sub>
+									{{ formulario_register.confirm_password }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row no-gutter fluid">
+
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_nome">
+									<sub><label id="lb_nome" for="nome">{{ formulario_register.first_name.label }}</label></sub>
+									{{ formulario_register.first_name }}
+								</div>
+							</div>
+
+								<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_tipo_valor">
+									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_register.last_name.label }}</label> </sub>
+									{{ formulario_register.last_name }}
+								</div>
+							</div>
+							</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="row">
+							<div class="col-md-2 col-md-push-10" >
+								<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="modal_justify_action" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 60%">
+			<div class="modal-content">
+				<form id="form_justify_action" autocomplete="off" ng-submit="disable();">
+					<div class="modal-header" style="padding-top:2px;"><!-- style="height: 48px;"> -->
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top:10px;">×</button>
+						<h4 id="myModalLabel">Desativar Usuário</h4>
+					</div>
+
+					<div class="modal-body">
+						<style>
+							.only_bottom_border{
+								background-color: #fff !important;
+								border-bottom: 1px solid #ccc !important;
+								box-shadow:none !important;
+								cursor: default;
+							}
+						</style>
+						<div style="margin-top: 0px;">
+							<div class="row">
+								<div class="col-lg-12">
+									<p id="action_info" ng-class="registro_selecionado.is_active? 'show':'hidden'" style="padding: 10px; padding-bottom: 4px;">
+										Por questões de segurança e integridade das informações esse registro não pode ser excluido definitivamente, apenas
+										desativado para que não esteja disponiveis em operações futuras. Justificativa obrigatória para prosseguir.
+									</p>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-4 col-md-2">
+									<sub style='padding-left: 2px'><label>Operação:</label></sub>
+									<input id="action_type" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+								</div>
+
+
+								<div class="col-lg-4 col-md-3">
+									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
+									<input id="action_user" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+								</div>
+
+
+								<div class="col-lg-4 col-md-7">
+									<sub style='padding-left: 2px'><label>Username:</label></sub>
+									<input id="action_object" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();">
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="form-group field" id="field_action_justify">
+										<sub>
+											<label>Justificativa:</label>
+										</sub>
+										<textarea id="action_justify" rows="5" class="form-control uppercase"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="form-group">
+							<button type='submit' id="bt_confirmar_desativacao" class="btn btn-danger pull-right">Desativar</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block recursos_complementares %}
+{% load staticfiles %}
+{% load compress %}
+{% compress js %}
+<script src="{% static 'modules/user/user_register_controller.js' %}"/>
+<script src="{% static 'modules/user/user_regiter.js' %}"/>
+{% endcompress %}
+{% endblock %}
