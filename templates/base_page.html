@@ -21,6 +21,7 @@
 {% endblock %}
 <style>
 .content-wrapper, .right-side {background-color:#ecf0f5;}
+
 </style>
 </head>
 
@@ -149,12 +150,15 @@
     <section class="sidebar">
       <ul class="sidebar-menu">
         <li class="treeview">
-          <a href="#"><i class="fa fa-users"></i> <span>Clientes</span>
+          <a href="/entidade"><i class="fa fa-users"></i> <span>Cadastros</span>
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/entidade">Cadastro de Clientes</a></li>
-            <li><a href="/entidade/adicionar">Adicionar Cliente</a></li>
+            <li><a href="/entidade">Clientes</a></li>
+            <li><a href="/planos">Planos</a></li>
+            <li><a href="/preferencias/servicos">Serviços</a></li>
+						<li><a href="/provents">Proventos</a></li>
+            <li><a href="/preferencias/protocolo/documentos">Documentos</a></li>
           </ul>
         </li>
 
@@ -165,19 +169,18 @@
           <ul class="treeview-menu">
             <li><a href="/protocolo">Controle de Protocolos</a></li>
             <li><a href="/protocolo/emitir_protocolo">Emitir Protocolo</a></li>
-            <li><a href="/preferencias/protocolo/documentos">Documentos</a></li>
+
           </ul>
         </li>
 
         <li class="treeview">
-          <a href="#"><i class="fa fa-briefcase" aria-hidden="true"></i><span>Honorário</span>
+          <a href="#"><i class="fa fa-briefcase" aria-hidden="true"></i><span>Gerência</span>
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/honorario">Contratos</a></li>
-            <li><a href="/provents">Proventos</a></li>
-            <li><a href="/planos">Planos</a></li>
-            <li><a href="/preferencias/servicos">Serviços</a></li>
+						<li><a href="/honorary">Controle de Honorário</a></li>
+            <li><a href="/contract">Contratos de Contratos</a></li>
+						<li><a href="/contract">Controle de Usuários</a></li>
           </ul>
         </li>
 
