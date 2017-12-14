@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import datetime
 from decimal import Decimal
 
+from django.contrib.auth.models import User
 from django.db import models
 from modules.entidade.models import entidade
 
@@ -112,3 +113,48 @@ class Proventos(models.Model):
     alterado_por = models.ForeignKey(entidade, related_name='provento_alterado_por', default=1)
 
     is_active = models.BooleanField(default=True)
+
+
+class Honorary(models.Model):
+    class Meta:
+        db_table = 'honorary'
+        verbose_name = "Honorário"
+        verbose_name_plural = "Honorários"
+
+    competence = models.CharField("Mês de Competencia:",null=False,max_length=8)
+    contract = models.ForeignKey(Contrato, default=1)
+
+    initial_value_contract = models.DecimalField("Valor base do contrato", max_digits=8, default=0, decimal_places=2, null=True, blank=False)
+    temporary_discount = models.DecimalField("Desconto temporário", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
+    fidelity_discount = models.DecimalField("Desconto fidelidade", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
+    contract_discount = models.DecimalField("Desconto total em contrato", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
+    final_value_contract = models.DecimalField("Valor final do contrato", max_digits=8, decimal_places=2, null=True, blank=False)
+
+    number_debit_credit = models.IntegerField("Total de débitos e créditos")
+    total_debit =  models.DecimalField("Total à debitar", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
+    total_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=False, blank=False)
+    total_debit_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=False, blank=False)
+
+    total_honorary = models.DecimalField("Honorário", max_digits=8, default=0, decimal_places=2, null=False, blank=False)
+
+    is_closed = models.BooleanField("Honorário Encerrado",default=False)
+    closed_date = models.DateTimeField("Honorário encerrado em",auto_now_add=True)
+    closed_by = models.ForeignKey(User, related_name = "finalizado_por",default=1)
+    last_update = models.DateTimeField("Ultima atualização", null=True, auto_now=True)
+    updated_by  = models.ForeignKey(User, related_name = "atualizado_por",default=1)
+    is_received = models.BooleanField("Honorário recebido",default=False)
+    received_by = models.ForeignKey(User, related_name="recebido_por", default=1)
+
+class HonoraryItem(models.Model):
+    class Meta:
+        db_table = 'honorary_item'
+        verbose_name = "Item do Honorário"
+        verbose_name_plural = "Items do Honorário"
+
+    opcoes_tipos_item = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
+    type_item = models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
+    honorary = models.ForeignKey(Honorary, default=1)
+    item = models.ForeignKey(Proventos, default=1)
+    quantity = models.IntegerField("Total de débitos e créditos")
+    unit_value = models.DecimalField("Valor final do contrato", max_digits=6, decimal_places=2, null=True, blank=False)
+    total_value = models.DecimalField("Valor final do contrato", max_digits=8, decimal_places=2, null=True, blank=False)
