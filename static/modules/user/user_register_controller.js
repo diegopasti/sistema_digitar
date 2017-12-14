@@ -17,11 +17,8 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.usuarios = [];
 
 	$scope.save_usuario = function() {
-		alert("Chegando")
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
-		data_paramters['password'] = '123456'
-		data_paramters['confirm_password'] = '123456'
-		alert("Olha o data:"+JSON.stringify(data_paramters))
+		alert("Olha o data:\n"+JSON.stringify(data_paramters))
 		success_function = function(result,message,object,status){
 			$scope.usuarios.splice(0, 0, object);
 			$scope.$apply();
@@ -35,7 +32,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		}
 
 		validate_function = function () {
-		 return check_required_fields('form_adicionar_usuario');//validate_form_regiter_person(); //validate_date($scope.birth_date_foundation);
+		 return check_required_fields('form_adicionar_usuario');
 		}
 		//var base_controller = new BaseController();
 		//base_controller.request("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
@@ -43,10 +40,12 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		request_api("/api/user/save/register",data_paramters,validate_function,success_function,fail_function);
 	}
 
-	$scope.update_provent = function() {
-		var data_paramters = create_data_paramters('form_adicionar_contrato');
+	$scope.update_usuario = function() {
+		var data_paramters = create_data_paramters('form_adicionar_usuario');
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
-		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".");
+		data_paramters['password'] = null;
+		data_paramters['cofirm_password'] = null;
+
 
 		success_function = function(result,message,object,status){
       if(result == true){
@@ -57,19 +56,19 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 				$scope.$apply();
 				check_response_message_form('#form_adicionar_contrato', message);
 				$("#modal_adicionar_contrato").modal('hide');
-				reset_formulary('form_adicionar_contrato');
+				reset_formulary('form_adicionar_usuario');
       }
-		}
+		};
 
     fail_function = function (result,message,data_object,status) {
-      check_response_message_form('#form_adicionar_contrato', message);
-    }
+      check_response_message_form('#form_adicionar_usuario', message);
+    };
 
     validade_function = function () {
      return  true;
-    }
-    request_api("/api/provents/update",data_paramters,validade_function,success_function,fail_function);
-	}
+    };
+    request_api("/api/user/update/",data_paramters,validade_function,success_function,fail_function);
+	};
 
 	$scope.load_users = function () {
     $.ajax({
@@ -77,6 +76,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
       url: "/api/filter",
 
       success: function (data) {
+      	alert("USER:"+JSON.stringify(data))
 				data = data.replace("<html><head></head><body>{","{")
 				data = data.replace("}</body></html>","}")
 				$scope.usuarios = JSON.parse(data).object;
@@ -84,7 +84,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
         $scope.contratos_carregados = true;
         $scope.tdboy = $("#table_usuarios tbody").height();
         $scope.$apply();
-        alert("USER:"+JSON.stringify($scope.usuarios))
+
       },
 
       failure: function (data) {
@@ -101,8 +101,10 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
 
 		success_function = function(result,message,object,status){
-			var index = $scope.usuarios.indexOf($scope.registro_selecionado);
-  		$scope.usuarios.splice(index, 1);
+			//var index = $scope.usuarios.indexOf($scope.registro_selecionado);
+  		//$scope.usuarios.splice(index, 1);
+			//$scope.registro_selecionado.is_active = !($scope.registro_selecionado.is_active)
+			$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
 			$scope.registro_selecionado = null;
 			$scope.esta_adicionando = true;
 			$scope.$apply();
@@ -116,19 +118,26 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		validate_function = function () {
 		 return validate_justify();
 		}
-		request_api("/api/provents/disable",data_paramters,validate_function,success_function,fail_function);
+		request_api("/api/user/chage_active/",data_paramters,validate_function,success_function,fail_function);
 		validate_justify
 	}
 
 	$scope.confirm_disable = function(){
-		var object_name = $scope.registro_selecionado.nome;
+		var object_name = $scope.registro_selecionado.username;
 		$('#action_type').val('Desativar')
 		$('#action_object').val(object_name)
 		$('#action_user').val('Operador')
 	}
 
+	$scope.confirm_active = function(){
+		var object_name = $scope.registro_selecionado.username;
+		$('#action_type').val('Reativar')
+		$('#action_object').val(object_name)
+		$('#action_user').val('Operador')
+	}
+
 	$scope.open_object = function(){
-		reset_formulary('form_adicionar_contrato');
+		reset_formulary('form_adicionar_usuario');
 		for (var key in $scope.registro_selecionado) {
 			try{
 				$("#"+key).val($scope.registro_selecionado[key]);
