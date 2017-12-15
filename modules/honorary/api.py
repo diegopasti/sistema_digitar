@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
-from modules.honorario.models import Contrato, Indicacao, Proventos
-from modules.honorario.forms import FormContrato, FormProventos
+from modules.honorary.models import Contrato, Indicacao, Proventos
+from modules.honorary.forms import FormContrato, FormProventos
 #from django.views.decorators.cache import never_cache
 from modules.servico.models import Plano, Servico
 from django.http import HttpResponse, Http404

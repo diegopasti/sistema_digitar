@@ -9,7 +9,7 @@
 {% block recursos_necessarios %}
 {% load compress %}
 {% compress css %}
-<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
 <link href="{% static 'modules/service/servico.css' %}" rel="stylesheet"/>
 {% endcompress %}
 
@@ -761,9 +761,10 @@ color:blue;
 
 {% block recursos_complementares %}
 {% load staticfiles %}
+<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
 {% load compress %}
 {% compress js %}
-<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
+
 <script src="{% static 'modules/core/controle_botoes.js' %}"></script>
 <script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
 <script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>

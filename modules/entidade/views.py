@@ -24,6 +24,7 @@ from modules.entidade.formularios import formulario_cadastro_entidade_completo, 
 #from util.internet import consultar_codigo_postal
 #from util.email import ControleEmail
 
+
 def verificar_cadastro_empresa():
     registros = entidade.objects.count()
     if registros == 0:
@@ -31,12 +32,10 @@ def verificar_cadastro_empresa():
         precarregar_dados_digitar()
         precarregar_referencias_documentos()
         return True
-        # Se nao for carregar os daods e so comentar as linhas acima e descomnetar o return False.
-        #return False
     else:
         return True
-        #dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')
 
+@login_required
 def index(request):
     if verificar_cadastro_empresa():
         return render(request,"blank.html")

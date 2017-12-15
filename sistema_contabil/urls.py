@@ -22,10 +22,10 @@ from modules.core import views as core_views
 from modules.entidade import views as entidade_views
 from modules.protocolo import views as protocolo_views
 from modules.servico import views as servico_views
-from modules.honorario import views as honorario_views
-from modules.honorario import api as honorario_api
+from modules.honorary import views as honorario_views
+from modules.honorary import api as honorario_api
 from modules.preferencias import views as preferencias_views
-from modules.honorario.api import ProventosController
+from modules.honorary.api import ProventosController
 from modules.user import views as view_usuario
 from modules.user.api import UserController
 from filebrowser.sites import site
@@ -33,7 +33,7 @@ site.directory = "data/backup/"
 
 urlpatterns = [
     url(r'admin/register/first_user',view_usuario.register_first_user),
-    url(r'^$', core_views.index), # entidade.views.index)
+    url(r'^$', entidade_views.index),
     url(r'^admin/filebrowser/', include(site.urls)),
     #url(r'^adminurl/filebrowser/', include(site.urls)),
     url(r'^grappelli/', include('grappelli.urls')),

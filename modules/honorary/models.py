@@ -99,6 +99,10 @@ class Indicacao (models.Model):
 
 
 class Proventos(models.Model):
+    class Meta:
+        db_table = 'honorary_provents'
+        verbose_name = "Provento e Desconto"
+        verbose_name_plural = "Proventos e Descontos"
     opcoes_tipos_provento = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
     tipo = models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_provento, error_messages=MENSAGENS_ERROS)
     nome = models.CharField("Nome:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
@@ -144,6 +148,7 @@ class Honorary(models.Model):
     updated_by  = models.ForeignKey(User, related_name = "atualizado_por",default=1)
     is_received = models.BooleanField("Honorário recebido",default=False)
     received_by = models.ForeignKey(User, related_name="recebido_por", default=1)
+
 
 class HonoraryItem(models.Model):
     class Meta:

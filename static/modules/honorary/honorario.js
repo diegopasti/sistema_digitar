@@ -91,10 +91,9 @@ function calcular_total (){
 
 
 /*	Funções de validar no final	*/
-function verificar_data_vigencia(inicio, fim) {
-	//alert('venho aqui?')
-	var data_inicio = $('#' + inicio).val();
-	var data_fim = $('#' + fim).val();
+function verificar_data_vigencia() {
+	var data_inicio = $('#vigencia_inicio').val();
+	var data_fim = $('#vigencia_fim').val();
 	var retorno = false
 	if (!((data_inicio && data_fim) == ('__/__/____' || '') )) {
 		var Compara01 = parseInt(data_inicio.split("/")[2].toString() + data_inicio.split("/")[1].toString() + data_inicio.split("/")[0].toString());

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from modules.entidade.formularios import formulario_justificar_operacao
-from modules.honorario.forms import FormContrato, FormIndicacao, FormProventos
+from modules.honorary.forms import FormContrato, FormIndicacao, FormProventos
 
 
 def honorary_page(request):

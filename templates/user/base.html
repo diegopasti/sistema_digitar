@@ -2,36 +2,25 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>{% block titulo_pagina %}Sistema Digitar - Base Login{% endblock %}</title>
     {% load static %}
-
+		{% load compress %}
+		{% compress css %}
     <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- Custom Theme Style -->
+		<link href="{% static 'custom/gentelella/custom.css' %}" rel="stylesheet">
+		<link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
+		<link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet">
     <link href="{% static 'modules/core/base.css' %}" rel="stylesheet">
-    <!-- Angular -->
-    <script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
-
+    {% endcompress %}
     {% block recursos_necessarios %}
     {% endblock %}
-
   </head>
 
   <body class="login">
-		<!-- NProgress -->
-    <script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
-    <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
-
-    <script>
-      NProgress.start();
-    </script>
-
     <div id="angular_content" ng-cloak ng-app="modules.user">
-      <div>
       <a class="hiddenanchor" id="signup"></a>
       <a class="hiddenanchor" id="signin"></a>
 
@@ -45,39 +34,25 @@
         </div>
       </div>
     </div>
-    </div>
 
-
+		<footer id="footer_session_action" style="position:fixed;right:0px;margin-right:auto;font-size:10px;background:#eee;border:1px solid #ddd;border-top-left-radius:10px;border-top-right-radius:0px;bottom:0px;height:25px;padding:0px;padding-top:6px;padding-right:10px;padding-left:15px;">
+			<div class="pull-right">
+				<p><label id="session_action_info"></label></p>
+			</div>
+			<div class="clearfix"></div>
+		</footer>
   </body>
-  <!-- jQuery -->
-  <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-  <!-- PNotify -->
-  <link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet">
-
-	<!-- Custom Theme Style -->
-	<link href="{% static 'custom/gentelella/custom.css' %}" rel="stylesheet">
-
+	{% load compress %}
+	{% compress js %}
+	<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+	<script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
   <script src="{% static 'modules/core/viewport/viewport_controll.js'%}"></script>
-
-  <script src="{% static 'modules/core/base_api.js'%}"></script>
-
-  <script src="{% static 'modules/core/working.js' %}"></script>
-
-  <!-- PNotify -->
-  <script src="{% static 'bower_components/pnotify/dist/pnotify.js' %}"></script>
-
-
-  <script>
-    terminate_load_page()
-    NProgress.done();
-
-  </script>
-
+	<script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
+	<script src="{% static 'bower_components/pnotify/dist/pnotify.js' %}"></script>
+	<script src="{% static 'modules/core/base_api.js'%}"></script>
+	<script src="{% static 'modules/core/working/working.js' %}"></script>
+	{% endcompress %}
   {% block recursos_complementares %}
 
   {% endblock %}
-  <script>
-    verify_session_paramters()
-    terminate_setup()
-  </script>
 </html>

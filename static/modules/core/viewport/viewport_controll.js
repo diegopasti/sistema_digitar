@@ -176,8 +176,6 @@ function verify_screen_paramters(){
 	}
 	catch(err){
 	}
-
-	//return SCREEN_PARAMTERS;
 }
 
 function configure_screen(){

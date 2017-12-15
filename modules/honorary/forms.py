@@ -5,7 +5,7 @@ from libs.default.core import BaseForm
 from modules.entidade.models import entidade
 
 from modules.entidade.formularios import MENSAGENS_ERROS
-from modules.honorario.models import Contrato, Proventos
+from modules.honorary.models import Contrato, Proventos
 from modules.servico.models import Plano
 
 
