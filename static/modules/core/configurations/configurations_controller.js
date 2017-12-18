@@ -6,7 +6,6 @@ application.controller('configurations_controller', function ($scope) {
 
 	$scope.backups = null;
 	$scope.loaded_backups = false;
-
 	$scope.load = function () {
     $.ajax({
       type: 'GET',
@@ -63,6 +62,23 @@ application.controller('configurations_controller', function ($scope) {
 
       success: function (data) {
         $scope.backups_informations = JSON.parse(data).object;
+        $("#loading_tbody").fadeOut();
+        $scope.$apply();
+      },
+
+      failure: function () {
+        alert("Não foi possivel carregar a lista")
+      }
+    })
+	}
+
+	$scope.shared_folder = function(){
+    $.ajax({
+      type: 'GET',
+      url: "/api/core/configurations/backup/share",
+
+      success: function (data) {
+        $scope.shared = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();
       },

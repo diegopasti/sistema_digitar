@@ -310,7 +310,7 @@ THUMBNAIL_PROCESSORS = (
 SERVER_DIGITAR = True
 if SERVER_DIGITAR:
     WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
-    WORKING_SERVER = "http://192.168.1.114:8010"
+    WORKING_SERVER = "http://192.168.1.115:8010"
     from modules.nucleo.working_api import WorkingManager
 
     try:

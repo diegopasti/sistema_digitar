@@ -124,12 +124,13 @@ urlpatterns = [
 
     url(r'^api/working/register/$', nucleo_views.working),
     url(r'^system/configurations', core_views.system_configurations),
-    url(r'configurations/backup$', ConfigurationsController().load_backups),
+    url(r'configurations/backup$', ConfigurationsController().list_backups),
     url(r'configurations/backup/info$', ConfigurationsController().check_available_space),
     url(r'configurations/backup/create$', ConfigurationsController().create_backup),
     url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),
     url(r'configurations/version/info$', ConfigurationsController().version_update),
     url(r'configurations/version/update$', ConfigurationsController().update),
+    url(r'configurations/version/share$', ConfigurationsController().shared_folder),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'users/',view_usuario.user_page),
