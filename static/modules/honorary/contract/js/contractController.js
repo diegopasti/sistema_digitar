@@ -104,7 +104,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 	$scope.carregar_clientes = function() {
 		$.ajax({
 			type: "GET",
-				url: "/api/honorario/lista_contratos",
+				url: "/api/contract/lista_contratos",
 				success: function (data) {
 
 					$scope.contratos = JSON.parse(data);//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
@@ -128,7 +128,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 		$scope.indicacoes_carregadas = false;
 		$.ajax({
 			type: 'GET',
-			url: "/api/honorario/lista_indicacao/" + $scope.registro_selecionado.cliente_id,
+			url: "/api/contract/lista_indicacao/" + $scope.registro_selecionado.cliente_id,
 
 			success: function (data) {
 				//alert("VEJA A RESPOSTA: "+JSON.stringify(data))
@@ -186,7 +186,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 			alert('Empresa informada já foi indicada anteriormente')
 		}
 		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
-		request_api("/api/honorario/salvar_indicacao/",data,validate_function,success_function,fail_function)
+		request_api("/api/contract/salvar_indicacao/",data,validate_function,success_function,fail_function)
 	}
 
 	$scope.atualizar_contrato = function(cliente) {
@@ -210,7 +210,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 			alert('Erro! Falha na atualização do contrato.')
 		}
 		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
-		request_api("/api/honorario/atualizar_contrato/",data,validate_function,success_function,fail_function)
+		request_api("/api/contract/atualizar_contrato/",data,validate_function,success_function,fail_function)
 	}
 
 	$scope.adicionar_contrato = function() {
@@ -253,7 +253,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 				$("#"+index).focus();
 			});
 		}
-		request_api("/api/honorario/salvar_contrato",data_paramters,validate_function,success_function,fail_function)
+		request_api("/api/contract/salvar_contrato",data_paramters,validate_function,success_function,fail_function)
 	}
 
 	$scope.alterar_contrato = function() {
@@ -274,7 +274,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 			return notify('error','Falha na Operação',message);
 		}
 
-		request_api("/api/honorario/alterar_contrato",data_paramters,validate_function,success_function,fail_function)
+		request_api("/api/contract/alterar_contrato",data_paramters,validate_function,success_function,fail_function)
 	}
 
 	$scope.get_data_from_form = function(){
@@ -509,7 +509,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 		//alert("vindo aqui")
 		$.ajax({
 			type: 'GET',
-			url: "/api/honorario/clientes/" + $scope.registro_selecionado.cliente_id,
+			url: "/api/contract/clientes/" + $scope.registro_selecionado.cliente_id,
 
 			success: function (data) {
 				//alert("VEJA A RESPOSTA: "+JSON.stringify(data))
@@ -572,7 +572,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 		$scope.servicos_carregados = false;
 		$.ajax({
 			type: "GET",
-				url: "/api/honorario/carregar_servicos_contratados/"+$scope.registro_selecionado.cliente_id+"/"+$scope.registro_selecionado.plano_id,
+				url: "/api/contract/carregar_servicos_contratados/"+$scope.registro_selecionado.cliente_id+"/"+$scope.registro_selecionado.plano_id,
 
 				success: function (data) {
 					$scope.servicos_contratados = JSON.parse(data);//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
@@ -653,7 +653,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 			alert("Erro! Falha na alteração dos Serviços.")
 		}
 		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
-		request_api("/api/honorario/atualizar_servicos/",data,validate_function,success_function,fail_function)
+		request_api("/api/contract/atualizar_servicos/",data,validate_function,success_function,fail_function)
 	}
 
 	$scope.alterar_indicacao = function () {
@@ -689,7 +689,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 			alert("Erro! Falha na alteração da indicação.")
 		}
 		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
-		request_api("/api/honorario/alterar_indicacao/",data,validate_function,success_function,fail_function)
+		request_api("/api/contract/alterar_indicacao/",data,validate_function,success_function,fail_function)
 
 	}
 
@@ -720,7 +720,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 			alert("Erro! Falha na alteração do estado da indicação.")
 		}
 		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
-		request_api("/api/honorario/alterar_boolean_indicacao/",data,validate_function,success_function,fail_function)
+		request_api("/api/contract/alterar_boolean_indicacao/",data,validate_function,success_function,fail_function)
 	}
 
 	$scope.deletar_indicacao = function () {
@@ -747,7 +747,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 			alert("Não foi possivel deletar neste momento")
 		}
 		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
-		request_api("/api/honorario/deletar_indicacao/",data,validate_function,success_function,fail_function)
+		request_api("/api/contract/deletar_indicacao/",data,validate_function,success_function,fail_function)
 
 	}
 

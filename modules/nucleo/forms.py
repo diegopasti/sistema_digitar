@@ -13,7 +13,7 @@ class FormAbstractEmail(forms.Form):
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'type': "text", 'class': "form-control text-lowercase", 'id': 'email',
+                'type': "text", 'class': "form-control text-lowercase", 'id': 'email','name':'email',
                 'ng-model': 'email', 'autocomplete': "off", 'placeholder': "",'required': "true"
             }
         )
@@ -66,4 +66,3 @@ class FormAbstractConfirmPassword(forms.Form):
             }
         )
     )
-

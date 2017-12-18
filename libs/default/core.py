@@ -30,30 +30,30 @@ def json_serial(obj):
 
 class Notify:
 
-    def datalist(self, datalist, list_fields=None):
+    def datalist(self, datalist, list_fields=None, extra_fields=None):
         response_dict = []
         for item in datalist:
-            response_data = self.__format_serialized_model(item, list_fields)
+            response_data = self.__format_serialized_model(item, list_fields, extra_fields)
             response_dict.append(response_data)
         return response_dict
 
-    def success(self, object, message='', list_fields=None):
+    def success(self, object, message='', list_fields=None, extra_fields=None):
         return self.__response_format(True, message, object, list_fields)
 
     def error(self, exceptions):
         return self.__response_format(False,self.__format_exceptions(exceptions),None, None)
 
-    def __response_format(self,result, message, obj=None, list_fields=None):
+    def __response_format(self,result, message, obj=None, list_fields=None, extra_fields=None):
         response_dict = {}
         response_dict['result'] = result
         response_dict['message'] = message
         if result:
-            response_dict['object'] = self.__format_serialized_model(obj, list_fields)
+            response_dict['object'] = self.__format_serialized_model(obj, list_fields, extra_fields)
         else:
             response_dict['object'] = None
         return response_dict
 
-    def __format_serialized_model(self,object,list_fields):
+    def __format_serialized_model(self,object,list_fields, extra_fields=None):
         if list_fields is not None:
             response_model = serializers.serialize('json', [object], fields=tuple(list_fields))
         else:
@@ -61,6 +61,11 @@ class Notify:
 
         response_model = json.loads(response_model)[0]
         response_model = response_model['fields']
+
+        if extra_fields is not None:
+            for item in extra_fields:
+                response_model[item] = ''
+
         response_model['id'] = object.id
         response_model['selected'] = ''
         return response_model
@@ -161,7 +166,7 @@ class BaseController(Notify):
         return self.response(response_dict)
 
     @request_ajax_required
-    def filter(self, request, model, queryset=None, order_by="-id", list_fields=None, limit=None):
+    def filter(self, request, model, queryset=None, order_by="-id", list_fields=None, limit=None, extra_fields=None):
         if queryset is None:
             model_list = model.objects.all().order_by(order_by)
         else:
@@ -171,7 +176,8 @@ class BaseController(Notify):
             model_list = model_list.limit(limit)
         response_dict = {}
         response_dict['result'] = True
-        response_dict['object'] = self.notify.datalist(model_list, list_fields)
+        response_dict['object'] = self.notify.datalist(model_list, list_fields, extra_fields)
+        print("VEJA COMO FICOU O RESPONSE OBJECT: ",response_dict['object'])
         response_dict['message'] = str(len(self.notify.datalist(model_list, list_fields)))+" Registros carregados com sucesso!"
         return self.response(response_dict)
 
@@ -340,7 +346,7 @@ class BaseForm:
             object = self.model()
 
         for attribute in self.data:
-            if attribute != 'csrfmiddlewaretoken':
+            if attribute != 'csrfmiddlewaretoken' and attribute != 'undefined':
                 if '[]' in attribute:
                     options_selected = self.request.POST.getlist(attribute)
                     if options_selected is not None:
