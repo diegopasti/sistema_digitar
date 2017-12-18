@@ -114,8 +114,8 @@
 																<td>
 																	<!--<br>-->
 
-																	<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
-																		<div class="left" style="left: 0px; padding-top: 10px;">Espaço utilizado</div>
+																	<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12" style="padding-top: 10px;">
+																		<div class="pull-left" style="left: 0px;">Espaço utilizado</div>
 																		<div class="pull-right" style="right: 0px;">{{ backups_informations.used_percent_space }}%</div>
 																		<div class="progress progress_sm" style="width: 100%;">
 																			<div class="progress-bar bg-green pull-left" role="progressbar" data-transitiongoal="{{ backups_informations.used_percent_space }}" style="width: {{ backups_informations.used_percent_space }}%;" aria-valuenow="{{ backups_informations.used_percent_space }}"></div>
@@ -243,10 +243,10 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	angular.element(document.getElementById('configuration_controller')).scope().load()
-	angular.element(document.getElementById('configuration_controller')).scope().load_backups_informations()
-	angular.element(document.getElementById('configuration_controller')).scope().load_version_informations()shared_folder
-	angular.element(document.getElementById('configuration_controller')).scope().shared_folder()
+	angular.element(document.getElementById('configuration_controller')).scope().load();
+	angular.element(document.getElementById('configuration_controller')).scope().load_backups_informations();
+	angular.element(document.getElementById('configuration_controller')).scope().load_version_informations();
+	angular.element(document.getElementById('configuration_controller')).scope().shared_folder();
 });
 </script>
 {% endblock %}

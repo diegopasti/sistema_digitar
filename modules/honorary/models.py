@@ -137,6 +137,7 @@ class Honorary(models.Model):
     total_debit =  models.DecimalField("Total à debitar", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
     total_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=False, blank=False)
     total_debit_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=False, blank=False)
+    total_repayment = models.DecimalField("Total à reembolsar", max_digits=5, default=0, decimal_places=2, null=False, blank=False)
     total_honorary = models.DecimalField("Honorário", max_digits=8, default=0, decimal_places=2, null=False, blank=False)
 
     is_closed = models.BooleanField("Honorário Encerrado",default=False)
