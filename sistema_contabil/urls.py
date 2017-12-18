@@ -24,20 +24,19 @@ from modules.protocolo import views as protocolo_views
 from modules.servico import views as servico_views
 from modules.honorary import views as honorario_views
 from modules.honorary import api as honorario_api
-from modules.honorary.api import HonoraryController
 from modules.preferencias import views as preferencias_views
 from modules.honorary.api import ProventosController
 from modules.user import views as view_usuario
 from modules.user.api import UserController
-from filebrowser.sites import site
-site.directory = "data/backup/"
+#from filebrowser.sites import site
+#site.directory = "data/backup/"
 
 urlpatterns = [
     url(r'admin/register/first_user',view_usuario.register_first_user),
     url(r'^$', entidade_views.index),
-    url(r'^admin/filebrowser/', include(site.urls)),
+    #url(r'^admin/filebrowser/', include(site.urls)),
     #url(r'^adminurl/filebrowser/', include(site.urls)),
-    url(r'^grappelli/', include('grappelli.urls')),
+    #url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', view_usuario.login_page),
@@ -49,7 +48,7 @@ urlpatterns = [
     url(r'^protocolo/(?P<protocolo_id>\d+)/$', protocolo_views.cadastro_protocolo),
     url(r'^protocolo/get_detalhes_protocolo/(?P<protocolo_id>\d+)/$', protocolo_views.get_detalhes_protocolo),
     url(r'^protocolo/visualizar/(?P<protocolo_id>\d+)/$', protocolo_views.visualizar_protocolo),
-    
+
     url(r'^protocolo/emitir_protocolo/$', protocolo_views.novo_emitir_protocolo),
     url(r'^protocolo/emitir_protocolo/(?P<operador>\w+)/$', protocolo_views.emitir_protocolo_identificado),
     url(r'^emitir_protocolo/excluir/(?P<numero_item>\d+)/$', protocolo_views.emitir_protocolo),
@@ -61,16 +60,16 @@ urlpatterns = [
 
     url(r'^consultar_cep/(?P<codigo_postal>\d+)/$', entidade_views.consultar_cep),
 
-    
+
     #url(r'^consultar_cep/(?P<cep>\d+\.\d+-\d+)/$', entidade_views.consultar_cep),
     url(r'^entidade/$', entidade_views.cadastro_entidades),
     url(r'^entidade/adicionar/$', entidade_views.adicionar_entidade),
     url(r'^entidade/desativar/(?P<cliente>\d+)/$', entidade_views.desativar_cliente),
     url(r'^entidade/visualizar/(?P<id>\d+)/$', entidade_views.visualizar_entidade),
     url(r'^api/entidade/lista_clientes/$', entidade_views.novo_buscar_lista_clientes),
-    
+
     #url(r'^protocolo/$', entidade_views.protocolo),
-    
+
     url(r'^adicionar_entidade/$', entidade_views.adicionar_entidade),
     url(r'^consultar_entidade/(?P<entidade_id>\d+)/$',entidade_views.consultar_entidade),
 
@@ -87,19 +86,20 @@ urlpatterns = [
     url(r'^api/planos/excluir', servico_views.excluir_plano),
 
     url(r'^contract/$', honorario_views.contract_page),
-    url(r'^api/contract/lista_contratos$', honorario_api.get_lista_contratos),
-    url(r'^api/contract/salvar_contrato', honorario_api.salvar_contrato),
-    url(r'^api/contract/alterar_contrato', honorario_api.alterar_contrato),
-    url(r'^api/contract/atualizar_contrato', honorario_api.atualizar_contrato),
-    url(r'^api/contract/carregar_servicos_contratados/(?P<cliente_id>\d+)/(?P<plano_id>\d+)/', honorario_api.carregar_servicos_contratados),
-    url(r'^api/contract/atualizar_servicos', honorario_api.atualizar_servicos),
+    #url(r'^honorario/contrato$', honorario_views.contract_page),
+    url(r'^api/honorario/lista_contratos$', honorario_api.get_lista_contratos),
+    url(r'^api/honorario/salvar_contrato', honorario_api.salvar_contrato),
+    url(r'^api/honorario/alterar_contrato', honorario_api.alterar_contrato),
+    url(r'^api/honorario/atualizar_contrato', honorario_api.atualizar_contrato),
+    url(r'^api/honorario/carregar_servicos_contratados/(?P<cliente_id>\d+)/(?P<plano_id>\d+)/', honorario_api.carregar_servicos_contratados),
+    url(r'^api/honorario/atualizar_servicos', honorario_api.atualizar_servicos),
 
 
-    url(r'^api/contract/lista_indicacao/(?P<cliente_id>\d+)/', honorario_api.get_lista_indicacoes),
-    url(r'^api/contract/salvar_indicacao/', honorario_api.salvar_indicacao),
-    url(r'^api/contract/alterar_indicacao/', honorario_api.alterar_indicacao),
-    url(r'^api/contract/alterar_boolean_indicacao/', honorario_api.alterar_boolean_indicacao),
-    url(r'^api/contract/deletar_indicacao/', honorario_api.deletar_indicacao),
+    url(r'^api/honorario/lista_indicacao/(?P<cliente_id>\d+)/', honorario_api.get_lista_indicacoes),
+    url(r'^api/honorario/salvar_indicacao/', honorario_api.salvar_indicacao),
+    url(r'^api/honorario/alterar_indicacao/', honorario_api.alterar_indicacao),
+    url(r'^api/honorario/alterar_boolean_indicacao/', honorario_api.alterar_boolean_indicacao),
+    url(r'^api/honorario/deletar_indicacao/', honorario_api.deletar_indicacao),
 
     url(r'^provents/$', honorario_views.proventos_page),
     url(r'^api/provents$', ProventosController().filter_provents),
@@ -108,7 +108,6 @@ urlpatterns = [
     url(r'^api/provents/disable$', ProventosController.disable_provent),
 
     url(r'^honorary/$', honorario_views.honorary_page),
-    url(r'^api/honorary$', HonoraryController().filter),
 
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),
     #url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', "preferencias.views.excluir_salario),
@@ -125,13 +124,12 @@ urlpatterns = [
 
     url(r'^api/working/register/$', nucleo_views.working),
     url(r'^system/configurations', core_views.system_configurations),
-    url(r'configurations/backup$', ConfigurationsController().list_backups),
+    url(r'configurations/backup$', ConfigurationsController().load_backups),
     url(r'configurations/backup/info$', ConfigurationsController().check_available_space),
     url(r'configurations/backup/create$', ConfigurationsController().create_backup),
     url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),
     url(r'configurations/version/info$', ConfigurationsController().version_update),
     url(r'configurations/version/update$', ConfigurationsController().update),
-    url(r'configurations/version/share$', ConfigurationsController().shared_folder),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'users/',view_usuario.user_page),

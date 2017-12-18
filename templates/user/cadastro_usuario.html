@@ -19,7 +19,7 @@
 								<a id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_alterar_usuario" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</a>
 
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
-									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
 										<li><a class="" id='bt_apagar_senha' ng-class="{'disabled':registro_selecionado==null}" data-toggle="modal" data-target="#modal_reset_password">Alterar senha</a></li>
 										<li><a class="" id='bt_ative'  ng-class="{'disabled':registro_selecionado==null || registro_selecionado.is_active==true}" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_active();">Reativar</a></li>
@@ -66,7 +66,7 @@
 										</tr>
 
 										<tr ng-cloak ng-if='contratos_carregados'  ng-repeat="k in table_minimun_items.slice(usuarios.length,table_minimun_items.length)">
-											<td style="width:30px;"></td><td></td><td></td><td style="width: 120px;"></td><td style="width:120px;"></td>
+											<td style="width:10px;"></td><td style="width:150px;"></td><td style="width:180px;"></td><td style="width: 180px;"></td><td style="width:140px;"></td><td style="width:10px;"></td>
 										</tr>
 
 										<tr ng-cloak ng-if="resultado.length === 0 && (usuarios|filter:filterIds()).length > 0">
@@ -312,7 +312,7 @@
 
 								<div class="col-lg-4 col-md-3">
 									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
-									<input id="action_user" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+									<div>{{ request.user.first_name }} {{ request.user.last_name }}</div>
 								</div>
 
 

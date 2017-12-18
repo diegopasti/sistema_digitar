@@ -10,7 +10,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","provento", "descricao"];
 	$scope.search             = '';
-	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10];
+	$scope.table_minimun_items = [1,2,3,4,5,6,7,8,9,10];
 	$scope.opcao_desabilitada = "desabilitado";
 	$scope.registro_selecionado 	= null;
 	$scope.esta_adicionando     	= true;

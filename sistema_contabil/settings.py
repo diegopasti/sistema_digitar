@@ -62,7 +62,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djangobower','compressor','dropbox','dbbackup',
-    'grappelli','filebrowser',
     'sistema_contabil','modules','modules.nucleo','modules.user','modules.entidade','modules.protocolo','modules.honorary','modules.servico','modules.preferencias'
 )
 
