@@ -48,15 +48,33 @@ class ConfigurationsController(BaseController):
             response_dict = self.notify.error(self.full_exceptions)
         return self.response(response_dict)
 
-    def list_backup(self,request):
+    def list_backups(self,request):
         self.start_process(request)
         backup_list = BackupManager().list_backup()
+        new_list = []
+        for item in reversed(backup_list):
+            if len(new_list) == 10:
+                break
+            else:
+                new_list.append(item)
+
+        backup_list = new_list
         response_dict = {}
         response_dict['result'] = True
         response_dict['message'] = ""
-        response_dict['object'] = {}
-        response_dict['object']['list_backups'] = backup_list
+        response_dict['object'] = backup_list
+        print("VEJA A LISTA:", backup_list)
+        #for item in backup_list:
+        #    response_data = {}
+        #    response_data['object'] = {}
+        #    response_dict['object']['file_name'] = item['file_name']
+        #    response_dict['object']['link'] = item['link']
+        #    response_dict['object']['size'] = item['size']
+        #    response_dict['object']['date'] = item['client_modified']
+        #    print('SOU RESPONSE',response_dict)
         return self.response(response_dict)
+
+
 
     def check_available_space(self,request):
         self.start_process(request)
@@ -99,7 +117,7 @@ class ConfigurationsController(BaseController):
         updating = update()
         print('DICT VERSION:',updating)
 
-    """def shared_folder(self,request):
+    def shared_folder(self,request):
         self.start_process(request)
         backup_paramters = BackupManager().shared_folder()
         backup = Backup()
@@ -110,7 +128,7 @@ class ConfigurationsController(BaseController):
         else:
             response_dict = self.notify.error(self.full_exceptions)
         return self.response(response_dict)
-        """
+
 
 class AbstractAPI:
 

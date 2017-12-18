@@ -23,7 +23,12 @@ import sys
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
-    if isinstance(obj, (datetime, date, timedelta)):
+    print(obj, type(obj))
+    if isinstance(obj, date):
+        return obj.isoformat()
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    if isinstance(obj, timedelta):
         return obj.isoformat()
     raise TypeError ("Type %s not serializable" % type(obj))
 
