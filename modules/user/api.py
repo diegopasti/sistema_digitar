@@ -4,6 +4,7 @@ from django.utils.decorators import method_decorator
 
 from libs.default.core import BaseController
 from libs.default.decorators import request_ajax_required
+from modules.nucleo.models import RestrictedOperation
 
 from modules.nucleo.utils import response_format_success, response_format_error, generate_activation_code, generate_random_password
 from modules.nucleo.comunications import send_generate_activation_code, resend_generate_activation_code ,send_reset_password
@@ -41,18 +42,25 @@ class UserController(BaseController):
         return self.login(request, FormLogin)
 
     @request_ajax_required
-    def register_delete(self, request):
+    def change_active(self, request):
         #return self.delete(request,User,request.POST['id'])
         print("Olha o request:",request.POST)
-        user = User.objects.get(id = request.POST['id'])
+        user = request.user
         print("Olha o obj:",user)
-        set_active = True
+
         if request.POST['action_type'] == 'DESATIVAR':
-            set_active = False
+            self.disable(request, User)
+        else:
+            self.enable(request, User)
         try:
-            user.is_active = set_active
-            user.save()
-            print("Uhul consegui")
+            operation = RestrictedOperation()
+            operation.user = user
+            operation.set_type(request.POST['action_type'])
+            operation.object_id = request.POST['id']
+            operation.object_name = request.POST['action_object']
+            operation.justify = request.POST['action_justify']
+            operation.table = User._meta.db_table
+            operation.save()
             response_dict = BaseController.notify.success(user,'Consegui')
         except Exception as e:
             print("é n deu: ",e)

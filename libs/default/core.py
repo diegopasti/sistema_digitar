@@ -146,14 +146,13 @@ class BaseController(Notify):
             username = request.POST['username']
             email = request.POST['email'].lower()
             senha = request.POST['password']
-            nome = request.POST['first_name'].lower()
-            sobrenome = request.POST['last_name'].lower()
-
+            nome = request.POST['first_name'].upper()
+            sobrenome = request.POST['last_name'].upper()
             user = User.objects._create_user(username, email, senha,first_name=nome, last_name=sobrenome)
             if user is not None:
                 #activation_code = generate_activation_code(email)
                 #send_generate_activation_code(email, activation_code)
-                response_dict = self.notify.success(user, list_fields=['username'])
+                response_dict = self.notify.success(user, list_fields=['email','username','is_active','date_joined','first_name','last_name','id'])
             else:
                 response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
 
@@ -210,13 +209,22 @@ class BaseController(Notify):
 
     @request_ajax_required
     def disable(self, request, model):
-        print("VEJA O REQUEST: ",request.POST)
         object = model.objects.get(pk=int(request.POST['id']))
         object.is_active = False
         response_dict = self.execute(object, object.save)
         if response_dict['result']:
             self.report_operation(request, model)
         return self.response(response_dict)
+
+    @request_ajax_required
+    def enable (self,request,model):
+        object = model.objects.get(pk=int(request.POST['id']))
+        object.is_active = True
+        response_dict = self.execute(object, object.save)
+        if response_dict['result']:
+            self.report_operation(request, model)
+        return self.response(response_dict)
+
 
     def report_operation(self, request, model):
         audit_register = RestrictedOperation()

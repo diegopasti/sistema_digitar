@@ -72,7 +72,6 @@ function notify(type,title,text){
 }
 
 function create_data_paramters(formulary_id){
-	alert("chegando no base")
 	var data_paramters = {};
 	$("#"+formulary_id+' input, '+"#"+formulary_id+' select, '+"#"+formulary_id+' textarea').each(function(index){
 		var input = $(this);

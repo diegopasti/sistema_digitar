@@ -17,5 +17,5 @@ urlpatterns = [
     url(r'filter/', UserController.filter_users),
     url(r'save/first/register/', UserController().save_first_register),
     # APIs administrativas
-    url(r'chage_active/$', UserController().register_delete),
+    url(r'chage_active/$', UserController().change_active),
 ]

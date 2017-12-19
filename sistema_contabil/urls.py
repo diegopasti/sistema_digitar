@@ -139,8 +139,4 @@ urlpatterns = [
     # User Administration
     url(r'filter/', UserController.filter_users),
 
-    # APIs administrativas
-    url(r'register/delete/(?P<email>[^/]+)/', UserController.register_delete),
-
-
 ]
