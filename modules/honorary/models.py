@@ -125,20 +125,18 @@ class Honorary(models.Model):
         verbose_name = "Honorário"
         verbose_name_plural = "Honorários"
 
+    cliente = models.CharField("Cliente:", null=False, max_length=100)
     competence = models.CharField("Mês de Competencia:",null=False,max_length=8)
-    contract = models.ForeignKey(Contrato, default=1)
-
+    contract = models.ForeignKey(Contrato, default=1, related_name='contrato')
     initial_value_contract = models.DecimalField("Valor base do contrato", max_digits=8, default=0, decimal_places=2, null=True, blank=False)
     temporary_discount = models.DecimalField("Desconto temporário", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
     fidelity_discount = models.DecimalField("Desconto fidelidade", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
     contract_discount = models.DecimalField("Desconto total em contrato", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
     final_value_contract = models.DecimalField("Valor final do contrato", max_digits=8, decimal_places=2, null=True, blank=False)
-
     number_debit_credit = models.IntegerField("Total de débitos e créditos")
     total_debit =  models.DecimalField("Total à debitar", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
     total_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=False, blank=False)
     total_debit_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=False, blank=False)
-
     total_honorary = models.DecimalField("Honorário", max_digits=8, default=0, decimal_places=2, null=False, blank=False)
 
     is_closed = models.BooleanField("Honorário Encerrado",default=False)
@@ -146,6 +144,7 @@ class Honorary(models.Model):
     closed_by = models.ForeignKey(User, related_name = "finalizado_por",default=1)
     last_update = models.DateTimeField("Ultima atualização", null=True, auto_now=True)
     updated_by  = models.ForeignKey(User, related_name = "atualizado_por",default=1)
+    updated_by_name = models.CharField("Atualizado por:", null=False, max_length=100)
     is_received = models.BooleanField("Honorário recebido",default=False)
     received_by = models.ForeignKey(User, related_name="recebido_por", default=1)
 

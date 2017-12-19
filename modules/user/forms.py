@@ -74,8 +74,6 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
         self.fields['confirm_password'].widget.attrs['placeholder'] = 'Confirmar senha..'
 
-
-
     def clean(self):
         form_data = self.cleaned_data
         if len(self.cleaned_data) == len(self.fields):
@@ -83,6 +81,47 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
                 self._errors["password"] = ["Confirme a Senha: Precisa ser igual ao campo Senha"]  # Will raise a error message
                 del form_data['password']
         return form_data
+
+class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
+    model = User
+
+    first_name = forms.CharField(
+        label="Primeiro Nome..",
+        required=False,
+        validators=[],
+        error_messages=ERRORS_MESSAGES,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'first_name', 'name': 'update_first_name', 'class': "form-control ",
+                'autocomplete': "off", 'ng-model': 'first_name',
+                'placeholder':'Nome..'
+            }
+        )
+    )
+
+    last_name = forms.CharField(
+        label="Sobrenome..",
+        required=False,
+        validators=[],
+        error_messages=ERRORS_MESSAGES,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'last_name', 'name': 'update_last_name', 'class': "form-control ",
+                'autocomplete': "off", 'ng-model': 'sobrenome', 'required': "required",
+                'placeholer':'Sobrenome..'
+            }
+        )
+    )
+
+    def __init__(self,*args,**kwargs):
+        super(FormAbstractUsername, self).__init__(*args,**kwargs)
+        super(FormAbstractEmail,self).__init__(*args,**kwargs)
+        self.fields['username'].required = False
+        self.fields['email'].required = False
+        self.fields['username'].widget.attrs['name'] =  'update_' + self.fields['username'].widget.attrs['name']
+        self.fields['email'].widget.attrs['name'] = 'update_' + self.fields['email'].widget.attrs['name']
+        self.fields['username'].widget.attrs['placeholder'] = 'Username..'
+        self.fields['email'].widget.attrs['placeholder'] = 'Informe seu Email..'
 
 
 class FormConfirmRegister(FormAbstractEmail):
@@ -94,15 +133,15 @@ class FormConfirmRegister(FormAbstractEmail):
 
 class FormResetPassword(FormAbstractEmail, BaseForm):
 
-    model = None
+    model = User
 
     def __init__(self, *args, **kwargs):
         super(FormAbstractEmail, self).__init__(*args,**kwargs)
         self.fields['email'].widget.attrs['placeholder'] = 'Informe seu Email..'
 
 
-class FormChangePassword(FormAbstractPassword, FormAbstractConfirmPassword):
-
+class FormAlterarPassword(FormAbstractPassword, FormAbstractConfirmPassword, BaseForm):
+    '''
     old_password = forms.CharField(
         label="Senha Antiga",
         max_length=50,
@@ -116,12 +155,15 @@ class FormChangePassword(FormAbstractPassword, FormAbstractConfirmPassword):
             }
         )
     )
+    '''
 
     def __init__(self, *args, **kwargs):
         super(FormAbstractPassword, self).__init__(*args, **kwargs)
         super(FormAbstractConfirmPassword, self).__init__(*args, **kwargs)
-        self.fields['password'].label = "Nova Senha"
+        self.fields['password'].widget.attrs['placeholder'] = 'Digite Nova Senha..'
+        self.fields['confirm_password'].widget.attrs['placeholder'] = 'Confirmar Nova Senha..'
 
+    '''
     def clean(self):
         form_data = self.cleaned_data
         if len(self.cleaned_data) == len(self.fields):
@@ -133,7 +175,8 @@ class FormChangePassword(FormAbstractPassword, FormAbstractConfirmPassword):
                 self._errors["password"] = ["Nova senha precisa ser diferente da antiga."]  # Will raise a error message
                 del form_data['password']
         return form_data
-
+    
+    
     def format_validate_response(self):
         response_errors = {}
         #print("VEJA OS ERROS: ",self.errors.as_data)
@@ -150,7 +193,7 @@ class FormChangePassword(FormAbstractPassword, FormAbstractConfirmPassword):
         else:
             print("TEM NADA DE ERRO EU AXO")
         return response_errors
-
+    '''
 
 class FormActivationCode(forms.Form):
 

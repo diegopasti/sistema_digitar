@@ -72,6 +72,29 @@ application.controller('register_controller', function($scope) {
 	$scope.password = "";
 	$scope.confirm_password = "";
 
+	$scope.save_first_user = function () {
+		alert("venho?")
+		var data_paramters = create_data_paramters('form_register');
+		alert("Olha o data:\n"+JSON.stringify(data_paramters))
+
+		success_function = function(result,message,object,status){
+			alert("olha no q deu:"+JSON.stringify(message))
+			alert("resultado:"+result)
+		}
+
+		fail_function = function (result,message,data_object,status) {
+			alert('n deu'+JSON.stringify(message)+"\n"+data_object)
+		}
+
+		validate_function = function () {
+		 return true
+		}
+		//var base_controller = new BaseController();
+		//base_controller.request("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
+		alert("Chegando")
+		request_api("/api/user/save/first/register/",data_paramters,validate_function,success_function,fail_function);
+	}
+
 	$scope.save_user = function () {
 		$scope.email = "";
 		$scope.password = "";

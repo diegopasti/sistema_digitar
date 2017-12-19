@@ -62,7 +62,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djangobower','compressor','dropbox','dbbackup',
-    'grappelli','filebrowser',
     'sistema_contabil','modules','modules.nucleo','modules.user','modules.entidade','modules.protocolo','modules.honorary','modules.servico','modules.preferencias'
 )
 
@@ -243,6 +242,8 @@ BOWER_INSTALLED_APPS = (
     'angular-locale-pt-br',
     'select2',
     'labelauty',
+    'multiple-select'
+
 
     #'bootstrap#3.3.7',#3.3.2
     #'font-awesome#4.7.0',#4.2
@@ -311,6 +312,7 @@ SERVER_DIGITAR = True
 if SERVER_DIGITAR:
     WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
     WORKING_SERVER = "http://192.168.1.115:8010"
+
     from modules.nucleo.working_api import WorkingManager
 
     try:

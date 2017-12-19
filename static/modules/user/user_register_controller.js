@@ -10,7 +10,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","provento", "descricao"];
 	$scope.search             = '';
-	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10];
+	$scope.table_minimun_items = [1,2,3,4,5,6,7,8,9,10];
 	$scope.opcao_desabilitada = "desabilitado";
 	$scope.registro_selecionado 	= null;
 	$scope.esta_adicionando     	= true;
@@ -23,7 +23,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 			$scope.usuarios.splice(0, 0, object);
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_usuario', message);
-			$("#form_adicionar_usuario").modal('hide');
+			$("#modal_adicionar_usuario_adicionar_usuario").modal('hide');
 			reset_formulary('form_adicionar_usuario');
 		}
 
@@ -41,27 +41,28 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	}
 
 	$scope.update_usuario = function() {
-		var data_paramters = create_data_paramters('form_adicionar_usuario');
+		var data_paramters = create_data_paramters('form_alterar_usuario');
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
-		data_paramters['password'] = null;
-		data_paramters['cofirm_password'] = null;
+		data_paramters['email'] = data_paramters['email'].toLowerCase()
 
 
 		success_function = function(result,message,object,status){
-      if(result == true){
+			alert("Cheando e o result é:"+result)
+      if(result){
 				$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
 				$scope.$apply();
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
+				check_response_message_form('#form_alterar_usuario', message);
+				reset_formulary('form_alterar_usuario');
+				$("#modal_alterar_usuario").modal('hide');
 				$scope.$apply();
-				check_response_message_form('#form_adicionar_contrato', message);
-				$("#modal_adicionar_contrato").modal('hide');
-				reset_formulary('form_adicionar_usuario');
       }
 		};
 
     fail_function = function (result,message,data_object,status) {
-      check_response_message_form('#form_adicionar_usuario', message);
+    	alert("deu caquita")
+      check_response_message_form('#form_alterar_contrato', message);
     };
 
     validade_function = function () {
@@ -69,14 +70,40 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
     };
     request_api("/api/user/update/",data_paramters,validade_function,success_function,fail_function);
 	};
+ 
+	$scope.reset_password = function () {
+		var data_paramters = create_data_paramters('form_reset_password');
+		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
 
+		success_function = function(result,message,object,status){
+      if(result){
+				$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
+				$scope.$apply();
+				$scope.registro_selecionado = null;
+				$scope.esta_adicionando = true;
+				check_response_message_form('#form_reset_password', message);
+				reset_formulary('form_reset_password');
+				$("#modal_reset_password").modal('hide');
+				$scope.$apply();
+      }
+		};
+
+    fail_function = function (result,message,data_object,status) {
+      alert("Senhas informadas sçao diferentes")
+    };
+
+    validade_function = function () {
+      return data_paramters['password'] == data_paramters['confirm_password']
+    };
+    request_api("/api/user/reset_password/",data_paramters,validade_function,success_function,fail_function);
+	}
+	
 	$scope.load_users = function () {
     $.ajax({
       type: 'GET',
       url: "/api/filter",
 
       success: function (data) {
-      	alert("USER:"+JSON.stringify(data))
 				data = data.replace("<html><head></head><body>{","{")
 				data = data.replace("}</body></html>","}")
 				$scope.usuarios = JSON.parse(data).object;
@@ -88,10 +115,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
       },
 
       failure: function (data) {
-      	alert("NÂO Carreguei")
-      	/*$scope.usuarios = [];
-        $scope.loaded_entities = true;
-        alert("Não foi possivel carregar a lista");*/
+        alert("Não foi possivel carregar a lista");
       },
     })
 	}
@@ -137,15 +161,16 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	}
 
 	$scope.open_object = function(){
-		reset_formulary('form_adicionar_usuario');
+		reset_formulary('form_alterar_usuario');
 		for (var key in $scope.registro_selecionado) {
 			try{
-				$("#"+key).val($scope.registro_selecionado[key]);
+				$('input[name='+key+']').val($scope.registro_selecionado[key])
+				//$("#"+key).val($scope.registro_selecionado[key]);
 			}
 			catch (err){
 			}
 		}
-		$("#valor").maskMoney('mask', $scope.registro_selecionado.valor);
+		//$("#valor").maskMoney('mask', $scope.registro_selecionado.valor);
 	}
 
 	$scope.reajustar_tela = function (){

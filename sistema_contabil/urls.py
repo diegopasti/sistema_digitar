@@ -28,15 +28,15 @@ from modules.preferencias import views as preferencias_views
 from modules.honorary.api import ProventosController
 from modules.user import views as view_usuario
 from modules.user.api import UserController
-from filebrowser.sites import site
-site.directory = "data/backup/"
+#from filebrowser.sites import site
+#site.directory = "data/backup/"
 
 urlpatterns = [
     url(r'admin/register/first_user',view_usuario.register_first_user),
     url(r'^$', entidade_views.index),
-    url(r'^admin/filebrowser/', include(site.urls)),
+    #url(r'^admin/filebrowser/', include(site.urls)),
     #url(r'^adminurl/filebrowser/', include(site.urls)),
-    url(r'^grappelli/', include('grappelli.urls')),
+    #url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', view_usuario.login_page),
@@ -48,7 +48,7 @@ urlpatterns = [
     url(r'^protocolo/(?P<protocolo_id>\d+)/$', protocolo_views.cadastro_protocolo),
     url(r'^protocolo/get_detalhes_protocolo/(?P<protocolo_id>\d+)/$', protocolo_views.get_detalhes_protocolo),
     url(r'^protocolo/visualizar/(?P<protocolo_id>\d+)/$', protocolo_views.visualizar_protocolo),
-    
+
     url(r'^protocolo/emitir_protocolo/$', protocolo_views.novo_emitir_protocolo),
     url(r'^protocolo/emitir_protocolo/(?P<operador>\w+)/$', protocolo_views.emitir_protocolo_identificado),
     url(r'^emitir_protocolo/excluir/(?P<numero_item>\d+)/$', protocolo_views.emitir_protocolo),
@@ -60,16 +60,16 @@ urlpatterns = [
 
     url(r'^consultar_cep/(?P<codigo_postal>\d+)/$', entidade_views.consultar_cep),
 
-    
+
     #url(r'^consultar_cep/(?P<cep>\d+\.\d+-\d+)/$', entidade_views.consultar_cep),
     url(r'^entidade/$', entidade_views.cadastro_entidades),
     url(r'^entidade/adicionar/$', entidade_views.adicionar_entidade),
     url(r'^entidade/desativar/(?P<cliente>\d+)/$', entidade_views.desativar_cliente),
     url(r'^entidade/visualizar/(?P<id>\d+)/$', entidade_views.visualizar_entidade),
     url(r'^api/entidade/lista_clientes/$', entidade_views.novo_buscar_lista_clientes),
-    
+
     #url(r'^protocolo/$', entidade_views.protocolo),
-    
+
     url(r'^adicionar_entidade/$', entidade_views.adicionar_entidade),
     url(r'^consultar_entidade/(?P<entidade_id>\d+)/$',entidade_views.consultar_entidade),
 
@@ -124,7 +124,7 @@ urlpatterns = [
 
     url(r'^api/working/register/$', nucleo_views.working),
     url(r'^system/configurations', core_views.system_configurations),
-    url(r'configurations/backup$', ConfigurationsController().list_backups),
+    url(r'configurations/backup$', ConfigurationsController().load_backups),
     url(r'configurations/backup/info$', ConfigurationsController().check_available_space),
     url(r'configurations/backup/create$', ConfigurationsController().create_backup),
     url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),

@@ -2,11 +2,8 @@
 {% block Titulo %}<title>Digitar - Cadastro Usuários</title>{% endblock %}
 {% load staticfiles %}
 {% block recursos_necessarios %}
-<style>
-	table td{
-		height: 26px;
-	}
-</style>
+
+
 {% endblock %}
 {% block conteudo %}
 <div id="controle_angular_cadastro_user" ng-app="app" ng-controller="Cadastro_usuario" ng-init="contratos_carregados=false;">
@@ -18,29 +15,37 @@
 						<h5 class="box-title">Cadastro de Usuários</h5>
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
-								<button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-disabled="registro_selecionado!=null">Adicionar</button>
-								<button id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_adicionar_usuario" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</button>
-								<button id='bt_disable' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null ||  registro_selecionado.is_active==false" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_disable()" style='margin-left: 5px;'>Desativar</button>
-								<button id='bt_ative' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null || registro_selecionado.is_active==true" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_active();" style='margin-left: 5px;'>Reativar</button>
+								<a id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-disabled="registro_selecionado!=null">Adicionar</a>
+								<a id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_alterar_usuario" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</a>
+
+								<div class="btn-group" role="group" style='margin-left: 5px;'>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li><a class="" id='bt_apagar_senha' ng-class="{'disabled':registro_selecionado==null}" data-toggle="modal" data-target="#modal_reset_password">Alterar senha</a></li>
+										<li><a class="" id='bt_ative'  ng-class="{'disabled':registro_selecionado==null || registro_selecionado.is_active==true}" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_active();">Reativar</a></li>
+										<li role="separator" class="divider"></li>
+										<li><a class="" href="#modal_justificativa" id='bt_disable' ng-class="{'disabled':registro_selecionado==null || registro_selecionado.is_active==false}" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_disable()" >Desativar</a></li>
+									</ul>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-
-				<div class="box-body" style="margin-bottom: -10px;margin-top: 0px;">
-					<div class="dataTable_wrapper">
-						<div class='row'>
-							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								{% verbatim %}
+			<div class="box-body" style="margin-bottom: -10px;margin-top: 0px;">
+				<div class="dataTable_wrapper">
+					<div class='row'>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							{% verbatim %}
 
 								<table class="table table-condensed  table-striped table-bordered table-hover" id="table_usuarios" style="width: 100%;">
 									<thead>
 										<tr class="linha_cabecalho">
-											<th class='text-center' style="width: 40px;" ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
-											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">username</th>
-											<th class='text-center' ng-click="sortType='cliente';sortReverse=!sortReverse">Nome Completo</th>
-											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">email</th>
-											<th class='text-center' style="width: 40px;" ng-click="sortType='ativo';sortReverse=!sortReverse">Ativo</th>
+											<th class='text-center' style="width: 10px;"  ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
+											<th class='text-center' style="width: 180px;" ng-click="sortType='cliente';sortReverse=!sortReverse">username</th>
+											<th class='text-center' style="width: 180px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Nome Completo</th>
+											<th class='text-center' style="width: 180px;" ng-click="sortType='cliente';sortReverse=!sortReverse">email</th>
+											<th class='text-center' style="width: 140px;" ng-click="sortType='cliente';sortReverse=!sortReverse">data de registro</th>
+											<th class='text-center' style="width: 10px;"  ng-click="sortType='ativo';sortReverse=!sortReverse">Ativo</th>
 										</tr>
 									</thead>
 
@@ -52,15 +57,16 @@
 										</tr>
 
 										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ usuario.selecionado }}" ng-click="selecionar_linha(usuario);" pagination-id="paginate_contratos" dir-paginate="usuario in usuarios |itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
-											<td class='text-center' style="width: 40px;">{{ usuario.id }}</td>
-											<td class="col-cliente text-left">{{ usuario.username }}</td>
-											<td class='text-left' style="width: 120px;">{{ usuario.first_name }} {{ usuario.last_name }}</td>
-											<td class='text-left' style="width: 120px;">{{ usuario.email }}</td>
-											<td class="text-center"> {{ usuario.is_active }}</td>
+											<td class='text-center' style="width: 10px;">{{ usuario.id }}</td>
+											<td class="col-cliente text-left"  style="width: 150px;">{{ usuario.username }}</td>
+											<td class='text-left' style="width: 180px;">{{ usuario.first_name }} {{ usuario.last_name }}</td>
+											<td class='text-left' style="width: 180px;">{{ usuario.email }}</td>
+											<td class="text-center" style="width: 140px;">{{ usuario.date_joined|date:'d/M/y'}} ás {{ usuario.date_joined|date:'H:mm'}}</td>
+											<td class="text-center"  style="width: 10px;"> {{ usuario.is_active }}</td>
 										</tr>
 
 										<tr ng-cloak ng-if='contratos_carregados'  ng-repeat="k in table_minimun_items.slice(usuarios.length,table_minimun_items.length)">
-											<td style="width:30px;"></td><td></td><td></td><td style="width: 120px;"></td><td style="width:120px;"></td>
+											<td style="width:10px;"></td><td style="width:150px;"></td><td style="width:180px;"></td><td style="width: 180px;"></td><td style="width:140px;"></td><td style="width:10px;"></td>
 										</tr>
 
 										<tr ng-cloak ng-if="resultado.length === 0 && (usuarios|filter:filterIds()).length > 0">
@@ -173,6 +179,102 @@
 		</div>
 	</div>
 
+	<div id="modal_alterar_usuario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 50%">
+			<form id="form_alterar_usuario" novalidate autocomplete="off" ng-submit="update_usuario()" onsubmit="return false;">
+				{% csrf_token %}
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h5 id="titulo_modal_adicionar_contrato" class='modal_title' style="font-weight: bold">Alterar Usuário</h5>
+					</div>
+
+					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
+						<div class="row no-gutter fluid">
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_tipo">
+									<sub><label id="lb_tipo" for="tipo">{{ formulario_update.username.label }}</label> </sub>
+									{{ formulario_update.username }}
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_valor">
+									<sub><label id="lb_valor" for="valor">{{ formulario_update.email.label }}</label> </sub>
+									{{ formulario_update.email }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row no-gutter fluid">
+
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_nome">
+									<sub><label id="lb_nome" for="nome">{{ formulario_update.first_name.label }}</label></sub>
+									{{ formulario_update.first_name }}
+								</div>
+							</div>
+
+								<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_tipo_valor">
+									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_update.last_name.label }}</label> </sub>
+									{{ formulario_update.last_name }}
+								</div>
+							</div>
+							</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="row">
+							<div class="col-md-2 col-md-push-10" >
+								<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="modal_reset_password" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 20%">
+			<form id="form_reset_password" novalidate autocomplete="off" ng-submit="reset_password()" onsubmit="return false;">
+				{% csrf_token %}
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h5 id="titulo_modal_adicionar_contrato" class='modal_title' style="font-weight: bold">Alterar Senha</h5>
+					</div>
+
+					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
+						<div class="row no-gutter fluid">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_tipo">
+									<sub><label id="lb_tipo" for="tipo">{{ form_reset_password.password.label }}</label> </sub>
+									{{ form_reset_password.password }}
+								</div>
+							</div>
+						</div>
+						<div class="row no-gutter fluid">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_valor">
+									<sub><label id="lb_valor" for="valor">{{ form_reset_password.confirm_password.label }}</label> </sub>
+									{{ form_reset_password.confirm_password }}
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+						<div class="row">
+							<div class="col-md-5 col-md-push-8" >
+								<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
+							</div>
+						</div>
+					</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
 	<div id="modal_justify_action" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 60%">
 			<div class="modal-content">
@@ -210,12 +312,12 @@
 
 								<div class="col-lg-4 col-md-3">
 									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
-									<input id="action_user" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+									<div>{{ request.user.first_name }} {{ request.user.last_name }}</div>
 								</div>
 
 
 								<div class="col-lg-4 col-md-7">
-									<sub style='padding-left: 2px'><label>Username:</label></sub>
+									<sub style='padding-left: 2px'><label>Registro:</label></sub>
 									<input id="action_object" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();">
 								</div>
 							</div>

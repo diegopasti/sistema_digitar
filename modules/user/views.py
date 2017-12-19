@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect
 
 from libs.default.decorators import request_get_required
 from modules.nucleo.utils import check_valid_activation_code
-from modules.user.forms import FormRegister, FormLogin, FormChangePassword, FormResetPassword, FormActivationCode, FormConfirmRegister
+from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormActivationCode, \
+    FormConfirmRegister, FormUpdateProfile, FormAlterarPassword
 from django.contrib.auth import logout, login
 from modules.user.models import Session
 from django.contrib.auth.models import Permission, User
@@ -45,7 +46,7 @@ def register_confirm_page(request, email):
 
 
 def profile_page(request):
-    form_change_password = FormChangePassword()
+    form_change_password = FormAlterarPassword()
     return render(request, "user/profile.html", {'form_change_password':form_change_password})
 
 
@@ -83,4 +84,6 @@ def user_administration (request):
 
 def user_page (request):
     form_register = FormRegister()
-    return render(request, "user/cadastro_usuario.html",{'formulario_register': form_register})
+    form_update_register = FormUpdateProfile()
+    form_reset_password = FormAlterarPassword()
+    return render(request, "user/cadastro_usuario.html",{'formulario_register': form_register,'formulario_update':form_update_register,'form_reset_password':form_reset_password})

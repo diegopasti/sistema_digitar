@@ -7,13 +7,30 @@ from libs.default.decorators import request_ajax_required
 
 from modules.nucleo.utils import response_format_success, response_format_error, generate_activation_code, generate_random_password
 from modules.nucleo.comunications import send_generate_activation_code, resend_generate_activation_code ,send_reset_password
-from modules.user.forms import FormRegister, FormLogin, FormChangePassword, FormResetPassword
+from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormUpdateProfile, FormAlterarPassword
 from django.contrib.auth.models import Permission, User
 from django.http import HttpResponse
 import json
 
 
 class UserController(BaseController):
+
+    @request_ajax_required
+    def save_first_register(self,request):
+        username = request.POST['username']
+        email = request.POST['email'].lower()
+        senha = request.POST['password']
+        nome = request.POST['first_name'].lower()
+        sobrenome = request.POST['last_name'].lower()
+
+        user = User.objects.create_superuser(username, email, senha, first_name=nome, last_name=sobrenome)
+        if user is not None:
+            # activation_code = generate_activation_code(email)
+            # send_generate_activation_code(email, activation_code)
+            response_dict = self.notify.success(user, list_fields=['username'])
+        else:
+            response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
+        return self.response(response_dict)
 
     @request_ajax_required
     def salvar_registro(self, request):
@@ -45,33 +62,20 @@ class UserController(BaseController):
 
     @request_ajax_required
     def upate_user(self,request):
-        return self.update(request,FormRegister)
+        return self.update(request,FormUpdateProfile)
 
     @request_ajax_required
     def reset_password(self, request):
-        form = FormResetPassword(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email'].lower()
-            user = User.objects.get_user_email(email)
-            if user is not None:
-                if user.account_activated:
-                    new_password = generate_random_password(email)
-                    user.set_password(new_password)
-                    try:
-                        user.save()
-                        send_reset_password(new_password, email)
-                        response_dict = BaseController.notify.success(user, list_fields=['username'])
-
-                    except Exception as erro:
-                        print("Erro! Verifique a excecao: ", erro)
-                        response_dict = BaseController.notify.error({'email': 'Falha ao gerar nova senha.'})
-                else:
-                    response_dict = BaseController.notify.error(
-                        {'email': 'Usuário não confirmado! Verifique a confirmação no email <br>informado ou clique em reenviar confirmação.'})
-            else:
-                response_dict = BaseController.notify.error({'email': 'Usuário não cadastrado.'})
-        else:
-            response_dict = BaseController.get_exceptions(None, form)
+        password = request.POST['password']
+        print("OLHA O PASSWORD Q ESTOU INDO SALVAR:",password)
+        try:
+            user = User.objects.get(id=request.POST['id'])
+            user.set_password(password)
+            user.save()
+            response_dict = BaseController.notify.success(user, ['username','email','first_name','last_name'])
+        except Exception as e:
+            print ("EXception e")
+            response_dict = BaseController.notify.error(e)
         return self.response(response_dict)
 
     @request_ajax_required
@@ -98,7 +102,7 @@ class UserController(BaseController):
     @request_ajax_required
     @method_decorator(login_required)
     def change_password(self, request):
-        form = FormChangePassword(request.POST)
+        form = FormAlterarPassword(request.POST)
         if form.is_valid():
             user = request.user
             if user.check_password(form.cleaned_data['old_password']):
@@ -117,4 +121,4 @@ class UserController(BaseController):
     #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
 
     def filter_users(request):
-        return BaseController().filter(request, User,list_fields=['email','username','is_active','joined_date','last_update','first_name','last_name','id'])
+        return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','id'])

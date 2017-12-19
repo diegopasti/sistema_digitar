@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
-from modules.honorary.models import Contrato, Indicacao, Proventos
+from django.db.models import F
+
+from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary
 from modules.honorary.forms import FormContrato, FormProventos
 #from django.views.decorators.cache import never_cache
 from modules.servico.models import Plano, Servico
@@ -137,6 +139,7 @@ def atualizar_servicos(request):
     contrato.save()
     response_dict = response_format_success_message(contrato, [])
     return HttpResponse(json.dumps(response_dict))
+
 
 def carregar_servicos_contratados(request,cliente_id,plano_id):
     response_dict = []
@@ -306,6 +309,7 @@ def alterar_contrato(request):
 
     return HttpResponse(json.dumps(response_dict))
 
+
 def atualizar_contrato(request):
     contrato = Contrato.objects.get(cliente_id=int(request.POST['cliente']))
     #plano = Plano.objects.get(pk=int(request.POST['plano']))
@@ -341,6 +345,15 @@ class ProventosController(BaseController):
 
     def disable_provent(request):
         return BaseController().disable(request, Proventos)
+
+
+class HonoraryController(BaseController):
+
+    def filter(self,request):
+        #return BaseController().filter(request, Honorary, queryset=Honorary.objects.all().annotate(valor_total=F('contract__valor_total')).order_by('-pk'), extra_fields=['valor_total'])
+        return BaseController().filter(request, Honorary)
+
+
 
 """
 def get_lista_proventos_old(self,request):

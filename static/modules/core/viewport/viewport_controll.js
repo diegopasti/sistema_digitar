@@ -165,7 +165,7 @@ function verify_screen_paramters(){
 	if (pagination_itens_per_page < 2){
 		pagination_itens_per_page = 2;
 	}
-
+	pagination_itens_per_page = pagination_itens_per_page + 1
 	table_minimal_rows = Array.apply(null, Array(pagination_itens_per_page)).map(function (x, i) { return i; });
 	total_rows_height = pagination_itens_per_page*26;
 	SCREEN_PARAMTERS['table_maximun_items_per_page'] = pagination_itens_per_page;

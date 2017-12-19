@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'save/register',UserController().salvar_registro),
     url(r'login/autentication$', UserController().login_autentication),
     url(r'update/$',UserController().upate_user),
-    url(r'reset_password$', UserController().reset_password),
+    url(r'reset_password/$', UserController().reset_password),
     url(r'change_password$', UserController().change_password),
     url(r'reactivate$', UserController().resend_activation_code),
 
@@ -15,6 +15,7 @@ urlpatterns = [
 
     # User Administration
     url(r'filter/', UserController.filter_users),
+    url(r'save/first/register/', UserController().save_first_register),
     # APIs administrativas
     url(r'chage_active/$', UserController().register_delete),
 ]
