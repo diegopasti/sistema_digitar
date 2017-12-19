@@ -42,6 +42,7 @@ application.controller('configurations_controller', function ($scope) {
       	}
       	register_action(start_request, status);
       	$scope.load_backups_informations()
+        $scope.load()
 
       	NProgress.done();
       },
@@ -78,7 +79,7 @@ application.controller('configurations_controller', function ($scope) {
       url: "/api/core/configurations/backup/share",
 
       success: function (data) {
-        $scope.shared = JSON.parse(data).object;
+        $scope.shared_informations = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();
       },
@@ -112,7 +113,6 @@ application.controller('configurations_controller', function ($scope) {
       url: "/api/core/configurations/version/update",
 
       success: function (data) {
-        alert('FAÇO O UPDATE???')
         $scope.update = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();

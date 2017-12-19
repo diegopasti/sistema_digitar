@@ -119,14 +119,14 @@ class ConfigurationsController(BaseController):
 
     def shared_folder(self,request):
         self.start_process(request)
-        backup_paramters = BackupManager().shared_folder()
-        backup = Backup()
-        backup.backup_link_folder = backup_paramters['folder_link']
-        self.get_exceptions(backup, None)
-        if self.full_exceptions == {}:
-            response_dict = self.execute(backup, backup.save)
-        else:
-            response_dict = self.notify.error(self.full_exceptions)
+        backup_link_folder = BackupManager().shared_folder()
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['message'] = ""
+        response_dict['object'] = backup_link_folder
+
+        print("OLHE A LISTA:", backup_link_folder)
+        print("VEJA O DICIONÁRIO:", response_dict)
         return self.response(response_dict)
 
 
