@@ -43,11 +43,7 @@ class UserController(BaseController):
 
     @request_ajax_required
     def change_active(self, request):
-        #return self.delete(request,User,request.POST['id'])
-        print("Olha o request:",request.POST)
         user = request.user
-        print("Olha o obj:",user)
-
         if request.POST['action_type'] == 'DESATIVAR':
             self.disable(request, User)
         else:
@@ -63,7 +59,6 @@ class UserController(BaseController):
             operation.save()
             response_dict = BaseController.notify.success(user,'Consegui')
         except Exception as e:
-            print("é n deu: ",e)
             response_dict = BaseController.notify.error(e)
         return self.response(response_dict)
 
@@ -129,4 +124,4 @@ class UserController(BaseController):
     #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
 
     def filter_users(request):
-        return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','id'])
+        return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','id','groups'])

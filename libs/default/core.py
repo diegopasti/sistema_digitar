@@ -12,7 +12,7 @@ from django.db import IntegrityError
 from django.core import serializers
 
 from modules.nucleo.models import RestrictedOperation
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission, User, Group
 from django.contrib.auth import authenticate, login
 from modules.user.models import Session
 from sistema_contabil import settings
@@ -148,6 +148,8 @@ class BaseController(Notify):
             senha = request.POST['password']
             nome = request.POST['first_name'].upper()
             sobrenome = request.POST['last_name'].upper()
+            grupo = request.POST['groups']
+
             user = User.objects._create_user(username, email, senha,first_name=nome, last_name=sobrenome)
             if user is not None:
                 #activation_code = generate_activation_code(email)
@@ -156,6 +158,8 @@ class BaseController(Notify):
             else:
                 response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
 
+            my_group = Group.objects.get(id=int(grupo))
+            my_group.user_set.add(user)
         else:
             response_dict = self.get_exceptions(None, form) #self.notify.error({'email': 'Formulário com dados inválidos.'})
         return self.response(response_dict)

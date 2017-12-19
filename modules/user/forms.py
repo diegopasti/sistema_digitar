@@ -5,8 +5,7 @@ from modules.nucleo.config import ERRORS_MESSAGES
 from modules.nucleo.forms import FormAbstractPassword, FormAbstractConfirmPassword, FormAbstractEmail, \
     FormAbstractUsername
 #from modules.user.models import User
-from django.contrib.auth.models import Permission, User
-from modules.user.validators import password_format_validator
+from django.contrib.auth.models import Permission, User , Group
 
 
 class FormLogin(FormAbstractUsername, FormAbstractPassword,BaseForm):
@@ -62,6 +61,19 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         )
     )
 
+
+    groups = forms.ChoiceField(
+        label='Grupo',
+        required=True,
+        choices=[[g.id, g.name] for g in Group.objects.filter()],
+        widget=forms.Select(
+            attrs={
+                'id': 'groups', 'name': 'groups', 'class': "form-control ",
+                'autocomplete': "off", 'ng-model': 'groups', 'required': "required",
+            }
+        )
+    )
+
     def __init__(self, *args, **kwargs):
         super(FormAbstractUsername, self).__init__(*args,**kwargs)
         super(FormAbstractPassword, self).__init__(*args, **kwargs)
@@ -73,6 +85,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         self.fields['last_name'].widget.attrs['placeholder'] = 'Sobrenome..'
         self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
         self.fields['confirm_password'].widget.attrs['placeholder'] = 'Confirmar senha..'
+
 
     def clean(self):
         form_data = self.cleaned_data
@@ -109,6 +122,18 @@ class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
                 'id': 'last_name', 'name': 'update_last_name', 'class': "form-control ",
                 'autocomplete': "off", 'ng-model': 'sobrenome', 'required': "required",
                 'placeholer':'Sobrenome..'
+            }
+        )
+    )
+
+    groups = forms.ChoiceField(
+        label='Grupo',
+        required=True,
+        choices=[[g.id, g.name] for g in Group.objects.filter()],
+        widget=forms.Select(
+            attrs={
+                'id': 'groups', 'name': 'groups_update', 'class': "form-control ",
+                'autocomplete': "off", 'ng-model': 'groups', 'required': "required",
             }
         )
     )

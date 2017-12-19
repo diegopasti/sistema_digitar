@@ -107,6 +107,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 				data = data.replace("<html><head></head><body>{","{")
 				data = data.replace("}</body></html>","}")
 				$scope.usuarios = JSON.parse(data).object;
+				alert("Olha o q eu pego: "+JSON.stringify(data))
         $("#loading_tbody").fadeOut();
         $scope.contratos_carregados = true;
         $scope.tdboy = $("#table_usuarios tbody").height();
@@ -162,16 +163,19 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	}
 
 	$scope.open_object = function(){
-		reset_formulary('form_alterar_usuario');
+		reset_formulary('form_alterar_usuario')
+		var grupo = $scope.registro_selecionado.groups[0]
+		alert("Registro selecionado:"+JSON.stringify($scope.registro_selecionado))
 		for (var key in $scope.registro_selecionado) {
 			try{
 				$('input[name='+key+']').val($scope.registro_selecionado[key])
 				//$("#"+key).val($scope.registro_selecionado[key]);
 			}
 			catch (err){
+				alert("DEu err:"+err)
 			}
 		}
-		//$("#valor").maskMoney('mask', $scope.registro_selecionado.valor);
+		$('#group select').val(2)
 	}
 
 	$scope.reajustar_tela = function (){
