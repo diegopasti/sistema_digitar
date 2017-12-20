@@ -90,6 +90,49 @@ app.controller('MeuController', ['$scope', function($scope) {
     })
 	}
 
+	$scope.open_object = function(){
+		reset_formulary('form_adicionar_contrato');
+		for (var key in $scope.registro_selecionado) {
+			try{
+				$("#"+key).val($scope.registro_selecionado[key]);
+			}
+			catch (err){
+			}
+		}
+		$("#valor").maskMoney('mask', $scope.registro_selecionado.valor);
+	}
+
+	$scope.load_competences = function(){
+		NProgress.start();
+		$.ajax({
+      type: 'GET',
+      url: "/api/honorary/competences",
+
+      success: function (data) {
+				data = data.replace("<html><head></head><body>{","{")
+				data = data.replace("}</body></html>","}")
+				$scope.registros = JSON.parse(data).object;
+        $scope.registros_carregados = true;
+        $scope.$apply();
+        success_notify('Operação realizada com Sucesso','Honorários atualizados com sucesso.')
+        //notify('success','Operação realizada com Sucesso','Controle de honorário atualizado com sucesso.')
+        NProgress.done();
+      },
+
+      failure: function (data) {
+      	$scope.registros = [];
+        $scope.loaded_entities = true;
+        alert("Não foi possivel carregar a lista");
+        NProgress.done();
+      },
+    })
+	}
+
+	$scope.select_competence = function(){
+		$scope.get_filter_column();
+		$scope.$apply();
+	}
+
 	$scope.disable = function(){
 		var data_paramters = create_data_paramters('form_justify_action');
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
@@ -121,18 +164,6 @@ app.controller('MeuController', ['$scope', function($scope) {
 		$('#action_user').val('Operador')
 	}
 
-	$scope.open_object = function(){
-		reset_formulary('form_adicionar_contrato');
-		for (var key in $scope.registro_selecionado) {
-			try{
-				$("#"+key).val($scope.registro_selecionado[key]);
-			}
-			catch (err){
-			}
-		}
-		$("#valor").maskMoney('mask', $scope.registro_selecionado.valor);
-	}
-
 	$scope.reajustar_tela = function (){
 		$scope.screen_height = SCREEN_PARAMTERS['screen_height'];
 		$scope.screen_width  = SCREEN_PARAMTERS['screen_width'];
@@ -161,16 +192,6 @@ app.controller('MeuController', ['$scope', function($scope) {
 			$scope.apply();
 	}
 
-	$scope.select_competence = function(){
-		$scope.get_filter_column();
-		$scope.$apply();
-	}
-
-	$scope.select_competence = function(){
-		$scope.get_filter_column();
-		$scope.$apply();
-	}
-
 	$scope.get_filter_column = function(){
 		var competence = $("#competence").val();
 		var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
@@ -184,7 +205,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 					$('#competence').prop('disabled', true);
 					return {competence: $scope.search};
 				default:
-					return {cliente: $scope.search};
+					return {entity_name: $scope.search};
 			}
 		}
 		else{
@@ -196,13 +217,13 @@ app.controller('MeuController', ['$scope', function($scope) {
 					$('#competence').prop('disabled', true);
 					return {competence: $scope.search};
 				default:
-					return {cliente: $scope.search, competence:competence};
+					return {entity_name: $scope.search, competence:competence};
 			}
 		}
 	}
 
 	$scope.selecionar_linha = function(registro) {
-			//alert("veja o index: "+registro.cliente_id+"-"+registro.cliente_nome);
+			//alert("veja o index: "+registro.entity_name_id+"-"+registro.entity_name_nome);
 			//alert("veja se tem plano: "+registro.plano)
 
 			if ($scope.registro_selecionado != null){

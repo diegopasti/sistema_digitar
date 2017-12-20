@@ -181,7 +181,7 @@ class BaseController(Notify):
         response_dict = {}
         response_dict['result'] = True
         response_dict['object'] = self.notify.datalist(model_list, list_fields, extra_fields)
-        print("VEJA COMO FICOU O RESPONSE OBJECT: ",response_dict['object'])
+        #print("VEJA COMO FICOU O RESPONSE OBJECT: ",response_dict['object'])
         response_dict['message'] = str(len(self.notify.datalist(model_list, list_fields)))+" Registros carregados com sucesso!"
         return self.response(response_dict)
 

@@ -39,7 +39,8 @@
 						<h5 class="box-title">Controle de Honorários</h5>
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
-								<button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_contrato" ng-disabled="registro_selecionado!=null">Adicionar</button>
+								<button id='bt_load_competences' role="button" class="btn btn-sm btn-primary" ng-click="load_competences()">Inicializar Honorários</button>
+								<button id='bt_adicionar' role="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_adicionar_contrato" ng-disabled="registro_selecionado!=null">Adicionar</button>
 								<button id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</button>
 								<button id='bt_disable' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_disable();" style='margin-left: 5px;'>Excluir</button>
 							</div>
@@ -65,7 +66,7 @@
 												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Descontos</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Ressarcimento</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Ult. Alteração</th>
-												<th class="text-center" style="width: 120px;">Alterador por</th>
+												<th class="text-center" style="width: 120px;">Alterado por</th>
 												<th class='text-center' style="width: 100px;" ng-click="sortType='plano';sortReverse=!sortReverse" >Situação</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Honorário</th>
 											</tr>
@@ -79,7 +80,7 @@
 											<tr ng-cloak ng-if='registros_carregados' class="angular-repeat linha_selecionavel {{ registro.selecionado }}" ng-click="selecionar_linha(registro);" pagination-id="paginate_registros" dir-paginate="registro in registros | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
 												<td class='text-center' style="width: 30px;">{{ registro.id }}</td>
 												<td class="text-center" style="width: 60px;">{{ registro.competence }}</td>
-												<td class='text-left'>{{ registro.cliente }}</td>
+												<td class='text-left'>{{ registro.entity_name }}</td>
 												<td class='text-right' style="width: 90px;">{{ registro.initial_value_contract| currency:"" }}</td>
 												<td class='text-center' style="width: 100px;" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount| currency:'' }}%">{{ registro.contract_discount| currency:"" }} %</td>
 												<td class='text-right' style="width: 90px;">{{ registro.total_debit| currency:"" }}</td>
@@ -119,8 +120,6 @@
 								<option value="JAN/2018">JAN/2018</option>
 								<option value="TODOS" selected="selected">TODOS</option>
 								<option value="DEZ/2017">DEZ/2017</option>
-								<option value="NOV/2017">NOV/2017</option>
-								<option value="OUT/2017">OUT/2017</option>
 							</select>
 						</div>
 
@@ -288,6 +287,7 @@
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
+<script src="{% static 'modules/core/controle_componentes.js' %}"/>
 <script src="{% static 'modules/honorary/honorary/js/honoraryController.js' %}"/>
 <script src="{% static 'modules/honorary/honorary/js/honorary.js' %}"/>
 {% endcompress %}

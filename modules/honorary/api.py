@@ -3,7 +3,6 @@ from django.db.models import F
 
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary
 from modules.honorary.forms import FormContrato, FormProventos
-#from django.views.decorators.cache import never_cache
 from modules.servico.models import Plano, Servico
 from django.http import HttpResponse, Http404
 from libs.default.core import BaseController
@@ -11,6 +10,7 @@ from modules.entidade.models import entidade
 from sistema_contabil import settings
 from django.core import serializers
 from django.core.cache import cache
+import datetime
 import json
 
 
@@ -350,9 +350,39 @@ class ProventosController(BaseController):
 class HonoraryController(BaseController):
 
     def filter(self,request):
-        #return BaseController().filter(request, Honorary, queryset=Honorary.objects.all().annotate(valor_total=F('contract__valor_total')).order_by('-pk'), extra_fields=['valor_total'])
         return BaseController().filter(request, Honorary)
 
+    def generate_honoraries(self,request):
+        current_month = datetime.datetime.now().month
+        entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
+        for entity in entity_list:
+            self.create_honorary(entity,self.get_competence(current_month))
+            self.create_honorary(entity,self.get_competence(current_month+1))
+            self.create_honorary(entity,self.get_competence(current_month+2))
+            self.create_honorary(entity,self.get_competence(current_month+3))
+
+        return BaseController().filter(request, Honorary)
+
+    def get_competence(self, month_number):
+        current_year = datetime.datetime.now().year
+        if month_number > 12:
+            month_number = month_number - 12
+            current_year = current_year + 1
+        month_list_name = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+        return month_list_name[int(month_number)-1]+"/"+str(current_year)
+
+    def create_honorary(self, entity, competence):
+        #honorary_list = Honorary.objects.filter(entity=entity, competence=competence)
+        contract = Contrato.objects.filter(cliente=entity)
+        if contract.count() == 0:
+            honorary = Honorary().create_honorary_without_contract(entity, competence)
+
+        else:
+            honorary = Honorary().create_honorary_with_contract(entity, competence, contract[0])
+        try:
+            honorary.save()
+        except:
+            pass
 
 
 """

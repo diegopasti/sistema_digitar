@@ -55,15 +55,25 @@ class Contrato(models.Model):
         #print('HONORARIO: ',self.valor_honorario,' - DESC.TEMP.:',desconto_temporario,' - DESC.FID.:',desconto_fidelidade,' - DESC.TOTAL: ',desconto_total,' - TOTAL: ',self.valor_total)
 
 
-    def calcular_desconto_temporario(self):
+    def calcular_desconto_temporario(self, competencia=None):
         if self.desconto_temporario is not None:
-            if self.verificar_validade_desconto_temporario(self.desconto_inicio,self.desconto_fim):
+            if self.verificar_validade_desconto_temporario(competencia,self.desconto_inicio,self.desconto_fim):
                 desconto = self.desconto_temporario
                 return Decimal(desconto)
         return Decimal(0)
 
-    def verificar_validade_desconto_temporario(self,inicio=None,termino=None):
-        current_date = datetime.datetime.now().date()
+    def verificar_validade_desconto_temporario(self,competencia=None, inicio=None,termino=None):
+        if competencia is not None:
+            month_dict_name = {'JAN':'01', 'FEV':'02', 'MAR':'03', 'ABR':'04', 'MAI':'05', 'JUN':'06', 'JUL':'07', 'AGO':'08', 'SET':'09', 'OUT':'10', 'NOV':'11', 'DEZ':'12'}
+            competencia_parts = competencia.split('/')
+            month_name = competencia_parts[0]
+            year = competencia_parts[1]
+            month = month_dict_name[month_name]
+            day = '01'
+            current_date = datetime.datetime.strptime(year+"-"+month+'-'+day, '%Y-%m-%d').date()
+        else:
+            current_date = datetime.datetime.now().date()
+
         if inicio is not None:
             if current_date < inicio:
                 return False
@@ -75,7 +85,7 @@ class Contrato(models.Model):
 
     def calcular_desconto_fidelidade(self):
         indicacoes = Indicacao.objects.filter(cliente=self.cliente).filter(indicacao_ativa=True)
-        print("VEJA QUANTAS INDICACOES ATIVAS TEMOS: ",indicacoes)
+        #print("VEJA QUANTAS INDICACOES ATIVAS TEMOS: ",indicacoes)
         if len(indicacoes) == 0:
             return Decimal(0)
         else:
@@ -124,10 +134,12 @@ class Honorary(models.Model):
         db_table = 'honorary'
         verbose_name = "Honorário"
         verbose_name_plural = "Honorários"
+        unique_together = ("entity", "competence")
 
-    cliente = models.CharField("Cliente:", null=False, max_length=100)
+    entity = models.ForeignKey(entidade, default=1)
+    entity_name = models.CharField("Cliente:", null=False, max_length=100)
     competence = models.CharField("Mês de Competencia:",null=False,max_length=8)
-    contract = models.ForeignKey(Contrato, default=1, related_name='contrato')
+    contract = models.ForeignKey(Contrato, null=True, related_name='contrato')
     initial_value_contract = models.DecimalField("Valor base do contrato", max_digits=8, default=0, decimal_places=2, null=True, blank=False)
     temporary_discount = models.DecimalField("Desconto temporário", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
     fidelity_discount = models.DecimalField("Desconto fidelidade", max_digits=5,default=0, decimal_places=2, null=False,blank=False)
@@ -140,14 +152,54 @@ class Honorary(models.Model):
     total_repayment = models.DecimalField("Total à reembolsar", max_digits=5, default=0, decimal_places=2, null=False, blank=False)
     total_honorary = models.DecimalField("Honorário", max_digits=8, default=0, decimal_places=2, null=False, blank=False)
 
-    is_closed = models.BooleanField("Honorário Encerrado",default=False)
-    closed_date = models.DateTimeField("Honorário encerrado em",auto_now_add=True)
-    closed_by = models.ForeignKey(User, related_name = "finalizado_por",default=1)
-    last_update = models.DateTimeField("Ultima atualização", null=True, auto_now=True)
-    updated_by  = models.ForeignKey(User, related_name = "atualizado_por",default=1)
-    updated_by_name = models.CharField("Atualizado por:", null=False, max_length=100)
-    is_received = models.BooleanField("Honorário recebido",default=False)
-    received_by = models.ForeignKey(User, related_name="recebido_por", default=1)
+    created_date = models.DateTimeField(auto_now_add=True, null=True)
+    is_closed = models.BooleanField("Honorário Encerrado", default=False)
+    closed_date = models.DateTimeField("Honorário encerrado em", null=True)
+    closed_by = models.ForeignKey(User, related_name="finalizado_por", null=True)
+    last_update = models.DateTimeField("Ultima atualização", auto_now=True, null=True)
+    updated_by = models.ForeignKey(User, related_name="atualizado_por", null=True)
+    updated_by_name = models.CharField("Atualizado por:", null=True, max_length=100)
+    is_received = models.BooleanField("Honorário recebido", default=False)
+    received_by = models.ForeignKey(User, related_name="recebido_por", null=True)
+
+    def create_honorary_without_contract(self, entity, competence):
+        honorary = Honorary()
+        honorary.entity = entity
+        honorary.entity_name = entity.nome_razao
+        honorary.competence = competence
+        honorary.contract = None
+        honorary.initial_value_contract = 0
+        honorary.temporary_discount = 0
+        honorary.fidelity_discount = 0
+        honorary.contract_discount = 0
+        honorary.final_value_contract = 0
+        honorary.number_debit_credit = 0
+        honorary.total_debit = 0
+        honorary.total_credit = 0
+        honorary.total_debit_credit = 0
+        honorary.total_repayment = 0
+        honorary.total_honorary = 0
+        return honorary
+
+
+    def create_honorary_with_contract(self, entity, competence, contract):
+        honorary = Honorary()
+        honorary.entity = entity
+        honorary.entity_name = entity.nome_razao
+        honorary.competence = competence
+        honorary.contract = contract
+        honorary.initial_value_contract = contract.valor_honorario
+        honorary.temporary_discount = contract.calcular_desconto_temporario(competence)
+        honorary.fidelity_discount = contract.calcular_desconto_fidelidade()
+        honorary.contract_discount = honorary.temporary_discount+honorary.fidelity_discount
+        honorary.final_value_contract = honorary.initial_value_contract*(1-(honorary.contract_discount/100))
+        honorary.number_debit_credit = 0
+        honorary.total_debit = 0
+        honorary.total_credit = 0
+        honorary.total_debit_credit = 0
+        honorary.total_repayment = 0
+        honorary.total_honorary = honorary.final_value_contract
+        return honorary
 
 
 class HonoraryItem(models.Model):

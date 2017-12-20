@@ -1,11 +1,10 @@
 function init(){
-	//verify_screen_paramters();
 	angular.element(document.getElementById('controle_angular')).scope().load_objects();
 	configurar_formulario_padrao()
 }
 
 function select_competence(){
-	angular.element(document.getElementById('controle_angular')).scope().select_competence()
+	angular.element(document.getElementById('controle_angular')).scope().select_competence();
 }
 
 function post_screen_verified(){
