@@ -57,3 +57,4 @@ util/__init__.pyc
 util/database.pyc
 util/internet.pyc
 /modules/user/migrations/
+/project_properties.py

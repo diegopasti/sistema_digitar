@@ -1,0 +1,59 @@
+<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+	<div class="modal-dialog" style="width: 70%">
+		<form id="form_adicionar_contrato" method="post" autocomplete="off" ng-submit="esta_adicionando? save_provent() : update_provent()">
+			{% csrf_token %}
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h5 id="titulo_modal_adicionar_contrato" style="font-weight: bold">Adicionar Provento</h5>
+				</div>
+
+				<div class="modal-body" style="padding: 35px;padding-top: 10px;">
+					<div class="row no-gutter fluid">
+						<div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+
+							<div class="form-group field" id="field_tipo">
+								<sub><label id="lb_tipo" for="tipo">{{ formulario_proventos.tipo.label }}*</label> </sub>
+								{{ formulario_proventos.tipo }}
+							</div>
+						</div>
+
+						<div class="col-lg-6 col-md-3 col-sm-12 col-xs-12">
+							<div class="form-group field" id="field_nome">
+								<sub><label id="lb_nome" for="nome">{{ formulario_proventos.nome.label }}*</label></sub>
+								{{ formulario_proventos.nome }}
+							</div>
+						</div>
+
+						<div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
+							<div class="form-group field" id="field_valor">
+								<sub><label id="lb_valor" for="valor">{{ formulario_proventos.valor.label }}*</label> </sub>
+								{{ formulario_proventos.valor }}
+							</div>
+						</div>
+					</div>
+
+					<hr>
+
+					<div class="row no-gutter fluid">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="form-group field" id="field_descricao">
+								<sub><label id="lb_descricao" for="descricao">{{ formulario_proventos.descricao.label }}</label> </sub>
+								{{ formulario_proventos.descricao }}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<div class="row">
+						<div class="col-md-2 col-md-push-10">
+							<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

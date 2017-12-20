@@ -748,7 +748,6 @@ app.controller('MeuController', ['$scope', function($scope) {
 		}
 		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
 		request_api("/api/contract/deletar_indicacao/",data,validate_function,success_function,fail_function)
-
 	}
 
 }]);
