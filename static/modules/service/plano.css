@@ -1,0 +1,160 @@
+/* unvisited link */
+.linha_cabecalho a {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* visited link */
+.linha_cabecalho a:visited {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* mouse over link */
+.linha_cabecalho a:hover {
+    color: #222;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* selected link */
+.linha_cabecalho a:active {
+    color: #111;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header{
+    height: 50px;
+}
+
+.modal-header .titulo_modal {
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.modal-body{
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.modal-body .row{
+    padding-left: 5px;
+    padding-right: 5px
+}
+
+.modal-footer{
+    height: 65px;
+}
+
+.box-title{
+    color: #777;
+    padding-left: 8px;
+}
+
+.box-footer{
+    padding: 0px;
+    color: #777;
+}
+.box-footer #box_info_cadastro{
+    padding-left: 8px;
+}
+
+.box-footer #box_info_alteracao{
+    padding-right: 8px;
+}
+
+#descricao {
+    padding-top: 10px;
+    padding-left: 5px;
+}
+#descricao::first-letter {
+   text-transform:uppercase;
+}
+
+#painel_planos{
+    margin-top: -25px;
+}
+
+#painel_planos .list-group-item {
+    padding: 3px 10px
+}
+
+#painel_servicos .row {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+#box_titulo_descricao {
+    text-align: left;
+    padding-top: 10px;
+    padding-left: 10px;
+
+}
+
+.table>tbody>tr>td {
+    padding: 0px;
+    height: 10px;
+    display: table-cell;
+    vertical-align: middle;
+    color: #595959;
+}
+
+.table>tbody>tr:last-child{
+    border-bottom: 1px solid #DDD;
+}
+
+
+.span_checkbox_servico{
+    padding-left: 4px;
+    padding-top: 1px;
+    /*padding-left: 4px;
+    */
+}
+
+.span_label_servico {
+    display: block;
+    padding-left: 25px;
+    margin-top: 3px;
+}
+
+.span_label_servico label{
+    display: block;
+}
+
+.span_label_servico label:hover{
+    cursor: pointer;
+    color: #000;
+
+}
+
+#box_titulo_servicos {
+
+    text-align: left;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+#span_button_icone_salvar{
+    display: none;
+    position: absolute;
+    left: 36px;
+    top: 8px;
+}
+
+#span_button_icone_salvar i{
+    font-size:18px;
+}
+
+#span_button_title_salvar{
+    position: absolute;
+    top:8px;
+    left:60px;
+}
+
+
+
+
