@@ -10,7 +10,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","provento", "descricao"];
 	$scope.search             = '';
-	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10];
+	$scope.table_minimun_items = [1,2,3,4,5,6,7,8,9,10];
 	$scope.opcao_desabilitada = "desabilitado";
 	$scope.registro_selecionado 	= null;
 	$scope.esta_adicionando     	= true;
@@ -18,12 +18,13 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 	$scope.save_usuario = function() {
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
-		alert("Olha o data:\n"+JSON.stringify(data_paramters))
+
 		success_function = function(result,message,object,status){
+			alert("OLHA O OBJECT:"+JSON.stringify(object))
 			$scope.usuarios.splice(0, 0, object);
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_usuario', message);
-			$("#modal_adicionar_usuario_adicionar_usuario").modal('hide');
+			$("#modal_adicionar_usuario").modal('hide');
 			reset_formulary('form_adicionar_usuario');
 		}
 
@@ -36,7 +37,6 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		}
 		//var base_controller = new BaseController();
 		//base_controller.request("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
-		alert("Chegando")
 		request_api("/api/user/save/register",data_paramters,validate_function,success_function,fail_function);
 	}
 
@@ -120,9 +120,10 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
     })
 	}
 
-	$scope.disable = function(){
+	$scope.disable = function(operador){
 		var data_paramters = create_data_paramters('form_justify_action');
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
+		data_paramters['action_object'] = $('#action_object').val()
 
 		success_function = function(result,message,object,status){
 			//var index = $scope.usuarios.indexOf($scope.registro_selecionado);
@@ -147,14 +148,14 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	}
 
 	$scope.confirm_disable = function(){
-		var object_name = $scope.registro_selecionado.username;
+		var object_name = $scope.registro_selecionado.first_name + ' ' + $scope.registro_selecionado.last_name;
 		$('#action_type').val('Desativar')
 		$('#action_object').val(object_name)
 		$('#action_user').val('Operador')
 	}
 
 	$scope.confirm_active = function(){
-		var object_name = $scope.registro_selecionado.username;
+		var object_name = $scope.registro_selecionado.first_name + ' ' + $scope.registro_selecionado.last_name;
 		$('#action_type').val('Reativar')
 		$('#action_object').val(object_name)
 		$('#action_user').val('Operador')

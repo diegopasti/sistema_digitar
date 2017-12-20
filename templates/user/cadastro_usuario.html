@@ -18,8 +18,18 @@
 								<a id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-disabled="registro_selecionado!=null">Adicionar</a>
 								<a id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_alterar_usuario" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</a>
 
+								<style>
+									a.disabled {
+										pointer-events: none;
+										cursor:not-allowed;
+										background-color: transparent;
+										color : #FAEDEC;
+									}
+								</style>
+
+
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
-									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
 										<li><a class="" id='bt_apagar_senha' ng-class="{'disabled':registro_selecionado==null}" data-toggle="modal" data-target="#modal_reset_password">Alterar senha</a></li>
 										<li><a class="" id='bt_ative'  ng-class="{'disabled':registro_selecionado==null || registro_selecionado.is_active==true}" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_active();">Reativar</a></li>
@@ -58,15 +68,15 @@
 
 										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ usuario.selecionado }}" ng-click="selecionar_linha(usuario);" pagination-id="paginate_contratos" dir-paginate="usuario in usuarios |itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
 											<td class='text-center' style="width: 10px;">{{ usuario.id }}</td>
-											<td class="col-cliente text-left"  style="width: 150px;">{{ usuario.username }}</td>
-											<td class='text-left' style="width: 180px;">{{ usuario.first_name }} {{ usuario.last_name }}</td>
+											<td class="col-cliente text-left"  style="width: 150px;">{{ usuario.username  | uppercase}}</td>
+											<td class='text-left' style="width: 180px;">{{ usuario.first_name | uppercase }} {{ usuario.last_name | uppercase }}</td>
 											<td class='text-left' style="width: 180px;">{{ usuario.email }}</td>
 											<td class="text-center" style="width: 140px;">{{ usuario.date_joined|date:'d/M/y'}} ás {{ usuario.date_joined|date:'H:mm'}}</td>
-											<td class="text-center"  style="width: 10px;"> {{ usuario.is_active }}</td>
+											<td class="text-center"  style="width: 10px;">{{ usuario.is_active }}</td>
 										</tr>
 
 										<tr ng-cloak ng-if='contratos_carregados'  ng-repeat="k in table_minimun_items.slice(usuarios.length,table_minimun_items.length)">
-											<td style="width:30px;"></td><td></td><td></td><td style="width: 120px;"></td><td style="width:120px;"></td>
+											<td  class='text-center' style="width:10px;">-</td><td  style="width:150px;"></td><td style="width:180px;"></td><td style="width: 180px;"></td><td style="width:140px;"></td><td style="width:10px;"></td>
 										</tr>
 
 										<tr ng-cloak ng-if="resultado.length === 0 && (usuarios|filter:filterIds()).length > 0">
@@ -281,7 +291,8 @@
 				<form id="form_justify_action" autocomplete="off" ng-submit="disable();">
 					<div class="modal-header" style="padding-top:2px;"><!-- style="height: 48px;"> -->
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top:10px;">×</button>
-						<h4 id="myModalLabel">Desativar Usuário</h4>
+						<h4 ng-show="registro_selecionado.is_active==true" id="myModalLabel">Desativar Usuário</h4>
+						<span ng-show="registro_selecionado.is_active==false"><h4>Reativar Registro</h4></span>
 					</div>
 
 					<div class="modal-body">
@@ -296,9 +307,12 @@
 						<div style="margin-top: 0px;">
 							<div class="row">
 								<div class="col-lg-12">
-									<p id="action_info" ng-class="registro_selecionado.is_active? 'show':'hidden'" style="padding: 10px; padding-bottom: 4px;">
+									<p ng-show="registro_selecionado.is_active==true" id="action_info" style="padding: 10px; padding-bottom: 4px;">
 										Por questões de segurança e integridade das informações esse registro não pode ser excluido definitivamente, apenas
 										desativado para que não esteja disponiveis em operações futuras. Justificativa obrigatória para prosseguir.
+									</p>
+									<p ng-show="registro_selecionado.is_active==false" id="action_info" style="padding: 10px; padding-bottom: 4px;">
+										Por questões de segurança e integridade das informações esse registro precisa de uma Justificativa obrigatória para prosseguir.
 									</p>
 								</div>
 							</div>
@@ -312,7 +326,7 @@
 
 								<div class="col-lg-4 col-md-3">
 									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
-									<input id="action_user" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+									<div>{{ request.user.first_name }} {{ request.user.last_name }}</div>
 								</div>
 
 

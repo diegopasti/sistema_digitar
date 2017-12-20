@@ -20,7 +20,7 @@ class RestrictedOperation(models.Model):
         db_table = 'core_restricted_operations'
 
     opcoes_operacoes = (
-        ('ADD', 'ADIÇÃO'), ('ALT', 'ALTERAÇÃO'), ('DEL', 'EXCLUSÃO'), ('DES', 'DESATIVAÇÃO'))
+        ('ADD', 'ADIÇÃO'), ('ALT', 'ALTERAÇÃO'), ('DEL', 'EXCLUSÃO'), ('DES', 'DESATIVAÇÃO'),('REA','REATIVAR'))
 
     user = models.ForeignKey(User, null=True)
     type = models.CharField("Tipo:", max_length=3, null=False, choices=opcoes_operacoes, error_messages=ERRORS_MESSAGES)
@@ -38,6 +38,13 @@ class RestrictedOperation(models.Model):
         elif type=='DESATIVAR': return 'DES'
         else: return 'OTHER'
 
+    def set_type(self,type):
+        if type=='ADIÇÃO': self.type = 'ADD'
+        elif type=='ALTERAÇÃO': self.type =  'ALT'
+        elif type=='EXCLUSÃO': self.type =  'DEL'
+        elif type=='DESATIVAR': self.type =  'DES'
+        elif type=='REATIVAR' : self.type = 'REA'
+        else: self.type =  'OTHER'
 
 class estados_brasileiros:
 

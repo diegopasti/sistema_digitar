@@ -73,7 +73,7 @@ class BackupManager:
             print(display, now , filesize, '\n'+url)
             data['file_name'] = filename
             data['link'] = url
-            data['client_modified'] = entry.client_modified
+            data['client_modified'] = now#entry.client_modified
             data['size'] = filesize
             metadata.append(data)
             #print(metadata)
@@ -96,16 +96,16 @@ class BackupManager:
         return final_path
 
     def shared_folder(self):
-        #self.data = []
-        #data = {}
+        self.data = []
+        data = {}
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
         #link = self.dropbox.sharing_create_shared_link_with_settings(DROPBOX_ROOT_PATH)
         link = self.dropbox.sharing_create_shared_link(DROPBOX_ROOT_PATH)  # Mesmo estando obsoleto,esse é o único modo de retornar o link de arquivos já compartilhados...
         shared_link = link.url
-        print('\n',shared_link)
-        return shared_link
-        #data['folder_link'] = link.url
-        #return data
+        #print('\n',shared_link)
+        #return shared_link
+        data['folder_link'] = link.url
+        return data
 
 
     def upload(self):
