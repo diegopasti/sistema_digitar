@@ -4,11 +4,11 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
 
-	$scope.sortType           = 'codigo';
+	$scope.sortType           = 'username';
 	$scope.sortReverse        = false;
 	$scope.filter_by          = '1';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
-	$scope.filter_by_options  = ["codigo","provento", "descricao"];
+	$scope.filter_by_options  = ['codigo','nome_completo','email','username'];
 	$scope.search             = '';
 	$scope.table_minimun_items = [1,2,3,4,5,6,7,8,9,10];
 	$scope.opcao_desabilitada = "desabilitado";
@@ -17,10 +17,11 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.usuarios = [];
 
 	$scope.save_usuario = function() {
+
+		$("#form_adicionar_usuario").reset()
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
 
 		success_function = function(result,message,object,status){
-			alert("OLHA O OBJECT:"+JSON.stringify(object))
 			$scope.usuarios.splice(0, 0, object);
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_usuario', message);
@@ -47,9 +48,10 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 
 		success_function = function(result,message,object,status){
-			alert("Cheando e o result é:"+result)
       if(result){
+				alert("Olha o usuario:"+JSON.stringify(object))
 				$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
+
 				$scope.$apply();
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
@@ -61,8 +63,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		};
 
     fail_function = function (result,message,data_object,status) {
-    	alert("deu caquita")
-      check_response_message_form('#form_alterar_contrato', message);
+      check_response_message_form('#form_alterar_usuario', message);
     };
 
     validade_function = function () {
@@ -77,8 +78,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 		success_function = function(result,message,object,status){
       if(result){
-				$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
-				$scope.$apply();
+      	$scope.$apply();
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
 				check_response_message_form('#form_reset_password', message);
@@ -97,8 +97,9 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
     };
     request_api("/api/user/reset_password/",data_paramters,validade_function,success_function,fail_function);
 	}
-	
-	$scope.load_users = function () {
+
+
+	$scope.load_users = function (){
     $.ajax({
       type: 'GET',
       url: "/api/filter",
@@ -107,9 +108,8 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 				data = data.replace("<html><head></head><body>{","{")
 				data = data.replace("}</body></html>","}")
 				$scope.usuarios = JSON.parse(data).object;
-				alert("Olha o q eu pego: "+JSON.stringify(data))
         $("#loading_tbody").fadeOut();
-        $scope.contratos_carregados = true;
+        $scope.usuarios_carregados = true;
         $scope.tdboy = $("#table_usuarios tbody").height();
         $scope.$apply();
 
@@ -125,7 +125,6 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		var data_paramters = create_data_paramters('form_justify_action');
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
 		data_paramters['action_object'] = $('#action_object').val()
-
 		success_function = function(result,message,object,status){
 			//var index = $scope.usuarios.indexOf($scope.registro_selecionado);
   		//$scope.usuarios.splice(index, 1);
@@ -163,8 +162,8 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	}
 
 	$scope.open_object = function(){
+		reset_formulary('form_adicionar_usuario')
 		reset_formulary('form_alterar_usuario')
-		var grupo = $scope.registro_selecionado.groups[0]
 		alert("Registro selecionado:"+JSON.stringify($scope.registro_selecionado))
 		for (var key in $scope.registro_selecionado) {
 			try{
@@ -172,10 +171,13 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 				//$("#"+key).val($scope.registro_selecionado[key]);
 			}
 			catch (err){
-				alert("DEu err:"+err)
 			}
 		}
-		$('#group select').val(2)
+
+		$('#field_group_update > [name=groups]').val($scope.registro_selecionado.groups[0])
+		//$( "#field_group_update > #groups option:selected" ).val(2)
+		//$("#groups select").val('Operador');
+		//$('#group select').val(2)
 	}
 
 	$scope.reajustar_tela = function (){
@@ -209,13 +211,17 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.get_filter_column = function(){
 			var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
 			switch (filtrar_pesquisa_por) {
-					case 'codigo':
-							//alert("filtrar por codigo");
-							return {id: $scope.search};
-					default:
-						return {nome: $scope.search};
+				case 'username':
+							return {username: $scope.search};
+				case 'codigo':
+						return {id: $scope.search};
+				case 'email':
+						return {email: $scope.search};
+				default:
+					return {get_full_name : $scope.search}
 			}
 	}
+
 
 	$scope.selecionar_linha = function(registro) {
 			//alert("veja o index: "+registro.cliente_id+"-"+registro.cliente_nome);
@@ -269,4 +275,4 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 			$scope.opcao_desabilitada = "desabilitado";
 			//$scope.apply();
 	}
-}]);
+}])

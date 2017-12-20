@@ -69,8 +69,15 @@ class Notify:
 
         if extra_fields is not None:
             for item in extra_fields:
-                response_model[item] = ''
-
+                metodo = getattr(object, item, None)
+                if (metodo is not None):
+                    if callable(metodo):
+                        result = metodo()
+                    else:
+                        result = metodo
+                else:
+                    result = ''
+                response_model[item] = result
         response_model['id'] = object.id
         response_model['selected'] = ''
         return response_model
@@ -154,7 +161,7 @@ class BaseController(Notify):
             if user is not None:
                 #activation_code = generate_activation_code(email)
                 #send_generate_activation_code(email, activation_code)
-                response_dict = self.notify.success(user, list_fields=['email','username','is_active','date_joined','first_name','last_name','id'])
+                response_dict = self.notify.success(user, list_fields=['email','username','is_active','date_joined','first_name','last_name','id','groups'])
             else:
                 response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
 

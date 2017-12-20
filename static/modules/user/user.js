@@ -6,6 +6,10 @@ function validate_form_reset_password(){
   return (email_is_valid("email"));
 }
 
+function post_screen_verified(){
+	angular.element(document.getElementById('controle_angular_cadastro_user')).scope().reajustar_tela();
+}
+
 function validate_form_change_password(){
   var messages = {
 		invalid         : 'Informe numeros e letras!',
