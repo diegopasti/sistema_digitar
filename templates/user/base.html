@@ -10,6 +10,7 @@
 		{% load compress %}
 		{% compress css %}
     <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+		<link href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
 		<link href="{% static 'custom/gentelella/custom.css' %}" rel="stylesheet">
 		<link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
 		<link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet">
@@ -26,11 +27,26 @@
 
       <div class="login_wrapper">
         <div class="animate form login_form">
-          <section class="login_content">
+					<style>
+						.panel{
+							-webkit-box-shadow: 10px 10px 29px 0px rgba(128,128,128,0.5);
+							-moz-box-shadow: 10px 10px 29px 0px rgba(128,128,128,0.5);
+							box-shadow: 10px 10px 29px 0px rgba(128,128,128,0.5);
+							background: white;
+							padding: 10px;
+							border-radius: 15px;
+						}
+					</style>
+          <section class="login_content panel">
+						<img src="{% static 'imagens/exemplo_logo.png' %}" height="50" style="margin-left: -15px;">
+						<div class="separator"></div>
             {% block conteudo_principal %}
 
             {% endblock %}
           </section>
+					<div class="text-center" style="margin-top: 5px;">
+						<p>©2016 All Rights Reserved. Privacy and Terms</p>
+					</div>
         </div>
       </div>
     </div>
@@ -45,10 +61,12 @@
 	{% load compress %}
 	{% compress js %}
 	<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+	<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"/>
 	<script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
-  <script src="{% static 'modules/core/viewport/viewport_controll.js'%}"></script>
-	<script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
+  <script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
 	<script src="{% static 'bower_components/pnotify/dist/pnotify.js' %}"></script>
+	<script src="{% static 'modules/core/viewport/viewport_controll.js'%}"></script>
+	<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
 	<script src="{% static 'modules/core/base_api.js'%}"></script>
 	<script src="{% static 'modules/core/working/working.js' %}"></script>
 	{% endcompress %}

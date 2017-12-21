@@ -84,8 +84,8 @@ MIDDLEWARE_CLASSES = (
     #'htmlmin.middleware.MarkRequestMiddleware',
 )
 
-SESSION_SECURITY_EXPIRE_AFTER= 30 #600
-SESSION_SECURITY_WARN_AFTER= 20 #540
+SESSION_SECURITY_EXPIRE_AFTER= 240
+SESSION_SECURITY_WARN_AFTER= 200
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SECURITY_INSECURE = True
 
@@ -209,6 +209,14 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = "/"
 STATIC_URL = '/static/'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'sistemadigitar@gmail.com>'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'sistemadigitar@gmail.com'
+EMAIL_HOST_PASSWORD = 'd1g1t@r@dm1n'
+EMAIL_PORT = 587
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
     ("imagens", os.path.join(BASE_DIR, "/static/imagens")),
@@ -314,7 +322,7 @@ THUMBNAIL_PROCESSORS = (
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters',
 )
-
+SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True
 if SERVER_DIGITAR:
     WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')

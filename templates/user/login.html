@@ -7,39 +7,58 @@
 
 {% block conteudo_principal %}
 <div ng-controller="login_controller">
-    <form id="form_login" ng-submit="login_autentication()">
-      {% csrf_token %}
-      <h1><!--<i class="fa fa-paw"></i>--> Sistema Digitar</h1>
+  <div class="container"></div>
+  <div class="tab-content">
+    <div class="tab-pane active" id="login">
+      <div style="padding-left: 20px;padding-right: 20px;">
+        <form id="form_login" ng-submit="login_autentication()">
+          {% csrf_token %}
+          <div>
+            {{ formulario_login.username }}
+          </div>
 
-      <div>
-        {{ formulario_login.username }}
+          <div>
+            {{ formulario_login.password }}
+          </div>
+
+          <div>
+            <button id="button_send" type="submit" class="btn btn-primary submit form-control" ng-click="">Entrar</button>
+          </div>
+        </form>
+
+        <div class="separator">
+          <p>Problemas para entrar? <a href="#reset_password" data-toggle="tab"><b>Clique aqui.</b></a></p>
+          <div class="clearfix"></div>
+        </div>
       </div>
-
-      <div>
-        {{ formulario_login.password }}
-      </div>
-
-      <div>
-      <button id="button_send" type="submit" class="btn btn-primary submit form-control" ng-click="">Entrar</button>
     </div>
 
-   </form>
+    <div class="tab-pane" id="reset_password">
+      <div style="padding-left: 20px;padding-right: 20px;">
+        <form id="form_reset_password" ng-submit="reset_password()">
+          {% csrf_token %}
+          <p>
+            Em caso de esquecimento informe seu email cadastrado
+            e você receberá uma nova senha.</p>
+          <div>
+            <input type="email" id="email" required class="form-control" placeholder="Informe seu email..">
+          </div>
 
+          <div>
+            <button id="bt_reset_password" type="submit" class="btn btn-primary submit form-control" ng-click="">Recuperar Senha</button>
+          </div>
+        </form>
 
-  <div class="clearfix"></div>
-
-  <div class="separator">
-      <a id='button_reset_password' href="/reset_password">Não consigo entrar</a>
-    </p>
-
-    <div class="clearfix"></div>
-    <br />
-
-    <div>
-      <p>©2016 All Rights Reserved. Privacy and Terms</p>
+        <div class="separator">
+          <p>Para acessar o sistema <a href="#login" data-toggle="tab"><b>Clique aqui.</b></a></p>
+          <div class="clearfix"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<div class="clearfix"></div>
 {% endblock %}
 
 {% block recursos_complementares %}

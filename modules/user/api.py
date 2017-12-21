@@ -6,7 +6,7 @@ from libs.default.core import BaseController
 from libs.default.decorators import request_ajax_required
 from modules.nucleo.models import RestrictedOperation
 
-from modules.nucleo.utils import response_format_success, response_format_error, generate_activation_code, generate_random_password
+from modules.nucleo.utils import response_format_error, generate_activation_code, generate_random_password
 from modules.nucleo.comunications import send_generate_activation_code, resend_generate_activation_code ,send_reset_password
 from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormUpdateProfile, FormAlterarPassword
 from django.contrib.auth.models import Permission, User
@@ -69,8 +69,38 @@ class UserController(BaseController):
 
     @request_ajax_required
     def reset_password(self, request):
+        form = FormResetPassword(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email'].lower()
+            try:
+                user = User.objects.get(email=email)
+            except:
+                user = None
+            if user is not None:
+                if user.is_active:
+                    new_password = generate_random_password(email)
+                    user.set_password(new_password)
+                    try:
+                        user.save()
+                        send_reset_password(new_password, email)
+                        response_dict = BaseController.notify.success(user, ['username','email','first_name','last_name'])
+
+                    except Exception as erro:
+                        print("Erro! Verifique a excecao: ", erro)
+                        response_dict = BaseController.notify.error({'email': 'Falha ao gerar nova senha.'})
+                else:
+                    response_dict = BaseController.notify.error(
+                        {'email': 'Usuário não autorizado!'})
+            else:
+                response_dict = BaseController.notify.error({'email': 'Usuário não cadastrado.'})
+        else:
+            response_dict = BaseController.get_exceptions(None, form)
+        return self.response(response_dict)
+
+    @request_ajax_required
+    def reset_password_old(self, request):
         password = request.POST['password']
-        print("OLHA O PASSWORD Q ESTOU INDO SALVAR:",password)
+        #print("OLHA O PASSWORD Q ESTOU INDO SALVAR:",password)
         try:
             user = User.objects.get(id=request.POST['id'])
             user.set_password(password)
