@@ -10,28 +10,57 @@ application.controller('reset_password_controller', function($scope) {
 
 application.controller('change_password_controller', function($scope) {
 
+	$scope.load_email_form = function (){
+		alert("aaaaaaa")
+	};
+
   $scope.save_password = function () {
     var data_paramters = {
-      old_password: $scope.old_password,
-      password:  $scope.password,
-      confirm_password:  $scope.confirm_password
-    }
+      old_password: $('#old_password').val(),
+      password:  $('#password').val(),
+      confirm_password: $('#confirm_password').val()
+    };
 
     success_function = function(result,message,data_object,status){
-    	success_notify("Operação realizada com Sucesso!","Senha de acesso redefinida.")
-      $("#old_password").val("")
-      $("#password").val("")
-      $("#confirm_password").val("")
-      $scope.old_password = "";
-      $scope.password = "";
-      $scope.confirm_password = "";
-    }
+    	alert("Operação realizada com Sucesso!"+"Senha de acesso redefinida.")
+      $("#old_password").val("");
+      $("#password").val("");
+      $("#confirm_password").val("");
+      return "/"
+    };
 
     fail_function = function (result,message,data_object,status) {
       notify_response_message(message);
-    }
+    };
 
-    request_api("/api/user/change_password",data_paramters,validate_form_change_password,success_function,fail_function)
+  	alert("Ja chegando aqui amore:"+JSON.stringify(data_paramters))
+    request_api("/api/user/change_password/",data_paramters,validate_form_change_password,success_function,fail_function)
+  }
+
+	$scope.confirm_change = function(){
+		$scope.is_change = true;
+		$('#email').prop('readonly', false);
+	};
+
+  $scope.save_email = function () {
+  	var data_paramters = {email:$('#email').val()}
+
+  	success_function = function(result,message,data_object,status){
+  		alert('email alterado')
+			$scope.is_change = false
+			$('#email').prop('readonly', true);
+			$scope.$apply()
+  	}
+
+  	fail_function = function() {
+			alert('nu deu')
+  	}
+
+		validate_function = function (){
+  		email_is_valid("email")
+  	}
+  	alert("chego ate antes de chamar o request_api:"+JSON.stringify(data_paramters))
+		request_api('/api/user/change_email/',data_paramters,validate_function,success_function,fail_function)
   }
 });
 

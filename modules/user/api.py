@@ -8,7 +8,8 @@ from modules.nucleo.models import RestrictedOperation
 
 from modules.nucleo.utils import response_format_error, generate_activation_code, generate_random_password
 from modules.nucleo.comunications import send_generate_activation_code, resend_generate_activation_code ,send_reset_password
-from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormUpdateProfile, FormAlterarPassword
+from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormUpdateProfile, FormAlterarPassword, \
+    FormChangePassword
 from django.contrib.auth.models import Permission, User
 from django.http import HttpResponse
 import json
@@ -135,20 +136,40 @@ class UserController(BaseController):
     @request_ajax_required
     @method_decorator(login_required)
     def change_password(self, request):
-        form = FormAlterarPassword(request.POST)
+        print("Olha o POST:",request.POST)
+        form = FormChangePassword(request.POST)
         if form.is_valid():
+            print("Passou o form é valido:")#,form)
             user = request.user
             if user.check_password(form.cleaned_data['old_password']):
-                user.change_password(form.cleaned_data['password'])
-                auth = User.objects.authenticate(request, email=user.email, password=user.password)
-                response_dict = self.notify.success(user, message='Usuário alterado com sucesso.', list_fields=['email'])
+                try:
+                    print("entrando pra torcar pois:\n",form.cleaned_data['old_password'])
+                    user.set_password(form.cleaned_data['password'])
+                    #auth = User.objects.authenticate(request, email=user.email, password=user.password)
+                    user.save()
+                    response_dict = self.notify.success(user, message='Usuário alterado com sucesso.', list_fields=['email'])
+                except:
+                    pass
             else:
-                response_dict = self.notify.error({'email': 'Senha antiga está incorreta.'})
+                print("é Nao é a mesma senha")
+                response_dict = response_format_error('Senha antiga está incorreta.')#self.notify.error({'email': 'Senha antiga está incorreta.'})
         else:
+            print("Formulario com erros")
             response_dict = response_format_error(form.format_validate_response())
             print("VEJA OS ERROS: ",response_dict)
         return self.response(response_dict)
 
+    @request_ajax_required
+    def change_email(self, request):
+        print('Olha o Post e o User:',request.POST)
+        try:
+            user = User.objects.get(username=request.user)
+            user.email = request.POST['email']
+            user.save()
+            response_dict = response_format_success(user,['username'])
+        except:
+            response_dict = response_format_error('Não foi possivel aterar')
+        return HttpResponse(json.dumps(response_dict))
 
 
     #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)

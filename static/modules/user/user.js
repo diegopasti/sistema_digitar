@@ -11,7 +11,8 @@ function post_screen_verified(){
 }
 
 function validate_form_change_password(){
-  var messages = {
+  return true
+	/*var messages = {
 		invalid         : 'Informe numeros e letras!',
 		short           : 'Informe pelo menos 8 caracteres!',
 		long            : 'Informe no máximo x caracteres!',
@@ -35,7 +36,7 @@ function validate_form_change_password(){
 	validator.texts = messages;
 	validator.settings.alerts = true;
 	result = validator.checkAll($('#form_change_password'));
-	return true;//result.valid
+	return true;//result.valid */
 }
 
 function validate_form_login(){

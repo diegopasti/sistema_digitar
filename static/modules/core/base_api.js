@@ -20,6 +20,7 @@ function request_api(url,data_paramters,validator_functions,success_function,fai
   data_paramters['csrfmiddlewaretoken'] = csrftoken;
   NProgress.start();
   if (validator_functions()){
+    alert("executo o ajax"+JSON.stringify(data_paramters))
     execute_ajax(url,'post',data_paramters,success_function,fail_function);
   }
   else{
@@ -29,7 +30,7 @@ function request_api(url,data_paramters,validator_functions,success_function,fai
 }
 
 function execute_ajax(url,request_method,data_paramters,success_function,fail_function){
-	//alert("VEJA OS PARAM: "+JSON.stringify(data_paramters))
+	alert("VEJA OS PARAM: "+JSON.stringify(data_paramters))
   $.ajax({
     type: request_method,
     url: url,

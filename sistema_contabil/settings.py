@@ -324,11 +324,12 @@ THUMBNAIL_PROCESSORS = (
 )
 SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True
-if SERVER_DIGITAR:
+if SERVER_DIGITAR :
     WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
     WORKING_SERVER = "http://192.168.1.115:8010"
 
     from modules.nucleo.working_api import WorkingManager
+
 
     try:
         if "runserver" in sys.argv:
