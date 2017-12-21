@@ -2,7 +2,12 @@
 {% block Titulo %}<title>Digitar - Perfil</title>{% endblock %}
 {% load staticfiles %}
 {% block recursos_necessarios %}
+<style>
+	.field label {
+		font-weight: normal;
+	}
 
+</style>
 {% endblock %}
 
 {% block conteudo %}
@@ -39,34 +44,44 @@
 										<h5 class="box-title">Alterar Email</h5>
 									</div>
 								</div>
-							</div>
-							<div ng-controller="change_password_controller" ng-init="is_change=false">
+							<div ng-controller="change_password_controller">
 								<form id="form_change_password" autocomplete="off" ng-submit="save_email()" novalidate>
 									<div class="box-body" style="margin-bottom: -10px;margin-top: 0px;">
 										{% csrf_token %}
-										<div class="row"><br></div>
 										<div class="row">
-											<div class="col-lg-11">
+											<div class="col-lg-12">
 												<div id="field_old_password" class="field" >
-													<label for="old_password">{{ form_change_email.email.label }}</label>
-													<span ng-if="is_change==true">{{ form_change_email.email }}</span>
-													<span ng-if="is_change==false"><input type="text" class="form-control" readonly  value="{{ request.user.email }}"></span>
+													<sub><label for="old_password">{{ form_change_email.email.label }}</label></sub>
+													{{ form_change_email.email }}
 												</div>
 											</div>
-											<div class="col-lg-1">
-												<div class="field" style="padding-top: 25px">
-												<span ng-if="is_change==false"><button id="bt_active_change"  ng-click="confirm_change()" type="button" class="btn btn-default"><i class="fa fa-pencil" aria-hidden="true"></i>
-												</button></span>
-												<span ng-if="is_change==true"><button ng-controller="" id="bt_active_change"type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button></span>
-											</div></div>
 										</div>
 										<div class="row">
-											<div id="bt_change_email">
-
+											<div class="col-lg-12">
+												<div id="field_old_password" class="field" >
+													<sub><label for="old_password">{{ form_change_email.first_name.label }}</label></sub>
+													{{ form_change_email.first_name }}
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-12">
+												<div id="field_old_password" class="field" >
+													<sub><label for="old_password">{{ form_change_email.last_name.label }}</label></sub>
+													{{ form_change_email.last_name }}
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="box-footer">
+										<div class="row">
+											<div class="col-md-2 col-md-push-10" >
+													<button id="bt_active_change" type="submit" class="btn btn-primary pull-right"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar </button>
 											</div>
 										</div>
 									</div>
 								</form>
+							</div>
 							</div>
 						</div>
 
@@ -85,7 +100,7 @@
 											<div class="row">
 												<div class="col-lg-12">
 													<div id="field_old_password" class="field">
-														<label for="old_password">{{ form_change_password.old_password.label }}</label>
+														<sub><label for="old_password">{{ form_change_password.old_password.label }}</label></sub>
 														{{ form_change_password.old_password }}
 													</div>
 												</div>
@@ -93,7 +108,7 @@
 											<div class="row">
 												<div class="col-lg-12">
 														<div id="field_password" class="field">
-															<label for="password">{{ form_change_password.password.label }}</label>
+															<sub><label for="password">{{ form_change_password.password.label }}</label></sub>
 															{{ form_change_password.password }}
 														</div>
 													</div>
@@ -101,7 +116,7 @@
 											<div class="row">
 												<div class="col-lg-12">
 														<div id="field_confirm_password" class="field">
-															<label for="confirm_password">{{ form_change_password.confirm_password.label }}</label>
+															<sub><label for="confirm_password">{{ form_change_password.confirm_password.label }}</label></sub>
 															{{ form_change_password.confirm_password }}
 														</div>
 													</div>
@@ -110,7 +125,7 @@
 										<div class="box-footer">
 											<div class="row">
 												<div class="col-md-2 col-md-push-10" >
-													<button id="button_send" type="submit" class="submit btn btn-success pull-right">Enviar</button>
+													<button id="button_send" type="submit" class="btn btn-primary pull-right"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar </button>
 												</div>
 											</div>
 										</div>
@@ -132,9 +147,7 @@
 	<script src="{% static 'modules/user/user_controller.js' %}"/>
 	<script src="{% static 'modules/user/user.js' %}"/>
 	<script>
-		$( document ).ready(function() {
-			load_email_form()
-		});
+		$('#email').val("{{ request.user.email }}")
 
 	</script>
 

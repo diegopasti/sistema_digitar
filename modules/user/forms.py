@@ -74,7 +74,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         widget=forms.Select(
             attrs={
                 'id': 'groups', 'name': 'groups', 'class': "form-control ",
-                'autocomplete': "off", 'ng-model': 'groups', 'required': "required",
+                'autocomplete': "off", 'required': "required",
             }
         )
     )
@@ -238,7 +238,7 @@ class FormChangePassword(FormAbstractPassword, FormAbstractConfirmPassword, Base
         widget=forms.TextInput(
             attrs={
                 'id': 'old_password', 'class': "form-control",'type': "password",'autocomplete': "off", 'ng-model': 'old_password',
-                'required': "required", 'data-validate-length-range': '6', 'ng-pattern': '(\d+[a-zA-Z]+)|([a-zA-Z]+\d+)', 'placeholder':'Senha Atual..'
+                'required': "required", 'data-validate-length-range': '6', 'ng-pattern': '(\d+[a-zA-Z]+)|([a-zA-Z]+\d+)',
             }
         )
     )
@@ -246,8 +246,6 @@ class FormChangePassword(FormAbstractPassword, FormAbstractConfirmPassword, Base
     def __init__(self, *args, **kwargs):
         super(FormAbstractPassword, self).__init__(*args, **kwargs)
         super(FormAbstractConfirmPassword, self).__init__(*args, **kwargs)
-        self.fields['password'].widget.attrs['placeholder'] = 'Digite Nova Senha..'
-        self.fields['confirm_password'].widget.attrs['placeholder'] = 'Confirmar Nova Senha..'
 
     def clean(self):
         form_data = self.cleaned_data
@@ -282,6 +280,31 @@ class FormActivationCode(forms.Form):
     )
 
 class FromChangeContacts (BaseForm,FormAbstractEmail):
+    first_name = forms.CharField(
+        label="Primeiro Nome",
+        required=True,
+        validators=[],
+        error_messages=ERRORS_MESSAGES,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'first_name', 'name': 'primeiro_nome', 'class': "form-control ",
+                'autocomplete': "off", 'ng-model': 'primeiro_nome', 'required': "required",
+            }
+        )
+    )
+
+    last_name = forms.CharField(
+        label="Sobrenome",
+        required=True,
+        validators=[],
+        error_messages=ERRORS_MESSAGES,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'last_name', 'name': 'sobrenome', 'class': "form-control ",
+                'autocomplete': "off", 'ng-model': 'sobrenome', 'required': "required",
+            }
+        )
+    )
 
     def __init__(self,*args, **kwargs):
         super(FormAbstractEmail,self).__init__(*args,**kwargs)
