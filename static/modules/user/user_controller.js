@@ -4,7 +4,7 @@
 var application = angular.module('modules.user', []);
 
 application.controller('reset_password_controller', function($scope) {
-
+	$scope.is_change = false;
   $scope.reset_password = function () {
   	var data_paramters = {email: $scope.email}
 
@@ -42,6 +42,10 @@ application.controller('reset_password_controller', function($scope) {
 
 application.controller('change_password_controller', function($scope) {
 
+	$scope.load_email_form = function (){
+		alert("aaaaaaa")
+	};
+
   $scope.save_password = function () {
     var data_paramters = {
       old_password: $('#old_password').val(),
@@ -62,7 +66,33 @@ application.controller('change_password_controller', function($scope) {
     };
 
   	alert("Ja chegando aqui amore:"+JSON.stringify(data_paramters))
-    request_api("/api/user/change_password",data_paramters,validate_form_change_password,success_function,fail_function)
+    request_api("/api/user/change_password/",data_paramters,validate_form_change_password,success_function,fail_function)
+  }
+
+	$scope.confirm_change = function(){
+		$scope.is_change = true;
+		$('#email').prop('readonly', false);
+	};
+
+  $scope.save_email = function () {
+  	var data_paramters = {email:$('#email').val()}
+
+  	success_function = function(result,message,data_object,status){
+  		alert('email alterado')
+			$scope.is_change = false
+			$('#email').prop('readonly', true);
+			$scope.$apply()
+  	}
+
+  	fail_function = function() {
+			alert('nu deu')
+  	}
+
+		validate_function = function (){
+  		email_is_valid("email")
+  	}
+  	alert("chego ate antes de chamar o request_api:"+JSON.stringify(data_paramters))
+		request_api('/api/user/change_email/',data_paramters,validate_function,success_function,fail_function)
   }
 });
 

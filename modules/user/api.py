@@ -129,6 +129,17 @@ class UserController(BaseController):
             print("VEJA OS ERROS: ",response_dict)
         return self.response(response_dict)
 
+    @request_ajax_required
+    def change_email(self, request):
+        print('Olha o Post e o User:',request.POST)
+        try:
+            user = User.objects.get(username=request.user)
+            user.email = request.POST['email']
+            user.save()
+            response_dict = response_format_success(user,['username'])
+        except:
+            response_dict = response_format_error('Não foi possivel aterar')
+        return HttpResponse(json.dumps(response_dict))
 
 
     #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)

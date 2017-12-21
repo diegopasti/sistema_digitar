@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from libs.default.decorators import request_get_required
 from modules.nucleo.utils import check_valid_activation_code
 from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormActivationCode, \
-    FormConfirmRegister, FormUpdateProfile, FormAlterarPassword, FormChangePassword
+    FormConfirmRegister, FormUpdateProfile, FormAlterarPassword, FormChangePassword, FromChangeContacts
 from django.contrib.auth import logout, login
 from modules.user.models import Session
 from django.contrib.auth.models import Permission, User
@@ -84,8 +84,9 @@ def user_administration (request):
 
 @login_required
 def profile (request):
+    form_change_email = FromChangeContacts()
     form_change_password = FormChangePassword()
-    return render(request,"user/profile.html",{'form_change_password':form_change_password})
+    return render(request,"user/profile.html",{'form_change_password':form_change_password,'form_change_email':form_change_email})
 
 @login_required
 def user_page (request):

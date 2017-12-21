@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'reset_password/$', UserController().reset_password),
     url(r'change_password$', UserController().change_password),
     url(r'reactivate$', UserController().resend_activation_code),
+    url(r'change_email/$',UserController().change_email),
 
 
 
