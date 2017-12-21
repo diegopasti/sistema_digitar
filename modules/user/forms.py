@@ -5,7 +5,7 @@ from modules.nucleo.config import ERRORS_MESSAGES
 from modules.nucleo.forms import FormAbstractPassword, FormAbstractConfirmPassword, FormAbstractEmail, \
     FormAbstractUsername
 #from modules.user.models import User
-from django.contrib.auth.models import Permission, User , Group
+from django.contrib.auth.models import Permission, User #, Group
 
 
 class FormLogin(FormAbstractUsername, FormAbstractPassword,BaseForm):
@@ -65,7 +65,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
     groups = forms.ChoiceField(
         label='Grupo',
         required=True,
-        choices=[[g.id, g.name] for g in Group.objects.filter()],
+        choices=[],#[[g.id, g.name] for g in Group.objects.filter()],
         widget=forms.Select(
             attrs={
                 'id': 'groups', 'name': 'groups', 'class': "form-control ",
@@ -129,7 +129,7 @@ class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
     groups = forms.ChoiceField(
         label='Grupo',
         required=True,
-        choices=[[g.id, g.name] for g in Group.objects.filter()],
+        choices=[],#[[g.id, g.name] for g in Group.objects.filter()],
         widget=forms.Select(
             attrs={
                 'id': 'groups', 'name': 'groups_update', 'class': "form-control ",

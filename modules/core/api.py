@@ -83,8 +83,8 @@ class ConfigurationsController(BaseController):
         for item in backup_list:
             response_dict['object']['used_space'] = response_dict['object']['used_space'] + float(item['size'])
         response_dict['object']['used_percent_space'] = round((response_dict['object']['used_space'] / response_dict['object']['total_space']) * 100, 2)
-        print("PERCENTUAL: ",response_dict['object']['used_space'] / response_dict['object']['total_space'])
-        print("ESPACO DE ARMAZENAMENTO: ",response_dict)
+        #print("PERCENTUAL: ",response_dict['object']['used_space'] / response_dict['object']['total_space'])
+        #print("ESPACO DE ARMAZENAMENTO: ",response_dict)
         return self.response(response_dict)
 
     def version_update(self,request):
