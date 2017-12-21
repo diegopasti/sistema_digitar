@@ -322,7 +322,7 @@ if SERVER_DIGITAR :
 
     from modules.nucleo.working_api import WorkingManager
 
-    '''
+
     try:
         if "runserver" in sys.argv:
             WorkingManager().register_programming_backend()
@@ -335,4 +335,3 @@ if SERVER_DIGITAR :
 
     except:
         pass
-    '''
