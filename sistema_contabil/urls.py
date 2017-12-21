@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', view_usuario.login_page),
     url(r'^logout', view_usuario.logout_page),
+    url(r'^profile/',view_usuario.profile),
     url(r'^cadastrar_empresa$', nucleo_views.cadastrar_empresa), #url(r'teste/$', "endereco.views.teste),
     url(r'^index/$',  entidade_views.index),
     url(r'^gerar_pdf/$', protocolo_views.gerar_pdf),
@@ -120,7 +121,7 @@ urlpatterns = [
 
     #url(r'^api/core/', include('modules.nucleo.urls')),
 
-    url(r'^api/working/register/$', nucleo_views.working),
+    #url(r'^api/working/register/$', nucleo_views.working),
     url(r'^system/configurations', core_views.system_configurations),
     url(r'configurations/backup$', ConfigurationsController().load_backups),
     url(r'configurations/backup/info$', ConfigurationsController().check_available_space),
@@ -133,8 +134,6 @@ urlpatterns = [
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'users/',view_usuario.user_page),
     url(r'^api/user/', include('modules.user.urls')),
-    url(r'register/$', view_usuario.register_first_user),
-
     # User Administration
     url(r'filter/', UserController.filter_users),
 

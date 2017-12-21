@@ -17,16 +17,19 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.usuarios = [];
 
 	$scope.save_usuario = function() {
-
-		$("#form_adicionar_usuario").reset()
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
 
 		success_function = function(result,message,object,status){
-			$scope.usuarios.splice(0, 0, object);
+			alert("olha o object:"+JSON.stringify(object))
+			alert("rimeiro?"+JSON.stringify($scope.usuarios))
+			$scope.usuarios.splice(0,0,object)
+			alert("passou?"+JSON.stringify($scope.usuarios))
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_usuario', message);
 			$("#modal_adicionar_usuario").modal('hide');
 			reset_formulary('form_adicionar_usuario');
+			$scope.$apply();
+
 		}
 
 		fail_function = function (result,message,data_object,status) {
