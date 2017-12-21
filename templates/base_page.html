@@ -15,6 +15,7 @@
 <link href="{% static 'bower_components/pnotify/dist/pnotify.css' %}" rel="stylesheet"/>
 <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
 <link href="{% static 'modules/core/base.css' %}" rel="stylesheet"/>
+<link rel="stylesheet" type="text/css" href="{% static 'modules/core/session_security/style.css' %}">
 {% endcompress %}
 
 {% block recursos_necessarios %}
@@ -222,7 +223,7 @@
 </div>
 <div class="clearfix"></div>
 
-
+{% include 'core/session_security/dialog.html' %}
 </body>
 {% load staticfiles %}
 {% load compress %}
@@ -238,8 +239,26 @@
 <script src="{% static 'bower_components/nprogress/nprogress.js' %}"/>
 <script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"/>
 <script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"/>
+<script src="{% static 'modules/core/session_security/script.js' %}"></script>
 <script src="{% static 'modules/core/base_controller.js' %}"/>
 {% endcompress %}
+
+
+
+{% load session_security_tags %}
+{% load i18n l10n %}
+{% load static from staticfiles %}
+{% localize off %}
+<script type="text/javascript">
+var sessionSecurity = new yourlabs.SessionSecurity({
+  pingUrl: '{% url 'session_security_ping' %}',
+  warnAfter: {{ request|warn_after|unlocalize }},
+  expireAfter: {{ request|expire_after|unlocalize }},
+  confirmFormDiscard: "{% trans 'You have unsaved changes in a form of this page.' %}"
+});
+</script>
+{% endlocalize %}
+
 {% block recursos_complementares %}
 {% endblock %}
 <script>

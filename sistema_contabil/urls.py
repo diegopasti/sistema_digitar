@@ -30,8 +30,10 @@ from modules.user import views as view_usuario
 from modules.user.api import UserController
 #from filebrowser.sites import site
 #site.directory = "data/backup/"
+handler403 = 'modules.core.views.access_denied'
 
 urlpatterns = [
+
     url(r'admin/register/first_user',view_usuario.register_first_user),
     url(r'^$', entidade_views.index),
     #url(r'^admin/filebrowser/', include(site.urls)),
@@ -138,6 +140,8 @@ urlpatterns = [
     url(r'register/$', view_usuario.register_first_user),
 
     # User Administration
+    url(r'session_security/', include('session_security.urls')),
+    url(r'error/access_denied',core_views.access_denied),
     url(r'filter/', UserController.filter_users),
 
 ]
