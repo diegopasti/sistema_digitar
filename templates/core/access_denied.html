@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SistemaWeb - Acesso Negado</title>
+
+    {% load static %}
+    <link rel="shortcut icon" href="{% static 'images/favicon_sistema.png' %}">
+
+    <!-- Bootstrap -->
+    <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+    <!-- NProgress -->
+    <script src="{% static 'bower_components/nprogress/nprogress.js' %}"></script>
+    <link href="{% static 'bower_components/nprogress/nprogress.css' %}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="{% static 'custom/gentelella/custom.css' %}" rel="stylesheet">
+    <style>
+      #wrapper {
+        text-align: center;
+        margin-top: 60px;
+      }
+      #yourdiv {
+        height: 220px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+
+        <div id="wrapper">
+          <div id="yourdiv">
+            <div class="text-center text-center">
+              <h1 class="error-number">403</h1>
+              <h2><i class="fa fa-lock" aria-hidden="true"></i> Acesso Negado</h2>
+              <p>Se você é um usuário cadastrado <a href="/login" style="font-weight: bold;"><u>acesse aqui</u></a><br>
+              ou contate o administrador do sistema.</p>
+            </div>
+          </div>
+      </div>
+        <!-- page content -->
+        <div class="col-md-12">
+          <div class="col-middle">
+
+          </div>
+        </div>
+        <!-- /page content -->
+      </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <!-- FastClick -->
+    <script src="{% static 'bower_components/fastclick/lib/fastclick.js' %}"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="{% static 'custom/gentelella/custom.js' %}"></script>
+  </body>
+</html>

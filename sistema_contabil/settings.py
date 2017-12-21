@@ -60,12 +60,13 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles','session_security',
     'djangobower','compressor','dropbox','dbbackup',
     'sistema_contabil','modules','modules.nucleo','modules.user','modules.entidade','modules.protocolo','modules.honorary','modules.servico','modules.preferencias'
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -73,7 +74,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+    'session_security.middleware.SessionSecurityMiddleware',
+
 
     #'django.middleware.cache.UpdateCacheMiddleware',
     #'htmlmin.middleware.HtmlMinifyMiddleware',
@@ -81,6 +83,11 @@ MIDDLEWARE_CLASSES = (
     #'django.middleware.cache.FetchFromCacheMiddleware',
     #'htmlmin.middleware.MarkRequestMiddleware',
 )
+
+SESSION_SECURITY_EXPIRE_AFTER= 30 #600
+SESSION_SECURITY_WARN_AFTER= 20 #540
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SECURITY_INSECURE = True
 
 ROOT_URLCONF = 'sistema_contabil.urls'
 TEMPLATES = [

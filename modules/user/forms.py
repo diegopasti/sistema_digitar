@@ -67,7 +67,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
     groups = forms.ChoiceField(
         label='Grupo',
         required=True,
-        choices=[[g.id, g.name] for g in Group.objects.filter()],
+        choices=[],#[[g.id, g.name] for g in Group.objects.filter()],
         widget=forms.Select(
             attrs={
                 'id': 'groups', 'name': 'groups', 'class': "form-control ",

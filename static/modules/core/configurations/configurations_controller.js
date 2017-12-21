@@ -9,7 +9,7 @@ application.controller('configurations_controller', function ($scope) {
 	$scope.load = function () {
     $.ajax({
       type: 'GET',
-      url: "/api/core/configurations/backup",
+      url: "/api/core/configurations/backup/backups",
 
       success: function (data) {
         $scope.backups = JSON.parse(data).object;
@@ -37,7 +37,7 @@ application.controller('configurations_controller', function ($scope) {
       	var response = JSON.parse(data);
       	var item = response.object;
       	if(response.result){
-      		$scope.backups.splice(0, 0, item);
+      		//$scope.backups.splice(0, 0, item);
 					$scope.$apply();
       	}
       	register_action(start_request, status);
@@ -63,6 +63,23 @@ application.controller('configurations_controller', function ($scope) {
 
       success: function (data) {
         $scope.backups_informations = JSON.parse(data).object;
+        $("#loading_tbody").fadeOut();
+        $scope.$apply();
+      },
+
+      failure: function () {
+        alert("Não foi possivel carregar a lista")
+      }
+    })
+	}
+
+	$scope.restore_backups = function(){
+    $.ajax({
+      type: 'GET',
+      url: "/api/core/configurations/backup/restore",
+
+      success: function (data) {
+        $scope.restore_backups_informations = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();
       },
