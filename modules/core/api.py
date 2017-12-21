@@ -35,18 +35,11 @@ class ConfigurationsController(BaseController):
 
     def restore_backup(self,request):
         self.start_process(request)
-        backup_paramters = BackupManager().create_backup()
-        backup = Backup()
-        backup.backup_file_name = backup_paramters['file_name']
-        backup.backup_link = backup_paramters['link']
-        backup.backup_size = backup_paramters['size']
-
-        self.get_exceptions(backup, None)
-        if self.full_exceptions == {}:
-            response_dict = self.execute(backup, backup.save)
+        backup_paramters = BackupManager().restore_backup()
+        if backup_paramters is True:
+            print('RESTAURAÇÃO REALIZADA COM SUCESSO')
         else:
-            response_dict = self.notify.error(self.full_exceptions)
-        return self.response(response_dict)
+            print('ERRO',backup_paramters)
 
     def list_backups(self,request):
         self.start_process(request)
