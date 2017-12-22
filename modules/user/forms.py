@@ -279,7 +279,9 @@ class FormActivationCode(forms.Form):
         )
     )
 
-class FromChangeContacts (BaseForm,FormAbstractEmail):
+class FromChangePersonalInfo (BaseForm,FormAbstractEmail):
+    model = User
+
     first_name = forms.CharField(
         label="Primeiro Nome",
         required=True,
@@ -308,3 +310,4 @@ class FromChangeContacts (BaseForm,FormAbstractEmail):
 
     def __init__(self,*args, **kwargs):
         super(FormAbstractEmail,self).__init__(*args,**kwargs)
+
