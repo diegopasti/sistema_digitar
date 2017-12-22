@@ -58,19 +58,6 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
   });
 }
 
-function notify(type,title,text){
-	new PNotify({
-		title: title,
-		addclass: 'visible',
-		text: text,
-		hide: true,
-		delay: 2000,
-		mouse_reset: false,
-		type: type,
-		styling: 'bootstrap3'
-	});
-}
-
 function create_data_paramters(formulary_id){
 	var data_paramters = {};
 	$("#"+formulary_id+' input, '+"#"+formulary_id+' select, '+"#"+formulary_id+' textarea').each(function(index){

@@ -4,40 +4,8 @@
 var application = angular.module('modules.user', []);
 
 application.controller('reset_password_controller', function($scope) {
-	$scope.is_change = false;
-  $scope.reset_password = function () {
-  	var data_paramters = {email: $scope.email}
 
-  	var success_function = function success_function(result,message,data_object,status){
-			success_notify("Operação realizada com Sucesso!","Verifique seu email, você receberá um email em instantes.")
-    }
 
-    var fail_function = function (result,message,data_object,status) {
-      notify_response_message(message);
-    }
-
-    validate_function = function(){
-			return email_is_valid("email")
-		}
-    request_api("/api/user/reset_password",data_paramters,validate_function,success_function,fail_function)
-  }
-
-  $scope.resend_activation_code = function () {
-    var data_paramters = {email: $scope.email}
-
-    var success_function = function success_function(result,message,data_object,status){
-			success_notify("Operação realizada com Sucesso!","Verifique seu email, você receberá um email em instantes.")
-    }
-
-    var fail_function = function (result,message,data_object,status) {
-    	notify_response_message(message);
-    }
-
-    validate_function = function(){
-			return email_is_valid("email")
-		}
-    request_api("/api/user/reactivate",data_paramters,validate_function,success_function,fail_function)
-  }
 });
 
 application.controller('change_password_controller', function($scope) {
@@ -189,6 +157,26 @@ application.controller('login_controller', function($scope) {
       notify_response_message(message);
     }
     request_api("/api/user/login/autentication",data_paramters,validate_form_login,success_function,fail_function)
+  }
+
+  $scope.reset_password = function () {
+  	alert('eh aqui')
+  	var data_paramters = {email: $("#email").val()}
+
+  	var success_function = function success_function(result,message,data_object,status){
+			success_notify("Operação realizada com Sucesso!","Verifique seu email, você receberá um email em instantes.")
+			$("#email").val("")
+			$('a[href="#login"]').tab('show');
+    }
+
+    var fail_function = function (result,message,data_object,status) {
+      notify_response_message(message);
+    }
+
+    validate_function = function(){
+			return email_is_valid("email");
+		}
+    request_api("/api/user/reset_password/",data_paramters,validate_function,success_function,fail_function)
   }
 });
 

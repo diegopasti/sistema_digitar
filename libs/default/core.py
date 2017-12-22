@@ -327,11 +327,10 @@ class BaseController(Notify):
         response_dict['status']['response_size'] = "RESPONSE_SIZE"
         response_dict['status']['server_processing_time_duration'] = self.server_processing_time.total_seconds()  # datetime.datetime.now()
         response_dict['status']['cliente_processing_time_duration'] = ''
-
         data = json.dumps(response_dict, default=json_serial)
         data = data.replace('RESPONSE_SIZE', str(sys.getsizeof(data) - 16))
         response = HttpResponse(data)  # after generate response noramlization reduce size in 16 bytes
-        #print("RESPONSE: ",response)
+
         return response
 
     def filter_request(self, request, formulary=None):
