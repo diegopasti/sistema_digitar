@@ -20,6 +20,10 @@ function resetar_formulario(){
 	$("#descricao").val('')
 }
 
+function verificar_tipo_valor(){
+
+}
+
 function validate_justify(){
 	set_wrong_field('action_justify', 'Campo Obrigatório')
 	if(document.getElementById('action_justify').value != ''){

@@ -68,20 +68,24 @@ function create_data_paramters(formulary_id){
 			data_paramters[input.attr('id')] = input.val()
 		}
 	});
-	alert("Vou sair com isso:"+JSON.stringify(data_paramters))
+	//alert("Vou sair com isso:"+JSON.stringify(data_paramters))
 	return data_paramters;
 }
 
 function check_response_message_form(form_id, response_message){
   $(form_id +" input, textarea").each(function () {
-    var id = $(this).attr("id");
-    var erro = response_message[id];
-    if (erro){
-      set_wrong_field(id, erro);
-    }
-    else{
-      clean_wrong_field(id);
-    }
+  	try{
+  		var id = $(this).attr("id");
+			var erro = response_message[id];
+			if (erro){
+				set_wrong_field(id, erro);
+			}
+			else{
+				clean_wrong_field(id);
+			}
+  	}
+  	catch(err){
+  	}
   });
 }
 

@@ -39,7 +39,7 @@
 											<th ng-hide='screen_model <= 3' class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Tipo</th>
 											<th class='text-center' ng-click="sortType='cliente';sortReverse=!sortReverse">Provento</th>
 											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Tipo do Valor</th>
-											<th class='text-center' style="width: 120px;" ng-hide='screen0 || screen1 || screen2' ng-click="sortType='plano';sortReverse=!sortReverse" >Valor (R$)</th>
+											<th class='text-center' style="width: 120px;" ng-hide='screen0 || screen1 || screen2' ng-click="sortType='plano';sortReverse=!sortReverse" >Valor</th>
 										</tr>
 									</thead>
 
@@ -65,7 +65,9 @@
 											</td>
 
 											<td ng-class="{'text-right': contrato.valor, 'text-center': !contrato.plano  }" style="width: 130px;">
-												<span ng-if="contrato.valor">{{ contrato.valor | currency:"" }}</span><span ng-if="!contrato.plano"></span>
+												<span ng-if="contrato.valor && contrato.tipo_valor=='R'">{{ contrato.valor | currency:"" }}</span>
+												<span ng-if="contrato.valor && contrato.tipo_valor=='P'">{{ contrato.valor }}%</span>
+												<span ng-if="!contrato.plano"></span>
 											</td>
 										</tr>
 

@@ -46,7 +46,7 @@ def index(request):
 def buscar_fontes(request):
     return render(request,"index.html")
 
-
+@login_required
 def cadastro_entidades(request):
     usuario_admin = False
     dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')

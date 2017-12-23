@@ -53,7 +53,7 @@ def response_format(result,message,object,list_fields):
 
 
 def get_lista_contratos(request):
-    lista_clientes = entidade.objects.all().order_by('-pk')
+    lista_clientes = entidade.objects.all().exclude(pk=1).order_by('-pk')
     response_dict = []
     for item in lista_clientes:
         response_cliente = {}
@@ -334,7 +334,7 @@ class ProventosController(BaseController):
     #login_required
     #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)
     def save_provent(request):
-        cache_page = cache.has_key('http://localhost:8020/api/provents')
+        #cache_page = cache.has_key('http://localhost:8020/api/provents')
         #print("VEJA SE TEM CACHE: ",cache_page)
         return BaseController().save(request, FormProventos)
 
@@ -360,7 +360,6 @@ class HonoraryController(BaseController):
             self.create_honorary(entity,self.get_competence(current_month+1))
             self.create_honorary(entity,self.get_competence(current_month+2))
             self.create_honorary(entity,self.get_competence(current_month+3))
-
         return BaseController().filter(request, Honorary)
 
     def get_competence(self, month_number):

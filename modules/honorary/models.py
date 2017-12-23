@@ -122,10 +122,9 @@ class Proventos(models.Model):
     tipo_valor = models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valor, error_messages=MENSAGENS_ERROS)
     valor = models.DecimalField("Valor:", max_digits=7, decimal_places=2, null=True, blank=False)
     data_cadastro = models.DateTimeField(auto_now_add=True)
-    cadastrado_por = models.ForeignKey(entidade, related_name='provento_cadastrado_por',  default=1)
+    cadastrado_por = models.ForeignKey(User, related_name='provento_cadastrado_por',  default=1)
     ultima_alteracao = models.DateTimeField(null=True, auto_now=True)
-    alterado_por = models.ForeignKey(entidade, related_name='provento_alterado_por', default=1)
-
+    alterado_por = models.ForeignKey(User, related_name='provento_alterado_por', default=1)
     is_active = models.BooleanField(default=True)
 
 

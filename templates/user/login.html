@@ -60,9 +60,11 @@
 
 <div class="clearfix"></div>
 {% endblock %}
-
 {% block recursos_complementares %}
-<script src="{% static 'modules/user/user_controller.js' %}"></script>
-	<script src="{% static 'modules/core/base_controller.js' %}"></script>
-<script src="{% static 'modules/user/user.js' %}"></script>
+{% load compress %}
+{% compress js %}
+<script src="{% static 'modules/user/user_controller.js' %}" />
+<script src="{% static 'modules/core/base_controller.js' %}" />
+<script src="{% static 'modules/user/user.js' %}" />
+{% endcompress %}
 {% endblock %}
