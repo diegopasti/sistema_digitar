@@ -136,11 +136,8 @@ TIME_ZONE='America/Sao_Paulo'
 # DEPOIS DA REFATORAcaO 2.0 PEDIU PRA COLOCAR ISSO
 #
 USE_TZ = True
-
 USE_I18N = True
-
 USE_L10N = True
-
 #USE_TZ = True - Quando eu coloco isso a hora esta vindo com 3 horas a mais.
 
 TIME_INPUT_FORMATS = [ '%H:%M', ]

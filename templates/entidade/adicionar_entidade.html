@@ -1008,222 +1008,220 @@ function substituir_valor_nulo(valor){
 </script>
 
 <script>
-        //Declarando o módulo da aplicação
-        var app = angular.module('app', []);
-        //Declarando o construtor do MeuController
-        app.controller('MeuController', ['$scope', function($scope) {
-            $scope.people = [];
-            $scope.atividades = [];
-            $scope.documentos = [];
-            $scope.range_list = [1,2,3,4,5,6];
-            $scope.size_list_documents = [1,2,3,4,5,6,7,8,9,10];
-            $scope.size_list_indications = [1,2,3,4]
-            $scope.salario_vigente = null;
-            //$scope.valor_honorario = 0;
-            /*{tipo_contato:'Jon', numero_contato: 30, cargo_setor: 'Developer'},
-                {tipo_contato:'Mike', numero_contato: 37, cargo_setor: 'Manager'},
-                {tipo_contato:'Allen', numero_contato: 50, cargo_setor: 'CEO'}
-                ];*/
+	//Declarando o módulo da aplicação
+	var app = angular.module('app', []);
+	//Declarando o construtor do MeuController
+	app.controller('MeuController', ['$scope', function($scope) {
+			$scope.people = [];
+			$scope.atividades = [];
+			$scope.documentos = [];
+			$scope.range_list = [1,2,3,4,5,6];
+			$scope.size_list_documents = [1,2,3,4,5,6,7,8,9,10];
+			$scope.size_list_indications = [1,2,3,4]
+			$scope.salario_vigente = null;
+			//$scope.valor_honorario = 0;
+			/*{tipo_contato:'Jon', numero_contato: 30, cargo_setor: 'Developer'},
+					{tipo_contato:'Mike', numero_contato: 37, cargo_setor: 'Manager'},
+					{tipo_contato:'Allen', numero_contato: 50, cargo_setor: 'CEO'}
+					];*/
 
-            $scope.editar_documento = function(index){
-                $('#tipo_documento').val($scope.documentos[index].tipo_documento);
-                $('#documento').val($scope.documentos[index].documento);
-                $('#documento_vencimento').val($scope.documentos[index].documento_vencimento);
-                $('#documento_senha').val($scope.documentos[index].documento_senha);
+			$scope.editar_documento = function(index){
+					$('#tipo_documento').val($scope.documentos[index].tipo_documento);
+					$('#documento').val($scope.documentos[index].documento);
+					$('#documento_vencimento').val($scope.documentos[index].documento_vencimento);
+					$('#documento_senha').val($scope.documentos[index].documento_senha);
 
-                $scope.excluir_documento(index);
-            }
+					$scope.excluir_documento(index);
+			}
 
-            $scope.get_salario_vigente = function(){
-              $.ajax({
-                url: '/api/preferencias/salario_vigente/',
-                type: 'get', //this is the default though, you don't actually need to always mention it
-                success: function(data) {
-                    $('#form-group-taxa-salario').tooltip({title:"Valor de Referência: "+data.salario_vigencia_atual});
-                    $scope.salario_vigente = data.salario_vigencia_atual;
-                    $scope.$apply();
-                },
-                failure: function(data) {
-                    alert('Got an error dude');
-                }
-              });
-            }
+			$scope.get_salario_vigente = function(){
+				$.ajax({
+					url: '/api/preferencias/salario_vigente/',
+					type: 'get', //this is the default though, you don't actually need to always mention it
+					success: function(data) {
+							$('#form-group-taxa-salario').tooltip({title:"Valor de Referência: "+data.salario_vigencia_atual});
+							$scope.salario_vigente = data.salario_vigencia_atual;
+							$scope.$apply();
+					},
+					failure: function(data) {
+							alert('Got an error dude');
+					}
+				});
+			}
 
-            $scope.adicionar_documento = function(){
-                //alert("Veja os dados: "+$scope.tipo_documento+" - "+$scope.documento+" - "+$scope.documento_vencimento+" - "+$scope.documento_senha);
+			$scope.adicionar_documento = function(){
+					//alert("Veja os dados: "+$scope.tipo_documento+" - "+$scope.documento+" - "+$scope.documento_vencimento+" - "+$scope.documento_senha);
 
-                var notificar_cliente = $("#notificar_cliente").val();
-                var prazo_notificacao = $("#prazo_notificacao").val();
+					var notificar_cliente = $("#notificar_cliente").val();
+					var prazo_notificacao = $("#prazo_notificacao").val();
 
-                var documento = {
-                    tipo_documento: substituir_valor_nulo($scope.tipo_documento),
-                    documento: substituir_valor_nulo($scope.documento),
-                    documento_vencimento: substituir_valor_nulo($scope.documento_vencimento),
-                    documento_senha: substituir_valor_nulo($scope.documento_senha),
-                    notificar_cliente: notificar_cliente,
-                    prazo_notificacao: prazo_notificacao
-                };
+					var documento = {
+							tipo_documento: substituir_valor_nulo($scope.tipo_documento),
+							documento: substituir_valor_nulo($scope.documento),
+							documento_vencimento: substituir_valor_nulo($scope.documento_vencimento),
+							documento_senha: substituir_valor_nulo($scope.documento_senha),
+							notificar_cliente: notificar_cliente,
+							prazo_notificacao: prazo_notificacao
+					};
 
-                $scope.documentos.push(documento);
+					$scope.documentos.push(documento);
 
-                $('#tabela_documentos').val(
-                    $('#tabela_documentos').val()+"+|"+
-                    documento.tipo_documento+"|"+
-                    documento.documento+"|"+
-                    documento.documento_vencimento+"|"+
-                    documento.documento_senha+"|"+
-                    documento.notificar_cliente+"|"+
-                    documento.prazo_notificacao+
-                    "#"
-                );
+					$('#tabela_documentos').val(
+							$('#tabela_documentos').val()+"+|"+
+							documento.tipo_documento+"|"+
+							documento.documento+"|"+
+							documento.documento_vencimento+"|"+
+							documento.documento_senha+"|"+
+							documento.notificar_cliente+"|"+
+							documento.prazo_notificacao+
+							"#"
+					);
 
-                $('#tipo_documento').val("");
-                $('#documento').val("");
-                $('#documento_vencimento').val("");
-                $('#documento_senha').val("");
-                $("#notificar_cliente").val("NAO");
-                $("#prazo_notificacao").val("");
+					$('#tipo_documento').val("");
+					$('#documento').val("");
+					$('#documento_vencimento').val("");
+					$('#documento_senha').val("");
+					$("#notificar_cliente").val("NAO");
+					$("#prazo_notificacao").val("");
 
-                desabilitar_campo("documento_senha");
+					desabilitar_campo("documento_senha");
 
-                $scope.tipo_documento = "";
-                $scope.documento = "";
-                $scope.documento_vencimento = "";
-                $scope.documento_senha = "";
-                $scope.notificar_cliente = "NAO";
-                $scope.prazo_notificacao = "";
+					$scope.tipo_documento = "";
+					$scope.documento = "";
+					$scope.documento_vencimento = "";
+					$scope.documento_senha = "";
+					$scope.notificar_cliente = "NAO";
+					$scope.prazo_notificacao = "";
 
-            };
+			};
 
-            $scope.excluir_documento = function(index){
-                $scope.documentos.splice(index, 1);
+			$scope.excluir_documento = function(index){
+					$scope.documentos.splice(index, 1);
 
-                var registro_temporario = $('#tabela_documentos').val();
-                var temp = new Array();
-                temp = registro_temporario.split("#")[index];
-
-
-                if (temp.indexOf("+") !=-1) {
-                    registro_temporario = registro_temporario.replace(temp+"#","");
-                }
-
-                else{
-                    registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
-                }
-
-                alert("Veja:"+registro_temporario);
-                $('#tabela_documentos').val(registro_temporario);
-            };
+					var registro_temporario = $('#tabela_documentos').val();
+					var temp = new Array();
+					temp = registro_temporario.split("#")[index];
 
 
-            $scope.salvar_entidade = function(dados){
-                alert("acho que é isso"+dados);
-            }
+					if (temp.indexOf("+") !=-1) {
+							registro_temporario = registro_temporario.replace(temp+"#","");
+					}
 
-            $scope.adicionar_atividade = function(){
-                var cnae = {
-                    atividade: $scope.atividade_descricao,
-                    desde: $scope.atividade_desde
-                };
+					else{
+							registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
+					}
 
-                $scope.atividades.push(cnae);
-                $('#atividade_economica').val($('#atividade_economica').val()+"+|"+$scope.atividade_descricao+"|"+$scope.atividade_desde+"#");
-                $('#atividade_descricao').val("");
-                $('#atividade_desde').val("");
-
-                $scope.atividade_descricao = "";
-                $scope.atividade_desde = "";
-
-            };
-
-            $scope.excluir_atividade = function(index){
-                $scope.atividades.splice(index, 1);
-
-                var registro_temporario = $('#atividade_economica').val();
-                var temp = new Array();
-                temp = registro_temporario.split("#")[index];
-                registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
-                //alert("Veja:"+registro_temporario);
-                $('#atividade_economica').val(registro_temporario);
-
-            };
-
-            $scope.add_contato = function(tipo,numero,nome_contato,cargo_setor,email) {
-                var person = {
-                    tipo_contato: tipo,
-                    numero_contato: numero,
-                    cargo_setor: cargo_setor,
-                    email: email,
-                };
-
-                $scope.people.push(person);
-            };
-
-            $scope.addPerson = function(){
-                $scope.cargo_setor = $scope.cargo_setor.toUpperCase();
-                var person = {
-                    tipo_contato: $scope.tipo_contato,
-                    numero_contato: $scope.numero_contato,
-                    cargo_setor: $scope.cargo_setor,
-                    email: $scope.email,
-                };
-
-                var sugestao_email = $scope.email;
-
-                $scope.people.push(person);
-                $('#contatos').val($('#contatos').val()+"+|"+$scope.tipo_contato+"|"+$scope.numero_contato+"|"+"undefined"+"|"+$scope.cargo_setor+"|"+$scope.email+"#");
-                $('#tipo_contato').val("");
-                $('#numero_contato').val("");
-                $('#cargo_setor').val("");
-                $('#email').val("");
-
-                $scope.tipo_contato = "";
-                $scope.numero_contato = "";
-                $scope.cargo_setor = "";
-                $scope.email = "";
-
-                var sugestao = document.getElementById("sugestao_email").innerHTML;
-                sugestao += '<option value="'+sugestao_email+'" />';
-                document.getElementById("sugestao_email").innerHTML = sugestao;
-
-            };
-
-            $scope.removePerson = function(index){
-                $scope.people.splice(index, 1);
-
-                var registro_temporario = $('#contatos').val();
-                var temp = new Array();
-                temp = registro_temporario.split("#")[index];
-                registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
-                //alert("Veja:"+registro_temporario);
-                $('#contatos').val(registro_temporario);
-
-            };
-
-          $scope.calcular_valor_base = function(index){
-            if($scope.taxa_honorario){
-              var salario_minimo = $scope.salario_vigente.replace("R$ ", "");
-              var salario_minimo = salario_minimo.replace(".", "");
-              var salario_minimo = parseFloat(salario_minimo.replace(",", "."));
-              var taxa = parseFloat($scope.taxa_honorario);
-              var valor_base = parseFloat(salario_minimo*taxa);
-              $scope.valor_base = valor_base;
-              $('#valor_base').val(valor_base*100).trigger('mask.maskMoney');
-            }
-          };
-
-          $scope.set_valor_base_contrato = function(valor){
-            $scope.valor_base = valor;
-          };
+					alert("Veja:"+registro_temporario);
+					$('#tabela_documentos').val(registro_temporario);
+			};
 
 
-          $scope.get_valor_base_contrato = function(){
-            return $scope.valor_base;
-          };
+			$scope.salvar_entidade = function(dados){
+					alert("acho que é isso"+dados);
+			}
 
-        }]);
+			$scope.adicionar_atividade = function(){
+					var cnae = {
+							atividade: $scope.atividade_descricao,
+							desde: $scope.atividade_desde
+					};
 
-    </script>
+					$scope.atividades.push(cnae);
+					$('#atividade_economica').val($('#atividade_economica').val()+"+|"+$scope.atividade_descricao+"|"+$scope.atividade_desde+"#");
+					$('#atividade_descricao').val("");
+					$('#atividade_desde').val("");
+
+					$scope.atividade_descricao = "";
+					$scope.atividade_desde = "";
+
+			};
+
+			$scope.excluir_atividade = function(index){
+					$scope.atividades.splice(index, 1);
+
+					var registro_temporario = $('#atividade_economica').val();
+					var temp = new Array();
+					temp = registro_temporario.split("#")[index];
+					registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
+					//alert("Veja:"+registro_temporario);
+					$('#atividade_economica').val(registro_temporario);
+
+			};
+
+			$scope.add_contato = function(tipo,numero,nome_contato,cargo_setor,email) {
+					var person = {
+							tipo_contato: tipo,
+							numero_contato: numero,
+							cargo_setor: cargo_setor,
+							email: email,
+					};
+
+					$scope.people.push(person);
+			};
+
+			$scope.addPerson = function(){
+					$scope.cargo_setor = $scope.cargo_setor.toUpperCase();
+					var person = {
+							tipo_contato: $scope.tipo_contato,
+							numero_contato: $scope.numero_contato,
+							cargo_setor: $scope.cargo_setor,
+							email: $scope.email,
+					};
+
+					var sugestao_email = $scope.email;
+
+					$scope.people.push(person);
+					$('#contatos').val($('#contatos').val()+"+|"+$scope.tipo_contato+"|"+$scope.numero_contato+"|"+"undefined"+"|"+$scope.cargo_setor+"|"+$scope.email+"#");
+					$('#tipo_contato').val("");
+					$('#numero_contato').val("");
+					$('#cargo_setor').val("");
+					$('#email').val("");
+
+					$scope.tipo_contato = "";
+					$scope.numero_contato = "";
+					$scope.cargo_setor = "";
+					$scope.email = "";
+
+					var sugestao = document.getElementById("sugestao_email").innerHTML;
+					sugestao += '<option value="'+sugestao_email+'" />';
+					document.getElementById("sugestao_email").innerHTML = sugestao;
+
+			};
+
+			$scope.removePerson = function(index){
+				$scope.people.splice(index, 1);
+
+				var registro_temporario = $('#contatos').val();
+				var temp = new Array();
+				temp = registro_temporario.split("#")[index];
+				registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
+				//alert("Veja:"+registro_temporario);
+				$('#contatos').val(registro_temporario);
+			};
+
+		$scope.calcular_valor_base = function(index){
+			if($scope.taxa_honorario){
+				var salario_minimo = $scope.salario_vigente.replace("R$ ", "");
+				var salario_minimo = salario_minimo.replace(".", "");
+				var salario_minimo = parseFloat(salario_minimo.replace(",", "."));
+				var taxa = parseFloat($scope.taxa_honorario);
+				var valor_base = parseFloat(salario_minimo*taxa);
+				$scope.valor_base = valor_base;
+				$('#valor_base').val(valor_base*100).trigger('mask.maskMoney');
+			}
+		};
+
+		$scope.set_valor_base_contrato = function(valor){
+			$scope.valor_base = valor;
+		};
+
+		$scope.get_valor_base_contrato = function(){
+			return $scope.valor_base;
+		};
+
+	}]);
+
+</script>
 
 
 

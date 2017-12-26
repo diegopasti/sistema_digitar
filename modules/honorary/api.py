@@ -307,6 +307,7 @@ def alterar_contrato(request):
         for honorary in honoraries:
             honorary = Honorary().update_honorary(honorary, contract=contrato)
             honorary.updated_by = request.user
+            honorary.updated_by_name = request.user.get_full_name()
             honorary.save()
 
         response_dict = response_format_success_message(contrato,None) #response_format_error_message("TESTANTADO.. ")#response_format_success_message(contrato,None)

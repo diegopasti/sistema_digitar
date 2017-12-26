@@ -178,8 +178,10 @@ class Honorary(models.Model):
             honorary = self.verify_provents_values(honorary)
         return honorary
 
+
     def verify_provents_values(self, honorary):
         return honorary
+
 
     def verify_contract_values(self, honorary, contract):
         honorary.contract = contract
