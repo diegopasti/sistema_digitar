@@ -20,4 +20,4 @@ def proventos_page(request):
 def contract_page(request):
     form_contrato = FormContrato()
     form_indicacao = FormIndicacao()
-    return render(request, "honorario/honorario.html", {'formulario_contrato': form_contrato, 'formulario_indicacao': form_indicacao})
+    return render(request, "honorario/contract.html", {'formulario_contrato': form_contrato, 'formulario_indicacao': form_indicacao})

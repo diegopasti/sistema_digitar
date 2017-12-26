@@ -148,7 +148,14 @@ application.controller('login_controller', function($scope) {
     function success_function(result,message,data_object,status){
     	//alert('success'+'Login realizado'+'Usuário apto para entrar no Sistema')
 			notify_success_message(message);
-    	var redirect = "/"
+			var url = window.location.href;
+			var index = url.indexOf("?next=");
+			if(index != -1){
+				var redirect = url.slice(index+6)
+			}
+			else{
+				var redirect = "/"
+			}
     	return redirect
     }
 

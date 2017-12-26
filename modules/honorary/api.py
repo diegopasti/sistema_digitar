@@ -294,15 +294,21 @@ def salvar_contrato(request):
 
 
 def alterar_contrato(request):
-    result, form = filter_request(request,FormContrato)
+    result, form = filter_request(request, FormContrato)
 
     if result:
         contrato = form.form_to_object(int(request.POST['cliente']))
         plano = Plano.objects.get(pk=int(request.POST['plano']))
-        #contrato.servicos_contratados = plano.servicos
         contrato.plano = plano
         contrato.totalizar_honorario()
         contrato.save()
+
+        honoraries = Honorary.objects.filter(contract=contrato)
+        for honorary in honoraries:
+            honorary = Honorary().update_honorary(honorary, contract=contrato)
+            honorary.updated_by = request.user
+            honorary.save()
+
         response_dict = response_format_success_message(contrato,None) #response_format_error_message("TESTANTADO.. ")#response_format_success_message(contrato,None)
     else:
         response_dict = response_format_error_message(form.errors)
@@ -350,16 +356,22 @@ class ProventosController(BaseController):
 class HonoraryController(BaseController):
 
     def filter(self,request):
-        return BaseController().filter(request, Honorary)
+        current_competence = self.get_competence(datetime.datetime.now().month)
+        if Honorary.objects.filter(competence=current_competence).count() == 0:
+            print("CARA.. NAO TEM NENHUM HONORARIO DESSA COMPETENCIA")
+            return self.generate_honoraries(request)
+        else:
+            print("JA TEM HONORARIO DESSE MES")
+            return BaseController().filter(request, Honorary)
 
     def generate_honoraries(self,request):
         current_month = datetime.datetime.now().month
         entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
         for entity in entity_list:
-            self.create_honorary(entity,self.get_competence(current_month))
-            self.create_honorary(entity,self.get_competence(current_month+1))
-            self.create_honorary(entity,self.get_competence(current_month+2))
-            self.create_honorary(entity,self.get_competence(current_month+3))
+            self.create_update_honorary(request, entity, self.get_competence(current_month))
+            self.create_update_honorary(request, entity, self.get_competence(current_month + 1))
+            self.create_update_honorary(request, entity, self.get_competence(current_month + 2))
+            self.create_update_honorary(request, entity, self.get_competence(current_month + 3))
         return BaseController().filter(request, Honorary)
 
     def get_competence(self, month_number):
@@ -370,19 +382,25 @@ class HonoraryController(BaseController):
         month_list_name = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
         return month_list_name[int(month_number)-1]+"/"+str(current_year)
 
-    def create_honorary(self, entity, competence):
-        #honorary_list = Honorary.objects.filter(entity=entity, competence=competence)
+    def create_update_honorary(self, request, entity, competence):
         contract = Contrato.objects.filter(cliente=entity)
-        if contract.count() == 0:
-            honorary = Honorary().create_honorary_without_contract(entity, competence)
+        print("VEJA O CLIENTE: ",entity, " - CONTRATO: ",contract)
+        if contract.count() == 0: contract = None
+        else: contract = contract[0]
 
+        honoraries = Honorary.objects.filter(entity=entity, competence=competence)
+        if honoraries.count() == 0:
+            print(competence," NAO POSSUI HONORARIO ABERTO!")
+            honorary = Honorary().create_honorary(entity, competence, contract=contract)
+            honorary.created_by = request.user
+            honorary.updated_by = request.user
         else:
-            honorary = Honorary().create_honorary_with_contract(entity, competence, contract[0])
-        try:
-            honorary.save()
-        except:
-            pass
+            print(competence, " POSSUI HONORARIO ABERTO!")
+            honorary = Honorary().update_honorary(honoraries[0], contract=contract)
+            honorary.updated_by = request.user
 
+        honorary.save()
+        return honorary
 
 """
 def get_lista_proventos_old(self,request):

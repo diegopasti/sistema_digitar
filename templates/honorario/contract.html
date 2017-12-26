@@ -761,14 +761,13 @@ color:blue;
 
 {% block recursos_complementares %}
 {% load staticfiles %}
-
 {% load compress %}
 {% compress js %}
 <script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
 <script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
 <script src="{% static 'modules/core/controle_botoes.js' %}"></script>
 <script src="{% static 'modules/core/controle_componentes.js' %}"></script>
-<script src="{% static 'modules/core/base_api.js' %}"></script>
+<script src="{% static 'modules/core/base_controller.js' %}"></script>
 <script src="{% static 'modules/core/mask.js' %}"></script>
 <script src="{% static 'modules/honorary/contract/js/contractController.js' %}"></script>
 <script src="{% static 'modules/honorary/contract/js/contract.js' %}"></script>
