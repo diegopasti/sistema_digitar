@@ -6,7 +6,8 @@ from libs.default.core import BaseController
 from libs.default.decorators import request_ajax_required
 from modules.nucleo.models import RestrictedOperation
 
-from modules.nucleo.utils import response_format_error, generate_activation_code, generate_random_password
+from modules.nucleo.utils import response_format_error, generate_activation_code, generate_random_password, \
+    response_format_success
 from modules.nucleo.comunications import send_generate_activation_code, resend_generate_activation_code ,send_reset_password
 from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormUpdateProfile, FormAlterarPassword, \
     FormChangePassword, FromChangePersonalInfo

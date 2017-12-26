@@ -33,22 +33,18 @@ application.controller('change_password_controller', function($scope) {
     request_api("/api/user/change_password/",data_paramters,validate_form_change_password,success_function,fail_function)
   }
 
-	$scope.confirm_change = function(){
-		$scope.is_change = true;
-		$('#email').prop('readonly', false);
-	};
 
   $scope.save_email = function () {
 
   	var data_paramters = create_data_paramters('form_change_personal_info');
 
   	success_function = function(result,message,data_object,status){
-			location.reload();
+			alert("Operação realizada com Sucesso")
 			$scope.$apply()
   	}
 
   	fail_function = function() {
-			alert('nu deu')
+			alert('Não foi possível realizar operação')
   	}
 
 		validate_function = function (){
@@ -182,7 +178,7 @@ application.controller('login_controller', function($scope) {
 
 application.controller('users_controller', function($scope) {
 	$scope.list_users = [];
-	$scope.table_minimun_items_u = [1,1,1,1,1,1,1];
+	$scope.min_row_table = [1,1,1,1,1,1,1,1,1,1];
 	$scope.loaded_users = false
 	$scope.user_selected = null;
 

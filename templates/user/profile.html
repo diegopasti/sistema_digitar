@@ -23,33 +23,21 @@
 				<div class="box box-default" >
 					<div class="box-heading" ng-controller="change_password_controller">
 						<div class="box-header with-border">
-							<h5 id="title_profile" style="padding-left:15px;"class="box-title">{{ request.user.get_full_name}}</h5>
+							<div id="title_profile" style="font-size:28px ;padding-left:15px;"class="box-title">Perfil</div>
 						</div>
 					</div>
-					<div class="box-body" style="margin-bottom: -10px;margin-top: 0px;">
-						<div class="col-lg-6"  style="padding-bottom:15px;">
+					<div class="box-body" style="margin-bottom: -18px;margin-top: 0px;">
+						<div class="col-lg-6" style="padding-top:15px;">
 						<!--form_change_email-->
-							<div class=" teste">
-								<div class="box-heading">
-									<div class="box-header with-border">
-										<h5 class="box-title">Alterar Email</h5>
-									</div>
-								</div>
+							<fieldset style="padding-top: 18px;padding-bottom: 0px">
+								<legend style="font-size: 16px">Informações Pessoais</legend>
 							<div ng-controller="change_password_controller">
 								<form id="form_change_personal_info" autocomplete="off" ng-submit="save_email()" novalidate>
-									<div class="box-body" style="margin-bottom: -10px;margin-top: 0px;">
+									<div class="box-body" style=" margin-top: -30px">
 										{% csrf_token %}
 										<div class="row">
 											<div class="col-lg-12">
 												<div id="field_old_password" class="field">
-													<sub><label for="old_password">{{ form_change_email.email.label }}</label></sub>
-													{{ form_change_email.email|default:'email' }}
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-12">
-												<div id="field_old_password" class="field" >
 													<sub><label for="old_password">{{ form_change_email.first_name.label }}</label></sub>
 													{{ form_change_email.first_name}}
 												</div>
@@ -63,29 +51,33 @@
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="box-footer">
 										<div class="row">
-											<div class="col-md-2 col-md-push-10" >
+											<div class="col-lg-12">
+												<div id="field_old_password" class="field" >
+													<sub><label for="old_password">{{ form_change_email.email.label }}</label></sub>
+													{{ form_change_email.email|default:'email' }}
+												</div>
+											</div>
+										</div>
+									</div>
+									<div style="margin-right:10px;">
+										<div class="row">
+											<div class="col-md-2 col-md-push-10">
 													<button id="bt_active_change" type="submit" class="btn btn-primary pull-right" ><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar </button>
 											</div>
 										</div>
 									</div>
 								</form>
 							</div>
-							</div>
+							</fieldset>
 						</div>
 
-						<div class="col-lg-6"	style="padding-bottom:15px;">
-							<div class=" teste" >
-								<div class="box-heading">
-									<div class="box-header with-border">
-										<h5 class="box-title">Alterar Senha</h5>
-									</div>
-								</div>
+						<div class="col-lg-6" style="padding-top: 18px;padding-bottom: 0px">
+							<fieldset style="padding-top: 18px;padding-bottom: 20px">
+								<legend style="font-size: 16px">Alterar Senha</legend>
 								<div ng-controller="change_password_controller">
 									<form id="form_change_password" autocomplete="off" ng-submit="save_password()" novalidate>
-										<div class="box-body" style="margin-bottom: -10px;margin-top: 0px;">
+										<div class="box-body" style=";margin-top: -30px">
 											{% csrf_token %}
 											<div class="row">
 												<div class="col-lg-12">
@@ -112,7 +104,7 @@
 													</div>
 											</div>
 										</div>
-										<div class="box-footer">
+										<div style="margin-right:10px">
 											<div class="row">
 												<div class="col-md-2 col-md-push-10" >
 													<button id="button_send" type="submit" class="btn btn-primary pull-right"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar </button>
@@ -121,7 +113,7 @@
 										</div>
 									</form>
 								</div>
-							</div>
+							</fieldset>
 						</div>
 					</div>
 				</div>
