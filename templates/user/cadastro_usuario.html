@@ -7,10 +7,54 @@
 	a.disabled {
 		pointer-events: none;
 		cursor:no-drop;
-		background-color: #8699A4;
+		background-color: transparent;
 		color : #FAEDEC;
 	}
+
+	table td{
+		height: 26px;
+		padding: 0px !important;
+		padding-top: 7px !important;
+		padding-left: 4px !important;
+		padding-right: 4px !important;
+	}
+
+	table th{
+		font-size: 12px;
+		font-weight: bold;
+		background: #FFF;/*#9FB8FB; #EEEEEF; #85A3CC #EEE #8FB5EC; *#6FB2BE; #009ACD;*/
+		color: #666;
+	}
+
+	.linha_cabecalho th{
+	cursor: pointer;
+	}
+	/* unvisited link */
+	.linha_cabecalho a {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+	}
+	/* visited link */
+	.linha_cabecalho a:visited {
+			color: #666;
+			text-decoration: none;
+			cursor: pointer;
+	}
+	/* mouse over link */
+	.linha_cabecalho a:hover {
+			color: #222;
+			text-decoration: none;
+			cursor: pointer;
+	}
+	/* selected link */
+	.linha_cabecalho a:active {
+    color: #111;
+    text-decoration: none;
+    cursor: pointer;
+	}
 </style>
+
 {% endblock %}
 {% block conteudo %}
 <div id="controle_angular_cadastro_user" ng-app="app" ng-controller="Cadastro_usuario" ng-init="usuarios_carregados=false;">
@@ -27,7 +71,7 @@
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
 									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
-										<li><a class="" id='bt_apagar_senha' ng-class="{'disabled':registro_selecionado==null}" data-toggle="modal" data-target="#modal_reset_password">Alterar senha</a></li>
+										<!--<li><a class="" id='bt_apagar_senha' ng-class="{'disabled':registro_selecionado==null}" data-toggle="modal" data-target="#modal_reset_password">Alterar senha</a></li>-->
 										<li><a class="" id='bt_ative'  ng-class="{'disabled':registro_selecionado==null || registro_selecionado.is_active==true}" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_active();">Reativar</a></li>
 										<li role="separator" class="divider"></li>
 										<li><a class="" href="#modal_justificativa" id='bt_disable' ng-class="{'disabled':registro_selecionado==null || registro_selecionado.is_active==false}" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_disable()" >Desativar</a></li>
@@ -44,6 +88,9 @@
 							{% verbatim %}
 							<table class="table table-condensed  table-striped table-bordered table-hover" id="table_usuarios" style="width: 100%;">
 								<thead>
+								MIN ROWS: >{{ table_minimun_items }}<  -  > SEARCH: {{ search }}
+								ITENS PAGINATE: {{ table_maximun_items_per_page }}
+								----> {{ usuarios.length }}
 								<tr class="linha_cabecalho">
 									<th class='text-center' style="width: 10px;"  ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
 									<th class='text-center' style="width: 180px;" ng-click="sortType='username';sortReverse=!sortReverse">username</th>
@@ -51,13 +98,13 @@
 									<th class='text-center' style="width: 180px;" ng-click="sortType='email';sortReverse=!sortReverse">email</th>
 									<th class='text-center' style="width: 100px;" ng-click="sortType='groups';sortReverse=!sortReverse">Grupo</th>
 									<th class='text-center' style="width: 140px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">data de registro</th>
-									<th class='text-center' style="width: 10px;"  ng-click="sortType='is_active';sortReverse=!sortReverse">Ativo</th>
+									<th class='text-center' style="width: 10px;"  ng-click="sortType='is_active';sortReverse=!sortReverse">Status</th>
 								</tr>
 								</thead>
 
 								<tbody style="font-size: 11px;"><!-- /height:{{ table_maximun_body_heigth }}px; /-->
 								<tr id="divCarregando" ng-if="usuarios_carregados == false" style="height: 10px">
-									<td colspan="5" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
+									<td colspan="7" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
 										<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></br></br>Aguarde.. Carregando...
 									</td>
 								</tr>
@@ -68,23 +115,28 @@
 									<td class='text-left' style="width: 180px;">{{ usuario.get_full_name | uppercase }}</td>
 									<td class='text-left' style="width: 180px;">{{ usuario.email }}</td>
 									<td class='text-left' style="width: 100px;">
-										<span ng-if="usuario.groups[0]==1">Administrador</span>
-										<span ng-if="usuario.groups[0]==2">Supervisor</span>
-										<span ng-if="usuario.groups[0]==3">Operador</span>
+										<span ng-if="usuario.groups[0]==1">ADMINISTRADOR</span>
+										<span ng-if="usuario.groups[0]==2">SUPERVISOR</span>
+										<span ng-if="usuario.groups[0]==3">OPERADOR</span>
 									</td>
 									<td class="text-center" style="width: 140px;">{{ usuario.date_joined|date:'d/M/y'}} ás {{ usuario.date_joined|date:'H:mm'}}</td>
 									<td class="text-center"  style="width: 10px;">
-										<span ng-if="usuario.is_active==false">Inativo</span>
-										<span ng-if="usuario.is_active==true">Ativo</span>
+										<span ng-if="usuario.is_active==false">INATIVO</span>
+										<span ng-if="usuario.is_active==true">ATIVO</span>
 									</td>
 								</tr>
 
-								<tr ng-cloak ng-if='usuarios_carregados'  ng-repeat="k in table_minimun_items.slice(usuarios.length,table_minimun_items.length)">
-									<td  class='text-center' style="width:10px;">-</td><td  style="width:150px;"></td><td style="width:180px;"></td><td style="width: 180px;"></td><td style="width:140px;"></td><td style="width:10px;"></td>
+								<tr ng-if='usuarios_carregados'  ng-repeat="k in table_minimun_items.slice(usuarios.length,table_minimun_items.length)">
+									<td class='text-center' style="width:10px;"></td>
+									<td style="width:150px;"></td>
+									<td style="width:180px;"></td>
+									<td style="width: 180px;"></td>
+									<td style="width:140px;"></td>
+									<td style="width:10px;"></td>
 								</tr>
 
-								<tr ng-cloak ng-if="resultado.length == 0  && (usuarios|filter:filterIds()).length > 0 ">
-									<td colspan="4" class='text-center'>Nenhum resultado Encontrado</td>
+								<tr ng-if="resultado.length == 0">
+									<td colspan="7" class='text-center'>Nenhum resultado Encontrado</td>
 								</tr>
 								</tbody>
 							</table>
@@ -261,6 +313,7 @@
 		</div>
 	</div>
 
+		<!--
 	<div id="modal_reset_password" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 20%">
 			<form id="form_reset_password" novalidate autocomplete="off" ng-submit="reset_password()" onsubmit="return false;">
@@ -300,7 +353,7 @@
 			</form>
 		</div>
 	</div>
-
+	-->
 	<div id="modal_justify_action" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 60%">
 			<div class="modal-content">

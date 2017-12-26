@@ -10,10 +10,6 @@ application.controller('reset_password_controller', function($scope) {
 
 application.controller('change_password_controller', function($scope) {
 
-	$scope.load_email_form = function (){
-		alert("aaaaaaa")
-	};
-
   $scope.save_password = function () {
     var data_paramters = {
       old_password: $('#old_password').val(),
@@ -37,30 +33,30 @@ application.controller('change_password_controller', function($scope) {
     request_api("/api/user/change_password/",data_paramters,validate_form_change_password,success_function,fail_function)
   }
 
-	$scope.confirm_change = function(){
-		$scope.is_change = true;
-		$('#email').prop('readonly', false);
-	};
 
   $scope.save_email = function () {
-  	var data_paramters = {email:$('#email').val()}
+
+  	var data_paramters = create_data_paramters('form_change_personal_info');
 
   	success_function = function(result,message,data_object,status){
-  		alert('email alterado')
-			$scope.is_change = false
-			$('#email').prop('readonly', true);
+			alert("Operação realizada com Sucesso")
 			$scope.$apply()
   	}
 
   	fail_function = function() {
-			alert('nu deu')
+			alert('Não foi possível realizar operação')
   	}
 
 		validate_function = function (){
-  		email_is_valid("email")
+  		if ( email_is_valid('email') && data_paramters['first_name'].length > 3 && data_paramters['last_name'].length > 3){
+  			return true
+			}else{
+  			alert("Formulario com erros, não foi possiel realizar alteração")
+			}
   	}
-  	alert("chego ate antes de chamar o request_api:"+JSON.stringify(data_paramters))
-		request_api('/api/user/change_email/',data_paramters,validate_function,success_function,fail_function)
+
+
+		request_api('/api/user/change_personal_info/',data_paramters,validate_function,success_function,fail_function)
   }
 });
 
@@ -189,7 +185,7 @@ application.controller('login_controller', function($scope) {
 
 application.controller('users_controller', function($scope) {
 	$scope.list_users = [];
-	$scope.table_minimun_items_u = [1,1,1,1,1,1,1];
+	$scope.min_row_table = [1,1,1,1,1,1,1,1,1,1];
 	$scope.loaded_users = false
 	$scope.user_selected = null;
 

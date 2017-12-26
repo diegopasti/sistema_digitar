@@ -6,10 +6,11 @@ from libs.default.core import BaseController
 from libs.default.decorators import request_ajax_required
 from modules.nucleo.models import RestrictedOperation
 
-from modules.nucleo.utils import response_format_error, generate_activation_code, generate_random_password
+from modules.nucleo.utils import response_format_error, generate_activation_code, generate_random_password, \
+    response_format_success
 from modules.nucleo.comunications import send_generate_activation_code, resend_generate_activation_code ,send_reset_password
 from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormUpdateProfile, FormAlterarPassword, \
-    FormChangePassword
+    FormChangePassword, FromChangePersonalInfo
 from django.contrib.auth.models import Permission, User
 from django.http import HttpResponse
 import json
@@ -160,11 +161,15 @@ class UserController(BaseController):
         return self.response(response_dict)
 
     @request_ajax_required
-    def change_email(self, request):
-        print('Olha o Post e o User:',request.POST)
+    def change_personal_info(self, request):
+        email = request.POST['email']
+        nome = request.POST['first_name']
+        sobrenome = request.POST['last_name']
         try:
             user = User.objects.get(username=request.user)
-            user.email = request.POST['email']
+            user.email = email
+            user.last_name = sobrenome
+            user.first_name = nome
             user.save()
             response_dict = response_format_success(user,['username'])
         except:
