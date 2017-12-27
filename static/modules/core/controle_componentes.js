@@ -129,6 +129,8 @@ function configurar_valor_padrao(campo,valor) {
     });
 }
 
+
+
 function notify(type,title,description){
 	var width = ""
 	if(type == "success"){
@@ -149,9 +151,8 @@ function notify(type,title,description){
     delay: type=='error' ? 7000 : 7000,
     mouse_reset: false,
     type: type=='confirm' ? 'success' : type,
-    styling: 'bootstrap3' // bootstrap3 , fontawesome
-  }
-  );
+    styling: 'fontawesome',//'bootstrap3' // bootstrap3 ,
+  });
   return (type=='error' ? false : true);
 }
 
@@ -173,7 +174,7 @@ function error_notify(id,title,description){
 }
 
 function warning_notify(id,titulo,descricao){
-  document.getElementById(id).focus();
+	if(id!=null){document.getElementById(id).focus();}
   return notify("warning",titulo,descricao);
 }
 

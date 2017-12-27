@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django.db.models import F
 
+from libs.default.decorators import request_ajax_required
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary
 from modules.honorary.forms import FormContrato, FormProventos
 from modules.servico.models import Plano, Servico
@@ -357,13 +358,18 @@ class ProventosController(BaseController):
 class HonoraryController(BaseController):
 
     def filter(self,request):
-        current_competence = self.get_competence(datetime.datetime.now().month)
-        if Honorary.objects.filter(competence=current_competence).count() == 0:
-            print("CARA.. NAO TEM NENHUM HONORARIO DESSA COMPETENCIA")
-            return self.generate_honoraries(request)
-        else:
-            print("JA TEM HONORARIO DESSE MES")
-            return BaseController().filter(request, Honorary)
+        for item in range(4):
+            competence = self.get_competence(datetime.datetime.now().month+item)
+            print("COMPETENCIA: ",competence,)
+            if Honorary.objects.filter(competence=competence).count() == 0:
+                print("NAO EXISTE")
+                entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
+                for entity in entity_list:
+                    self.create_update_honorary(request, entity, competence)
+                #return self.generate_honoraries(request)
+            else:
+                print("EXISTE")
+        return BaseController().filter(request, Honorary)
 
     def generate_honoraries(self,request):
         current_month = datetime.datetime.now().month
@@ -375,6 +381,28 @@ class HonoraryController(BaseController):
             self.create_update_honorary(request, entity, self.get_competence(current_month + 3))
         return BaseController().filter(request, Honorary)
 
+    @request_ajax_required
+    def close_current_competence(self, request):
+        from django.utils import timezone
+        now = timezone.localtime(timezone.now())
+        completed_competence = self.get_competence(datetime.datetime.now().month-1)
+        exist_competence = Honorary.objects.filter(competence=completed_competence)
+        closed_competences = Honorary.objects.filter(competence=completed_competence, is_closed=False).update(is_closed=True,closed_by=request.user, closed_date = now)
+        response_dict = {}
+        if closed_competences != 0:
+            response_dict['result'] = True
+            response_dict['object'] = None
+            response_dict['message'] = str(closed_competences) + " Honorários de "+completed_competence+" finalizados com sucesso!"
+        else:
+            response_dict['result'] = False
+            response_dict['object'] = None
+            if exist_competence.count() == 0:
+                response_dict['message'] = "Nenhum honorário de "+completed_competence+" encontrado!"
+            else:
+                response_dict['message'] = "Honorários de " + completed_competence + " já foram finalizado!"
+        return self.response(response_dict)
+
+
     def get_competence(self, month_number):
         current_year = datetime.datetime.now().year
         if month_number > 12:
@@ -385,18 +413,15 @@ class HonoraryController(BaseController):
 
     def create_update_honorary(self, request, entity, competence):
         contract = Contrato.objects.filter(cliente=entity)
-        print("VEJA O CLIENTE: ",entity, " - CONTRATO: ",contract)
         if contract.count() == 0: contract = None
         else: contract = contract[0]
 
         honoraries = Honorary.objects.filter(entity=entity, competence=competence)
         if honoraries.count() == 0:
-            print(competence," NAO POSSUI HONORARIO ABERTO!")
             honorary = Honorary().create_honorary(entity, competence, contract=contract)
             honorary.created_by = request.user
             honorary.updated_by = request.user
         else:
-            print(competence, " POSSUI HONORARIO ABERTO!")
             honorary = Honorary().update_honorary(honoraries[0], contract=contract)
             honorary.updated_by = request.user
 

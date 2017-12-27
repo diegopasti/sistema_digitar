@@ -108,6 +108,8 @@ urlpatterns = [
     url(r'^honorary/$', honorario_views.honorary_page),
     url(r'^api/honorary$', HonoraryController().filter),
     url(r'^api/honorary/competences$', HonoraryController().generate_honoraries),
+    url(r'^api/honorary/competences/current/close$', HonoraryController().close_current_competence),
+
 
 
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),

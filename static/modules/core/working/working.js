@@ -12,12 +12,13 @@ function working_qunit(){
       new PNotify({
 				title: "WorkingAPI was updated",
 				addclass: 'visible',
+				width: '350px',
 				text: '',
 				hide: true,
-				delay: 2000,
+				delay: 3000,
 				mouse_reset: false,
 				type: 'success',
-				styling: 'bootstrap3'
+				styling: 'fontawesome',
 			});
     }
   });
@@ -39,12 +40,13 @@ function working(){
       if(resultado == true){
         new PNotify({
             title: "WorkingAPI was updated",
+            width: '350px',
             text: texto,
             type: 'success',
             hide: true,
-            delay: 2000,
+            delay: 3000,
             mouse_reset: false,
-            styling: 'bootstrap3'
+            styling: 'fontawesome',
         });
       }
       else{

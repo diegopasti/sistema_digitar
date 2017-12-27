@@ -128,6 +128,33 @@ app.controller('MeuController', ['$scope', function($scope) {
     })
 	}
 
+	$scope.close_current_competences = function(){
+		NProgress.start();
+		$.ajax({
+      type: 'GET',
+      url: "/api/honorary/competences/current/close",
+
+      success: function (data) {
+				data = data.replace("<html><head></head><body>{","{")
+				data = data.replace("}</body></html>","}")
+        if(JSON.parse(data).result){
+        	success_notify('Operação realizada com Sucesso',JSON.parse(data).message)
+					NProgress.done();
+					$scope.load_objects();
+        }
+        else{
+        	NProgress.done();
+        	warning_notify(null,'Atenção',JSON.parse(data).message)
+        }
+      },
+
+      failure: function (data) {
+        error_notify('Falha na Operação',JSON.parse(data).message)
+        NProgress.done();
+      },
+    })
+	}
+
 	$scope.select_competence = function(){
 		$scope.get_filter_column();
 		$scope.$apply();
@@ -220,6 +247,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 					return {entity_name: $scope.search, competence:competence};
 			}
 		}
+		$scope.$apply();
 	}
 
 	$scope.selecionar_linha = function(registro) {

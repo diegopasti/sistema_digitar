@@ -14,7 +14,7 @@
 	table th{
 		font-size: 12px;
 		font-weight: bold;
-		background: #FFF;/*#9FB8FB; #EEEEEF; #85A3CC #EEE #8FB5EC; *#6FB2BE; #009ACD;*/
+		background: #FFF; /*#9FB8FB; #EEEEEF; #85A3CC #EEE #8FB5EC; *#6FB2BE; #009ACD;*/
 		color: #666;
 	}
 
@@ -39,10 +39,16 @@
 						<h5 class="box-title">Controle de Honorários</h5>
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
-								<button id='bt_load_competences' role="button" class="btn btn-sm btn-primary" ng-click="load_competences()">Inicializar Honorários</button>
-								<button id='bt_adicionar' role="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_adicionar_contrato" ng-disabled="registro_selecionado!=null">Adicionar</button>
-								<button id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</button>
-								<button id='bt_disable' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_disable();" style='margin-left: 5px;'>Excluir</button>
+								<button id='bt_insert_provent' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_provents" ng-disabled="registro_selecionado!=null">Proventos e Descontos</button>
+								<button id='bt_honorary' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado!=null" style="margin-left: 5px;">Gerar Honorário</button>
+
+								<div class="btn-group" role="group" style='margin-left: 5px;'>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li><a ng-click="close_current_competences()" style="cursor: pointer;">Encerrar Competência</a></li>
+										<li><a ng-click="load_competences()" style="cursor: pointer;">Atualizar Contratos</a></li>
+									</ul>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -56,7 +62,7 @@
 								<div class="container">
 									<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
 										<thead>
-											<tr class="linha_cabecalho">
+											<tr class="linha_cabecalho no-select">
 												<th class='text-center' style="width: 40px;" ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
 												<th class='text-center' style="width:60px;" ng-click="sortType='competence';sortReverse=!sortReverse">Comp.</th>
 												<th class='text-center' ng-click="sortType='cliente';sortReverse=!sortReverse">Cliente</th>
@@ -73,11 +79,12 @@
 										</thead>
 
 										<tbody style="font-size: 11px;">
+
 											<tr id="divCarregando" ng-if="registros_carregados == false"><!-- style='height:{{ table_maximun_body_heigth }}px;'>-->
 												<td colspan="12" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle' class="text-center"><br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><br><br>Aguarde.. Carregando...<br><br></td>
 											</tr>
 
-											<tr ng-cloak ng-if='registros_carregados' class="angular-repeat linha_selecionavel {{ registro.selecionado }}" ng-click="selecionar_linha(registro);" pagination-id="paginate_registros" dir-paginate="registro in registros | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
+											<tr ng-cloak ng-if='registros_carregados' class="angular-repeat linha_selecionavel {{ registro.selecionado }}" dir-paginate="registro in resultado = (registros | filter: get_filter_column()) | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse" ng-click="selecionar_linha(registro);" pagination-id="paginate_registros">
 												<td class='text-center' style="width: 30px;">{{ registro.id }}</td>
 												<td class="text-center" style="width: 60px;">{{ registro.competence }}</td>
 												<td class='text-left'>{{ registro.entity_name }}</td>
@@ -100,8 +107,8 @@
 												<td style="width:30px;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
 											</tr>
 
-											<tr ng-cloak ng-if="resultado.length === 0 && (registros|filter:filterIds()).length > 0">
-												<td colspan="4" class='text-center'>Nenhum resultado Encontrado</td>
+											<tr ng-if="resultado.length">
+												<td colspan="12" class='text-center'>Nenhum resultado Encontrado</td>
 											</tr>
 										</tbody>
 									</table>
@@ -149,14 +156,14 @@
 		</div>
 	</div>
 
-	<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-		<div class="modal-dialog" style="width: 70%">
+	<div id="modal_provents" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 80%;margin-left: auto; margin-right: auto;">
 			<form id="form_adicionar_contrato" novalidate autocomplete="off" ng-submit="esta_adicionando? save_provent() : update_provent()" onsubmit="return false;">
 				{% csrf_token %}
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h5 id="titulo_modal_adicionar_contrato" class='modal_title' style="font-weight: bold">Adicionar Provento</h5>
+						<h5 id="titulo_modal_provents" class='modal_title' style="font-weight: bold">Adicionar Provento</h5>
 					</div>
 
 					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
