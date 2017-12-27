@@ -1123,11 +1123,10 @@ function substituir_valor_nulo(valor){
 			$scope.adicionar_atividade = function(){
 					var cnae = {
 							atividade: $scope.atividade_descricao,
-							desde: $scope.atividade_desde
+							desde: $('#atividade_desde').val()
 					};
-
 					$scope.atividades.push(cnae);
-					$('#atividade_economica').val($('#atividade_economica').val()+"+|"+$scope.atividade_descricao+"|"+$scope.atividade_desde+"#");
+					$('#atividade_economica').val($('#atividade_economica').val()+"+|"+$scope.atividade_descricao+"|"+$('#atividade_desde').val()+"#");
 					$('#atividade_descricao').val("");
 					$('#atividade_desde').val("");
 

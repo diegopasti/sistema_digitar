@@ -610,8 +610,14 @@ def visualizar_entidade(request,id):
     meus_documentos = Documento.objects.filter(entidade=cliente)
 
     if (request.method == "POST"):
+        from modules.entidade.models import localizacao_simples
         formulario = formulario_cadastro_entidade_completo(request.POST, request.FILES)
-
+        try:
+            endereco = localizacao_simples.objects.get(cep=cliente.endereco.cep)
+            print("meu endereco é:",endereco.get_endereco())
+        except:
+            print("criando novo")
+            endereco = localizacao_simples()
         if formulario.is_valid():
             #print("olha, estou querendo alterar:")
             #lista_objetos = load_objects_from_form(formulario,cliente,cliente.endereco,meus_contatos,minhas_atividades)
@@ -641,6 +647,18 @@ def visualizar_entidade(request,id):
             cliente.supervisor_cliente = entidade.objects.get(pk=int(formulario.cleaned_data['supervisor_cliente']))
 
             cliente.observacoes = formulario.cleaned_data['observacoes']
+
+            endereco.cep         = formulario.cleaned_data['cep']
+            endereco.codigo_ibge = formulario.cleaned_data['codigo_municipio']
+            endereco.complemento = formulario.cleaned_data['complemento']
+            endereco.logradouro  = formulario.cleaned_data['endereco']
+            endereco.numero      = formulario.cleaned_data['numero_endereco']
+            endereco.bairro      = formulario.cleaned_data['bairro']
+            endereco.municipio   = formulario.cleaned_data['municipio']
+            endereco.estado      = formulario.cleaned_data['estado']
+            endereco.pais        = formulario.cleaned_data['pais']
+            endereco.save()
+
             cliente.save()
 
             contatos = formulario.cleaned_data['contatos']
@@ -683,7 +701,9 @@ def visualizar_entidade(request,id):
                 atividades = atividades.split("#")
                 for item in atividades:
                     item = item.replace("undefined", "")
+                    print("olha o item:",item)
                     dados = item.split("|")
+                    print("olha os dados_aividade-:",dados)
 
                     if "+" in dados[0]:
                         registro = AtividadeEconomica()
@@ -691,7 +711,9 @@ def visualizar_entidade(request,id):
                         registro.entidade = cliente
 
                         try:
-                            registro.desde = datetime.datetime.strptime(dados[2], "%d/%m/%Y").date()
+                            data = dados[2]
+                            registro.desde = data
+                            registro.desde = datetime.datetime.strptime(data, "%d/%m/%Y").date()
                         except:
                             registro.desde = None
 
@@ -843,7 +865,7 @@ def visualizar_entidade(request,id):
 
 
 def adicionar_entidade(request):
-
+    print("ENTAO EU CHEGO no inicio?")
     if (request.method == "POST"):
         print("VEJA O QUE VEIO: ",request.POST)
         formulario = formulario_cadastro_entidade_completo(request.POST, request.FILES)
@@ -864,6 +886,7 @@ def adicionar_entidade(request):
             registro_entidade    = formulario.get_entidade(formulario)
             registro_contato     = formulario.get_contatos(formulario, registro_entidade)
             registro_localizacao = formulario.get_localizacao(formulario)
+            print("OLHA O FORM DE LOCALIZAÇÃO:",registro_localizacao)
             registro_cnae        = formulario.get_cnae(formulario)
 
             registro_documentos  = formulario.get_documentos(formulario)
@@ -913,6 +936,7 @@ def adicionar_entidade(request):
 
         messages.add_message(request, messages.SUCCESS,msg)
     else:
+        print("ENTAO EU CHEGO?")
         formulario = formulario_cadastro_entidade_completo()
         #formulario_contrato = FormularioContrato()
 
