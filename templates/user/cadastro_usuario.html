@@ -433,9 +433,10 @@
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
-
 	<script src="{% static 'modules/user/user_register_controller.js' %}"/>
 	<script src="{% static 'modules/user/user_regiter.js' %}"/>
 	<script src="{% static 'modules/user/user.js' %}"/>
+	<script src="{% static 'modules/core/base_controller.js' %}"/>
+	<script src="{% static 'modules/core/controle_componentes.js' %}"/>
 {% endcompress %}
 {% endblock %}

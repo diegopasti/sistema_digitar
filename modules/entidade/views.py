@@ -613,10 +613,8 @@ def visualizar_entidade(request,id):
         from modules.entidade.models import localizacao_simples
         formulario = formulario_cadastro_entidade_completo(request.POST, request.FILES)
         try:
-            endereco = localizacao_simples.objects.get(cep=cliente.endereco.cep)
-            print("meu endereco é:",endereco.get_endereco())
+            endereco = localizacao_simples.objects.get(id=cliente.endereco.id)
         except:
-            print("criando novo")
             endereco = localizacao_simples()
         if formulario.is_valid():
             #print("olha, estou querendo alterar:")

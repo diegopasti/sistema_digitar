@@ -52,9 +52,11 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 		success_function = function(result,message,object,status){
       if(result){
-				alert("Olha o usuario:"+JSON.stringify(object))
+      	alert('olha o object:'+JSON.stringify(object))
+				notify_success_message(["Usuário atualizado com sucesso"])
+				alert("OLHA AI A LISTA:\n"+JSON.stringify($scope.usuarios))
 				$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
-
+				alert("OLHA AI A LISTA after:\n"+JSON.stringify($scope.usuarios))
 				$scope.$apply();
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
@@ -167,7 +169,6 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.open_object = function(){
 		reset_formulary('form_adicionar_usuario')
 		reset_formulary('form_alterar_usuario')
-		alert("Registro selecionado:"+JSON.stringify($scope.registro_selecionado))
 		for (var key in $scope.registro_selecionado) {
 			try{
 				$('input[name='+key+']').val($scope.registro_selecionado[key])
@@ -176,6 +177,8 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 			catch (err){
 			}
 		}
+
+		
 
 		$('#field_group_update > [name=groups]').val($scope.registro_selecionado.groups[0])
 		//$( "#field_group_update > #groups option:selected" ).val(2)
