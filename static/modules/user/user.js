@@ -1,3 +1,5 @@
+
+
 function validate_form_confirm_register(){
   return (email_is_valid("email"));
 }
@@ -10,35 +12,24 @@ function post_screen_verified(){
 	angular.element(document.getElementById('controle_angular_cadastro_user')).scope().reajustar_tela();
 }
 
-function validate_form_change_password(){
-  return true
-	/*var messages = {
-		invalid         : 'Informe numeros e letras!',
-		short           : 'Informe pelo menos 8 caracteres!',
-		long            : 'Informe no máximo x caracteres!',
-		checked         : 'must be checked',
-		empty           : 'Campo obrigatório!',
-		select          : 'Please select an option',
-		number_min      : 'too low',
-		number_max      : 'too high',
-		url             : 'invalid URL',
-		number          : 'not a number',
-		email           : 'email address is invalid',
-		email_repeat    : 'emails do not match',
-		date            : 'invalid date',
-		time            : 'invalid time',
-		password_repeat : 'Senhas não conferem!',
-		no_match        : 'no match',
-		complete        : 'input is not complete'
-	};
-
-	var validator = new FormValidator();
-	validator.texts = messages;
-	validator.settings.alerts = true;
-	result = validator.checkAll($('#form_change_password'));
-	return true;//result.valid */
+function validate_form_change_password(old_senha,senha,con_senha){
+	if (validade_variable_size(old_senha,6) &&
+			validade_variable_size(senha,6) &&
+			validade_variable_size(con_senha,6) &&
+			equals_pass(senha,con_senha)){
+		return true
+	}else{
+		alert("Alteração não foi concluida, formulario possui erros")
+		return false
+	}
 }
-
+function equals_pass (a,b){
+	if(!(a == b)){
+		alert("Senhas não conferem")
+		return false
+	}
+	return true
+}
 function validate_form_login(){
   	return ( validate_size("password",6));
 
@@ -51,12 +42,25 @@ function validate_form_register(){
 }
 
 function validate_size (campo,tamanho_minimo){
-	var retorno = ($('#'+campo+'').val().length >= tamanho_minimo)
+	var retorno = ($('#'+campo+'').val().length >= tamanho_minimo);
 	if (!retorno){
 		alert('Dados inválidos no campo:'+campo)
 	}
 	return retorno
 }
+
+function validade_variable_size (variavel,size){
+	var retorno = variavel.length >= size;
+	if (!retorno){
+		try{
+			notify_response_message(["A informação \""+variavel+"\" precisa ter tamanho minimo de "+size+" caracteres" ])
+		}catch (exep){
+			alert("A informação \""+variavel+"\" precisa ter tamanho minimo de "+size+" caracteres" )
+		}
+	}
+	return retorno
+}
+
 
 function validate_email(){
 	var retorno = false;
@@ -74,7 +78,7 @@ function email_is_valid(id) {
       return true;
     }
     else{
-			alert("error"+" Email Inválido"+" Verifique se o email foi digitado corretamente.")
+			notify_response_message(["Email Inválido"+" Verifique se o email foi digitado corretamente."])
 			return false
     }
   }
