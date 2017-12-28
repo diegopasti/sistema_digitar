@@ -235,17 +235,13 @@
 <script src="{% static 'custom/adminlte/js/app.min.js' %}"/>
 <script src="{% static 'bower_components/angular-locale-pt-br/angular-locale_pt-br.js' %}"/>
 <script src="{% static 'bower_components/pnotify/dist/pnotify.js' %}"/>
-<script src="{% static 'modules/core/working/working.js' %}"/>
 <script src="{% static 'bower_components/nprogress/nprogress.js' %}"/>
 <script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"/>
 <script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"/>
+<script src="{% static 'modules/core/working/working.min.js' %}"/>
 <script src="{% static 'modules/core/session_security/script.js' %}" />
 <script src="{% static 'modules/core/base_controller.js' %}"/>
-<!--<script src="% static 'modules/core/base_api.js'%}"></script>-->
 {% endcompress %}
-
-
-
 {% load session_security_tags %}
 {% load i18n l10n %}
 {% load static from staticfiles %}
@@ -259,7 +255,6 @@ var sessionSecurity = new yourlabs.SessionSecurity({
 });
 </script>
 {% endlocalize %}
-
 {% block recursos_complementares %}
 {% endblock %}
 <script>

@@ -1,10 +1,5 @@
 {% extends 'base_page.html' %}
-
-{% block Titulo %}
-<meta charset="utf-8">
-<title>Digitar - Contratos</title>
-{% endblock %}
-
+{% block Titulo %}<meta charset="utf-8"><title>Digitar - Contratos</title>{% endblock %}
 {% load staticfiles %}
 {% block recursos_necessarios %}
 {% load compress %}
@@ -764,11 +759,8 @@ color:blue;
 {% load compress %}
 {% compress js %}
 <script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
-<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script src="{% static 'modules/core/controle_botoes.js' %}"></script>
+<script src="{% static 'bower_components/jquery.maskedinput/dist/jquery.maskedinput.min.js' %}"></script>
 <script src="{% static 'modules/core/controle_componentes.js' %}"></script>
-<script src="{% static 'modules/core/base_controller.js' %}"></script>
-<script src="{% static 'modules/core/mask.js' %}"></script>
 <script src="{% static 'modules/honorary/contract/js/contractController.js' %}"></script>
 <script src="{% static 'modules/honorary/contract/js/contract.js' %}"></script>
 {% endcompress %}
