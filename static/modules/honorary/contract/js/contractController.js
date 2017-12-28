@@ -107,7 +107,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 				url: "/api/contract/lista_contratos",
 				success: function (data) {
 
-					$scope.contratos = JSON.parse(data);//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
+					$scope.contratos = JSON.parse(data).object;//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
 					//$scope.verificar_contratos();
 					$scope.contratos_carregados = true;
 					$scope.$apply();
@@ -573,9 +573,8 @@ app.controller('MeuController', ['$scope', function($scope) {
 		$.ajax({
 			type: "GET",
 				url: "/api/contract/carregar_servicos_contratados/"+$scope.registro_selecionado.cliente_id+"/"+$scope.registro_selecionado.plano_id,
-
 				success: function (data) {
-					$scope.servicos_contratados = JSON.parse(data);//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
+					$scope.servicos_contratados = JSON.parse(data).object;
 					$scope.servicos_carregados = true;
 					$scope.$apply();
 				},

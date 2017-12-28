@@ -25,7 +25,7 @@ from modules.servico import views as servico_views
 from modules.honorary import views as honorario_views
 from modules.honorary import api as honorario_api
 from modules.preferencias import views as preferencias_views
-from modules.honorary.api import ProventosController, HonoraryController
+from modules.honorary.api import ProventosController, HonoraryController, ContractController
 from modules.user import views as view_usuario
 from modules.user.api import UserController
 #from filebrowser.sites import site
@@ -87,12 +87,12 @@ urlpatterns = [
     url(r'^api/planos/excluir', servico_views.excluir_plano),
 
     url(r'^contract/$', honorario_views.contract_page),
-    url(r'^api/contract/lista_contratos$', honorario_api.get_lista_contratos),
+    url(r'^api/contract/lista_contratos$', ContractController().get_lista_contratos),
     url(r'^api/contract/salvar_contrato', honorario_api.salvar_contrato),
     url(r'^api/contract/alterar_contrato', honorario_api.alterar_contrato),
     url(r'^api/contract/atualizar_contrato', honorario_api.atualizar_contrato),
-    url(r'^api/contract/carregar_servicos_contratados/(?P<cliente_id>\d+)/(?P<plano_id>\d+)/', honorario_api.carregar_servicos_contratados),
-    url(r'^api/contract/atualizar_servicos', honorario_api.atualizar_servicos),
+    url(r'^api/contract/carregar_servicos_contratados/(?P<cliente_id>\d+)/(?P<plano_id>\d+)/', ContractController().carregar_servicos_contratados),
+    url(r'^api/contract/atualizar_servicos', ContractController().atualizar_servicos),
     url(r'^api/contract/lista_indicacao/(?P<cliente_id>\d+)/', honorario_api.get_lista_indicacoes),
     url(r'^api/contract/salvar_indicacao/', honorario_api.salvar_indicacao),
     url(r'^api/contract/alterar_indicacao/', honorario_api.alterar_indicacao),
