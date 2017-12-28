@@ -15,6 +15,8 @@ import os
 
 import sys
 
+import project_properties
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -48,7 +50,6 @@ WSGI_APPLICATION = 'sistema_contabil.wsgi.application'
     },
 }
 '''
-ALLOWED_HOSTS = []
 
 # Application definition
 #AUTH_USER_MODEL = 'modules.user.User'
@@ -319,6 +320,11 @@ THUMBNAIL_PROCESSORS = (
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters',
 )
+
+SELENIUM_GECKODRIVER_MOZILLA = project_properties.geckodriver_path
+MOZILLA_FIREFOX_TEST_PATH = project_properties.mozilla_firefox_path
+SELENIUM_CHROMEDRIVER = project_properties.chromedriver_path
+
 SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True
 if SERVER_DIGITAR :

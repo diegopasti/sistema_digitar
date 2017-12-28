@@ -140,7 +140,8 @@
 																			</div>
 
 																			<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
-																				<div class="pull-right" ><a href="{{ shared_informations.folder_link }}" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-default" > Gerenciar Armazenamento</a></div>
+																				<!--<div class="pull-right" ><a href="{{ shared_informations.folder_link }}" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-default" > Gerenciar Armazenamento</a></div>-->
+																				<a href="#" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#" ng-click="manager_dropbox()"> Gerenciar Armazenamento</a>
 																				<!--<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }} Kb</div>
 																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
 																				<div class="pull-left">Plano de Armazenamento: Básico</div>
@@ -221,10 +222,10 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	angular.element(document.getElementById('configuration_controller')).scope().load();
-	angular.element(document.getElementById('configuration_controller')).scope().load_backups_informations();
-	angular.element(document.getElementById('configuration_controller')).scope().load_version_informations();
-	angular.element(document.getElementById('configuration_controller')).scope().shared_folder();
+	angular.element(document.getElementById('configuration_controller')).scope().load()
+	angular.element(document.getElementById('configuration_controller')).scope().load_backups_informations()
+	angular.element(document.getElementById('configuration_controller')).scope().load_version_informations()
+	angular.element(document.getElementById('configuration_controller')).scope().shared_folder()
 });
 </script>
 {% endblock %}

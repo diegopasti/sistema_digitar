@@ -13,10 +13,17 @@ from sistema_contabil.settings import DBBACKUP_STORAGE_OPTIONS, DROPBOX_ROOT_PAT
 
 class BackupManager:
 
-    dropbox = None
+    #dropbox = None
 
     def __init__(self):
         pass
+
+    def user_profile(self):
+        self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
+        #self.dt = self.dropbox.users_get_current_account()
+        share_folder = self.dropbox.sharing_share_folder(DROPBOX_ROOT_PATH)
+        #print(self.dt)
+        print(share_folder)
 
     def create_backup(self):
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
@@ -42,6 +49,7 @@ class BackupManager:
         start_timing_backup = datetime.datetime.now()
         list_files = self.dropbox.files_list_folder(DROPBOX_ROOT_PATH)
         most_recent_backup = self.download(list_files.entries[-1].path_display)
+        print(most_recent_backup)
         django.setup()
         call_command('dbrestore', '-v','0', '-i', 'temp.dump.gz', '-z', '-q','--noinput')
         self.clear_temp_file()
@@ -51,8 +59,14 @@ class BackupManager:
 
     def list_backup(self):
         print('\n')
+        foldersize = []
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
         self.dt = self.dropbox.files_list_folder(DROPBOX_ROOT_PATH)
+        for entry in self.dropbox.files_list_folder(DROPBOX_ROOT_PATH).entries:
+            if isinstance(entry, dropbox.files.FileMetadata):
+                foldersize.append(entry.size)
+        foldersize = '{0:.2f}'.format(sum(foldersize)/1024)
+        print(foldersize)
         metadata = []
         for entry in self.dt.entries:
             data = {}
@@ -70,13 +84,14 @@ class BackupManager:
             time = datetime.timedelta(hours=2)
             hora = datetime.datetime.strptime(str(modified), '%Y-%m-%d %H:%M:%S')
             now = hora - time
-            print(display, now , filesize, '\n'+url)
+            #print(display, now , filesize, '\n'+url)
             data['file_name'] = filename
             data['link'] = url
             data['client_modified'] = now#entry.client_modified
             data['size'] = filesize
+            data['folder_size'] = foldersize
             metadata.append(data)
-            #print(metadata)
+        print(metadata)
             #print(data)
         return metadata
 
@@ -130,6 +145,11 @@ class BackupManager:
         return data
         #return dl_url
 
+    def delete_file(self,file=''):
+        self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
+        path = DROPBOX_ROOT_PATH + "/20171221120127.dump.gz"
+        self.dropbox.files_delete_v2(path)
+
     def clear_temp_file(self):
         backup_file = DBBACKUP_STORAGE_OPTIONS['location'] + '/temp.dump.gz'
         if os.path.isfile(backup_file):
@@ -147,6 +167,10 @@ if __name__=='__main__':
         backup_manage.list_backup()
     elif "shared" in arguments:
         backup_manage.shared_folder()
+    elif "delete" in arguments:
+        backup_manage.delete_file()
+    elif "share_folder" in arguments:
+        backup_manage.user_profile()
     else:
         pass
 
