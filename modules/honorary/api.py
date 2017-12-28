@@ -190,36 +190,9 @@ def salvar_contrato(request):
     return HttpResponse(json.dumps(response_dict))
 
 
-def alterar_contrato(request):
-    result, form = filter_request(request, FormContrato)
-
-    if result:
-        contrato = form.form_to_object(int(request.POST['cliente']))
-        plano = Plano.objects.get(pk=int(request.POST['plano']))
-        contrato.plano = plano
-        contrato.totalizar_honorario()
-        contrato.save()
-
-        honoraries = Honorary.objects.filter(contract=contrato)
-        for honorary in honoraries:
-            honorary = Honorary().update_honorary(honorary, contract=contrato)
-            honorary.updated_by = request.user
-            honorary.updated_by_name = request.user.get_full_name()
-            honorary.save()
-
-        response_dict = response_format_success_message(contrato,None) #response_format_error_message("TESTANTADO.. ")#response_format_success_message(contrato,None)
-    else:
-        response_dict = response_format_error_message(form.errors)
-
-    return HttpResponse(json.dumps(response_dict))
 
 
-def atualizar_contrato(request):
-    contrato = Contrato.objects.get(cliente_id=int(request.POST['cliente']))
-    contrato.totalizar_honorario()
-    contrato.save()
-    response_dict = response_format_success_message(contrato, None)
-    return HttpResponse(json.dumps(response_dict))
+
 
 
 class ContractController(BaseController):
@@ -338,8 +311,51 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    def alterar_contrato(self, request):
+        result, form = filter_request(request, FormContrato)
+        response_dict = {}
+        if result:
+            contrato = form.form_to_object(int(request.POST['cliente']))
+            plano = Plano.objects.get(pk=int(request.POST['plano']))
+            contrato.plano = plano
+            contrato.totalizar_honorario()
+            contrato.save()
+
+            honoraries = Honorary.objects.filter(contract=contrato)
+            for honorary in honoraries:
+                honorary = Honorary().update_honorary(honorary, contract=contrato)
+                honorary.updated_by = request.user
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary.save()
+
+            response_dict = self.notify.success(contrato)
+
+        else:
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! "+form.errors
+
+        return self.response(response_dict)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def atualizar_contrato(self, request):
+        contract_selected = Contrato.objects.filter(cliente_id=int(request.POST['cliente']))
+        response_dict = {}
+        if contract_selected.count() == 0:
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! Contrato não identificado."
+        else:
+            contract_selected.totalizar_honorario()
+            contract_selected.save()
+            response_dict = self.notify.success(contract_selected)
+        print("VEJA A ATUALIZACAO: ",response_dict)
+        return self.response(response_dict)
+
+    @request_ajax_required
+    @method_decorator(login_required)
     def atualizar_servicos(self, request):
-        print("VIM AQUI ATUALIZAR OS SERVICO DO CONTRATO DO CLIENTE: ",request.POST['cliente_id'])
         cliente_id = request.POST['cliente_id']
         contract_selected = Contrato.objects.filter(cliente_id=int(cliente_id))
         response_dict = {}
@@ -351,7 +367,6 @@ class ContractController(BaseController):
             contract_selected = contract_selected[0]
             contract_selected.servicos_contratados = request.POST['servicos']
             response_dict = self.execute(contract_selected, contract_selected.save)
-            print("VEJA O RESPONSE GERADO: ", response_dict)
         return self.response(response_dict)
 
 

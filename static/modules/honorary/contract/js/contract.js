@@ -10,7 +10,7 @@ function configurar_formulario_padrao(){
 	configurar_campo_data('desconto_inicio')
 	configurar_campo_data('desconto_fim')
 	$("#valor_honorario").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
-	//$("#total").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+	$("#total").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
 
 	desabilitar('group_data_venvimento')
 	desabilitar('group_taxa_honorario')
@@ -20,6 +20,10 @@ function configurar_formulario_padrao(){
 
 	//$("#group_data_venvimento").addClass('desabilitado')
 }
+
+$('#modal_adicionar_contrato').on('hidden.bs.modal', function () {
+  resetar_formulario();
+})
 
 function resetar_formulario(){
 	configurar_formulario_padrao()
@@ -54,6 +58,7 @@ function verificar_tipo_honorario () {
 	var tipo_vencimento = $('#select_tipo_honorario option:selected').val();
 	if (tipo_vencimento == 'VARIAVEL'){
 		$('#valor_honorario').val('');
+		$('#taxa_honorario').val('1')
 		habilitar('group_taxa_honorario');
 		$("#total").val('');
 	}
@@ -76,18 +81,7 @@ function calcular_honorario() {
 	}
 }
 
-function calcular_total (){
-	var honorario = $('#valor_honorario').val();
-	var desconto = $('#desconto_temporario').val();
-	if (!(honorario == '')) {
-		honorario = Number(honorario.replace(/\./g,'').replace(',','.'));
-		desconto = Number(desconto.replace(',','.'));
-		var total =honorario * (1 - (desconto/100))
-		//total = Math.round(total *10000) / 100.0
-		//total *= 100;
-		$('#total').val(total)//.trigger('mask.maskMoney');
-	}
-}
+
 
 
 /*	Funções de validar no final	*/

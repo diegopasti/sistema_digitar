@@ -1,6 +1,6 @@
 var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 
-app.controller('MeuController', ['$scope', function($scope) {
+app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	$scope.screen_height = window.innerHeight // screen.availHeight; - PEGA O TAMANHO DA TELA DO DISPOSITIVO
 	$scope.screen_width  = window.innerWidth  // PEGA O TAMANHO DA JANELA DO BROWSER
@@ -190,15 +190,12 @@ app.controller('MeuController', ['$scope', function($scope) {
 	}
 
 	$scope.atualizar_contrato = function(cliente) {
-		var data = {
-			cliente : cliente,
-		}
+		var data = {cliente : cliente}
 
-		function validate_function () {
-			return true
-		}
+		function validate_function () {return true}
 
-		function success_function(message) {
+		success_function = function(result,message,object,status){
+			alert("VEJA MENSAGEM: "+message)
 			$scope.registro_selecionado.contrato = message.fields
 			//alert('veja o que veio: '+$scope.registro_selecionado.contrato.desconto_indicacoes)
 			$scope.$apply()
@@ -206,7 +203,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 			//$('#modal_indicacoes').modal('hide');
 		}
 
-		function fail_function(message) {
+		fail_function = function (result,message,data_object,status) {
 			alert('Erro! Falha na atualização do contrato.')
 		}
 		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
@@ -261,20 +258,24 @@ app.controller('MeuController', ['$scope', function($scope) {
 		//alert("veja os parametros: "+JSON.stringify(data_paramters))
 
 		function validate_function(){
-			return true
+			if(data_paramters==null){return false}
+			else{return true}
 		}
 
-		function success_function(message) {
-			$scope.registro_selecionado.contrato = message.fields
-			$scope.registro_selecionado.plano = $('#plano option[value=' + message.fields.plano + ']').text();
+		function success_function(result,message,data_object,status) {
+			$scope.registro_selecionado.contrato = data_object //message.fields
+			$scope.registro_selecionado.plano = $('#plano option[value=' + $scope.registro_selecionado.contrato.plano + ']').text();
 			$scope.$apply()
 			resetar_formulario()
 		}
-		function fail_function(message) {
+		fail_function = function (result,message,data_object,status) {
 			return notify('error','Falha na Operação',message);
 		}
 
-		request_api("/api/contract/alterar_contrato",data_paramters,validate_function,success_function,fail_function)
+		if(data_paramters!=null){
+			request_api("/api/contract/alterar_contrato",data_paramters,validate_function,success_function,fail_function)
+		}
+
 	}
 
 	$scope.get_data_from_form = function(){
@@ -490,19 +491,35 @@ app.controller('MeuController', ['$scope', function($scope) {
 		}
 
 		//s$('#tipo_cliente').find('option:selected').val($scope.registro_selecionado.contato.tipo_cliente)
-		$('#vigencia_inicio').val($scope.registro_selecionado.contrato.vigencia_inicio)
-		$('#vigencia_fim').val($scope.registro_selecionado.contrato.vigencia_fim)
-		$('#dia_vencimento option:selected').text($scope.registro_selecionado.contrato.dia_vencimento)
-		$("#data_vencimento").val($scope.registro_selecionado.contrato.data_vencimento)
+		$('#vigencia_inicio').val($filter('date')($scope.registro_selecionado.contrato.vigencia_inicio,'dd/MM/yyyy'));
+		$('#vigencia_fim').val($filter('date')($scope.registro_selecionado.contrato.vigencia_fim,'dd/MM/yyyy'));
+		$('#dia_vencimento option:selected').text($scope.registro_selecionado.contrato.dia_vencimento);
+		$("#data_vencimento").val($filter('date')($scope.registro_selecionado.contrato.data_vencimento,'dd/MM/yyyy'));
 		$('#tipo_honorario').find('option:selected').text($scope.registro_selecionado.contrato.tipo_honorario)
 		$("#taxa_honorario").val($scope.registro_selecionado.contrato.taxa_honorario)
-		$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario *100.0).trigger('mask.maskMoney')
-		$('#desconto_inicio').val($scope.registro_selecionado.contrato.desconto_inicio)
-		$('#desconto_fim').val($scope.registro_selecionado.contrato.desconto_fim)
-		$('#desconto_temporario').val($scope.registro_selecionado.contrato.desconto_temporario)
-		//alert("VEJA O TOTAL: "+$scope.registro_selecionado.contrato.valor_total)
-		$('#total').val($scope.registro_selecionado.contrato.valor_total)
-		//calcular_total();
+		$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario *100.0).trigger('mask.maskMoney');
+		$('#desconto_inicio').val($filter('date')($scope.registro_selecionado.contrato.desconto_inicio,'dd/MM/yyyy'));
+		$('#desconto_fim').val($filter('date')($scope.registro_selecionado.contrato.desconto_fim,'dd/MM/yyyy'))
+		$('#desconto_temporario').val($scope.registro_selecionado.contrato.desconto_temporario);
+		//$('#total').val($filter('currency')($scope.registro_selecionado.contrato.valor_total,"", 2)); //$scope.registro_selecionado.contrato.valor_total*100).trigger('mask.maskMoney');
+
+
+		$scope.calcular_total();
+	}
+
+	$scope.calcular_total = function () {
+		//alert("VEIO AQUI PELO MENOS")
+		var honorario = $('#valor_honorario').val();
+		var desconto = $('#desconto_temporario').val();
+		if (!(honorario == '')) {
+			honorario = Number(honorario.replace(/\./g,'').replace(',','.'));
+			desconto = Number(desconto.replace(',','.'));
+			var total =honorario * (1 - (desconto/100))
+			//total = Math.round(total *10000) / 100.0
+			//total *= 100;
+			//$('#total').val(total).trigger('mask.maskMoney');
+			$('#total').val($filter('currency')(total,"R$ ", 2));
+		}
 	}
 
 	$scope.load_clientes = function () {

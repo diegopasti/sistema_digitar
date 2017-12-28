@@ -43,7 +43,7 @@ class Notify:
         return response_dict
 
     def success(self, object, message='', list_fields=None, extra_fields=None):
-        return self.__response_format(True, message, object, list_fields)
+        return self.__response_format(True, message, object, list_fields, extra_fields)
 
     def error(self, exceptions):
         return self.__response_format(False,self.__format_exceptions(exceptions),None, None)
