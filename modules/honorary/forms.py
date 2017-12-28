@@ -217,13 +217,11 @@ class FormIndicacao(forms.Form):
     id_encerrador = forms.CharField("Id encerrador", max_length=50, null=True)'''
 
     indicacao = forms.ModelChoiceField(
-        queryset= entidade.objects.filter(ativo=True),label = "Indicar cliente",empty_label='Selecione um cliente...', error_messages = MENSAGENS_ERROS,
+        queryset= entidade.objects.filter(ativo=True).exclude(id=1),label = "Indicar cliente",empty_label='Selecione um cliente...', error_messages = MENSAGENS_ERROS,
         widget = forms.Select(
-            attrs={
-                'id': 'indicacao', 'class': "form-control", 'ng-model': 'indicacao'
+            attrs={'id': 'indicacao', 'class': "form-control", 'ng-model': 'indicacao'
             }
         )
-
     )
 
     taxa_desconto_indicacao = forms.DecimalField(

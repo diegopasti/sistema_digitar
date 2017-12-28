@@ -131,12 +131,9 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			url: "/api/contract/lista_indicacao/" + $scope.registro_selecionado.cliente_id,
 
 			success: function (data) {
-				//alert("VEJA A RESPOSTA: "+JSON.stringify(data))
-				$scope.registro_selecionado.indicacoes = JSON.parse(data);
-				//alert(JSON.stringify($scope.registro_selecionado.indicacoes))
+				$scope.registro_selecionado.indicacoes = JSON.parse(data).object;
 				$scope.indicacoes_carregadas = true;
 				$scope.$apply();
-				//alert("VEJA O QUE TEMOS NAS INDICACOES: "+$scope.registro_selecionado.indicacoes[0].cliente_id)
 			},
 			failure: function (data) {
 				$scope.indicacao = [];
@@ -166,8 +163,8 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			return true
 		}
 
-		function success_function(message) {
-			var date = message['fields']["data_cadastro"]
+		function success_function(result,message,data_object,status) {
+			var date = data_object.data_cadastro;
 			nova_indicaco = {
 				cliente_id: cliente_id,
 				indicacao: {
@@ -182,10 +179,9 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			$scope.$apply()
 		}
 
-		function fail_function() {
+		function fail_function(result,message,data_object,status) {
 			alert('Empresa informada já foi indicada anteriormente')
 		}
-		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
 		request_api("/api/contract/salvar_indicacao/",data,validate_function,success_function,fail_function)
 	}
 
@@ -195,18 +191,14 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		function validate_function () {return true}
 
 		success_function = function(result,message,object,status){
-			alert("VEJA MENSAGEM: "+message)
-			$scope.registro_selecionado.contrato = message.fields
-			//alert('veja o que veio: '+$scope.registro_selecionado.contrato.desconto_indicacoes)
+			$scope.registro_selecionado.contrato = object;
 			$scope.$apply()
 			resetar_formulario()
-			//$('#modal_indicacoes').modal('hide');
 		}
 
 		fail_function = function (result,message,data_object,status) {
 			alert('Erro! Falha na atualização do contrato.')
 		}
-		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
 		request_api("/api/contract/atualizar_contrato/",data,validate_function,success_function,fail_function)
 	}
 
@@ -582,6 +574,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	$scope.carregar_indicacao_selecionada = function(){
 		var indica = $scope.indicacao_selecionada.indicacao_id
 		$('#taxa_desconto_indicacao').val($scope.indicacao_selecionada.taxa_desconto)
+		alert("VEJA QUEM EH A INDICACAO: "+$('#indicacao').val(indica))
 		$('#indicacao').val(indica)
 	}
 
@@ -693,24 +686,22 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			return true
 		}
 
-		function success_function(message) {
-			$scope.decrementar_desconto_fidelidade($scope.indicacao_selecionada.taxa_desconto)
-			$scope.incrementar_desconto_fidelidade(taxa_desconto)
-			$scope.indicacao_selecionada.taxa_desconto = taxa_desconto
-			$scope.atualizar_contrato(cliente_id)
+		function success_function(result,message,data_object,status) {
+			$scope.decrementar_desconto_fidelidade($scope.indicacao_selecionada.taxa_desconto);
+			$scope.incrementar_desconto_fidelidade(taxa_desconto);
+			$scope.indicacao_selecionada.taxa_desconto = taxa_desconto;
+			$scope.atualizar_contrato(cliente_id);
+			$scope.desmarcar_linha_indicacao();
 			$scope.$apply()
 		}
 
-		function fail_function() {
+		function fail_function(result,message,data_object,status) {
 			alert("Erro! Falha na alteração da indicação.")
 		}
-		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
 		request_api("/api/contract/alterar_indicacao/",data,validate_function,success_function,fail_function)
-
 	}
 
 	$scope.ativar_desativar_indicacao = function () {
-
 		var empresa = $('#indicacao').val()
 		var cliente_id = $scope.registro_selecionado.cliente_id
 		var status = $('#indicacao_ativa').val()
@@ -724,46 +715,51 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			return true
 		}
 
-		function success_function(message) {
+		function success_function(result,message,data_object,status) {
 			$scope.atualizar_contrato(cliente_id)
-			//alert("Veja o status: "+$scope.registro.indicacao.indicacao_ativa)
-			//$scope.decrementar_desconto_fidelidade($scope.indicacao_selecionada.taxa_desconto)
-			//$scope.incrementar_desconto_fidelidade(taxa_desconto)
-			//$scope.$apply()
 		}
 
-		function fail_function() {
+		function fail_function(result,message,data_object,status) {
 			alert("Erro! Falha na alteração do estado da indicação.")
 		}
-		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
 		request_api("/api/contract/alterar_boolean_indicacao/",data,validate_function,success_function,fail_function)
 	}
 
 	$scope.deletar_indicacao = function () {
-		var empresa = $('#indicacao').val()
-		var cliente_id = $scope.registro_selecionado.cliente_id
+		var r = confirm("Deseja mesmo excluir essa indicação?");
+		if (r == true) {
+			var empresa = $('#indicacao').val();
+			var cliente_id = $scope.registro_selecionado.cliente_id
 
-		var data = {
-			empresa : empresa,
-			cliente_id : cliente_id
-		}
+			var data = {
+				empresa : empresa,
+				cliente_id : cliente_id
+			}
 
-		function validate_function () {
-			return true
-		}
+			function validate_function () {
+				if($('#indicacao').val()==''){
+					return false
+				}
+				else{
+					return true
+				}
+			}
 
-		function success_function(message) {
-			alert("Deletado o registro")
-			$scope.carregar_indicacao()
-			$scope.indicacao_selecionada = null
-			$scope.$apply()
-		}
+			function success_function(result,message,data_object,status) {
+				success_notify(message,'')
+				$scope.carregar_indicacao()
+				$scope.desmarcar_linha_indicacao();
+				$scope.atualizar_contrato(cliente_id);
+				$scope.$apply()
+			}
 
-		function fail_function() {
-			alert("Não foi possivel deletar neste momento")
+			function fail_function(result,message,data_object,status) {
+				alert("Não foi possivel deletar neste momento")
+			}
+			request_api("/api/contract/deletar_indicacao/",data,validate_function,success_function,fail_function)
+		} else {
+
 		}
-		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
-		request_api("/api/contract/deletar_indicacao/",data,validate_function,success_function,fail_function)
 	}
 
 }]);
