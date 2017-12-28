@@ -66,16 +66,9 @@ label {
 </style>
 {% endblock %}
 
-{% block breadcrumb_title %}Cadastro de Documentos{% endblock %}
-
-{% block breadcrumb_block %}
-<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-<li class="active">Documentos</li>
-{% endblock %}
-
 {% block conteudo %}
 
-<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+	<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
     <div class="modal-dialog">
         <!--  style="width: 90%"> -->
         <div class="modal-content">
@@ -114,60 +107,53 @@ label {
         </div>
     </div>
 </div>
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-xs-12">
+				<div class="box box-default" style="margin-top: -15px;">
+ 					<div class="box-heading">
+						<div class="box-header with-border">
+							<h5 class="box-title">Documentos</h5>
+							<div class="pull-right">
+								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal"
+									 data-target="#myModal"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Documento</a>
+								<a href="#myModal" id='bt_alterar' role="button" class="btn btn-sm btn-default link_desabilitado"
+									 data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Alterar</a>
+								<a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_excluir"
+									 onclick="return confirm('Deseja mesmo excluir esse documento?')" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;">
+									<i class="fa fa-trash-o"aria-hidden="true"></i> Excluir</a>
+							</div>
+						</div>
+					</div>
 
-<div class="row">
-	<div class="col-lg-12 col-md-12 col-xs-12">
-		<div class="box box-default" style="margin-top: -15px;">
+					<div class="box-body" style="padding-bottom: -10px; margin-top: -5px;">
+						<div class="dataTable_wrapper">
+							<div class='row'>
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+									<table class="table table-condensed  table-striped table-bordered table-hover" id="datatable">
+										<thead>
+										<tr class="linha_cabecalho">
+											<th style="vertical-align: middle;"></th>
+											<th style="text-align: center;vertical-align: middle;">Nome</th>
+											<th style="text-align: center;vertical-align: middle;">Descricão</th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for item in dados %}
+											<tr class=''><!--  class="alinhado_meio clickable-row " data-href='/consultar_entidade/{{itemid}}> -->
+												<td style="text-align: center;cursor:pointer">{{ item.id }}</td>
+												<td style="text-align: left;cursor:pointer">{{ item.nome }}</td>
+											</tr>
 
-            <div class="box-heading">
+											{% if item.descricao %}
+												<td style="text-align: left;cursor:pointer">{{ item.descricao }}</td>
+											{% else %}
+												<td style="text-align: center;cursor:pointer"></td>
+											{% endif %}
 
-                <div class="box-header with-border">
-                    <h5 class="box-title">Documentos</h5>
-
-                    <div class="pull-right">
-                         <a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Documento</a>
-						  <a href="#myModal" id='bt_alterar' role="button" class="btn btn-sm btn-default link_desabilitado"   data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Alterar</a>
-						  <a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_excluir" onclick="return confirm('Deseja mesmo excluir esse documento?')" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir</a>
-
-                    </div>
-                </div>
-			</div>
-
-			<div class="box-body" style="padding-bottom: -10px; margin-top: -5px;">
-				<div class="dataTable_wrapper">
-				
-					<div class='row'>
-						
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<table class="table table-condensed  table-striped table-bordered table-hover" id="datatable">
-				
-								<thead>
-									<tr class="linha_cabecalho">
-										<th style="vertical-align: middle;"></th>
-										<th style="text-align: center;vertical-align: middle;">Nome</th>
-										<th style="text-align: center;vertical-align: middle;">Descricão</th>
-									</tr>
-								</thead>
-				
-								<tbody>		
-									{% for item in dados %}
-									
-									<tr class=''><!--  class="alinhado_meio clickable-row " data-href='/consultar_entidade/{{ item.id }}'> -->
-										<td style="text-align: center;cursor:pointer">{{ item.id }}</td>
-                                        <td style="text-align: left;cursor:pointer">{{ item.nome }}</td>
-										
-										{% if item.descricao %}
-										<td style="text-align: left;cursor:pointer">{{ item.descricao }}</td>
-										{% else %}
-										<td style="text-align: center;cursor:pointer"></td>
-										{% endif %}
-										
-                                        
-										
-									{% empty %}
-		    							<tr><td style="text-align: center;" colspan="7">Nenhum Documento Cadastrado!</td></tr>
-									{% endfor %}
-								</tbody>
+										{% empty %}
+											<tr><td style="text-align: center;" colspan="7">Nenhum Documento Cadastrado!</td></tr>
+										{% endfor %}
+										</tbody>
 							</table>
 						</div>
 					</div>
