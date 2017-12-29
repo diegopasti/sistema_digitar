@@ -15,6 +15,8 @@ import os
 
 import sys
 
+import project_properties
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -48,7 +50,6 @@ WSGI_APPLICATION = 'sistema_contabil.wsgi.application'
     },
 }
 '''
-ALLOWED_HOSTS = []
 
 # Application definition
 #AUTH_USER_MODEL = 'modules.user.User'
@@ -89,7 +90,6 @@ SESSION_SECURITY_WARN_AFTER= 540
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SECURITY_INSECURE = True
 
-ROOT_URLCONF = 'sistema_contabil.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -124,6 +124,8 @@ DBBACKUP_GPG_RECIPIENT = 'cleiton.leonel@gmail.com'
 DROPBOX_OAUTH2_TOKEN = 'r2VjuxIaDQAAAAAAAAAAD7YKqJlAJSdXsRz3IWYGHs2Q_BEnim1nOc3-LA1PspKi'
 #DROPBOX_OAUTH2_TOKEN = '4dM4LNuAHKAAAAAAAAAACCB_3-K_tIVlAFYwTBatxMlTd_e6Y5dyiEbR7uX1dKTJ'
 DROPBOX_ROOT_PATH = '/backup'
+ADM_DROPBOX = 'cleiton.creton@gmail.com'
+KEY_DROPBOX = '98651597'
 
 LANGUAGE_CODE = 'pt-br'
 # NA MAQUINA DE DESENVOLVIMEMTO WINDWOS O HORARIO CORRETO DEVE UTILIZAR:
@@ -320,6 +322,11 @@ THUMBNAIL_PROCESSORS = (
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters',
 )
+
+SELENIUM_GECKODRIVER_MOZILLA = project_properties.geckodriver_path
+MOZILLA_FIREFOX_TEST_PATH = project_properties.mozilla_firefox_path
+SELENIUM_CHROMEDRIVER = project_properties.chromedriver_path
+
 SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True
 if SERVER_DIGITAR :

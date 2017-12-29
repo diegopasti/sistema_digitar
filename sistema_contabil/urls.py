@@ -110,8 +110,6 @@ urlpatterns = [
     url(r'^api/honorary/competences$', HonoraryController().generate_honoraries),
     url(r'^api/honorary/competences/current/close$', HonoraryController().close_current_competence),
 
-
-
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),
     #url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', "preferencias.views.excluir_salario),
     #url(r'^api/preferencias/salario_vigente/$', "preferencias.views.get_salario_vigente),
@@ -136,6 +134,7 @@ urlpatterns = [
     url(r'configurations/backup/share$', ConfigurationsController().shared_folder),
     url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),
     url(r'configurations/backup/backups$', ConfigurationsController().list_backups),
+    url(r'configurations/backup/manager$', ConfigurationsController().manager_dropbox),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'users/',view_usuario.user_page),
