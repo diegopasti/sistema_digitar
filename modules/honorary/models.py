@@ -47,6 +47,7 @@ class Contrato(models.Model):
     def totalizar_honorario(self):
         desconto_temporario = self.calcular_desconto_temporario()
         desconto_fidelidade = self.calcular_desconto_fidelidade()
+        print("VEJA QUANTO TEMOS DE FIDELIDADE: ",desconto_fidelidade)
         self.desconto_temporario_ativo = desconto_temporario
         self.desconto_indicacoes = desconto_fidelidade
         desconto_total = Decimal(desconto_temporario)/100 + Decimal(desconto_fidelidade)/100

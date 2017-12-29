@@ -152,8 +152,8 @@ class UserController(BaseController):
                 except:
                     pass
             else:
+                response_dict = response_format_error({'password':'Senha antiga está incorreta'})#response_format_error('Senha antiga está incorreta.')#self.notify.error({'email': 'Senha antiga está incorreta.'})
                 print("é Nao é a mesma senha")
-                response_dict = response_format_error('Senha antiga está incorreta.')#self.notify.error({'email': 'Senha antiga está incorreta.'})
         else:
             print("Formulario com erros")
             response_dict = response_format_error(form.format_validate_response())

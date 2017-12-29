@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
+from django.contrib.auth.decorators import login_required
 from django.db.models import F
+from django.utils.decorators import method_decorator
 
 from libs.default.decorators import request_ajax_required
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary
@@ -53,215 +55,23 @@ def response_format(result,message,object,list_fields):
     return response_dict
 
 
-def get_lista_contratos(request):
-    lista_clientes = entidade.objects.all().exclude(pk=1).order_by('-pk')
-    response_dict = []
-    for item in lista_clientes:
-        response_cliente = {}
-        response_cliente['cliente_id'] = item.id
-        response_cliente['cliente_nome'] = item.nome_razao
-        response_cliente['selecionado'] = False
-        contrato = Contrato.objects.filter(cliente=item.id)
-
-        if len(contrato) != 0:
-            contrato = contrato[0]
-            response_cliente['contrato'] = {}
-            if contrato.plano is not None:
-                response_cliente['plano'] = contrato.plano.nome
-                response_cliente['plano_id'] = contrato.plano.id
-            else:
-                response_cliente['plano'] = None
-                response_cliente['plano_id'] = None
-            response_cliente['indicacoes'] = []
-
-            response_cliente['contrato']['servicos_contratados'] = contrato.servicos_contratados
-            response_cliente['contrato']['tipo_cliente'] = contrato.tipo_cliente
-
-            if(contrato.vigencia_inicio): response_cliente['contrato']['vigencia_inicio'] = str(contrato.vigencia_inicio.strftime('%d/%m/%Y'))
-
-            if (contrato.vigencia_fim): response_cliente['contrato']['vigencia_fim'] = str(contrato.vigencia_fim.strftime('%d/%m/%Y'))
-            response_cliente['contrato']['taxa_honorario'] = contrato.taxa_honorario
-
-            if (contrato.taxa_honorario): response_cliente['contrato']['taxa_honorario'] = float(contrato.taxa_honorario)
-            if (contrato.valor_honorario): response_cliente['contrato']['valor_honorario'] = float(contrato.valor_honorario)
-
-            response_cliente['contrato']['dia_vencimento'] = contrato.dia_vencimento
-            response_cliente['contrato']['data_vencimento'] = contrato.data_vencimento
-
-            #contrato.totalizar_honorario()
-
-            response_cliente['contrato']['desconto_temporario'] = float(contrato.desconto_temporario)
-            response_cliente['contrato']['desconto_temporario_ativo'] = float(contrato.desconto_temporario_ativo)
-            response_cliente['contrato']['desconto_indicacoes'] = float(contrato.desconto_indicacoes)
-            response_cliente['contrato']['valor_total'] = float(contrato.valor_total)
 
 
-            if (contrato.desconto_inicio): response_cliente['contrato']['desconto_inicio'] = str(contrato.desconto_inicio.strftime('%d/%m/%Y'))
-            if (contrato.desconto_fim): response_cliente['contrato']['desconto_fim'] = str(contrato.desconto_fim.strftime('%d/%m/%Y'))
-
-            response_cliente['contrato']['cadastrado_por'] = contrato.cadastrado_por.nome_razao
-            response_cliente['contrato']['data_cadastro'] = str(contrato.data_cadastro.strftime('%d/%m/%Y'))
-            response_cliente['contrato']['ultima_alteracao'] = str(contrato.ultima_alteracao.strftime('%d/%m/%Y'))
-            response_cliente['contrato']['alterado_por'] = contrato.alterado_por.nome_razao
-
-        else:
-            response_cliente['contrato'] = {}
-            response_cliente['plano'] = None
-            response_cliente['indicacoes'] = []
-            response_cliente['contrato']['servicos_contratados'] = None
-            response_cliente['contrato']['tipo_cliente'] = None
-            response_cliente['contrato']['vigencia_inicio'] = None
-            response_cliente['contrato']['vigencia_fim'] = None
-            response_cliente['contrato']['taxa_honorario'] = None
-            response_cliente['contrato']['valor_honorario'] = None
-            response_cliente['contrato']['valor_total'] = None
-            response_cliente['contrato']['dia_vencimento'] = None
-            response_cliente['contrato']['data_vencimento'] = None
-            response_cliente['contrato']['desconto_temporario'] = None
-            response_cliente['contrato']['desconto_inicio'] = None
-            response_cliente['contrato']['desconto_fim'] = None
-            response_cliente['contrato']['desconto_indicacoes'] = None
-            response_cliente['contrato']['cadastrado_por'] = None
-            response_cliente['contrato']['data_cadastro'] = None
-            response_cliente['contrato']['ultima_alteracao'] = None
-            response_cliente['contrato']['alterado_por'] = None
-
-        response_dict.append(response_cliente)
-    return HttpResponse(json.dumps(response_dict))
 
 
-def atualizar_servicos(request):
-    #print("VIM AQUI ATUALIZAR OS SERVICO DO CONTRATO DO CLIENTE: ",request.POST['cliente_id'])
-    cliente_id = request.POST['cliente_id']
-    novos_servicos = request.POST['servicos']
-    contrato = Contrato.objects.get(cliente_id=int(cliente_id))
-    #print("ENCONTREI O CONTRATO: ",contrato)
-    contrato.servicos_contratados = novos_servicos
-    contrato.save()
-    response_dict = response_format_success_message(contrato, [])
-    return HttpResponse(json.dumps(response_dict))
 
 
-def carregar_servicos_contratados(request,cliente_id,plano_id):
-    response_dict = []
-    id_cliente = int(cliente_id)
-    cliente = entidade.objects.get(pk=id_cliente)
-    contrato = Contrato.objects.get(cliente=cliente)
-
-    plano = Plano.objects.get(pk=int(plano_id))
-    lista_servicos = plano.servicos.split(';')
-    if plano is not None:
-        for item in lista_servicos:
-            servico = Servico.objects.get(pk=int(item))
-            response_object = {}
-            response_object['id'] = servico.id
-            response_object['nome'] = servico.nome
-            response_object['descricao'] = servico.descricao
-
-            if str(servico.id) in contrato.servicos_contratados:
-                response_object['ativo'] = True
-            else:
-                response_object['ativo'] = False
-            response_dict.append(response_object)
-    return HttpResponse(json.dumps(response_dict))
 
 
-def get_lista_indicacoes(request,cliente_id):
-    id_cliente = int(cliente_id)
-    lista_indicacoes = Indicacao.objects.filter(cliente=id_cliente)
-    response_dict = []
-    for indicacao in lista_indicacoes :
-        response_indicacao = {}
-        response_indicacao['cliente_id'] = indicacao.cliente.id
-        response_indicacao['indicacao'] = {}
-        response_indicacao['indicacao']['selecionado'] = ''
-        response_indicacao['indicacao']['nome_razao'] = indicacao.indicacao.nome_razao
-        response_indicacao['indicacao']['indicacao_id'] = indicacao.indicacao.id
-        response_indicacao['indicacao']['data_cadastro'] = str(indicacao.data_cadastro.strftime('%d/%m/%Y'))
-        response_indicacao['indicacao']['taxa_desconto'] = float(indicacao.taxa_desconto)
-        response_indicacao['indicacao']['indicacao_ativa'] = indicacao.indicacao_ativa
-        response_indicacao['indicacao']['cadastrado_por'] = indicacao.cadastrado_por.nome_razao
-        response_indicacao['indicacao']['ultima_alteracao'] = str(indicacao.ultima_alteracao.strftime('%d/%m/%Y'))
-        response_indicacao['indicacao']['alterador_por'] = indicacao.alterado_por.nome_razao
-        response_dict.append(response_indicacao)
-    return HttpResponse(json.dumps(response_dict))
 
 
-def salvar_indicacao (request):
-    empresa = request.POST['empresa']
-    taxa_desconto = float(request.POST['taxa_desconto'])
-    cliente_id = request.POST['cliente_id']
-
-    if company_was_indicated(empresa) == False:
-        cliente = entidade.objects.get(pk=int(cliente_id))
-        if cliente is not None:
-            indicacao = Indicacao()
-            indicacao.cliente_id = int(cliente_id)
-            indicacao.indicacao_id = int(empresa)
-            indicacao.taxa_desconto = taxa_desconto
-
-            indicacao.save()
-            #response_dict = response_format_success_message(indicacao,['indicacao','cliente','taxa_desconto','data_cadastro'])
-
-            #contrato = Contrato.objects.get(cliente=cliente)
-            #contrato.totalizar_honorario()
-            #contrato.save()
-
-            response_dict = response_format_success_message(indicacao, ['indicacao', 'cliente', 'taxa_desconto', 'data_cadastro'])
-            #contrato.desconto_indicacoes = contrato.desconto_indicacoes + Decimal(taxa_desconto)
-
-        else:
-            response_dict = response_format_error_message("Cliente não existe.")
-    else:
-        response_dict = response_format_error_message("Essa empresa já foi indicada.")
-
-    return HttpResponse(json.dumps(response_dict))
 
 
-def alterar_indicacao (request):
-    empresa_id = request.POST['empresa']
-    empresa_nome = request.POST['empresa_nome']
-    taxa_desconto = float(request.POST['taxa_desconto'])
-    indicacao_bd = Indicacao.objects.get(indicacao=empresa_id)
-
-    if (indicacao_bd.indicacao.nome_razao == empresa_nome and indicacao_bd.taxa_desconto != taxa_desconto):
-
-        try:
-            Indicacao.objects.filter(indicacao=empresa_id).update(taxa_desconto=taxa_desconto)
-            response_dict = response_format_success_message(indicacao_bd,['indicacao','cliente','taxa_desconto'])
-        except:
-            response_dict = response_format_error_message(False)
-
-    else:
-        response_dict = response_format_error_message(False)
-
-    return HttpResponse(json.dumps(response_dict))
 
 
-def alterar_boolean_indicacao(request):
-    empresa = request.POST['empresa']
-    indicacao_bd = Indicacao.objects.get(indicacao=empresa)
-    status = not indicacao_bd.indicacao_ativa
-    try:
-        Indicacao.objects.filter(indicacao=empresa).update(indicacao_ativa= status)
-        response_dict = response_format_success_message(indicacao_bd, ['indicacao','indicacao_ativa'])
-    except:
-        response_dict = response_format_error_message(False)
-    return HttpResponse(json.dumps(response_dict))
 
 
-def deletar_indicacao (request):
-    empresa = request.POST['empresa']
-    indicacao_bd = Indicacao.objects.get(indicacao=empresa)
-    print()
 
-    try :
-        indicacao_bd.indicacao.delete()
-        response_dict = response_format_success_message(indicacao_bd,[])
-    except:
-        response_dict = response_format_error_message(False)
-
-    return HttpResponse(json.dumps(response_dict))
 
 
 def company_was_indicated(company):
@@ -294,39 +104,360 @@ def salvar_contrato(request):
     return HttpResponse(json.dumps(response_dict))
 
 
-def alterar_contrato(request):
-    result, form = filter_request(request, FormContrato)
-
-    if result:
-        contrato = form.form_to_object(int(request.POST['cliente']))
-        plano = Plano.objects.get(pk=int(request.POST['plano']))
-        contrato.plano = plano
-        contrato.totalizar_honorario()
-        contrato.save()
-
-        honoraries = Honorary.objects.filter(contract=contrato)
-        for honorary in honoraries:
-            honorary = Honorary().update_honorary(honorary, contract=contrato)
-            honorary.updated_by = request.user
-            honorary.updated_by_name = request.user.get_full_name()
-            honorary.save()
-
-        response_dict = response_format_success_message(contrato,None) #response_format_error_message("TESTANTADO.. ")#response_format_success_message(contrato,None)
-    else:
-        response_dict = response_format_error_message(form.errors)
-
-    return HttpResponse(json.dumps(response_dict))
 
 
-def atualizar_contrato(request):
-    contrato = Contrato.objects.get(cliente_id=int(request.POST['cliente']))
-    #plano = Plano.objects.get(pk=int(request.POST['plano']))
-    #contrato.servicos_contratados = plano.servicos
-    #contrato.plano = plano
-    contrato.totalizar_honorario()
-    contrato.save()
-    response_dict = response_format_success_message(contrato, None)
-    return HttpResponse(json.dumps(response_dict))
+
+
+
+class ContractController(BaseController):
+
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def carregar_servicos_contratados(self, request, cliente_id, plano_id):
+        response_dict = []
+        id_cliente = int(cliente_id)
+        cliente = entidade.objects.get(pk=id_cliente)
+        contrato = Contrato.objects.get(cliente=cliente)
+
+        plano = Plano.objects.get(pk=int(plano_id))
+        lista_servicos = plano.servicos.split(';')
+        if plano is not None:
+            for item in lista_servicos:
+                servico = Servico.objects.get(pk=int(item))
+                response_object = {}
+                response_object['id'] = servico.id
+                response_object['nome'] = servico.nome
+                response_object['descricao'] = servico.descricao
+
+                if str(servico.id) in contrato.servicos_contratados:
+                    response_object['ativo'] = True
+                else:
+                    response_object['ativo'] = False
+                response_dict.append(response_object)
+
+        response_final = {}
+        response_final['result'] = True
+        response_final['object'] = response_dict
+        response_final['message'] = str(len(response_dict)) + " Serviços carregados com sucesso!"
+        return self.response(response_final)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def get_lista_contratos(self, request):
+        lista_clientes = entidade.objects.all().exclude(pk=1).order_by('-pk')
+        response_dict = []
+        for item in lista_clientes:
+            response_cliente = {}
+            response_cliente['cliente_id'] = item.id
+            response_cliente['cliente_nome'] = item.nome_razao
+            response_cliente['selecionado'] = False
+            contrato = Contrato.objects.filter(cliente=item.id)
+
+            if len(contrato) != 0:
+                contrato = contrato[0]
+                response_cliente['contrato'] = {}
+                if contrato.plano is not None:
+                    response_cliente['plano'] = contrato.plano.nome
+                    response_cliente['plano_id'] = contrato.plano.id
+                else:
+                    response_cliente['plano'] = None
+                    response_cliente['plano_id'] = None
+                response_cliente['indicacoes'] = []
+
+                response_cliente['contrato']['servicos_contratados'] = contrato.servicos_contratados
+                response_cliente['contrato']['tipo_cliente'] = contrato.tipo_cliente
+
+                if (contrato.vigencia_inicio): response_cliente['contrato']['vigencia_inicio'] = str(contrato.vigencia_inicio.strftime('%d/%m/%Y'))
+
+                if (contrato.vigencia_fim): response_cliente['contrato']['vigencia_fim'] = str(contrato.vigencia_fim.strftime('%d/%m/%Y'))
+                response_cliente['contrato']['taxa_honorario'] = contrato.taxa_honorario
+
+                if (contrato.taxa_honorario): response_cliente['contrato']['taxa_honorario'] = float(contrato.taxa_honorario)
+                if (contrato.valor_honorario): response_cliente['contrato']['valor_honorario'] = float(contrato.valor_honorario)
+
+                response_cliente['contrato']['dia_vencimento'] = contrato.dia_vencimento
+                response_cliente['contrato']['data_vencimento'] = contrato.data_vencimento
+
+                # contrato.totalizar_honorario()
+
+                response_cliente['contrato']['desconto_temporario'] = float(contrato.desconto_temporario)
+                response_cliente['contrato']['desconto_temporario_ativo'] = float(contrato.desconto_temporario_ativo)
+                response_cliente['contrato']['desconto_indicacoes'] = float(contrato.desconto_indicacoes)
+                response_cliente['contrato']['valor_total'] = float(contrato.valor_total)
+
+                if (contrato.desconto_inicio): response_cliente['contrato']['desconto_inicio'] = str(contrato.desconto_inicio.strftime('%d/%m/%Y'))
+                if (contrato.desconto_fim): response_cliente['contrato']['desconto_fim'] = str(contrato.desconto_fim.strftime('%d/%m/%Y'))
+
+                response_cliente['contrato']['cadastrado_por'] = contrato.cadastrado_por.nome_razao
+                response_cliente['contrato']['data_cadastro'] = str(contrato.data_cadastro.strftime('%d/%m/%Y'))
+                response_cliente['contrato']['ultima_alteracao'] = str(contrato.ultima_alteracao.strftime('%d/%m/%Y'))
+                response_cliente['contrato']['alterado_por'] = contrato.alterado_por.nome_razao
+
+            else:
+                response_cliente['contrato'] = {}
+                response_cliente['plano'] = None
+                response_cliente['indicacoes'] = []
+                response_cliente['contrato']['servicos_contratados'] = None
+                response_cliente['contrato']['tipo_cliente'] = None
+                response_cliente['contrato']['vigencia_inicio'] = None
+                response_cliente['contrato']['vigencia_fim'] = None
+                response_cliente['contrato']['taxa_honorario'] = None
+                response_cliente['contrato']['valor_honorario'] = None
+                response_cliente['contrato']['valor_total'] = None
+                response_cliente['contrato']['dia_vencimento'] = None
+                response_cliente['contrato']['data_vencimento'] = None
+                response_cliente['contrato']['desconto_temporario'] = None
+                response_cliente['contrato']['desconto_inicio'] = None
+                response_cliente['contrato']['desconto_fim'] = None
+                response_cliente['contrato']['desconto_indicacoes'] = None
+                response_cliente['contrato']['cadastrado_por'] = None
+                response_cliente['contrato']['data_cadastro'] = None
+                response_cliente['contrato']['ultima_alteracao'] = None
+                response_cliente['contrato']['alterado_por'] = None
+
+            response_dict.append(response_cliente)
+        response_final = {}
+        response_final['result'] = True
+        response_final['object'] = response_dict
+        response_final['message'] = str(len(response_dict))+" Contratos carregados com sucesso!"
+        return self.response(response_final)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def alterar_contrato(self, request):
+        result, form = filter_request(request, FormContrato)
+        response_dict = {}
+        if result:
+            contrato = form.form_to_object(int(request.POST['cliente']))
+            plano = Plano.objects.get(pk=int(request.POST['plano']))
+            contrato.plano = plano
+            contrato.totalizar_honorario()
+            contrato.save()
+
+            honoraries = Honorary.objects.filter(contract=contrato)
+            for honorary in honoraries:
+                honorary = Honorary().update_honorary(honorary, contract=contrato)
+                honorary.updated_by = request.user
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary.save()
+
+            response_dict = self.notify.success(contrato)
+
+        else:
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! "+form.errors
+
+        return self.response(response_dict)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def atualizar_contrato(self, request):
+        contract_selected = Contrato.objects.filter(cliente_id=int(request.POST['cliente']))
+        response_dict = {}
+        if contract_selected.count() == 0:
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! Contrato não identificado."
+        else:
+            contract_selected = contract_selected[0]
+            contract_selected.totalizar_honorario()
+            contract_selected.save()
+            response_dict = self.notify.success(contract_selected)
+        return self.response(response_dict)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def atualizar_servicos(self, request):
+        cliente_id = request.POST['cliente_id']
+        contract_selected = Contrato.objects.filter(cliente_id=int(cliente_id))
+        response_dict = {}
+        if contract_selected.count() == 0:
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! Contrato não identificado."
+        else:
+            contract_selected = contract_selected[0]
+            contract_selected.servicos_contratados = request.POST['servicos']
+            response_dict = self.execute(contract_selected, contract_selected.save)
+        return self.response(response_dict)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def get_lista_indicacoes(self, request, cliente_id):
+        id_cliente = int(cliente_id)
+        lista_indicacoes = Indicacao.objects.filter(cliente=id_cliente)
+        response_list = []
+        for indicacao in lista_indicacoes:
+            response_indicacao = {}
+            response_indicacao['cliente_id'] = indicacao.cliente.id
+            response_indicacao['indicacao'] = {}
+            response_indicacao['indicacao']['selecionado'] = ''
+            response_indicacao['indicacao']['nome_razao'] = indicacao.indicacao.nome_razao
+            response_indicacao['indicacao']['indicacao_id'] = indicacao.indicacao.id
+            response_indicacao['indicacao']['data_cadastro'] = str(indicacao.data_cadastro.strftime('%d/%m/%Y'))
+            response_indicacao['indicacao']['taxa_desconto'] = float(indicacao.taxa_desconto)
+            response_indicacao['indicacao']['indicacao_ativa'] = indicacao.indicacao_ativa
+            response_indicacao['indicacao']['cadastrado_por'] = indicacao.cadastrado_por.nome_razao
+            response_indicacao['indicacao']['ultima_alteracao'] = str(indicacao.ultima_alteracao.strftime('%d/%m/%Y'))
+            response_indicacao['indicacao']['alterador_por'] = indicacao.alterado_por.nome_razao
+            response_list.append(response_indicacao)
+
+        response_dict = {}
+        if lista_indicacoes.count() == 0:
+            response_dict['result'] = True
+            response_dict['object'] = []
+            response_dict['message'] = "Cliente não tem nenhuma indicação."
+        else:
+            response_dict['result'] = True
+            response_dict['object'] = response_list
+            response_dict['message'] = "Cliente " + indicacao.cliente.nome_razao + " possui "+str(lista_indicacoes.count())+" indicações."
+        return self.response(response_dict)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def salvar_indicacao(self,request):
+        empresa = request.POST['empresa']
+        taxa_desconto = float(request.POST['taxa_desconto'])
+        cliente_id = request.POST['cliente_id']
+        response_dict = {}
+        if empresa == cliente_id:
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! Não é possivel incluir uma indicação de uma empresa pra ela própria."
+            return self.response(response_dict)
+
+        if company_was_indicated(empresa) == False:
+            cliente = entidade.objects.get(pk=int(cliente_id))
+            if cliente is not None:
+                indicacao = Indicacao()
+                indicacao.cliente_id = int(cliente_id)
+                indicacao.indicacao_id = int(empresa)
+                indicacao.taxa_desconto = taxa_desconto
+
+                indicacao.save()
+                # response_dict = response_format_success_message(indicacao,['indicacao','cliente','taxa_desconto','data_cadastro'])
+
+                contrato = Contrato.objects.get(cliente=cliente)
+                contrato.totalizar_honorario()
+                contrato.save()
+
+                honoraries = Honorary.objects.filter(contract=contrato)
+                for honorary in honoraries:
+                    honorary = Honorary().update_honorary(honorary, contract=contrato)
+                    honorary.updated_by = request.user
+                    honorary.updated_by_name = request.user.get_full_name()
+                    honorary.save()
+
+                response_dict = self.notify.success(indicacao)
+
+                #response_dict = response_format_success_message(indicacao, ['indicacao', 'cliente', 'taxa_desconto', 'data_cadastro'])
+                # contrato.desconto_indicacoes = contrato.desconto_indicacoes + Decimal(taxa_desconto)
+
+            else:
+                response_dict['result'] = False
+                response_dict['message'] = "Erro! Cliente não existe."
+        else:
+            response_dict['result'] = False
+            response_dict['message'] = "Erro! Empresa já é uma indicação."
+        return self.response(response_dict)
+
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def alterar_indicacao(self,request):
+        empresa_id = request.POST['empresa']
+        empresa_nome = request.POST['empresa_nome']
+        taxa_desconto = float(request.POST['taxa_desconto'])
+        indicacao_bd = Indicacao.objects.get(indicacao=empresa_id)
+
+        if (indicacao_bd.indicacao.nome_razao == empresa_nome and indicacao_bd.taxa_desconto != taxa_desconto):
+
+            try:
+                Indicacao.objects.filter(indicacao=empresa_id).update(taxa_desconto=taxa_desconto)
+                contrato = Contrato.objects.get(cliente_id=int(empresa_id))
+                contrato.totalizar_honorario()
+                contrato.save()
+
+                honoraries = Honorary.objects.filter(contract=contrato)
+                for honorary in honoraries:
+                    honorary = Honorary().update_honorary(honorary, contract=contrato)
+                    honorary.updated_by = request.user
+                    honorary.updated_by_name = request.user.get_full_name()
+                    honorary.save()
+
+                response_dict = response_format_success_message(indicacao_bd, ['indicacao', 'cliente', 'taxa_desconto'])
+            except:
+                response_dict = response_format_error_message(False)
+
+        else:
+            response_dict = response_format_error_message(False)
+
+        response_final = {}
+        response_final['result'] = True
+        response_final['object'] = response_dict
+        response_final['message'] = ""
+        return self.response(response_final)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def alterar_boolean_indicacao(self, request):
+        empresa = request.POST['empresa']
+        indicacao_bd = Indicacao.objects.get(indicacao_id=int(empresa))
+        status = not indicacao_bd.indicacao_ativa
+        try:
+            Indicacao.objects.filter(indicacao=empresa).update(indicacao_ativa=status)
+            contrato = Contrato.objects.get(cliente_id=int(empresa))
+            contrato.totalizar_honorario()
+            contrato.save()
+
+            honoraries = Honorary.objects.filter(contract=contrato)
+            for honorary in honoraries:
+                honorary = Honorary().update_honorary(honorary, contract=contrato)
+                honorary.updated_by = request.user
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary.save()
+
+            response_dict = response_format_success_message(indicacao_bd, ['indicacao', 'indicacao_ativa'])
+        except:
+            response_dict = response_format_error_message(False)
+
+        response_final = {}
+        response_final['result'] = True
+        response_final['object'] = response_dict
+        response_final['message'] = ""
+        return self.response(response_final)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def deletar_indicacao(self, request):
+        empresa = request.POST['empresa']
+        indicacao_bd = Indicacao.objects.get(indicacao_id=int(empresa))
+        response_final = {}
+        try:
+            indicacao_bd.delete()
+            response_final['result'] = True
+            response_final['message'] = "Indicação excluida com sucesso!"
+
+            contrato = Contrato.objects.get(cliente_id=int(empresa))
+            contrato.totalizar_honorario()
+            contrato.save()
+
+            honoraries = Honorary.objects.filter(contract=contrato)
+            for honorary in honoraries:
+                honorary = Honorary().update_honorary(honorary, contract=contrato)
+                honorary.updated_by = request.user
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary.save()
+
+        except:
+            response_final['result'] = False
+            response_final['message'] = "Erro! Não foi possivel excluir essa indicação."
+
+        response_final['object'] = None
+        return self.response(response_final)
+
 
 
 class ProventosController(BaseController):
@@ -360,15 +491,10 @@ class HonoraryController(BaseController):
     def filter(self,request):
         for item in range(4):
             competence = self.get_competence(datetime.datetime.now().month+item)
-            print("COMPETENCIA: ",competence,)
             if Honorary.objects.filter(competence=competence).count() == 0:
-                print("NAO EXISTE")
                 entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
                 for entity in entity_list:
                     self.create_update_honorary(request, entity, competence)
-                #return self.generate_honoraries(request)
-            else:
-                print("EXISTE")
         return BaseController().filter(request, Honorary)
 
     def generate_honoraries(self,request):

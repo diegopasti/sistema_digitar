@@ -1159,12 +1159,17 @@ function substituir_valor_nulo(valor){
 			};
 
 			$scope.addPerson = function(){
+
+				if (!($('#cargo_setor').val())){
+					error_notify('cargo_setor','Cargo não adicionado','Informe um Nome/Cargo')
+				}
+
 					$scope.cargo_setor = $scope.cargo_setor.toUpperCase();
 					var person = {
 							tipo_contato: $scope.tipo_contato,
 							numero_contato: $scope.numero_contato,
 							cargo_setor: $scope.cargo_setor,
-							email: $scope.email,
+							email: $scope.email
 					};
 
 					var sugestao_email = $scope.email;

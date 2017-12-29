@@ -256,7 +256,8 @@ BOWER_INSTALLED_APPS = (
     'angular-locale-pt-br',
     'select2',
     'labelauty',
-    'multiple-select'
+    'multiple-select',
+    'jquery.maskedinput'
 
 
     #'bootstrap#3.3.7',#3.3.2

@@ -64,7 +64,7 @@ class FormContrato(forms.Form):
         label="Honorário*", max_length=30, required=True, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'class': "form-control uppercase", 'id': 'valor_honorario', 'ng-model': 'valor_honorario', 'onchange':'calcular_total()', 'onblur':'calcular_total()'
+                'class': "form-control uppercase", 'id': 'valor_honorario', 'ng-model': 'valor_honorario', 'ng-keyup':'calcular_total()', 'on-change':'calcular_total()', 'ng-blur':'calcular_total()'
             }
         )
     )
@@ -84,7 +84,7 @@ class FormContrato(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'id': 'taxa_honorario','class': "form-control decimal", 'ng-model':'taxa_honorario',
-                'ng-blur':'calcular_valor_base()', 'onkeyup':'calcular_honorario()' , 'onchange':'calcular_total()'
+                'ng-blur':'calcular_valor_base();calcular_total();', 'onkeyup':'calcular_honorario()', 'ng-keyup':'calcular_total()' ,'ng-change':'calcular_total()'
             }
         )
     )
@@ -108,7 +108,7 @@ class FormContrato(forms.Form):
         )
     )
 
-    opcoes_dias = (('',''),('5', 'DIA 05'), ('10', 'DIA 10'), ('15', 'DIA 15'), ('20', 'DIA 20'), ('25', 'DIA 25'))
+    opcoes_dias = (('5', '5'), ('10', '10'), ('15', '15'), ('20', '20'), ('25', '25'))
 
     dia_vencimento = forms.ChoiceField(
         label="Dia do Vencimento", required=False, error_messages=MENSAGENS_ERROS,choices=opcoes_dias,
@@ -129,10 +129,10 @@ class FormContrato(forms.Form):
     )
 
     desconto_temporario = forms.DecimalField(
-        label="Desconto Temporário (%)", required=False, max_digits=5, decimal_places=2, error_messages=MENSAGENS_ERROS,
+        label="Desconto Temp (%)", required=False, max_digits=5, decimal_places=2, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'id': 'desconto_temporario', 'class': "form-control decimal", 'ng-model':'desconto_temporario', 'onchange':'calcular_total()', 'onblur':'calcular_total()'
+                'id': 'desconto_temporario', 'class': "form-control decimal", 'ng-model':'desconto_temporario', 'ng-change':'calcular_total()', 'ng-blur':'calcular_total()'
             }
         )
     )
@@ -217,13 +217,11 @@ class FormIndicacao(forms.Form):
     id_encerrador = forms.CharField("Id encerrador", max_length=50, null=True)'''
 
     indicacao = forms.ModelChoiceField(
-        queryset= entidade.objects.filter(ativo=True),label = "Indicar cliente",empty_label='Selecione um cliente...', error_messages = MENSAGENS_ERROS,
+        queryset= entidade.objects.filter(ativo=True).exclude(id=1),label = "Indicar cliente",empty_label='Selecione um cliente...', error_messages = MENSAGENS_ERROS,
         widget = forms.Select(
-            attrs={
-                'id': 'indicacao', 'class': "form-control", 'ng-model': 'indicacao'
+            attrs={'id': 'indicacao', 'class': "form-control", 'ng-model': 'indicacao'
             }
         )
-
     )
 
     taxa_desconto_indicacao = forms.DecimalField(
