@@ -325,7 +325,7 @@ THUMBNAIL_PROCESSORS = (
 
 SELENIUM_GECKODRIVER_MOZILLA = project_properties.geckodriver_path
 MOZILLA_FIREFOX_TEST_PATH = project_properties.mozilla_firefox_path
-SELENIUM_CHROMEDRIVER = project_properties.chromedriver_path
+#SELENIUM_CHROMEDRIVER = project_properties.chromedriver_path
 
 SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True

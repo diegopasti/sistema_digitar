@@ -216,7 +216,7 @@ class BaseController(Notify):
         print("Excluir: ", model, '[', object_id, ']')
         object = model.objects.filter(id=object_id)
         response_dict = self.execute(object, object.delete)
-        return HttpResponse(json.dumps(response_dict))
+        return self.response(response_dict)
 
     @request_ajax_required
     def disable(self, request, model):
@@ -238,19 +238,15 @@ class BaseController(Notify):
 
 
     def report_operation(self, request, model):
-        audit_register = RestrictedOperation()
-        audit_register.type = audit_register.get_type(request.POST['action_type'])
-        audit_register.object_id = int(request.POST['id'])
-        audit_register.object_name = request.POST['action_object']
-        audit_register.table = model._meta.db_table
-        audit_register.user_id = 1
-        audit_register.justify = request.POST['action_justify']
-
-        try:
-            audit_register.description = request.POST['action_description']
-        except:
-            audit_register.description = None
-        audit_register.save()
+        operation = RestrictedOperation()
+        operation.user = request.user
+        operation.set_type(request.POST['action_type'])
+        operation.object_id = request.POST['id']
+        operation.object_name = request.POST['action_object']
+        operation.justify = request.POST['action_justify']
+        operation.table = User._meta.db_table
+        operation.save()
+        return
 
 
 

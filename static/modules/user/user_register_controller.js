@@ -51,9 +51,10 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 		success_function = function(result,message,object,status){
       if(result){
+				var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
 				notify_success_message(["Usuário atualizado com sucesso"])
-				$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
-				$scope.$apply();
+				$scope.usuarios[posicao] = object;
+				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name']
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
 				check_response_message_form('#form_alterar_usuario', message);
@@ -130,27 +131,26 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
 		data_paramters['action_object'] = $('#action_object').val()
 		success_function = function(result,message,object,status){
-			//var index = $scope.usuarios.indexOf($scope.registro_selecionado);
-  		//$scope.usuarios.splice(index, 1);
-			//$scope.registro_selecionado.is_active = !($scope.registro_selecionado.is_active)
-			$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
+			var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
 			$scope.registro_selecionado = null;
+			notify_success_message(["Usuário atualizado com sucesso"])
+			$scope.usuarios[posicao]['is_active'] = object['is_active'];
+			$scope.usuarios[posicao]['selecionado'] = '';
 			$scope.esta_adicionando = true;
 			$scope.$apply();
 			$("#modal_justify_action").modal('hide');
-		}
+		};
 
 		fail_function = function (result,message,data_object,status) {
 			notify_response_message(['Não foi possivel realizar a operação no momento'])
 			check_response_message_form('#form_justify_action', message);
-		}
+		};
 
 		validate_function = function () {
 		 return validate_justify();
-		}
+		};
 		request_api("/api/user/chage_active/",data_paramters,validate_function,success_function,fail_function);
-		validate_justify
-	}
+	};
 
 	$scope.confirm_disable = function(){
 		var object_name = $scope.registro_selecionado.first_name + ' ' + $scope.registro_selecionado.last_name;

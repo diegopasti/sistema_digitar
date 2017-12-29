@@ -45,24 +45,11 @@ class UserController(BaseController):
 
     @request_ajax_required
     def change_active(self, request):
-        user = request.user
         if request.POST['action_type'] == 'DESATIVAR':
-            self.disable(request, User)
+            print("Vou desabilitar esse menino")
+            return self.disable(request, User)
         else:
-            self.enable(request, User)
-        try:
-            operation = RestrictedOperation()
-            operation.user = user
-            operation.set_type(request.POST['action_type'])
-            operation.object_id = request.POST['id']
-            operation.object_name = request.POST['action_object']
-            operation.justify = request.POST['action_justify']
-            operation.table = User._meta.db_table
-            operation.save()
-            response_dict = BaseController.notify.success(user,'Consegui')
-        except Exception as e:
-            response_dict = BaseController.notify.error(e)
-        return self.response(response_dict)
+            return self.enable(request, User)
 
 
     @request_ajax_required
