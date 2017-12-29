@@ -70,46 +70,43 @@ label {
 
 	<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
     <div class="modal-dialog">
-        <!--  style="width: 90%"> -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                <h3 id="myModalLabel">Novo Documento</h3>
-            </div>
+			<!--  style="width: 90%"> -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 id="myModalLabel">Novo Documento</h4>
+				</div>
+				<div class="modal-body" style="padding: 15px;">
+					<form action="" method="post">
+					{% csrf_token %}
+						<div class="row" style="	padding-left: 15px; padding-right: 15px">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario.documento.label }}</sub>
+							</div>
+							{{ formulario.documento }}
+						</div>
+						<div class="row" style="padding-left: 15px; padding-right: 15px">
+							<div style='padding-left: 8px'>
+								<sub>{{ formulario.descricao.label }}</sub>
+							</div>
+							{{ formulario.descricao }}
+						</div>
 
+						<div class="row">
+							<div class="col-lg-3 col-lg-push-9">
+								<button type="submit" id="bt_submit_documento" class="btn btn-primary form-control" style="position: relative; margin-top: 20px"></button>
+								<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
-            <div class="modal-body" style="padding: 30px;">
-                <form action="" method="post">
-                {% csrf_token %}
-                    <div class="row" style="padding-left: 15px; padding-right: 15px">
-                        <div style='padding-left: 8px'>
-                            <sub>{{ formulario.documento.label }}</sub>
-                        </div>
-                        {{ formulario.documento }}
-                    </div>
-
-                    <div class="row" style="padding-left: 15px; padding-right: 15px">
-                        <div style='padding-left: 8px'>
-                            <sub>{{ formulario.descricao.label }}</sub>
-                        </div>
-                        {{ formulario.descricao }}
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-3 col-lg-push-9">
-                            <button type="submit" id="bt_submit_documento" class="btn btn-primary form-control" style="position: relative; margin-top: 20px"></button>
-                            <!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-		<div class="row">
-			<div class="col-lg-12 col-md-12 col-xs-12">
-				<div class="box box-default" style="margin-top: -15px;">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-xs-12">
+			<div class="box box-default" style="margin-top: -15px;">
  					<div class="box-heading">
 						<div class="box-header with-border">
 							<h5 class="box-title">Documentos</h5>
@@ -139,16 +136,11 @@ label {
 										</thead>
 										<tbody>
 										{% for item in dados %}
-											<tr class=''><!--  class="alinhado_meio clickable-row " data-href='/consultar_entidade/{{itemid}}> -->
+											<tr><!--  class="alinhado_meio clickable-row " data-href='/consultar_entidade/{{itemid}}> -->
 												<td style="text-align: center;cursor:pointer">{{ item.id }}</td>
 												<td style="text-align: left;cursor:pointer">{{ item.nome }}</td>
+												<td style="text-align: left;cursor: pointer">{{ item.descricao }}</td>
 											</tr>
-
-											{% if item.descricao %}
-												<td style="text-align: left;cursor:pointer">{{ item.descricao }}</td>
-											{% else %}
-												<td style="text-align: center;cursor:pointer"></td>
-											{% endif %}
 
 										{% empty %}
 											<tr><td style="text-align: center;" colspan="7">Nenhum Documento Cadastrado!</td></tr>
@@ -160,7 +152,7 @@ label {
 				</div>
 
 
-				
+
 				<div class='row'>
 
                     {% if dados %}
@@ -168,13 +160,13 @@ label {
                     {% else %}
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-top:6px;'>
                     {% endif %}
-					
+
 						<label id="label_buscar_por" class='left_align link_desabilitado'><sub>Buscar por:</sub></label>
 						 <select id='buscar_por' class='form-control link_desabilitado '>
 							 <option value="0">Código</option>
 							 <option value="1" selected>Documento</option>
 						 	<option value="2">Descrição</option>
-						</select> 
+						</select>
 					</div>
 
 					{% if dados %}
@@ -192,9 +184,8 @@ label {
 	</div>
 	<!-- /.row -->
 </div>
-
-<br>
-
+		</div>
+	</div>
 {% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
 
@@ -287,7 +278,8 @@ label {
 
 					     }
 
-					     $('#bt_excluir').click( function () {
+						$('#bt_excluir').click( function () {
+							alert("indo excluir")
 							$.ajax({
 								url: '/protocolo/documento/excluir/'+table.cell('.selected', 0).data(),
 								type: 'get', //this is the default though, you don't actually need to always mention it
@@ -428,17 +420,17 @@ $('.modal').on('hidden.bs.modal', function(){
 
 <script>
 $(document).ready(function() {
-	
+
 	$('#bt_excluir').addClass('link_desabilitado');
 	$('#visualizar_protocolo').addClass('link_desabilitado');
-	
-	
+
+
 	{% if erro %}
     	$('#myModal').modal('show');
     	BootstrapDialog.show({
 	        message: $("Tentando")
 	    });
-    
+
     {% else %}
 		$('#myModal').modal('hide');
 	{% endif %}
@@ -451,12 +443,12 @@ $(document).ready(function() {
 //	{% if dados %}
 		//alert("vim configurar a exclusao e tenho dados..");
 //		configurar_datatable_selecionavel("#datatable","#bt_apagar","{{ dados|length }}");
-		
+
 //	{% else %}
 		//alert("vim configurar a exclusaom mas nao tenho dados..");
 //		configurar_datatable_selecionavel("#datatable","#bt_apagar","{{ dados|length }}");
 //		desabilitar_botao("#bt_gerar_protocolo");
-//	{% endif %}	
+//	{% endif %}
 //});
 </script>
 
@@ -475,7 +467,7 @@ $('#visualizar_protocolo').click( function () {
 	//window.location.href = '/protocolo/visualizar/'+table.cell('.selected', 0).data();
 	//window.location.reload();
 	//setTimeout(function () {  }, 3);
-	
+
  });
 </script>
 
@@ -484,7 +476,7 @@ $('#visualizar_protocolo').click( function () {
 
 	  //  var link = document.getElementById("visualizar_protocolo");
 	  //  alert("cliquei pra visualizar protocolo"+table.cell('.selected', 0).data());
-	   	
+
 	 //   document.getElementById('visualizar_protocolo').href='/protocolo/visualizar/'+table.cell('.selected', 0).data());
 	 //   window.location.href = ('/protocolo/visualizar/'+table.cell('.selected', 0).data());
 
@@ -538,11 +530,11 @@ $('#codigo_postal').blur(function(){
 	        $('#numero_endereco').focus();
 	      //alert(data);
 	    },
-	    failure: function(data) { 
+	    failure: function(data) {
 	        alert('Got an error dude');
 	    }
-	}); 
-}); 
+	});
+});
 </script>
 
 <script>
@@ -553,7 +545,7 @@ $('#datatable_detalhes').DataTable({
 	"bSort": false,
 	"ordering": false,
 	"bAutoWidth": false
-});	
+});
 
 //alert("defini o detalhe");
 
@@ -561,10 +553,10 @@ $('#datatable_detalhes').DataTable({
 
 <script type="text/javascript">
 function selecionar_filtro_cliente(){
-	
+
 	var destinatario = $('#select_filtrar_por_cliente').val();
 	$("#filtrar_por_cliente").val(destinatario);
-	
+
 }
 </script>
 
