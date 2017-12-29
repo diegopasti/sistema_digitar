@@ -8,6 +8,7 @@ from libs.default.core import BaseController
 from modules.nucleo.models import Backup
 #from modules.user.models import User
 from sistema_contabil import settings
+from selenium import webdriver
 
 
 class ConfigurationsController(BaseController):
@@ -130,14 +131,14 @@ class ConfigurationsController(BaseController):
         return self.response(response_dict)
 
     def manager_dropbox(self,request):
-        from selenium import webdriver
-        from sistema_contabil import settings
         drive = settings.SELENIUM_CHROMEDRIVER
+        admin = settings.ADM_DROPBOX
+        key = settings.KEY_DROPBOX
         browser = webdriver.Chrome(executable_path=str(drive))
         browser.get("https://www.dropbox.com/home/backup")
         list_of_inputs = browser.find_elements_by_xpath("//div/input[starts-with(@id,'pyxl')]")
-        list_of_inputs[0].send_keys("cleiton.creton@gmail.com")
-        list_of_inputs[1].send_keys("98651597")
+        list_of_inputs[0].send_keys(admin)
+        list_of_inputs[1].send_keys(key)
         sign_in = browser.find_element_by_class_name("login-button").click()
         response_dict = {}
         response_dict['result'] = True

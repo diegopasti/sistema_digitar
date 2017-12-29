@@ -141,7 +141,6 @@ class BackupManager:
         data['client_modified'] = link.client_modified
         data['size'] = int(link.size)
         data['folder_link'] = self.shared_folder()
-
         return data
         #return dl_url
 
