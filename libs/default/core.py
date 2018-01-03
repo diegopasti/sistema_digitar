@@ -248,7 +248,7 @@ class BaseController(Notify):
         operation.object_id = request.POST['id']
         operation.object_name = request.POST['action_object']
         operation.justify = request.POST['action_justify']
-        operation.table = User._meta.db_table
+        operation.table = model._meta.db_table
         operation.save()
         return
 

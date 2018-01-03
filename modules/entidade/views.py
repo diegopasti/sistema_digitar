@@ -873,7 +873,6 @@ def visualizar_entidade(request,id):
 
 
 def adicionar_entidade(request):
-    print("ENTAO EU CHEGO no inicio?")
     if (request.method == "POST"):
         print("VEJA O QUE VEIO: ",request.POST)
         formulario = formulario_cadastro_entidade_completo(request.POST, request.FILES)
@@ -944,7 +943,6 @@ def adicionar_entidade(request):
 
         messages.add_message(request, messages.SUCCESS,msg)
     else:
-        print("ENTAO EU CHEGO?")
         formulario = formulario_cadastro_entidade_completo()
         #formulario_contrato = FormularioContrato()
 
