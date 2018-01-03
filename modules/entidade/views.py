@@ -10,6 +10,9 @@ from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect
 from django.http.response import HttpResponse
 from django.shortcuts import render
+
+from libs.default.core import BaseController
+from libs.default.decorators import request_ajax_required
 from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco
 from modules.entidade.models import entidade, contato
 from modules.entidade.service import consultar_codigo_postal_viacep  # consultar_codigo_postal_default
@@ -100,38 +103,45 @@ def cadastro_entidades(request):
 
     return render(request,"entidade/cadastro_entidades.html",{'dados': dados, 'form_desativar': form_desativar, 'erro': False})
 
+class EntityController (BaseController):
 
-def desativar_cliente(request,cliente):
-    if request.is_ajax():
-        cliente = entidade.objects.get(pk=int(cliente))
-        operacao = OperacaoRestrita()
-        operacao.tipo = "DES"
-        operacao.tabela = "ENTIDADE"
-        operacao.entidade = cliente
 
-        if request.user.is_anonymous():
-            operacao.user = None
+    @request_ajax_required
+    def desativar_cliente(self,request):
+        print("OLHA O REQUEST NO DISABLE:",request)
+        return self.disable(request,entidade)
+
+        '''if request.is_ajax():
+            cliente = entidade.objects.get(pk=int(cliente))
+            operacao = RestrictedOperation()
+            operacao.tipo = "DES"
+            operacao.tabela = "ENTIDADE"
+            operacao.entidade = cliente
+    
+            if request.user.is_anonymous():
+                operacao.user = None
+            else:
+                operacao.user = request.user
+    
+            # POR ENQUANTO NAO PODEMOS UTILIZAR ACENTUAÇÃO NESSA DESCRICAO
+            operacao.descricao = "DESATIVACAO DO CLIENTE "+cliente.nome_razao+" ("+cliente.cpf_cnpj+") DO SISTEMA."
+            operacao.justificativa = list(request.GET)[0].upper()
+    
+            #print("Tentano excluir: ", operacao.descricao,operacao.justificativa)
+    
+            try:
+                operacao.save()
+                cliente.ativo = False
+                cliente.save()
+                data = json.dumps("sucesso")
+            except:
+                data = None
+    
+            return HttpResponse(data, content_type='application/json')
+    
         else:
-            operacao.user = request.user
-
-        # POR ENQUANTO NAO PODEMOS UTILIZAR ACENTUAÇÃO NESSA DESCRICAO
-        operacao.descricao = "DESATIVACAO DO CLIENTE "+cliente.nome_razao+" ("+cliente.cpf_cnpj+") DO SISTEMA."
-        operacao.justificativa = list(request.GET)[0].upper()
-
-        #print("Tentano excluir: ", operacao.descricao,operacao.justificativa)
-
-        try:
-            operacao.save()
-            cliente.ativo = False
-            cliente.save()
-            data = json.dumps("sucesso")
-        except:
-            data = None
-
-        return HttpResponse(data, content_type='application/json')
-
-    else:
-        raise Http404
+            raise Http404
+            '''
 
 """
 def adicionar_item_protocolo(request):

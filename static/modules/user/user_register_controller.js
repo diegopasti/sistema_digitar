@@ -149,6 +149,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		validate_function = function () {
 		 return validate_justify();
 		};
+		alert("Olha o q eu pego:"+JSON.stringify(data_paramters))
 		request_api("/api/user/chage_active/",data_paramters,validate_function,success_function,fail_function);
 	};
 

@@ -46,7 +46,6 @@ class UserController(BaseController):
     @request_ajax_required
     def change_active(self, request):
         if request.POST['action_type'] == 'DESATIVAR':
-            print("Vou desabilitar esse menino")
             return self.disable(request, User)
         else:
             return self.enable(request, User)

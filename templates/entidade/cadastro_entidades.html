@@ -105,7 +105,9 @@ label {
 									<li><a href="#">Another action</a></li>
 									<li><a href="#">Something else here</a></li>
 									<li role="separator" class="divider"></li>-->
-									<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>
+									<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a>
+
+									</li>
 								</ul>
 							</div>
 						</div>
@@ -171,9 +173,79 @@ label {
 
 
 <div id="modal_justificativa" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-  <div class="modal-dialog" style="width: 60%">
+
+		<div class="modal-dialog" style="width: 60%">
+			<div class="modal-content">
+				<form id="form_justify_action" autocomplete="off">
+					{% csrf_token %}
+					<div class="modal-header" style="padding-top:2px;"><!-- style="height: 48px;"> -->
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top:10px;">×</button>
+						<h4 id="myModalLabel">Desativar Usuário</h4>
+					</div>
+
+					<div class="modal-body">
+						<style>
+							.only_bottom_border{
+								background-color: #fff !important;
+								border-bottom: 1px solid #ccc !important;
+								box-shadow:none !important;
+								cursor: default;
+							}
+						</style>
+						<div style="margin-top: 0px;">
+							<div class="row">
+								<div class="col-lg-12">
+									<p ng-show="registro_selecionado.is_active==true" id="action_info" style="padding: 10px; padding-bottom: 4px;">
+										Por questões de segurança e integridade das informações esse registro não pode ser excluido definitivamente, apenas
+										desativado para que não esteja disponiveis em operações futuras. Justificativa obrigatória para prosseguir.
+									</p>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-4 col-md-2">
+									<sub style='padding-left: 2px'><label>Operação:</label></sub>
+									<input id="action_type" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+								</div>
+
+
+								<div class="col-lg-4 col-md-3">
+									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
+									<div>{{ request.user.first_name }} {{ request.user.last_name }}</div>
+								</div>
+
+
+								<div class="col-lg-4 col-md-7">
+									<sub style='padding-left: 2px'><label>Registro:</label></sub>
+									<input id="action_object" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();">
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="form-group field" id="field_action_justify">
+										<sub>
+											<label>Justificativa:</label>
+										</sub>
+										<textarea id="action_justify" rows="5" class="form-control uppercase"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="form-group">
+							<button type='submit' id="bt_confirmar_desativacao" class="btn btn-danger pull-right">Enviar</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+</div>
+	<!--<div class="modal-dialog" style="width: 60%">
     <div class="modal-content">
-      <div class="modal-header"><!-- style="height: 48px;"> -->
+      <div class="modal-header"><!-- style="height: 48px;"> --
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h4 id="myModalLabel">Desativar Cliente</h4>
       </div>
@@ -214,8 +286,8 @@ label {
 					</div>
 			</div>
 	  </div>
-  </div>
-</div>
+  </div> -->
+
 {% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
 {% block recursos_complementares %}
@@ -370,44 +442,45 @@ jQuery(document).ready(function($) {
 $(".alert").fadeOut(4000);
 </script>
 
+
 <script>
 $("#bt_desativar_cliente").click(function() {
-    var table = $('#datatable').DataTable();
+/*
     var id_cliente = table.cell('.selected', 0).data();
-    var documento_cliente = table.cell('.selected', 1).data();
-    var nome_cliente = table.cell('.selected', 2).data();
-
-    $('#operacao').val("DEL");
-    $('#operacao_tabela').val("ENTIDADE");
-    $('#operacao_user').val("1");
-    $('#operacao_cliente').val(id_cliente);
-    $('#operacao_descricao').val("DESATIVAR CLIENTE "+nome_cliente+" ("+documento_cliente+") DO SISTEMA.");
-    $("#texto_operacao_descricao").text("DESATIVAR CLIENTE "+nome_cliente+" ("+documento_cliente+") DO SISTEMA.");
-
-
+ var documento_cliente = table.cell('.selected', 1).data();
+ */
+	var table = $('#datatable').DataTable();
+	var nome_cliente = table.cell('.selected', 2).data();
+		$('#action_type').val('Desativar')
+		$('#action_object').val(nome_cliente)
+		$('#action_user').val('Operador')
 });
 
 $("#bt_confirmar_desativacao").click(function() {
     var table = $('#datatable').DataTable();
     var id_cliente = table.cell('.selected', 0).data();
     var justificativa = $('#operacao_justificativa').val();
+    var data_paramters = create_data_paramters('form_justify_action');
+    data_paramters['id'] = parseInt(id_cliente);
 
     if (window.confirm('Tem certeza que deseja desativar esse cliente?')){
-        $.ajax({
-            url: '/entidade/desativar/'+id_cliente,
-            type: 'get', //this is the default though, you don't actually need to always mention it
-            data: justificativa,
-            success: function (data) {
-                    table.row('.selected').remove().draw(false);
-                    //$("#modal_justificativa").modal().hide()
-                    $("#modal_justificativa").removeClass("in");
-                    $(".modal-backdrop").remove();
-                    $("#modal_justificativa").hide();
-                },
-            error: function (data) {
-                alert("Erro! Não foi possivel desativar esse registro.");
-            },
-        });
+			success_function = function (data) {
+				table.row('.selected').remove().draw(false);
+				//$("#modal_justificativa").modal().hide()
+				$("#modal_justificativa").removeClass("in");
+				$(".modal-backdrop").remove();
+				$("#modal_justificativa").hide();
+			};
+
+			fail_function =  function (data) {
+				alert("Erro! Não foi possivel desativar esse registro.");
+			};
+
+			validate_function =  function () {
+				return true
+			}
+			alert("Vindo aqui"+JSON.stringify(data_paramters))
+			request_api('desativar/',data_paramters,validate_function,success_function,fail_function)
     }
     else{
         return false;

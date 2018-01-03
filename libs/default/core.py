@@ -222,6 +222,10 @@ class BaseController(Notify):
     def disable(self, request, model):
         object = model.objects.get(pk=int(request.POST['id']))
         object.is_active = False
+        try:
+            object.ativo = False
+        except:
+            pass
         response_dict = self.execute(object, object.save)
         if response_dict['result']:
             self.report_operation(request, model)

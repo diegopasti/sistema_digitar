@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.conf.urls import url, include
 
 from modules.core.api import ConfigurationsController
+from modules.entidade.views import EntityController
 from modules.nucleo import views as nucleo_views
 from modules.core import views as core_views
 from modules.entidade import views as entidade_views
@@ -67,7 +68,7 @@ urlpatterns = [
     #url(r'^consultar_cep/(?P<cep>\d+\.\d+-\d+)/$', entidade_views.consultar_cep),
     url(r'^entidade/$', entidade_views.cadastro_entidades),
     url(r'^entidade/adicionar/$', entidade_views.adicionar_entidade),
-    url(r'^entidade/desativar/(?P<cliente>\d+)/$', entidade_views.desativar_cliente),
+    url(r'^entidade/desativar/$', EntityController().desativar_cliente),
     url(r'^entidade/visualizar/(?P<id>\d+)/$', entidade_views.visualizar_entidade),
     url(r'^adicionar_entidade/$', entidade_views.adicionar_entidade),
     url(r'^consultar_entidade/(?P<entidade_id>\d+)/$',entidade_views.consultar_entidade),
