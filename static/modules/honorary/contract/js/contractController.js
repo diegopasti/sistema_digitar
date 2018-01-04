@@ -2,20 +2,20 @@ var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 
 app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
-	$scope.screen_height = window.innerHeight // screen.availHeight; - PEGA O TAMANHO DA TELA DO DISPOSITIVO
-	$scope.screen_width  = window.innerWidth  // PEGA O TAMANHO DA JANELA DO BROWSER
+	$scope.screen_height = window.innerHeight;
+	$scope.screen_width  = window.innerWidth;
 
 	$scope.screen4 = null;
 	$scope.screen3 = null;
 	$scope.screen2 = null;
 	$scope.screen1 = null;
 
-	$scope.sortType           = 'codigo';    // set the default sort type
-	$scope.sortReverse        = false;  // set the default sort order
+	$scope.sortType           = 'codigo';
+	$scope.sortReverse        = false;
 	$scope.filter_by          = '1';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","cliente", "plano"];
-	$scope.search             = '';     // set the default search/filter term
+	$scope.search             = '';
 	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10]
 
 	$scope.opcao_desabilitada = "desabilitado";
@@ -66,16 +66,6 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 		if ($scope.screen_width <= 360){
 			$scope.screen0 = true;
-			//if($scope.screen_width <= $scope.col_cliente_size){
-			//	alert("COLUNA SERIA MAIOR QUE A A TELA.. AI VOU ACERTAR.."+$scope.col_cliente_size)
-			//	$scope.col_cliente_size = $scope.screen_width - 120;
-			//}
-
-			//else{
-			//	alert("OLHA AS PROPORÇOES.."+$scope.screen_width+" - "+$scope.col_cliente_size)
-			//}
-			//$scope.col_cliente_size = $scope.screen_width - 120;
-			//$scope.col_cliente_size = $scope.col_cliente_size - 10;
 		}
 
 		else if ($scope.screen_width <= 480){
@@ -133,6 +123,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			success: function (data) {
 				$scope.registro_selecionado.indicacoes = JSON.parse(data).object;
 				$scope.indicacoes_carregadas = true;
+				$scope.calcular_total_desconto_fidelidade();
 				$scope.$apply();
 			},
 			failure: function (data) {
@@ -164,19 +155,11 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		}
 
 		function success_function(result,message,data_object,status) {
-			var date = data_object.data_cadastro;
-			nova_indicaco = {
-				cliente_id: cliente_id,
-				indicacao: {
-					nome_razao : $('#indicacao option:selected').text(),
-					taxa_desconto : taxa_desconto,
-					indicacao_ativa : true,
-					data_cadastro : date
-				}
-			}
-			$scope.registro_selecionado.indicacoes.push(nova_indicaco)
-			$scope.atualizar_contrato(cliente_id)
-			$scope.$apply()
+			data_object.taxa_desconto = taxa_desconto;
+			$scope.registro_selecionado.indicacoes.push(data_object);
+			$scope.calcular_total_desconto_fidelidade();
+			$scope.atualizar_contrato(cliente_id);
+			$scope.$apply();
 		}
 
 		function fail_function(result,message,data_object,status) {
@@ -192,8 +175,8 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 		success_function = function(result,message,object,status){
 			$scope.registro_selecionado.contrato = object;
-			$scope.$apply()
-			resetar_formulario()
+			$scope.$apply();
+			resetar_formulario();
 		}
 
 		fail_function = function (result,message,data_object,status) {
@@ -500,22 +483,17 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	}
 
 	$scope.calcular_total = function () {
-		//alert("VEIO AQUI PELO MENOS")
 		var honorario = $('#valor_honorario').val();
 		var desconto = $('#desconto_temporario').val();
 		if (!(honorario == '')) {
 			honorario = Number(honorario.replace(/\./g,'').replace(',','.'));
 			desconto = Number(desconto.replace(',','.'));
 			var total =honorario * (1 - (desconto/100))
-			//total = Math.round(total *10000) / 100.0
-			//total *= 100;
-			//$('#total').val(total).trigger('mask.maskMoney');
 			$('#total').val($filter('currency')(total,"R$ ", 2));
 		}
 	}
 
 	$scope.load_clientes = function () {
-		//alert("vindo aqui")
 		$.ajax({
 			type: 'GET',
 			url: "/api/contract/clientes/" + $scope.registro_selecionado.cliente_id,
@@ -541,40 +519,54 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			}
 			else{
 				$scope.desmarcar_linha_indicacao();
-				indicacao.selecionado = 'selected';
+				indicacao.selected = 'selected';
 				$scope.indicacao_selecionada = indicacao;
 				$scope.esta_indicando = true
 				$scope.carregar_indicacao_selecionada();
 			}
 		}
 		else{
-			indicacao.selecionado = 'selected';
+			indicacao.selected = 'selected';
 			$scope.indicacao_selecionada = indicacao;
 			$scope.esta_indicando = true;
 			$scope.carregar_indicacao_selecionada();
 		}
 	}
 
+	$scope.calcular_total_desconto_fidelidade = function (){
+		$scope.total_desconto_fidelidade = 0.0;
+		$scope.total_credito_desconto_fidelidade = 0.0;
+		$scope.registro_selecionado.indicacoes.forEach(function(item, index){
+			if(item.indicacao_ativa==true){
+				$scope.total_desconto_fidelidade = $scope.total_desconto_fidelidade + parseFloat(item.taxa_desconto);
+			}
+		});
+
+		if($scope.total_desconto_fidelidade > 30){
+			$scope.total_credito_desconto_fidelidade = $scope.total_desconto_fidelidade - 30.0;
+			$scope.total_desconto_fidelidade =  30;
+		}
+	}
+
 	$scope.desmarcar_linha_indicacao = function () {
 		$('#taxa_desconto_indicacao').val('')
 		$('#indicacao').val('')
-		$scope.indicacao_selecionada.selecionado = "";
+		$scope.indicacao_selecionada.selected = "";
 		$scope.indicacao_selecionada = null;
 		$scope.esta_indicando = false
 	}
 
 	$scope.incrementar_desconto_fidelidade = function(valor){
-		$scope.total_desconto_fidelidade = $scope.total_desconto_fidelidade + parseFloat(valor)
+		$scope.total_desconto_fidelidade = $scope.total_desconto_fidelidade + parseFloat(valor);
 	}
 
 	$scope.decrementar_desconto_fidelidade = function(valor){
-		$scope.total_desconto_fidelidade = $scope.total_desconto_fidelidade - parseFloat(valor)
+		$scope.total_desconto_fidelidade = $scope.total_desconto_fidelidade - parseFloat(valor);
 	}
 
 	$scope.carregar_indicacao_selecionada = function(){
-		var indica = $scope.indicacao_selecionada.indicacao_id
+		var indica = $scope.indicacao_selecionada.indicacao
 		$('#taxa_desconto_indicacao').val($scope.indicacao_selecionada.taxa_desconto)
-		alert("VEJA QUEM EH A INDICACAO: "+$('#indicacao').val(indica))
 		$('#indicacao').val(indica)
 	}
 
@@ -596,7 +588,6 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	}
 
 	$scope.ativar_desativar_servico = function(registro){
-		//alert("VEJA SO: "+JSON.stringify(registro))
 		if(registro.ativo){
 			if($scope.registro_selecionado.contrato.servicos_contratados.search(";"+registro.id.toString()+";") != -1){
 				// Apagar o elemento que esta entre outros dois.
@@ -618,7 +609,6 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 		}
 		else{
-			//alert("VAMOS ATIVAR O SUJEITO "+registro.id)
 			if($scope.registro_selecionado.contrato.servicos_contratados == ""){
 				$scope.registro_selecionado.contrato.servicos_contratados = $scope.registro_selecionado.contrato.servicos_contratados+registro.id.toString();
 			}
@@ -637,7 +627,8 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		var lista = $scope.registro_selecionado.contrato.servicos_contratados.split(';').sort()
 		lista = lista.join(';')
 		$scope.registro_selecionado.contrato.servicos_contratados = lista
-		$scope.atualizar_servicos_contratados()
+		$scope.atualizar_servicos_contratados();
+		alert("VEJA OS SERVICOS: "+$scope.registro_selecionado.contrato.servicos_contratados+" - VALOR: ")
 	}
 
 	$scope.atualizar_servicos_contratados = function (){
@@ -687,9 +678,8 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		}
 
 		function success_function(result,message,data_object,status) {
-			$scope.decrementar_desconto_fidelidade($scope.indicacao_selecionada.taxa_desconto);
-			$scope.incrementar_desconto_fidelidade(taxa_desconto);
 			$scope.indicacao_selecionada.taxa_desconto = taxa_desconto;
+			$scope.calcular_total_desconto_fidelidade();
 			$scope.atualizar_contrato(cliente_id);
 			$scope.desmarcar_linha_indicacao();
 			$scope.$apply()
@@ -701,38 +691,65 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		request_api("/api/contract/alterar_indicacao/",data,validate_function,success_function,fail_function)
 	}
 
-	$scope.ativar_desativar_indicacao = function () {
-		var empresa = $('#indicacao').val()
-		var cliente_id = $scope.registro_selecionado.cliente_id
-		var status = $('#indicacao_ativa').val()
+	$scope.ativar_desativar_indicacao = function (indicacao_selecionada, $event) {
+		if(indicacao_selecionada!=null){
+			var cliente_id = $scope.registro_selecionado.cliente_id;
+			var status = indicacao_selecionada.indicacao_ativa;
+			var indicated_company = indicacao_selecionada.indicacao;
 
-		var data = {
-			empresa : empresa,
-			indicacao_ativa : status
+			var data = {
+				cliente: cliente_id,
+				indicated_company : indicated_company,
+				indicacao_ativa : status
+			}
+
+			function validate_function () {
+				var operacao = "";
+				if(status==true){
+					operacao = "desativar"
+				}
+				else{
+					operacao = "ativar"
+				}
+				var confirm_action = confirm("Deseja mesmo "+operacao+" indicação?");
+				if (confirm_action == true) {
+					return true;
+				}
+				else{
+					$event.stopPropagation();
+					return false;
+				}
+			}
+
+			function success_function(result,message,data_object,status) {
+				if(result==true){
+					var index = $scope.registro_selecionado.indicacoes.indexOf(indicacao_selecionada);
+					$scope.registro_selecionado.indicacoes[index] = data_object;
+					$scope.calcular_total_desconto_fidelidade();
+					$scope.$apply();
+					$scope.atualizar_contrato(cliente_id);
+				}
+				else{
+				}
+				$scope.desmarcar_linha_indicacao();
+			}
+
+			function fail_function(result,message,data_object,status) {
+				alert("Erro! Falha na alteração do estado da indicação.")
+			}
+			request_api("/api/contract/alterar_boolean_indicacao/",data,validate_function,success_function,fail_function)
 		}
 
-		function validate_function () {
-			return true
-		}
-
-		function success_function(result,message,data_object,status) {
-			$scope.atualizar_contrato(cliente_id)
-		}
-
-		function fail_function(result,message,data_object,status) {
-			alert("Erro! Falha na alteração do estado da indicação.")
-		}
-		request_api("/api/contract/alterar_boolean_indicacao/",data,validate_function,success_function,fail_function)
 	}
 
-	$scope.deletar_indicacao = function () {
+	$scope.deletar_indicacao = function (indicacao_selecionada, $event) {
 		var r = confirm("Deseja mesmo excluir essa indicação?");
 		if (r == true) {
-			var empresa = $('#indicacao').val();
+			var indicated_company = indicacao_selecionada.indicacao;
 			var cliente_id = $scope.registro_selecionado.cliente_id
 
 			var data = {
-				empresa : empresa,
+				indicated_company : indicated_company,
 				cliente_id : cliente_id
 			}
 
@@ -746,9 +763,13 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			}
 
 			function success_function(result,message,data_object,status) {
-				success_notify(message,'')
-				$scope.carregar_indicacao()
+				success_notify(message,'');
+
+				var index = $scope.registro_selecionado.indicacoes.indexOf(indicacao_selecionada);
 				$scope.desmarcar_linha_indicacao();
+				$scope.registro_selecionado.indicacoes.splice($scope.registro_selecionado.indicacoes.indexOf(indicacao_selecionada), 1);
+				$scope.calcular_total_desconto_fidelidade();
+				$scope.$apply();
 				$scope.atualizar_contrato(cliente_id);
 				$scope.$apply()
 			}

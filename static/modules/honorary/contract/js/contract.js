@@ -9,6 +9,7 @@ function configurar_formulario_padrao(){
 	configurar_campo_data('data_vencimento')
 	configurar_campo_data('desconto_inicio')
 	configurar_campo_data('desconto_fim')
+	$("#taxa_desconto_indicacao").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
 	$("#valor_honorario").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
 	$("#total").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
 

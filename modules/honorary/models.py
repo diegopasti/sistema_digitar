@@ -35,10 +35,10 @@ class Contrato(models.Model):
 
     desconto_indicacoes = models.DecimalField("Desconto por Indicações:", max_digits=5, decimal_places=2, default=0, null=True,blank=True)
     servicos_contratados = models.CharField("Serviços:",null=True,max_length=100)
-    cadastrado_por = models.ForeignKey(entidade,  related_name = "cadastrado_por",default=1)
+    cadastrado_por = models.ForeignKey(User,  related_name = "cadastrado_por",default=1)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     ultima_alteracao = models.DateTimeField(null=True, auto_now=True)
-    alterado_por = models.ForeignKey(entidade, related_name = "alterado_por",default=1)
+    alterado_por = models.ForeignKey(User, related_name = "alterado_por",default=1)
     ativo = models.BooleanField(default=True)
 
     def serialize(self):
@@ -47,14 +47,11 @@ class Contrato(models.Model):
     def totalizar_honorario(self):
         desconto_temporario = self.calcular_desconto_temporario()
         desconto_fidelidade = self.calcular_desconto_fidelidade()
-        print("VEJA QUANTO TEMOS DE FIDELIDADE: ",desconto_fidelidade)
         self.desconto_temporario_ativo = desconto_temporario
         self.desconto_indicacoes = desconto_fidelidade
         desconto_total = Decimal(desconto_temporario)/100 + Decimal(desconto_fidelidade)/100
         self.valor_total = Decimal(self.valor_honorario)*(1-desconto_total)
         self.save()
-        #print('HONORARIO: ',self.valor_honorario,' - DESC.TEMP.:',desconto_temporario,' - DESC.FID.:',desconto_fidelidade,' - DESC.TOTAL: ',desconto_total,' - TOTAL: ',self.valor_total)
-
 
     def calcular_desconto_temporario(self, competencia=None):
         if self.desconto_temporario is not None:
@@ -86,15 +83,17 @@ class Contrato(models.Model):
 
     def calcular_desconto_fidelidade(self):
         indicacoes = Indicacao.objects.filter(cliente=self.cliente).filter(indicacao_ativa=True)
-        #print("VEJA QUANTAS INDICACOES ATIVAS TEMOS: ",indicacoes)
         if len(indicacoes) == 0:
             return Decimal(0)
         else:
             desconto = Decimal(0)
             for item in indicacoes:
-                print(item.indicacao.nome_razao,item.indicacao.ativo,item.taxa_desconto)
                 if item.indicacao.ativo:
-                    desconto = desconto + item.taxa_desconto
+                    if(desconto + item.taxa_desconto > 30):
+                        desconto = 30.0
+                        break
+                    else:
+                        desconto = desconto + item.taxa_desconto
             return desconto
 
 
@@ -103,10 +102,10 @@ class Indicacao (models.Model):
     indicacao = models.ForeignKey(entidade,related_name = "indicacao")
     taxa_desconto = models.DecimalField("Taxa Desconto",max_digits=5, decimal_places=2, default=0)
     indicacao_ativa = models.BooleanField(default=True)
-    cadastrado_por = models.ForeignKey(entidade, related_name="indicacao_cadastrado_por", default=1)
+    cadastrado_por = models.ForeignKey(User, related_name="indicacao_cadastrado_por", default=1)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     ultima_alteracao = models.DateTimeField(null=True, auto_now=True)
-    alterado_por = models.ForeignKey(entidade, related_name="indicacao_alterado_por", default=1)
+    alterado_por = models.ForeignKey(User, related_name="indicacao_alterado_por", default=1)
 
 
 class Proventos(models.Model):

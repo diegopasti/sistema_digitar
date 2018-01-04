@@ -1,11 +1,9 @@
 # -*- encoding: utf-8 -*-
-from django.contrib.auth.decorators import login_required
-from django.db.models import F
-from django.utils.decorators import method_decorator
-
-from libs.default.decorators import request_ajax_required
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary
 from modules.honorary.forms import FormContrato, FormProventos
+from django.contrib.auth.decorators import login_required
+from libs.default.decorators import request_ajax_required
+from django.utils.decorators import method_decorator
 from modules.servico.models import Plano, Servico
 from django.http import HttpResponse, Http404
 from libs.default.core import BaseController
@@ -13,6 +11,7 @@ from modules.entidade.models import entidade
 from sistema_contabil import settings
 from django.core import serializers
 from django.core.cache import cache
+from django.utils import timezone
 import datetime
 import json
 
@@ -56,24 +55,6 @@ def response_format(result,message,object,list_fields):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def company_was_indicated(company):
     indications = Indicacao.objects.filter(indicacao=company)
     if len(indications) > 0:
@@ -104,13 +85,7 @@ def salvar_contrato(request):
     return HttpResponse(json.dumps(response_dict))
 
 
-
-
-
-
-
 class ContractController(BaseController):
-
 
     @request_ajax_required
     @method_decorator(login_required)
@@ -189,10 +164,10 @@ class ContractController(BaseController):
                 if (contrato.desconto_inicio): response_cliente['contrato']['desconto_inicio'] = str(contrato.desconto_inicio.strftime('%d/%m/%Y'))
                 if (contrato.desconto_fim): response_cliente['contrato']['desconto_fim'] = str(contrato.desconto_fim.strftime('%d/%m/%Y'))
 
-                response_cliente['contrato']['cadastrado_por'] = contrato.cadastrado_por.nome_razao
+                response_cliente['contrato']['cadastrado_por'] = contrato.cadastrado_por.get_full_name()
                 response_cliente['contrato']['data_cadastro'] = str(contrato.data_cadastro.strftime('%d/%m/%Y'))
                 response_cliente['contrato']['ultima_alteracao'] = str(contrato.ultima_alteracao.strftime('%d/%m/%Y'))
-                response_cliente['contrato']['alterado_por'] = contrato.alterado_por.nome_razao
+                response_cliente['contrato']['alterado_por'] = contrato.alterado_por.get_full_name()
 
             else:
                 response_cliente['contrato'] = {}
@@ -287,39 +262,32 @@ class ContractController(BaseController):
     @method_decorator(login_required)
     def get_lista_indicacoes(self, request, cliente_id):
         id_cliente = int(cliente_id)
-        lista_indicacoes = Indicacao.objects.filter(cliente=id_cliente)
-        response_list = []
-        for indicacao in lista_indicacoes:
-            response_indicacao = {}
-            response_indicacao['cliente_id'] = indicacao.cliente.id
-            response_indicacao['indicacao'] = {}
-            response_indicacao['indicacao']['selecionado'] = ''
-            response_indicacao['indicacao']['nome_razao'] = indicacao.indicacao.nome_razao
-            response_indicacao['indicacao']['indicacao_id'] = indicacao.indicacao.id
-            response_indicacao['indicacao']['data_cadastro'] = str(indicacao.data_cadastro.strftime('%d/%m/%Y'))
-            response_indicacao['indicacao']['taxa_desconto'] = float(indicacao.taxa_desconto)
-            response_indicacao['indicacao']['indicacao_ativa'] = indicacao.indicacao_ativa
-            response_indicacao['indicacao']['cadastrado_por'] = indicacao.cadastrado_por.nome_razao
-            response_indicacao['indicacao']['ultima_alteracao'] = str(indicacao.ultima_alteracao.strftime('%d/%m/%Y'))
-            response_indicacao['indicacao']['alterador_por'] = indicacao.alterado_por.nome_razao
-            response_list.append(response_indicacao)
+        #lista_indicacoes = Indicacao.objects.filter(cliente=id_cliente)
+
+        lista_indicacoes = self.notify.datalist(Indicacao.objects.filter(cliente=id_cliente), extra_fields=['indication_name'])
+        for item in lista_indicacoes:
+            #print("EMPRESA INDICADA: ",item['indicacao'])
+            indication_client = entidade.objects.get(id=int(item['indicacao']))
+            item['indication_name'] = indication_client.nome_razao
+
 
         response_dict = {}
-        if lista_indicacoes.count() == 0:
+        if len(lista_indicacoes) == 0:
             response_dict['result'] = True
             response_dict['object'] = []
             response_dict['message'] = "Cliente não tem nenhuma indicação."
         else:
             response_dict['result'] = True
-            response_dict['object'] = response_list
-            response_dict['message'] = "Cliente " + indicacao.cliente.nome_razao + " possui "+str(lista_indicacoes.count())+" indicações."
+            response_dict['object'] = lista_indicacoes
+            response_dict['message'] = str(len(lista_indicacoes))+" indicações cadastradas."
+        print("VEJA O RESPONSE DICT: ",response_dict)
         return self.response(response_dict)
 
     @request_ajax_required
     @method_decorator(login_required)
     def salvar_indicacao(self,request):
         empresa = request.POST['empresa']
-        taxa_desconto = float(request.POST['taxa_desconto'])
+        taxa_desconto = float(request.POST['taxa_desconto'].replace('.','').replace(',','.'))
         cliente_id = request.POST['cliente_id']
         response_dict = {}
         if empresa == cliente_id:
@@ -350,7 +318,10 @@ class ContractController(BaseController):
                     honorary.updated_by_name = request.user.get_full_name()
                     honorary.save()
 
-                response_dict = self.notify.success(indicacao)
+                response_dict = self.notify.success(indicacao, extra_fields=['indication_name'])
+
+                indication_client = entidade.objects.get(id=indicacao.indicacao_id)
+                response_dict['object']['indication_name'] = indication_client.nome_razao
 
                 #response_dict = response_format_success_message(indicacao, ['indicacao', 'cliente', 'taxa_desconto', 'data_cadastro'])
                 # contrato.desconto_indicacoes = contrato.desconto_indicacoes + Decimal(taxa_desconto)
@@ -360,16 +331,15 @@ class ContractController(BaseController):
                 response_dict['message'] = "Erro! Cliente não existe."
         else:
             response_dict['result'] = False
-            response_dict['message'] = "Erro! Empresa já é uma indicação."
+            response_dict['message'] = "Erro! Essa empresa foi indicada."
         return self.response(response_dict)
-
 
     @request_ajax_required
     @method_decorator(login_required)
     def alterar_indicacao(self,request):
         empresa_id = request.POST['empresa']
         empresa_nome = request.POST['empresa_nome']
-        taxa_desconto = float(request.POST['taxa_desconto'])
+        taxa_desconto = float(request.POST['taxa_desconto'].replace('.','').replace(',','.'))
         indicacao_bd = Indicacao.objects.get(indicacao=empresa_id)
 
         if (indicacao_bd.indicacao.nome_razao == empresa_nome and indicacao_bd.taxa_desconto != taxa_desconto):
@@ -403,13 +373,34 @@ class ContractController(BaseController):
     @request_ajax_required
     @method_decorator(login_required)
     def alterar_boolean_indicacao(self, request):
-        empresa = request.POST['empresa']
-        indicacao_bd = Indicacao.objects.get(indicacao_id=int(empresa))
-        status = not indicacao_bd.indicacao_ativa
+        from django.utils.timezone import now, localtime
+        client_company_id = int(request.POST['cliente'])
+        indicated_company_id = int(request.POST['indicated_company'])
+        if(request.POST['indicacao_ativa']=='false'):
+            status = True
+        else:
+            status = False
+
+        indicacao = Indicacao.objects.get(indicacao_id=indicated_company_id)
+        indicacao.indicacao_ativa = status
+        indicacao.ultima_alteracao = localtime(now())#timezone.localtime(timezone.now())
+        indicacao.alterado_por = request.user
+
         try:
-            Indicacao.objects.filter(indicacao=empresa).update(indicacao_ativa=status)
-            contrato = Contrato.objects.get(cliente_id=int(empresa))
+            indicacao.save()
+            response_dict = self.notify.success(indicacao, extra_fields=['indication_name'])
+
+        except Exception as erro:
+            response_dict = self.notify.error(erro)
+
+        if response_dict['result']:
+            indication_client = entidade.objects.get(id=indicated_company_id)
+            response_dict['object']['indication_name'] = indication_client.nome_razao
+
+            contrato = Contrato.objects.get(cliente_id=int(client_company_id))
             contrato.totalizar_honorario()
+            contrato.ultima_alteracao = now #timezone.localtime(timezone.now())
+            contrato.alterado_por = request.user
             contrato.save()
 
             honoraries = Honorary.objects.filter(contract=contrato)
@@ -419,20 +410,14 @@ class ContractController(BaseController):
                 honorary.updated_by_name = request.user.get_full_name()
                 honorary.save()
 
-            response_dict = response_format_success_message(indicacao_bd, ['indicacao', 'indicacao_ativa'])
-        except:
-            response_dict = response_format_error_message(False)
-
-        response_final = {}
-        response_final['result'] = True
-        response_final['object'] = response_dict
-        response_final['message'] = ""
-        return self.response(response_final)
+        print("BOM, VEJA A RESPOSTA: ",response_dict)
+        return self.response(response_dict)
 
     @request_ajax_required
     @method_decorator(login_required)
     def deletar_indicacao(self, request):
-        empresa = request.POST['empresa']
+        print("VEJA O QUE VEIO: ",request.POST)
+        empresa = request.POST['indicated_company']
         indicacao_bd = Indicacao.objects.get(indicacao_id=int(empresa))
         response_final = {}
         try:
@@ -457,7 +442,6 @@ class ContractController(BaseController):
 
         response_final['object'] = None
         return self.response(response_final)
-
 
 
 class ProventosController(BaseController):
@@ -509,7 +493,7 @@ class HonoraryController(BaseController):
 
     @request_ajax_required
     def close_current_competence(self, request):
-        from django.utils import timezone
+
         now = timezone.localtime(timezone.now())
         completed_competence = self.get_competence(datetime.datetime.now().month-1)
         exist_competence = Honorary.objects.filter(competence=completed_competence)

@@ -366,7 +366,7 @@ def gerar_relatorio_simples(request,resultado):
     novo_result = []
 
     nova_lista = split_subparts(resultado, 50)
-    print("VEJA QUANTAS PAGINAS DEVEM TER:",len(resultado),"REGISTROS EM ",len(nova_lista)," PAGINA(S)")
+    #print("VEJA QUANTAS PAGINAS DEVEM TER:",len(resultado),"REGISTROS EM ",len(nova_lista)," PAGINA(S)")
 
     protocolo.index = 0;
     parametros = {
@@ -382,11 +382,8 @@ def gerar_relatorio_simples(request,resultado):
 
         'data_emissao':data,
         'hora_emissao':hora
-
     }
     #context = Context(parametros)
-
-    
     resp = HttpResponse(content_type='application/pdf')
     result = generate_pdf('protocolo/imprimir_relatorio_simples.html', file_object=resp,context=parametros)
     return result
