@@ -182,6 +182,7 @@ class BaseController(Notify):
 
     @request_ajax_required
     def filter(self, request, model, queryset=None, order_by="-id", list_fields=None, limit=None, extra_fields=None):
+        print("DENTRO DO CORE: ",request.user)
         if queryset is None:
             model_list = model.objects.all().order_by(order_by)
         else:

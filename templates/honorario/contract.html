@@ -203,6 +203,8 @@ table th{
 
 											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'descontos'; sortReverse = !sortReverse">Desc (%)</th>
 
+											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Ult. Alteração</th>
+
 											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Total (R$)</th>
 										</tr>
 									</thead>
@@ -253,6 +255,13 @@ table th{
 												<span ng-if="!contrato.plano"></span>
 											</td>
 
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 90px;" title="Atualizado {{ contrato.contrato.ultima_alteracao| date: 'dd/MM/yyyy' }} às {{ contrato.contrato.ultima_alteracao| date: 'HH:mm:ss' }}">
+												<span ng-if="contrato.plano" >
+													{{ contrato.contrato.ultima_alteracao| date: 'dd/MM/yyyy' }}
+												</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
 											<td ng-hide='screen0 || screen1 || screen2' ng-class="{'right': contrato.plano, 'center':!contrato.plano }" style="width: 130px;">
 												<span ng-if="contrato.plano">{{ contrato.contrato.valor_total | currency:"" }}</span>
 												<span ng-if="!contrato.plano"></span>
@@ -267,6 +276,7 @@ table th{
 											<td class='center' style="width: 80px;"></td>
 											<td class='right' style="width: 130px;"></td>
 											<td class='center' style="width: 80px;"></td>
+											<td class='center' style="width: 90px;"></td>
 											<td class='right' style="width: 130px;"></td>
 										</tr>
 
@@ -560,7 +570,7 @@ table th{
 													<td class="left"	style="padding-left: 10px;">{{ registro.indication_name }}</td>
 													<td class="center" style="width: 180px">{{ registro.data_cadastro | date:'dd/MM/yyyy' }} às {{ registro.data_cadastro | date:'HH:mm:ss' }}</td>
 													<td class="center" style="width: 180px">{{ registro.ultima_alteracao | date:'dd/MM/yyyy' }} às {{ registro.ultima_alteracao | date:'HH:mm:ss' }}</td>
-													<td class="center" style="width: 70px;">{{ registro.taxa_desconto }}</td>
+													<td class="center" style="width: 70px;">{{ registro.taxa_desconto| currency:"" }}</td>
 													<td class="center" style="width: 30px; padding-left: 0px; padding-top: 2px;">
 														<span ng-if="registro.indicacao_ativa==0" style="color: #cccccc; font-weight: bold;"><i class="fa fa-check" aria-hidden="true"></i>
 </span>

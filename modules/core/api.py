@@ -63,7 +63,7 @@ class ConfigurationsController(BaseController):
         response_dict['result'] = True
         response_dict['message'] = ""
         response_dict['object'] = backup_list
-        print("VEJA A LISTA:", backup_list)
+        #print("VEJA A LISTA:", backup_list)
         #for item in backup_list:
         #    response_data = {}
         #    response_data['object'] = {}
@@ -73,8 +73,6 @@ class ConfigurationsController(BaseController):
         #    response_dict['object']['date'] = item['client_modified']
         #    print('SOU RESPONSE',response_dict)
         return self.response(response_dict)
-
-
 
     def check_available_space(self,request):
         self.start_process(request)
@@ -90,16 +88,16 @@ class ConfigurationsController(BaseController):
         for item in backup_list:
             response_dict['object']['used_space'] = response_dict['object']['used_space'] + float(item['size'])
         response_dict['object']['used_space'] = '{0:.2f}'.format(response_dict['object']['used_space'])
-        print('RESPONSE:',(response_dict['object']['used_space']))
+        #print('RESPONSE:',(response_dict['object']['used_space']))
         response_dict['object']['used_percent_space'] = round((float(response_dict['object']['used_space']) / response_dict['object']['total_space']) * 100, 2)
-        print("PERCENTUAL: ",float(response_dict['object']['used_space']) / response_dict['object']['total_space'])
-        print("ESPACO DE ARMAZENAMENTO: ",response_dict)
+        #print("PERCENTUAL: ",float(response_dict['object']['used_space']) / response_dict['object']['total_space'])
+        #print("ESPACO DE ARMAZENAMENTO: ",response_dict)
         return self.response(response_dict)
 
     def version_update(self,request):
         self.start_process(request)
         version_check = check_update()
-        print('DICT VERSION:',version_check)
+        #print('DICT VERSION:',version_check)
         response_dict = {}
         response_dict['result'] = True
         response_dict['message'] = ""
@@ -111,13 +109,13 @@ class ConfigurationsController(BaseController):
         response_dict['object']['local'] = version_check['local'][0:8]
         response_dict['object']['remote'] = version_check['remote'][0:8]
         response_dict['object']['last_update'] = version_check['last_update']
-        print("VEJA A VERSÃO: ",response_dict)
+        #print("VEJA A VERSÃO: ",response_dict)
         return self.response(response_dict)
 
     def update(self,request):
         self.start_process(request)
         updating = update()
-        print('DICT VERSION:',updating)
+        #print('DICT VERSION:',updating)
 
     def shared_folder(self,request):
         self.start_process(request)
@@ -126,19 +124,19 @@ class ConfigurationsController(BaseController):
         response_dict['result'] = True
         response_dict['message'] = ""
         response_dict['object'] = backup_link_folder
-
-        print("OLHE A LISTA:", backup_link_folder)
-        print("VEJA O DICIONÁRIO:", response_dict)
+        #print("OLHE A LISTA:", backup_link_folder)
+        #print("VEJA O DICIONÁRIO:", response_dict)
         return self.response(response_dict)
 
     def manager_dropbox(self,request):
+        print("GERENCIAR O BACKUP O REQUEST: ",request)
         drive = settings.SELENIUM_CHROMEDRIVER
         binary = FirefoxBinary(settings.MOZILLA_FIREFOX_TEST_PATH)
         capabilities = webdriver.DesiredCapabilities().FIREFOX
         capabilities["marionette"] = True
         admin = settings.ADM_DROPBOX
         key = settings.KEY_DROPBOX
-        #browser = webdriver.Firefox(firefox_binary=binary, executable_path=settings.SELENIUM_GECKODRIVER_MOZILLA,capabilities=capabilities)
+        browser = webdriver.Firefox(firefox_binary=binary, executable_path=settings.SELENIUM_GECKODRIVER_MOZILLA,capabilities=capabilities)
         browser = webdriver.Chrome(executable_path=str(drive))
         browser.get("https://www.dropbox.com/home/backup")
         list_of_inputs = browser.find_elements_by_xpath("//div/input[starts-with(@id,'pyxl')]")

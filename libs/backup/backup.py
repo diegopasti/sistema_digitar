@@ -58,7 +58,7 @@ class BackupManager:
         return True
 
     def list_backup(self):
-        print('\n')
+        #print('\n')
         foldersize = []
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
         self.dt = self.dropbox.files_list_folder(DROPBOX_ROOT_PATH)
@@ -66,7 +66,7 @@ class BackupManager:
             if isinstance(entry, dropbox.files.FileMetadata):
                 foldersize.append(entry.size)
         foldersize = '{0:.2f}'.format(sum(foldersize)/1024)
-        print(foldersize)
+        #print(foldersize)
         metadata = []
         for entry in self.dt.entries:
             data = {}
@@ -91,8 +91,8 @@ class BackupManager:
             data['size'] = filesize
             data['folder_size'] = foldersize
             metadata.append(data)
-        print(metadata)
-            #print(data)
+        #print(metadata)
+        #print(data)
         return metadata
 
 

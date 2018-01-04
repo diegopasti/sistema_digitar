@@ -657,38 +657,46 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	}
 
 	$scope.alterar_indicacao = function () {
-		var empresa = $('#indicacao').val()
-		var empresa_nome = $('#indicacao option:selected').text()
-		var taxa_desconto = $('#taxa_desconto_indicacao').val()
-		var cliente_id = $scope.registro_selecionado.cliente_id
-
-		var data = {
-			empresa : empresa,
-			empresa_nome : empresa_nome,
-			taxa_desconto : taxa_desconto,
-			cliente_id : cliente_id
-		}
-
-		function validate_function () {
-			if(taxa_desconto==''){
-				alert('Erro! Taxa de desconto precisa ser informado')
-				return false
+		var taxa_desconto = $('#taxa_desconto_indicacao').val().replace(".","").replace(',','.');
+		if(parseFloat(taxa_desconto) <= 100.0){
+			var empresa = $('#indicacao').val();
+			var empresa_nome = $('#indicacao option:selected').text();
+			var cliente_id = $scope.registro_selecionado.cliente_id;
+			var data = {
+				empresa : empresa,
+				empresa_nome : empresa_nome,
+				taxa_desconto : $('#taxa_desconto_indicacao').val(),
+				cliente_id : cliente_id
 			}
-			return true
-		}
 
-		function success_function(result,message,data_object,status) {
-			$scope.indicacao_selecionada.taxa_desconto = taxa_desconto;
-			$scope.calcular_total_desconto_fidelidade();
-			$scope.atualizar_contrato(cliente_id);
-			$scope.desmarcar_linha_indicacao();
-			$scope.$apply()
-		}
+			function validate_function () {
+				if(taxa_desconto==''){
+					alert('Erro! Taxa de desconto precisa ser informado')
+					return false
+				}
+				return true
+			}
 
-		function fail_function(result,message,data_object,status) {
-			alert("Erro! Falha na alteração da indicação.")
+			function success_function(result,message,data_object,status) {
+				var index = $scope.registro_selecionado.indicacoes.indexOf($scope.indicacao_selecionada);
+				//data_object.taxa_desconto = $filter('currency')(data_object.taxa_desconto,"", 2)
+				$scope.registro_selecionado.indicacoes[index] = data_object;
+
+				$scope.calcular_total_desconto_fidelidade();
+				$scope.atualizar_contrato(cliente_id);
+				$scope.desmarcar_linha_indicacao();
+				$scope.$apply();
+				$("#taxa_desconto_indicacao").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+			}
+
+			function fail_function(result,message,data_object,status) {
+				alert("Erro! Falha na alteração da indicação.")
+			}
+			request_api("/api/contract/alterar_indicacao/",data,validate_function,success_function,fail_function)
 		}
-		request_api("/api/contract/alterar_indicacao/",data,validate_function,success_function,fail_function)
+		else{
+			error_notify('taxa_desconto_indicacao',"Falha na operação","Taxa de desconto não pode ser maior que 100%.")
+		}
 	}
 
 	$scope.ativar_desativar_indicacao = function (indicacao_selecionada, $event) {
