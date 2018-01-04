@@ -11,6 +11,7 @@ from datetime import date
 from decimal import Decimal
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http.response import HttpResponse, Http404
@@ -99,7 +100,7 @@ def excluir_documento(request, id):
 
     
 
-
+@login_required
 def get_detalhes_protocolo(request,protocolo_id):
     #if request.is_ajax():
     resultado = {}
@@ -146,7 +147,7 @@ def validar_temporalidade(data_primeira_operacao,hora_primeira_operacao,data_seg
     
     return primeiro_datetime < segundo_datetime
 
-
+@login_required
 def cadastro_protocolo(request, protocolo_id=None):
     print("to vindo nessa porcaria")
     erro = False
@@ -412,7 +413,7 @@ def formatar_valor_tamanho_fixo(valor):
     print(novo_valor)
     return novo_valor
 """
-
+@login_required
 def gerar_pdf(request,emissor, destinatario, protocolo):
     from django.template import Context# loader,Context, Template
     path = os.path.join(BASE_DIR, "static/imagens/")
@@ -592,14 +593,14 @@ def criar_protocolo(request,formulario):
     """
     return parametro_emissor,destinatario,p
 
-
+@login_required
 def novo_emitir_protocolo(request):
     formulario_protocolo = formulario_emitir_protocolo()
     clientes = entidade.objects.all().filter(ativo=True).exclude(id=1).order_by('-id')
     documentos = documento.objects.all()
     return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':'Marcelo Bourguignon','formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos})
 
-
+@login_required
 def emitir_protocolo_identificado(request,operador):
     formulario_protocolo = formulario_emitir_protocolo()
     operador = operador.replace("_"," ").title()
@@ -607,7 +608,7 @@ def emitir_protocolo_identificado(request,operador):
     documentos = documento.objects.all()
     return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':operador,'formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos})
 
-
+@login_required
 def visualizar_protocolo(request, protocolo_id):
     from django.template import Context  # loader,Context, Template
     path = os.path.join(BASE_DIR, "static/imagens/")
@@ -813,7 +814,7 @@ def validar_registro(registro):
         #print("Nao deu nada?")
         return False, ""
 
-
+@login_required
 def emitir_protocolo(request,numero_item):
     numero_item = int(numero_item)
     erro = False

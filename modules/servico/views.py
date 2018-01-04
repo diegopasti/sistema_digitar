@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
 from django.http.response import Http404
 from django.shortcuts import HttpResponse, render
@@ -8,12 +9,12 @@ import json
 
 from modules.servico.formularios import formulario_adicionar_servico, formulario_adicionar_plano
 
-
+@login_required
 def cadastro_planos(request):
     formulario_plano = formulario_adicionar_plano()
     return render(request,"servico/controle_planos.html",{'formulario_plano': formulario_plano},)
 
-
+@login_required
 def consultar_planos(request):
     #if True: #request.is_ajax()
     planos = Plano.objects.all().filter(ativo=True)
@@ -28,7 +29,7 @@ def consultar_planos(request):
     #else:
     #raise Http404
 
-
+@login_required
 def adicionar_plano(request):
     if request.is_ajax():
         plano = Plano()
@@ -41,6 +42,7 @@ def adicionar_plano(request):
     else:
         raise Http404
 
+@login_required
 def atualizar_plano(request):
     if request.is_ajax():
         plano = Plano.objects.get(pk=int(request.POST["plano[id]"]))
@@ -55,7 +57,7 @@ def atualizar_plano(request):
     else:
         raise Http404
 
-
+@login_required
 def excluir_plano(request):
     if request.is_ajax():
         plano_id = request.POST["plano_id"]
@@ -67,6 +69,7 @@ def excluir_plano(request):
     else:
         raise Http404
 
+@login_required
 def serializar_plano(plano):
     texto = {}
     texto['id'] = str(plano.id)
@@ -95,7 +98,7 @@ def serializar_plano(plano):
 
     return texto
 
-
+@login_required
 def cadastro_servico(request):
     erro = False
     servicos = []#Servico.objects.all()
@@ -105,7 +108,7 @@ def cadastro_servico(request):
                               {'dados': servicos,'formulario':formulario_servico,'erro':erro},
                               )
 
-
+@login_required
 def adicionar_servico(request):
     if request.is_ajax():
         servico = Servico()
@@ -117,7 +120,7 @@ def adicionar_servico(request):
     else:
         raise Http404
 
-
+@login_required
 def alterar_servico(request,servico_id):
     if request.is_ajax():
         servico = Servico.objects.get(pk=int(servico_id))
@@ -131,7 +134,7 @@ def alterar_servico(request,servico_id):
     else:
         raise Http404
 
-
+@login_required
 def excluir_servico(request,servico_id):
     if request.is_ajax():
         servico = Servico.objects.get(pk=int(servico_id))
@@ -143,7 +146,7 @@ def excluir_servico(request,servico_id):
     else:
         raise Http404
 
-
+@login_required
 def executar_operacao(registro,operacao):
     response_dict = {}
     if operacao == "save":
@@ -166,7 +169,7 @@ def executar_operacao(registro,operacao):
         response_dict['message'] = menssage_falha+str(e)
     return response_dict
 
-
+@login_required
 def consultar_servicos(request):
     if True:#request.is_ajax():
         servicos = Servico.objects.all()

@@ -19,7 +19,7 @@ def login_page(request):
     form = FormLogin()
     return render(request, "user/login.html", {'formulario_login': form})
 
-
+@login_required
 def logout_page(request):
     user = request.user
     #if not user.close_session(request):

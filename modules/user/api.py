@@ -164,6 +164,6 @@ class UserController(BaseController):
 
 
     #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
-
+    @login_required
     def filter_users(request):
         return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','id','groups'],extra_fields=['get_full_name'])

@@ -81,7 +81,7 @@ def company_was_indicated(company):
     else:
         return False
 
-
+@login_required
 def salvar_contrato(request):
     result, form = filter_request(request,FormContrato)
     if result:
@@ -466,12 +466,14 @@ class ProventosController(BaseController):
     #user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied', redirect_field_name=None)
 
     #never_cache - Para usar esse decorador precisamos usar esse metodo com o self e consequentemente instancia-lo no urls.
+    @method_decorator(login_required)
     def filter_provents(self,request):
         cache_page = cache.has_key(request.get_raw_uri())
         return BaseController().filter(request, Proventos, queryset=Proventos.objects.filter(is_active=True).order_by('-id'))
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)
+    @method_decorator(login_required)
     def save_provent(request):
         #cache_page = cache.has_key('http://localhost:8020/api/provents')
         #print("VEJA SE TEM CACHE: ",cache_page)
@@ -479,15 +481,18 @@ class ProventosController(BaseController):
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_update_entity(), login_url='/error/access_denied', redirect_field_name=None)
+    @method_decorator(login_required)
     def update_provent(request):
         return BaseController().update(request, FormProventos)
 
+    @method_decorator(login_required)
     def disable_provent(request):
         return BaseController().disable(request, Proventos)
 
 
 class HonoraryController(BaseController):
 
+    @method_decorator(login_required)
     def filter(self,request):
         for item in range(4):
             competence = self.get_competence(datetime.datetime.now().month+item)
@@ -497,6 +502,7 @@ class HonoraryController(BaseController):
                     self.create_update_honorary(request, entity, competence)
         return BaseController().filter(request, Honorary)
 
+    @method_decorator(login_required)
     def generate_honoraries(self,request):
         current_month = datetime.datetime.now().month
         entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
@@ -508,6 +514,7 @@ class HonoraryController(BaseController):
         return BaseController().filter(request, Honorary)
 
     @request_ajax_required
+    @method_decorator(login_required)
     def close_current_competence(self, request):
         from django.utils import timezone
         now = timezone.localtime(timezone.now())
@@ -528,7 +535,7 @@ class HonoraryController(BaseController):
                 response_dict['message'] = "Honorários de " + completed_competence + " já foram finalizado!"
         return self.response(response_dict)
 
-
+    @method_decorator(login_required)
     def get_competence(self, month_number):
         current_year = datetime.datetime.now().year
         if month_number > 12:
@@ -537,6 +544,7 @@ class HonoraryController(BaseController):
         month_list_name = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
         return month_list_name[int(month_number)-1]+"/"+str(current_year)
 
+    @method_decorator(login_required)
     def create_update_honorary(self, request, entity, competence):
         contract = Contrato.objects.filter(cliente=entity)
         if contract.count() == 0: contract = None
