@@ -99,6 +99,24 @@ application.controller('configurations_controller', function ($scope) {
         $scope.shared_informations = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
         $scope.$apply();
+
+      },
+
+      failure: function () {
+        alert("Não foi possivel carregar a lista")
+      }
+    })
+	}
+
+	$scope.manager_dropbox = function(){
+    $.ajax({
+      type: 'GET',
+      url: "/api/core/configurations/backup/manager",
+
+      success: function (data) {
+        $scope.manager_informations = JSON.parse(data).object;
+        $("#loading_tbody").fadeOut();
+        $scope.$apply();
       },
 
       failure: function () {

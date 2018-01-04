@@ -3,10 +3,10 @@
  */
 var application = angular.module('modules.user', []);
 
-application.controller('reset_password_controller', function($scope) {
+/*application.controller('reset_password_controller', function($scope) {
 
 
-});
+});*/
 
 application.controller('change_password_controller', function($scope) {
 
@@ -25,12 +25,15 @@ application.controller('change_password_controller', function($scope) {
       return "/"
     };
 
-    fail_function = function (result,message,data_object,status) {
-      notify_response_message(message);
+    fail_function = function (result,message,data_object) {
+    	alert(message['password'])
+			$('#form_change_password').find("input[type=password]").val("");
     };
 
-  	alert("Ja chegando aqui amore:"+JSON.stringify(data_paramters))
-    request_api("/api/user/change_password/",data_paramters,validate_form_change_password,success_function,fail_function)
+    validate_function = function(){
+     return	validate_form_change_password(data_paramters['old_password'],data_paramters['password'],data_paramters['confirm_password'])
+		}
+    request_api("/api/user/change_password/",data_paramters,validate_function,success_function,fail_function)
   }
 
 
@@ -39,12 +42,12 @@ application.controller('change_password_controller', function($scope) {
   	var data_paramters = create_data_paramters('form_change_personal_info');
 
   	success_function = function(result,message,data_object,status){
-			alert("Operação realizada com Sucesso")
+  		alert("Operação realizada com Sucesso")
 			$scope.$apply()
   	}
 
   	fail_function = function() {
-			alert('Não foi possível realizar operação')
+			alert('Não foi possível salvar alterações')
   	}
 
 		validate_function = function (){
@@ -157,13 +160,12 @@ application.controller('login_controller', function($scope) {
 
     fail_function = function (result,message,data_object,status) {
     	//alert("FALHA: "+result+" - "+message+" - "+data_object+" - "+status)
-      notify_response_message(message);
+      notify_response_message(['Operação Não concluida']);
     }
     request_api("/api/user/login/autentication",data_paramters,validate_form_login,success_function,fail_function)
   }
 
   $scope.reset_password = function () {
-  	alert('eh aqui')
   	var data_paramters = {email: $("#email").val()}
 
   	var success_function = function success_function(result,message,data_object,status){
@@ -173,7 +175,7 @@ application.controller('login_controller', function($scope) {
     }
 
     var fail_function = function (result,message,data_object,status) {
-      notify_response_message(message);
+      notify_response_message(['Operação Não concluida']);
     }
 
     validate_function = function(){
@@ -183,114 +185,14 @@ application.controller('login_controller', function($scope) {
   }
 });
 
+/*
 application.controller('users_controller', function($scope) {
 	$scope.list_users = [];
 	$scope.min_row_table = [1,1,1,1,1,1,1,1,1,1];
 	$scope.loaded_users = false
 	$scope.user_selected = null;
 
-	/*Menus do Sistema com Label e ID*/
-	$scope.list_menu_Cadastros = [
-		{label: 'Entidades',id:'entidade'},
-		{label:'Permissões',id:'permissoes'},
-		{label:'Grupos Mercadológicos',id:'grupos_mercadologicos'},
-		{label:'Produtos', id:'produtos'},
-		{label:'Vinculos de Produtos',id:'vinculos_de_produtos'},
-		{label:'Agenda Telefônica',id:'agenda_telefonica'},
-		{label:'Tabelas Auxíliares',id:'tabelas_auxiliares'}
-		];
-
-	$scope.list_menu_Compras = [
-		{label:'Pedido e Fornecedoras', id:'pedido_e_fornecedores'},
-		{label:'Lista para Reposição',id:'lista_reposicao'},
-		{label: 'Pedidos para Cotação', id:'pedidos_cotacao'},
-		{label: 'Entrada de Mercadorias', id:'entrada_mercadorias'},
-		{label: 'Aquisição de Serviços', id:'aquisicao_servicos'},
-		{label: 'Corrigir Entrada', id:'corrigir_entrada'},
-		{label: 'Devolução e Fornecedores', id:'devolucao_fornecedores'},
-		{label: 'Manifesto e Recusa NF-e', id:'manifesto_recusa'},
-		{label: 'Histórico de Compras', id:'historico_compras'}];
-
-	$scope.list_menu_Vendas = [
-		{label:'Manuntenção de Preços',id:'manuntencao_precos'},
-		{label:'Terminal Caixa',id:'terminal_caixa'},
-		{label:'Venda Balcão',id:'venda_balcao'},
-		{label:'Tele-Vendas',id:'tele_vendas'},
-		{label:'Carteira de Pedidos',id:'carteira_pedidos'},
-		{label:'Faturamento',id:'faturamento'},
-		{label:'Devolução de Vendas',id:'devolucao_vendas'},
-		{label:'Histórioco de Vendas',id:'historico_vendas'}
-		];
-
-	$scope.list_menu_Servicos = [
-		{label:'Grupo de Serviços',id:'grupo_servicos'},
-		{label:'Cadastro de Serviço',id:'cadastro_servico'},
-		{label:'Chamados Técnicos',id:'chamados_tecnicos'},
-		{label:'Serviços de Locação',id:'servicos_locacao'},
-		{label:'Serviços de Logística',id:'servicos_logistica'},
-		{label:'Representação Comercial',id:'representacao_comercial'}
-		];
-
-	$scope.list_menu_Outras_operacoes = [
-			{label:'Tranferências',id:'transferencias'},
-	{label:'Ordem de Abastecimento',id:'ordem_abastecimento'},
-	{label:'Desmembrametos',id:'desmembramentos'},
-	{label:'Produção',id:'producao'},
-	{label:'Digitação de Balanço',id:'digitacao_balanco'},
-	{label:'Notas de Simples Remessa',id:'notas_simples_remessa'},
-	{label:'Emissão de Notas Avulsas',id:'emissao_notas_avulsas'},
-	{label:'Controle de Frota',id:'controle_frota'}];
-
-	$scope.list_menu_Financas = [{label:'Programação Financeira',id:'programacao_financeira'},
-		{label:'Lançamento de Guias',id:'lancamentos_guias'},
-		{label:'Liberar Comissões',id:'liberar_comissoes'},
-		{label:'Tesouraria',id:'tesouraria'},
-		{label:'Vale para Funcionários',id:'vale_funcionarios'},
-		{label:'Empréstimos e Vales',id:'emprestimo_vales'}
-		];
-
-	$scope.list_menu_Supervisao_vendas = [{label:'Locais Atendidos',id:'locais_atentidos'},
-		{label:'Segmentos Atendidos',id:'segmentos_atendidos'},
-		{label:'Carteiras de Venda',id:'carteiras_vendas'},
-		{label:'Rota de Entrega',id:'rota_entrega'},
-		{label:'Motivos de Devolução',id:'motivos_devolucao'},
-		/*Duplicidade de Menu*/
-		{label:'Liberar Comissões',id:'liberar_comissoes_2'},
-		{label:'Análise de Vendas',id:'analise_vendas'}
-		];
-
-	$scope.list_menu_Gerencia = [
-		{label:'Empresas do Grupo',id:'empresas_grupo'},
-		{label:'Funcionários/Usuários',id:'funcinarios_usuarios'},
-		{label:'Cadastros Gerências',id:'cadastro_gerencias'},
-		{label:'Formas de Recebimento',id:'formas_recebimento'},
-		{label:'Plano de Contas',id:'plano_contas'},
-		{label:'Contratos',id:'contratos'},
-		{label:'Análises Gerenciais',id:'analise_gerencial'},
-		{label:'Histórico de Produtos',id:'hitorico_produtos'},
-		{label:'Altrações Manuais',id:'alteracoes_manuais'}];
-
-	$scope.list_menu_Contabil = [{label:'Configurações Fiscais',id:'configuracoes_fiscais'},
-		{label:'Modelo de Documento',id:'modelo_documento'},
-		{label:'Tributação Produtos',id:'tributacao_produtos'},
-		{label:'Gerar Arquivos Governo',id:'gerar_arq_governo'},
-		{label:'Ánalise Tributária',id:'analise_tributaria'},
-		{label:'Planilha Sub. Tributária',id:'planilha_sub_tributaria'}];
-
-	/*Lista com todos Menus*/
-	$scope.lista_all_menus = {
-		registration : $scope.list_menu_Cadastros ,
-		purchases : $scope.list_menu_Compras,
-		sales : $scope.list_menu_Vendas,
-		services : $scope.list_menu_Servicos,
-		finances : $scope.list_menu_Financas,
-		supervision : $scope.list_menu_Supervisao_vendas,
-		management : $scope.list_menu_Gerencia,
-		contabil : $scope.list_menu_Contabil,
-		others : $scope.list_menu_Outras_operacoes
-	};
-
-
+	/*
   $scope.filter_users = function(){
   	$.ajax({
       type: 'GET',
@@ -372,7 +274,7 @@ application.controller('users_controller', function($scope) {
 		$scope.user_selected = angular.element(document.getElementById('administration_users_controller')).scope().user_selected;
 		var menus = {};
 
-		/*Cria dicionario de menus com as strings*/
+		/*Cria dicionario de menus com as strings*
 		for (var i in $scope.lista_all_menus) {
 			var monta_str = '';
 			for (var k in $scope.lista_all_menus[i]) {
@@ -417,4 +319,4 @@ application.controller('users_controller', function($scope) {
 	};
 
 
-});
+})*/

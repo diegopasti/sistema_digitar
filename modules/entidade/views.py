@@ -10,6 +10,10 @@ from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect
 from django.http.response import HttpResponse
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+
+from libs.default.core import BaseController
+from libs.default.decorators import request_ajax_required
 from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco
 from modules.entidade.models import entidade, contato
 from modules.entidade.service import consultar_codigo_postal_viacep  # consultar_codigo_postal_default
@@ -100,38 +104,45 @@ def cadastro_entidades(request):
 
     return render(request,"entidade/cadastro_entidades.html",{'dados': dados, 'form_desativar': form_desativar, 'erro': False})
 
+class EntityController (BaseController):
 
-def desativar_cliente(request,cliente):
-    if request.is_ajax():
-        cliente = entidade.objects.get(pk=int(cliente))
-        operacao = OperacaoRestrita()
-        operacao.tipo = "DES"
-        operacao.tabela = "ENTIDADE"
-        operacao.entidade = cliente
 
-        if request.user.is_anonymous():
-            operacao.user = None
+    @request_ajax_required
+    @method_decorator(login_required)
+    def desativar_cliente(self,request):
+        return self.disable(request,entidade)
+
+        '''if request.is_ajax():
+            cliente = entidade.objects.get(pk=int(cliente))
+            operacao = RestrictedOperation()
+            operacao.tipo = "DES"
+            operacao.tabela = "ENTIDADE"
+            operacao.entidade = cliente
+    
+            if request.user.is_anonymous():
+                operacao.user = None
+            else:
+                operacao.user = request.user
+    
+            # POR ENQUANTO NAO PODEMOS UTILIZAR ACENTUAÇÃO NESSA DESCRICAO
+            operacao.descricao = "DESATIVACAO DO CLIENTE "+cliente.nome_razao+" ("+cliente.cpf_cnpj+") DO SISTEMA."
+            operacao.justificativa = list(request.GET)[0].upper()
+    
+            #print("Tentano excluir: ", operacao.descricao,operacao.justificativa)
+    
+            try:
+                operacao.save()
+                cliente.ativo = False
+                cliente.save()
+                data = json.dumps("sucesso")
+            except:
+                data = None
+    
+            return HttpResponse(data, content_type='application/json')
+    
         else:
-            operacao.user = request.user
-
-        # POR ENQUANTO NAO PODEMOS UTILIZAR ACENTUAÇÃO NESSA DESCRICAO
-        operacao.descricao = "DESATIVACAO DO CLIENTE "+cliente.nome_razao+" ("+cliente.cpf_cnpj+") DO SISTEMA."
-        operacao.justificativa = list(request.GET)[0].upper()
-
-        #print("Tentano excluir: ", operacao.descricao,operacao.justificativa)
-
-        try:
-            operacao.save()
-            cliente.ativo = False
-            cliente.save()
-            data = json.dumps("sucesso")
-        except:
-            data = None
-
-        return HttpResponse(data, content_type='application/json')
-
-    else:
-        raise Http404
+            raise Http404
+            '''
 
 """
 def adicionar_item_protocolo(request):
@@ -174,7 +185,7 @@ def adicionar_item_protocolo(request):
     else:
         raise Http404
 """
-
+@login_required
 def novo_buscar_lista_clientes(request):
     #if request.is_ajax():
     clientes = entidade.objects.all().filter(ativo=True)#.exclude(id=1).order_by('-id')
@@ -549,7 +560,7 @@ def validar_objeto(registro):
         print("Deu pau..",e.message_dict)
         return e.message
 
-    
+@login_required
 def consultar_entidade(request,entidade_id):
     
     registro_entidade = entidade.objects.get(pk=entidade_id)
@@ -599,7 +610,7 @@ def validar_registro(registro):
     finally:
         return False,""
 
-
+@login_required
 def visualizar_entidade(request,id):
     cliente = entidade.objects.get(pk=id)
     meus_contatos = contato.objects.filter(entidade=cliente)
@@ -861,9 +872,8 @@ def visualizar_entidade(request,id):
                           'erro': False},
                           )
 
-
+@method_decorator(login_required)
 def adicionar_entidade(request):
-    print("ENTAO EU CHEGO no inicio?")
     if (request.method == "POST"):
         print("VEJA O QUE VEIO: ",request.POST)
         formulario = formulario_cadastro_entidade_completo(request.POST, request.FILES)
@@ -934,7 +944,6 @@ def adicionar_entidade(request):
 
         messages.add_message(request, messages.SUCCESS,msg)
     else:
-        print("ENTAO EU CHEGO?")
         formulario = formulario_cadastro_entidade_completo()
         #formulario_contrato = FormularioContrato()
 
@@ -1228,7 +1237,9 @@ def consultar_cep(request,codigo_postal):
 
 
 
-def adicionar_entidade_antigo(request):
+'''
+    COMENTEI O ANTIGO POIS ESTOU FECHANDO ROTAS ABERTAS
+    def adicionar_entidade_antigo(request):
     
     dados = entidade.objects.all()
     
@@ -1331,3 +1342,4 @@ def adicionar_entidade_antigo(request):
         
     #return render(request,"adicionar_entidade.html",{'formulario_entidade':formulario_entidade,'formulario_contato':formulario_contato})
         
+'''

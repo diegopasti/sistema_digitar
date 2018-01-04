@@ -8,6 +8,7 @@ from libs.default.core import BaseController
 from modules.nucleo.models import Backup
 #from modules.user.models import User
 from sistema_contabil import settings
+from selenium import webdriver
 
 
 class ConfigurationsController(BaseController):
@@ -36,10 +37,15 @@ class ConfigurationsController(BaseController):
     def restore_backup(self,request):
         self.start_process(request)
         backup_paramters = BackupManager().restore_backup()
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['message'] = ""
+        response_dict['object'] = backup_paramters
         if backup_paramters is True:
             print('RESTAURAÇÃO REALIZADA COM SUCESSO')
         else:
             print('ERRO',backup_paramters)
+        return self.response(response_dict)
 
     def list_backups(self,request):
         self.start_process(request)
@@ -82,9 +88,11 @@ class ConfigurationsController(BaseController):
         response_dict['object']['last_update'] = None
         for item in backup_list:
             response_dict['object']['used_space'] = response_dict['object']['used_space'] + float(item['size'])
-        response_dict['object']['used_percent_space'] = round((response_dict['object']['used_space'] / response_dict['object']['total_space']) * 100, 2)
-        #print("PERCENTUAL: ",response_dict['object']['used_space'] / response_dict['object']['total_space'])
-        #print("ESPACO DE ARMAZENAMENTO: ",response_dict)
+        response_dict['object']['used_space'] = '{0:.2f}'.format(response_dict['object']['used_space'])
+        print('RESPONSE:',(response_dict['object']['used_space']))
+        response_dict['object']['used_percent_space'] = round((float(response_dict['object']['used_space']) / response_dict['object']['total_space']) * 100, 2)
+        print("PERCENTUAL: ",float(response_dict['object']['used_space']) / response_dict['object']['total_space'])
+        print("ESPACO DE ARMAZENAMENTO: ",response_dict)
         return self.response(response_dict)
 
     def version_update(self,request):
@@ -120,6 +128,22 @@ class ConfigurationsController(BaseController):
 
         print("OLHE A LISTA:", backup_link_folder)
         print("VEJA O DICIONÁRIO:", response_dict)
+        return self.response(response_dict)
+
+    def manager_dropbox(self,request):
+        drive = settings.SELENIUM_CHROMEDRIVER
+        admin = settings.ADM_DROPBOX
+        key = settings.KEY_DROPBOX
+        browser = webdriver.Chrome(executable_path=str(drive))
+        browser.get("https://www.dropbox.com/home/backup")
+        list_of_inputs = browser.find_elements_by_xpath("//div/input[starts-with(@id,'pyxl')]")
+        list_of_inputs[0].send_keys(admin)
+        list_of_inputs[1].send_keys(key)
+        sign_in = browser.find_element_by_class_name("login-button").click()
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['message'] = ""
+        response_dict['object'] = True
         return self.response(response_dict)
 
 

@@ -63,8 +63,10 @@
 {% block recursos_complementares %}
 {% load compress %}
 {% compress js %}
-<script src="{% static 'modules/user/user_controller.js' %}" />
-<script src="{% static 'modules/core/base_controller.js' %}" />
-<script src="{% static 'modules/user/user.js' %}" />
+
+	<script src="{% static 'modules/core/controle_componentes.js' %}"/>
+	<script src="{% static 'modules/core/base_controller.js'%}"/>
+	<script src="{% static 'modules/user/user_controller.js' %}" />
+	<script src="{% static 'modules/user/user.js' %}" />
 {% endcompress %}
 {% endblock %}

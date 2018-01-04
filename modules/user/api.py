@@ -45,24 +45,10 @@ class UserController(BaseController):
 
     @request_ajax_required
     def change_active(self, request):
-        user = request.user
         if request.POST['action_type'] == 'DESATIVAR':
-            self.disable(request, User)
+            return self.disable(request, User)
         else:
-            self.enable(request, User)
-        try:
-            operation = RestrictedOperation()
-            operation.user = user
-            operation.set_type(request.POST['action_type'])
-            operation.object_id = request.POST['id']
-            operation.object_name = request.POST['action_object']
-            operation.justify = request.POST['action_justify']
-            operation.table = User._meta.db_table
-            operation.save()
-            response_dict = BaseController.notify.success(user,'Consegui')
-        except Exception as e:
-            response_dict = BaseController.notify.error(e)
-        return self.response(response_dict)
+            return self.enable(request, User)
 
 
     @request_ajax_required
@@ -152,8 +138,8 @@ class UserController(BaseController):
                 except:
                     pass
             else:
+                response_dict = response_format_error({'password':'Senha antiga está incorreta'})#response_format_error('Senha antiga está incorreta.')#self.notify.error({'email': 'Senha antiga está incorreta.'})
                 print("é Nao é a mesma senha")
-                response_dict = response_format_error('Senha antiga está incorreta.')#self.notify.error({'email': 'Senha antiga está incorreta.'})
         else:
             print("Formulario com erros")
             response_dict = response_format_error(form.format_validate_response())
@@ -178,6 +164,6 @@ class UserController(BaseController):
 
 
     #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
-
+    @login_required
     def filter_users(request):
         return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','id','groups'],extra_fields=['get_full_name'])

@@ -20,10 +20,8 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
 
 		success_function = function(result,message,object,status){
-			alert("olha o object:"+JSON.stringify(object))
-			alert("rimeiro?"+JSON.stringify($scope.usuarios))
+			notify_success_message(['Novo Usuário adicionado com Sucesso'])
 			$scope.usuarios.splice(0,0,object)
-			alert("passou?"+JSON.stringify($scope.usuarios))
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_usuario', message);
 			$("#modal_adicionar_usuario").modal('hide');
@@ -33,6 +31,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		}
 
 		fail_function = function (result,message,data_object,status) {
+			notify_response_message(['Não foi possivel adicionar o Usuário'])
 			check_response_message_form('#form_adicionar_usuario', message);
 		}
 
@@ -52,12 +51,10 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 		success_function = function(result,message,object,status){
       if(result){
-      	alert('olha o object:'+JSON.stringify(object))
+				var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
 				notify_success_message(["Usuário atualizado com sucesso"])
-				alert("OLHA AI A LISTA:\n"+JSON.stringify($scope.usuarios))
-				$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
-				alert("OLHA AI A LISTA after:\n"+JSON.stringify($scope.usuarios))
-				$scope.$apply();
+				$scope.usuarios[posicao] = object;
+				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name']
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
 				check_response_message_form('#form_alterar_usuario', message);
@@ -68,11 +65,14 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		};
 
     fail_function = function (result,message,data_object,status) {
-      check_response_message_form('#form_alterar_usuario', message);
+      notify_response_message(['Atualizações não foram salvas']);
     };
 
     validade_function = function () {
-     return  true;
+
+    	return (email_is_valid('email') && validade_variable_size(data_paramters['username'],6)
+					&& validade_variable_size(data_paramters['first_name'],3) && validade_variable_size(data_paramters['last_name'],3))
+
     };
     request_api("/api/user/update/",data_paramters,validade_function,success_function,fail_function);
 	};
@@ -94,7 +94,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		};
 
     fail_function = function (result,message,data_object,status) {
-      alert("Senhas informadas sçao diferentes")
+      notify_response_message(["Senhas informadas sçao diferentes"])
     };
 
     validade_function = function () {
@@ -121,7 +121,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
       },
 
       failure: function (data) {
-        alert("Não foi possivel carregar a lista");
+        notify_response_message(["Não foi possivel carregar a lista"]);
       },
     })
 	}
@@ -131,26 +131,27 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		data_paramters['id'] = parseInt($scope.registro_selecionado.id);
 		data_paramters['action_object'] = $('#action_object').val()
 		success_function = function(result,message,object,status){
-			//var index = $scope.usuarios.indexOf($scope.registro_selecionado);
-  		//$scope.usuarios.splice(index, 1);
-			//$scope.registro_selecionado.is_active = !($scope.registro_selecionado.is_active)
-			$scope.usuarios[$scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
+			var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
 			$scope.registro_selecionado = null;
+			notify_success_message(["Usuário atualizado com sucesso"])
+			$scope.usuarios[posicao]['is_active'] = object['is_active'];
+			$scope.usuarios[posicao]['selecionado'] = '';
 			$scope.esta_adicionando = true;
 			$scope.$apply();
 			$("#modal_justify_action").modal('hide');
-		}
+		};
 
 		fail_function = function (result,message,data_object,status) {
+			notify_response_message(['Não foi possivel realizar a operação no momento'])
 			check_response_message_form('#form_justify_action', message);
-		}
+		};
 
 		validate_function = function () {
 		 return validate_justify();
-		}
+		};
+		alert("Olha o q eu pego:"+JSON.stringify(data_paramters))
 		request_api("/api/user/chage_active/",data_paramters,validate_function,success_function,fail_function);
-		validate_justify
-	}
+	};
 
 	$scope.confirm_disable = function(){
 		var object_name = $scope.registro_selecionado.first_name + ' ' + $scope.registro_selecionado.last_name;
@@ -230,18 +231,11 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 
 	$scope.selecionar_linha = function(registro) {
-			//alert("veja o index: "+registro.cliente_id+"-"+registro.cliente_nome);
-			//alert("veja se tem plano: "+registro.plano)
-
 			if ($scope.registro_selecionado != null){
-					//alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
 					if (registro.selecionado=='selected'){
-							//alert("O cara clicou na linha que ja tava selecionada");
 							$scope.desmarcar_linha_selecionada();
 							//registro.selecionado = "";
 							$scope.registro_selecionado = null;
-							//$scope.opcao_desabilitada = "desabilitado";
-							//alert("desmarquei entao deixa como se fosse adicionar")
 							$scope.esta_adicionando = true;
 					}
 

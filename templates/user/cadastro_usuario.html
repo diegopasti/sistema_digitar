@@ -5,9 +5,27 @@
 
 <style>
 	a.disabled {
-		pointer-events: none;
-		cursor:no-drop;
+		background-color: gray;
+		border-color: transparent;
+		color : #FAEDEC;
+		cursor: no-drop; !important;
+		pointer-events: none !important;
+
+	}
+
+	a.disabled:hover {
+		border-color: #8c8c8c !important;
+		color : #8c8c8c !important;
+}
+
+	ul {
+		cursor: pointer;
+	}
+
+	ul .disabled {
+		cursor: no-drop; !important;
 		background-color: transparent;
+		border-color: transparent;: ;
 		color : #FAEDEC;
 	}
 
@@ -88,9 +106,9 @@
 							{% verbatim %}
 							<table class="table table-condensed  table-striped table-bordered table-hover" id="table_usuarios" style="width: 100%;">
 								<thead>
-								MIN ROWS: >{{ table_minimun_items }}<  -  > SEARCH: {{ search }}
+								<!--MIN ROWS: >{{ table_minimun_items }}<  -  > SEARCH: {{ search }}
 								ITENS PAGINATE: {{ table_maximun_items_per_page }}
-								----> {{ usuarios.length }}
+								---- {{ usuarios.length }}-->
 								<tr class="linha_cabecalho">
 									<th class='text-center' style="width: 10px;"  ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
 									<th class='text-center' style="width: 180px;" ng-click="sortType='username';sortReverse=!sortReverse">username</th>
