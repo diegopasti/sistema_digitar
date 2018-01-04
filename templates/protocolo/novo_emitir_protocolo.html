@@ -315,7 +315,7 @@
                         </div>
 
                         <div class="col-md-2 col-md-push-6">
-                            <button type="button" ng-disabled="(documentos.length == 0) || (!destinatario)" id="bt_gerar_protocolo" target=_blank class="btn btn-primary pull-right" name='gerar_protocolo'>Gerar Protocolo</button>
+                            <button type="button" ng-disabled="(documentos.length == 0)" id="bt_gerar_protocolo" target=_blank class="btn btn-primary pull-right" name='gerar_protocolo'>Gerar Protocolo</button>
                         </div>
                     </div>
                 </div>
@@ -563,7 +563,11 @@ $(document).ready(function() {
 });
 
 $('#bt_gerar_protocolo').click( function () {
-    angular.element(document.getElementById('controle_angular')).scope().salvar_protocolo();
+	if ($('#select_destinatarios').val() != ''){
+		angular.element(document.getElementById('controle_angular')).scope().salvar_protocolo();
+	}else{
+		error_notify(null,"Falha na Operação","Destinatário precisa ser informado")
+	}
     //document.getElementById('form_gerar_protocolo').target='_blank';
     //
 	//window.location.reload();

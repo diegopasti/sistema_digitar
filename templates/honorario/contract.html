@@ -151,6 +151,166 @@ table th{
 {% block conteudo %}
 <div id="controle_angular" ng-app="app" ng-cloak ng-controller="MeuController" ng-init="contratos_carregados=false">
 
+
+	<div class="row" style="margin-top: -55px;">
+		<div class="col-lg-12 col-md-12 col-xs-12">
+			<div class="box box-default" >
+				<div class="box-heading">
+					<div class="box-header with-border">
+						<h5 class="box-title">Contratos</h5>
+						<div class="pull-right">
+							<div class="btn-group" role="group" aria-label="...">
+								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="load_fields();">Contrato</a>
+								<a href="#" id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_servicos" ng-click="carregar_servicos_contratados();" style='margin-left: 5px;'>Serviços</a>
+								<!--<a href="#" role="button" id="bt_consultar_cliente" class="btn btn-sm btn-default pull-left desabilitado" style='margin-left: 5px;'><i class="fa fa-pencil-square-o fa-1x"></i> Editar</a>-->
+								<a href="#" id='bt_indicacoes' role="button" class="btn btn-sm btn-default pull-left" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" data-toggle="modal" data-target="#modal_indicacoes" ng-click="carregar_indicacao()" style='margin-left: 5px;'> Indicações</a>
+
+								<div class="btn-group" role="group" style='margin-left: 5px;'>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li role="separator" class="divider"></li>
+										<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-body" style="padding-bottom: -10px; margin-top: 0px;">
+					<div class="dataTable_wrapper">
+						<div class='row'>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								{% verbatim %}
+								<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
+									<thead>
+										<tr class="linha_cabecalho">
+											<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>
+
+											<th class='center' ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Cliente</th>
+
+											<th class="center" ng-hide='screen0 || screen1' ng-click="sortType = 'plano'; sortReverse = !sortReverse">Plano</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'inicio'; sortReverse = !sortReverse">Início</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'termino'; sortReverse = !sortReverse">Término</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'valor_honorario'; sortReverse = !sortReverse">Honorário (R$)</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'descontos'; sortReverse = !sortReverse">Desc (%)</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Total (R$)</th>
+										</tr>
+									</thead>
+
+									<tbody style="font-size: 11px;">
+										<tr ng-if="(contratos|filter:filterIds()).length == 0">
+											<td colspan="8" class="center">Nenhum Cliente Cadastrado!</td>
+										</tr>
+
+										<tr ng-if="contratos_carregados == false">
+											<td colspan="8" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
+												Aguarde.. Carregando...<br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+											</td>
+										</tr>
+
+										<tr ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado">
+											<!--<tr ng-repeat='contrato in contratos' class="linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos">-->
+
+											<td class='center' style="width: 30px;">{{ contrato.cliente_id }}</td> <!-- {{ $index+1 }} -->
+											<td class="col-cliente" class="left">
+												{{ contrato.cliente_nome }}
+												<!--<div class="responsive-text"  style="max-width: {{ col_cliente_size }}px">{{ contrato.cliente_nome }}</div> isso faz cortar as palavras mas temos um problema com alinhamento que nao fica perfeito dependendo de como a largura foi carregada inicialmente -->
+											</td>
+
+											<td ng-hide='screen0 || screen1' ng-class="{true:'left', false:'center'}[contrato.plano=='']">
+												<span ng-if="contrato.plano">{{ contrato.plano }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{true:'left', false:'center'}[contrato.contrato.vigencia_inicio=='']" style="width: 80px;">
+												<span ng-if="contrato.contrato.vigencia_inicio">{{ contrato.contrato.vigencia_inicio| date: 'dd/MM/yyyy' }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{true:'left', false:'center'}[contrato.contrato.vigencia_fim=='']" style="width: 80px;">
+												<span ng-if="contrato.contrato.vigencia_fim">{{ contrato.contrato.vigencia_fim | date: 'dd/MM/yyyy' }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'right': contrato.contrato.valor_honorario, 'center': !contrato.plano  }" style="width: 130px;">
+												<span ng-if="contrato.contrato.valor_honorario">{{ contrato.contrato.valor_honorario | currency:"" }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 80px;">
+												<span ng-if="contrato.plano" title="Desconto Temporário: {{ contrato.contrato.desconto_temporario_ativo }}% disponivel de {{ contrato.contrato.desconto_temporario }}% concedido e Desconto Fidelidade: {{ contrato.contrato.desconto_indicacoes }}%">
+													{{ contrato.contrato.desconto_temporario_ativo -- contrato.contrato.desconto_indicacoes }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2' ng-class="{'right': contrato.plano, 'center':!contrato.plano }" style="width: 130px;">
+												<span ng-if="contrato.plano">{{ contrato.contrato.valor_total | currency:"" }}</span>
+												<span ng-if="!contrato.plano"></span>
+											</td>
+										</tr>
+
+										<tr ng-if='contratos_carregados' ng-repeat="k in minimal_quantity_rows.slice(contratos.length,minimal_quantity_rows.length)">
+											<td style="width:30px;"></td>
+											<td></td>
+											<td style="width:120px;"></td>
+											<td class='center' style="width: 80px;"></td>
+											<td class='center' style="width: 80px;"></td>
+											<td class='right' style="width: 130px;"></td>
+											<td class='center' style="width: 80px;"></td>
+											<td class='right' style="width: 130px;"></td>
+										</tr>
+
+										<tr ng-if="resultado.length === 0 && (contratos|filter:filterIds()).length > 0">
+											<td colspan="3" class='center'>Nenhum resultado Encontrado</td>
+										</tr>
+									</tbody>
+									</table>
+								{% endverbatim %}
+							</div>
+						</div>
+					</div>
+
+					<div class='row no-gutter' style="padding: 0px 10px 0px 10px;">
+						{% verbatim %}
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
+							<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
+							<select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
+								<option value="0">Código</option>
+								<option value="1" selected>Cliente</option>
+								<option value="2">Plano</option>
+							</select>
+						</div>
+
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 31px;'>
+							<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
+						</div>
+
+						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="contratos_carregados == true" >
+							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
+								<dir-pagination-controls pagination-id="paginate_contratos" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
+
+								</dir-pagination-controls>
+							</span>
+						</div>
+						{% endverbatim %}
+					</div>
+				</div>
+			</div>
+			<!-- /.panel -->
+		</div>
+		<!-- /.row -->
+	</div>
+
 	<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 70%">
 			<!--  > -->
@@ -312,29 +472,48 @@ table th{
 				<div class="modal-body" style="padding: 15px;padding-top: 10px;">
 					<form ng-submit="esta_indicando? alterar_indicacao() : adicionar_indicacao()">
 						<div class="row">
-							<div class="col-lg-8 col-md-8 col-sm-6 col-xs-12" ng-class="{desabilitado: ( indicacao_selecionada != null), nonselect: (indicacao_selecionada != null)}"> <!--ng-class="'esta_indicando' ? 'desabilitado nonselect' " -->
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" ng-class="{desabilitado: ( indicacao_selecionada != null), nonselect: (indicacao_selecionada != null)}"> <!--ng-class="'esta_indicando' ? 'desabilitado nonselect' " -->
 								<sub><label>{{ formulario_indicacao.indicacao.label }}</label></sub>
 									{{ formulario_indicacao.indicacao }}
 							</div>
 
-							<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" style="padding-bottom: 5px;">
+							<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" style="padding-left: 5px; padding-bottom: 5px;">
 								<sub><label>{{ formulario_indicacao.taxa_desconto_indicacao.label }}</label></sub>
 								{{ formulario_indicacao.taxa_desconto_indicacao }}
 							</div>
 							{% verbatim %}
 
-							<span href="#" ng-if="indicacao_selecionada == null">
+							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style="padding-left: 5px; padding-top: 15px;">
+								<div class="form-group">
+									<button type="submit" id="bt_adicionar_indicacao" class="btn btn-sm btn-primary " data-toggle="modal" style="width: 100px;">
+										<span ng-if="indicacao_selecionada != null">Salvar</span>
+										<span ng-if="indicacao_selecionada == null">Adicionar</span>
+									</button>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-2 col-xs-12 pull-right" style="padding-left: 5px; padding-top: 15px;">
+								<div class="form-group pull-right">
+									<button type="button" id="bt_desativar_indicacao" ng-hide="indicacao_selecionada == null" ng-disabled="indicacao_selecionada == null" class="btn btn-sm btn-default" ng-click="ativar_desativar_indicacao(indicacao_selecionada, $event)" style="width: 100px;">
+										<span ng-if="indicacao_selecionada.indicacao_ativa == true">Desativar</span>
+										<span ng-if="indicacao_selecionada.indicacao_ativa == false">Ativar</span>
+									</button>
+									<button type="button" ng-click="deletar_indicacao(indicacao_selecionada, $event)" ng-hide="indicacao_selecionada == null" ng-disabled="indicacao_selecionada == null" class="btn btn-sm btn-danger" data-toggle="modal"> Apagar</button>
+								</div>
+							</div>
+
+							<!---<span href="#" ng-if="indicacao_selecionada == null">
 								<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  style="padding-top: 20px;padding-bottom: 15px;">
-									<button type="submit" id="bt_adicionar_indicacao" class="btn btn-sm btn-primary form-control" data-toggle="modal">Adicionar</button>
+
 								</div>
 							</span>
 
 							<span href="#" ng-if="indicacao_selecionada != null">
 								<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12"  style="text-align: right; padding-top: 20px;padding-bottom: 15px;">
-									<button type="button" ng-click="deletar_indicacao()" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash-o" aria-hidden="true"></i> Apagar</button>
+
 									<button type="submit" id="bt_adicionar_indicacao" class="btn btn-sm btn-primary" data-toggle="modal"><i class="fa fa-check-square-o" aria-hidden="true"></i> Salvar</button>
 								</div>
-							</span>
+							</span>-->
 							{% endverbatim %}
 							</div>
 					</form>
@@ -351,7 +530,9 @@ table th{
 
 												<th class='center'>Empresa Indicada</th>
 
-												<th class="center">Data de Indicação</th>
+												<th class="center">Data do Cadastro</th>
+
+												<th class="center">Ultima Alteração</th>
 
 												<th class='center'>Taxa Desconto</th>
 
@@ -363,97 +544,44 @@ table th{
 											#datatable td{
 												padding: 0px;
 												padding-top: 4px;
+												height: 26px;
 											}
 										</style>
 
 										<tbody>
 											{% verbatim %}
 												<tr ng-if="indicacoes_carregadas == false">
-													<td colspan="8" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
+													<td colspan="9" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
 														Aguarde.. Carregando...<br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
 													</td>
 												</tr>
 
-												<tr ng-if="indicacoes_carregadas == true" class="angular-repeat linha_selecionavel {{ registro.indicacao.selecionado }}" ng-repeat='registro in registro_selecionado.indicacoes' ng-click="selecionar_linha_indicacao(registro.indicacao)" ng-init='incrementar_desconto_fidelidade(registro.indicacao.taxa_desconto)'>
-													<!--<td class='center' style="width: 30px;">{{ $index+1 }}</td>-->
-													<td class="left"	style="padding-left: 10px;">{{ registro.indicacao.nome_razao }}</td>
-													<td class="center" style="width: 30px">{{ registro.indicacao.data_cadastro| date:'dd/MM/yyyy' }}</td>
-													<td class="center" style="width: 30px;">{{ registro.indicacao.taxa_desconto }}</td>
-													<td class="center" style="width: 30px; padding-left: 15px; padding-top: 4px">
-														<style>
-															.switch {
-																position: relative;
-																display: table;
-																width: 50px;
-																height: 20px;
-															}
-
-															.switch input {display:none;}
-
-															.slider {
-																position: absolute;
-																cursor: pointer;
-																top: 0;
-																left: 0;
-																right: 0;
-																bottom: 0;
-																background-color: #47FF7F;
-																-webkit-transition: 1s;
-																transition: 1s;
-															}
-
-															.slider:before {
-																position: absolute;
-																content: "";
-																height: 15px;
-																width: 15px;
-																left: 4px;
-																bottom: 3px;
-																background-color: #c4bbcc;
-																-webkit-transition: 1s;
-																transition: .40s;
-															}
-
-															input:checked + .slider {
-																background-color: #FA4226;
-															}
-
-															input:focus + .slider {
-																box-shadow: 0 0 1px #2196F3;
-															}
-
-															input:checked + .slider:before {
-																-webkit-transform: translateX(26px);
-																-ms-transform: translateX(26px);
-																transform: translateX(26px);
-															}
-
-															/* Rounded sliders */
-															.slider.round {
-																border-radius: 20px;
-															}
-
-															.slider.round:before {
-																border-radius: 50%;
-															}
-														</style>
-														<label class="switch" style="padding-bottom: 20px">
-															<input type="checkbox" ng-checked='registro.indicacao.indicacao_ativa == 0' ng-click="ativar_desativar_indicacao()" >;;;;
-															<span class="slider round" ></span>
-														</label>
+												<tr ng-if="indicacoes_carregadas == true" class="angular-repeat linha_selecionavel {{ registro.selected }}" ng-repeat='registro in registro_selecionado.indicacoes' ng-click="selecionar_linha_indicacao(registro)">
+													<td class="left"	style="padding-left: 10px;">{{ registro.indication_name }}</td>
+													<td class="center" style="width: 180px">{{ registro.data_cadastro | date:'dd/MM/yyyy' }} às {{ registro.data_cadastro | date:'HH:mm:ss' }}</td>
+													<td class="center" style="width: 180px">{{ registro.ultima_alteracao | date:'dd/MM/yyyy' }} às {{ registro.ultima_alteracao | date:'HH:mm:ss' }}</td>
+													<td class="center" style="width: 70px;">{{ registro.taxa_desconto }}</td>
+													<td class="center" style="width: 30px; padding-left: 0px; padding-top: 2px;">
+														<span ng-if="registro.indicacao_ativa==0" style="color: #cccccc; font-weight: bold;"><i class="fa fa-check" aria-hidden="true"></i>
+</span>
+														<span ng-if="registro.indicacao_ativa!=0" style="color: #006600; font-weight: bold;"><i class="fa fa-check" aria-hidden="true"></i>
+</span>
 													</td>
 												</tr>
 
 												<tr ng-if="indicacoes_carregadas == true" ng-repeat="k in minimal_quantity_rows.slice(registro_selecionado.indicacoes.length,minimal_quantity_rows.length)">
-													<td style="height: 28px;"></td>
-													<td style="width:140px;"></td>
-													<td class='center' style="width: 120px;"></td>
-													<td class='center' style="width: 80px;"></td>
+													<td></td>
+													<td class='center' style="width:180px;"></td>
+													<td class='center' style="width:180px;"></td>
+													<td class='center' style="width:120px;"></td>
+													<td class='center' style="width:80px;"></td>
 												</tr>
 
 												<tr ng-if="indicacoes_carregadas == true" style="border-top: 2px solid #DDD;">
 													<th colspan="2" style="padding-left: 8px;">Descontos Adiquirdo <span style="vertical-align: middle;padding-left: 8px; font-weight: bold; padding-top: 0px;color: #8B1A1A; font-size:10px;">(Desconto Máximo Aplicável 30%)</span></th>
-													<th colspan="2" class="text-center">{{ total_desconto_fidelidade }}%</th>
+													<th colspan="3" class="text-center">{{ total_desconto_fidelidade }}%
+													<span class="pull-right" style='font-weight: normal;' ng-if="total_credito_desconto_fidelidade > 0"> (+{{ total_credito_desconto_fidelidade }}% de crédito)</span>
+													</th>
 												</tr>
 											{% endverbatim %}
 										</tbody>
@@ -488,9 +616,7 @@ table th{
 										<thead>
 											<tr class="linha_cabecalho">
 												<!--<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>-->
-
 												<th class='center'>Serviço Aplicáveis</th>
-
 												<th class='center'>Ativo</th>
 											</tr>
 										</thead>
@@ -599,164 +725,6 @@ table th{
 		</div>
 	</div>
 
-	<div class="row" style="margin-top: -55px;">
-		<div class="col-lg-12 col-md-12 col-xs-12">
-			<div class="box box-default" >
-				<div class="box-heading">
-					<div class="box-header with-border">
-						<h5 class="box-title">Contratos</h5>
-						<div class="pull-right">
-							<div class="btn-group" role="group" aria-label="...">
-								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="load_fields();">Contrato</a>
-								<a href="#" id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_servicos" ng-click="carregar_servicos_contratados();" style='margin-left: 5px;'>Serviços</a>
-								<!--<a href="#" role="button" id="bt_consultar_cliente" class="btn btn-sm btn-default pull-left desabilitado" style='margin-left: 5px;'><i class="fa fa-pencil-square-o fa-1x"></i> Editar</a>-->
-								<a href="#" id='bt_indicacoes' role="button" class="btn btn-sm btn-default pull-left" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" data-toggle="modal" data-target="#modal_indicacoes" ng-click="carregar_indicacao()" style='margin-left: 5px;'> Indicações</a>
-
-								<div class="btn-group" role="group" style='margin-left: 5px;'>
-									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu dropdown-menu-right">
-										<li><a href="#">Action</a></li>
-										<li><a href="#">Another action</a></li>
-										<li><a href="#">Something else here</a></li>
-										<li role="separator" class="divider"></li>
-										<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="box-body" style="padding-bottom: -10px; margin-top: 0px;">
-					<div class="dataTable_wrapper">
-						<div class='row'>
-							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								{% verbatim %}
-								<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
-									<thead>
-										<tr class="linha_cabecalho">
-											<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>
-
-											<th class='center' ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Cliente</th>
-
-											<th class="center" ng-hide='screen0 || screen1' ng-click="sortType = 'plano'; sortReverse = !sortReverse">Plano</th>
-
-											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'inicio'; sortReverse = !sortReverse">Início</th>
-
-											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'termino'; sortReverse = !sortReverse">Término</th>
-
-											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'valor_honorario'; sortReverse = !sortReverse">Honorário (R$)</th>
-
-											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'descontos'; sortReverse = !sortReverse">Desc (%)</th>
-
-											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Total (R$)</th>
-										</tr>
-									</thead>
-
-									<tbody style="font-size: 11px;">
-										<tr ng-if="(contratos|filter:filterIds()).length == 0">
-											<td colspan="8" class="center">Nenhum Cliente Cadastrado!</td>
-										</tr>
-
-										<tr ng-if="contratos_carregados == false">
-											<td colspan="8" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
-												Aguarde.. Carregando...<br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
-											</td>
-										</tr>
-
-										<tr ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado">
-											<!--<tr ng-repeat='contrato in contratos' class="linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos">-->
-
-											<td class='center' style="width: 30px;">{{ contrato.cliente_id }}</td> <!-- {{ $index+1 }} -->
-											<td class="col-cliente" class="left">
-												{{ contrato.cliente_nome }}
-												<!--<div class="responsive-text"  style="max-width: {{ col_cliente_size }}px">{{ contrato.cliente_nome }}</div> isso faz cortar as palavras mas temos um problema com alinhamento que nao fica perfeito dependendo de como a largura foi carregada inicialmente -->
-											</td>
-
-											<td ng-hide='screen0 || screen1' ng-class="{true:'left', false:'center'}[contrato.plano=='']">
-												<span ng-if="contrato.plano">{{ contrato.plano }}</span>
-												<span ng-if="!contrato.plano"></span>
-											</td>
-
-											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{true:'left', false:'center'}[contrato.contrato.vigencia_inicio=='']" style="width: 80px;">
-												<span ng-if="contrato.contrato.vigencia_inicio">{{ contrato.contrato.vigencia_inicio| date: 'dd/MM/yyyy' }}</span>
-												<span ng-if="!contrato.plano"></span>
-											</td>
-
-											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{true:'left', false:'center'}[contrato.contrato.vigencia_fim=='']" style="width: 80px;">
-												<span ng-if="contrato.contrato.vigencia_fim">{{ contrato.contrato.vigencia_fim | date: 'dd/MM/yyyy' }}</span>
-												<span ng-if="!contrato.plano"></span>
-											</td>
-
-											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'right': contrato.contrato.valor_honorario, 'center': !contrato.plano  }" style="width: 130px;">
-												<span ng-if="contrato.contrato.valor_honorario">{{ contrato.contrato.valor_honorario | currency:"" }}</span>
-												<span ng-if="!contrato.plano"></span>
-											</td>
-
-											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 80px;">
-												<span ng-if="contrato.plano" title="Desconto Temporário: {{ contrato.contrato.desconto_temporario_ativo }}% disponivel de {{ contrato.contrato.desconto_temporario }}% concedido e Desconto Fidelidade: {{ contrato.contrato.desconto_indicacoes }}%">
-													{{ contrato.contrato.desconto_temporario_ativo -- contrato.contrato.desconto_indicacoes }}</span>
-												<span ng-if="!contrato.plano"></span>
-											</td>
-
-											<td ng-hide='screen0 || screen1 || screen2' ng-class="{'right': contrato.plano, 'center':!contrato.plano }" style="width: 130px;">
-												<span ng-if="contrato.plano">{{ contrato.contrato.valor_total | currency:"" }}</span>
-												<span ng-if="!contrato.plano"></span>
-											</td>
-										</tr>
-
-										<tr ng-if='contratos_carregados' ng-repeat="k in minimal_quantity_rows.slice(contratos.length,minimal_quantity_rows.length)">
-											<td style="width:30px;"></td>
-											<td></td>
-											<td style="width:120px;"></td>
-											<td class='center' style="width: 80px;"></td>
-											<td class='center' style="width: 80px;"></td>
-											<td class='right' style="width: 130px;"></td>
-											<td class='center' style="width: 80px;"></td>
-											<td class='right' style="width: 130px;"></td>
-										</tr>
-
-										<tr ng-if="resultado.length === 0 && (contratos|filter:filterIds()).length > 0">
-											<td colspan="3" class='center'>Nenhum resultado Encontrado</td>
-										</tr>
-									</tbody>
-									</table>
-								{% endverbatim %}
-							</div>
-						</div>
-					</div>
-
-					<div class='row no-gutter' style="padding: 0px 10px 0px 10px;">
-						{% verbatim %}
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
-							<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
-							<select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
-								<option value="0">Código</option>
-								<option value="1" selected>Cliente</option>
-								<option value="2">Plano</option>
-							</select>
-						</div>
-
-						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 31px;'>
-							<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
-						</div>
-
-						<div class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="contratos_carregados == true" >
-							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
-								<dir-pagination-controls pagination-id="paginate_contratos" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
-
-								</dir-pagination-controls>
-							</span>
-						</div>
-						{% endverbatim %}
-					</div>
-				</div>
-			</div>
-			<!-- /.panel -->
-		</div>
-		<!-- /.row -->
-	</div>
 </div>
 <br>
 {% endblock %}

@@ -3,6 +3,7 @@ import json
 import locale
 from datetime import date
 
+from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
 from django.http.response import Http404
 from django.shortcuts import render, HttpResponse
@@ -11,11 +12,12 @@ from modules.preferencias.formularios import adicionar_salario_minimo
 
 from modules.preferencias.models import SalarioMinimo
 
-
+@login_required
 def controle_preferencias(request):
     formulario_salario = adicionar_salario_minimo()
     return render(request, "preferencias/preferencias.html",{'formulario_salario':formulario_salario})
 
+@login_required
 def adicionar_salario(request):
     if request.is_ajax():
         formulario = adicionar_salario_minimo(request.POST)
@@ -40,6 +42,7 @@ def adicionar_salario(request):
     else:
         raise Http404
 
+
 def validar_formulario(formulario):
     if formulario.is_valid():
         return True
@@ -53,6 +56,7 @@ def validar_formulario(formulario):
                 print(msg)
                 return msg
 
+@login_required
 def alterar_salario(request,id):
     if request.is_ajax():
         formulario = adicionar_salario_minimo(request.POST)
@@ -77,6 +81,7 @@ def alterar_salario(request,id):
     else:
         raise Http404
 
+@login_required
 def excluir_salario(request,id):
     if request.is_ajax():
         salario = SalarioMinimo.objects.get(pk=int(id))
@@ -86,6 +91,7 @@ def excluir_salario(request,id):
     else:
         raise Http404
 
+@login_required
 def listar_salarios(request):
     locale.setlocale(locale.LC_ALL, '')
     data_atual = date.today()
@@ -123,12 +129,11 @@ def listar_salarios(request):
     else:
         raise Http404
 
-
+@login_required()
 def get_salario_vigente(request):
     from django.contrib.humanize.templatetags.humanize import intcomma
     #return
     data_atual = date.today()
-
     try:
         salario_vigente = SalarioMinimo.objects.filter(inicio_vigencia__lte=data_atual).latest('inicio_vigencia')
     except:
@@ -141,11 +146,12 @@ def get_salario_vigente(request):
 
     response_dict = {}
 
-    if salario_vigente:
+    if salario_vigente is not None:
         response_dict['id_salario_vigencia_atual'] = salario_vigente.id
         response_dict['salario_vigencia_atual'] = "R$ %s" % intcomma(salario_vigente.valor)
         response_dict['inicio_vigencia_atual'] = salario_vigente.inicio_vigencia.strftime("%Y-%m-%d")
     else:
+        print("Entro aqui salario_vigente = None")
         response_dict['id_salario_vigencia_atual'] = None
         response_dict['salario_vigencia_atual'] = None
         response_dict['inicio_vigencia_atual'] = None
@@ -170,6 +176,7 @@ def get_salario_vigente(request):
     #print("OLHA OS DIAS RESTANTES: ",response_dict['dias_restante_vigencia_atual']," -> ",response_dict['percentual_restante_vigencia_atual'])
     data = json.dumps(response_dict)
     return HttpResponse(data, content_type='application/json')
+
 
 def executar_operacao(registro,operacao):
     response_dict = {}

@@ -10,6 +10,7 @@ from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect
 from django.http.response import HttpResponse
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 
 from libs.default.core import BaseController
 from libs.default.decorators import request_ajax_required
@@ -107,8 +108,8 @@ class EntityController (BaseController):
 
 
     @request_ajax_required
+    @method_decorator(login_required)
     def desativar_cliente(self,request):
-        print("OLHA O REQUEST NO DISABLE:",request)
         return self.disable(request,entidade)
 
         '''if request.is_ajax():
@@ -184,7 +185,7 @@ def adicionar_item_protocolo(request):
     else:
         raise Http404
 """
-
+@login_required
 def novo_buscar_lista_clientes(request):
     #if request.is_ajax():
     clientes = entidade.objects.all().filter(ativo=True)#.exclude(id=1).order_by('-id')
@@ -559,7 +560,7 @@ def validar_objeto(registro):
         print("Deu pau..",e.message_dict)
         return e.message
 
-    
+@login_required
 def consultar_entidade(request,entidade_id):
     
     registro_entidade = entidade.objects.get(pk=entidade_id)
@@ -609,7 +610,7 @@ def validar_registro(registro):
     finally:
         return False,""
 
-
+@login_required
 def visualizar_entidade(request,id):
     cliente = entidade.objects.get(pk=id)
     meus_contatos = contato.objects.filter(entidade=cliente)
@@ -871,7 +872,7 @@ def visualizar_entidade(request,id):
                           'erro': False},
                           )
 
-
+@method_decorator(login_required)
 def adicionar_entidade(request):
     if (request.method == "POST"):
         print("VEJA O QUE VEIO: ",request.POST)
@@ -1236,7 +1237,9 @@ def consultar_cep(request,codigo_postal):
 
 
 
-def adicionar_entidade_antigo(request):
+'''
+    COMENTEI O ANTIGO POIS ESTOU FECHANDO ROTAS ABERTAS
+    def adicionar_entidade_antigo(request):
     
     dados = entidade.objects.all()
     
@@ -1339,3 +1342,4 @@ def adicionar_entidade_antigo(request):
         
     #return render(request,"adicionar_entidade.html",{'formulario_entidade':formulario_entidade,'formulario_contato':formulario_contato})
         
+'''

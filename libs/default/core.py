@@ -192,14 +192,26 @@ class BaseController(Notify):
         response_dict = {}
         response_dict['result'] = True
         response_dict['object'] = self.notify.datalist(model_list, list_fields, extra_fields)
-        #print("VEJA COMO FICOU O RESPONSE OBJECT: ",response_dict['object'])
         response_dict['message'] = str(len(self.notify.datalist(model_list, list_fields)))+" Registros carregados com sucesso!"
         return self.response(response_dict)
 
     @request_ajax_required
-    def object(self, request):
-        self.request = request
-        pass
+    def object(self, request, model):
+        """
+        if queryset is None:
+            model_list = model.objects.all().order_by(order_by)
+        else:
+            model_list = queryset
+
+        if limit is not None:
+            model_list = model_list.limit(limit)
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['object'] = self.notify.datalist(model_list, list_fields, extra_fields)
+        response_dict['message'] = str(len(self.notify.datalist(model_list, list_fields)))+" Registros carregados com sucesso!"
+        """
+        response_dict = {}
+        return self.response(response_dict)
 
     @request_ajax_required
     @validate_formulary
