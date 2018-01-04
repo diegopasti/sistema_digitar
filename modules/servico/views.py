@@ -4,6 +4,8 @@ from django.forms.models import model_to_dict
 from django.http.response import Http404
 from django.shortcuts import HttpResponse, render
 from django.template import RequestContext
+from django.utils.decorators import method_decorator
+
 from modules.servico.models import Servico, Plano
 import json
 
@@ -69,7 +71,7 @@ def excluir_plano(request):
     else:
         raise Http404
 
-@login_required
+
 def serializar_plano(plano):
     texto = {}
     texto['id'] = str(plano.id)
@@ -146,7 +148,7 @@ def excluir_servico(request,servico_id):
     else:
         raise Http404
 
-@login_required
+
 def executar_operacao(registro,operacao):
     response_dict = {}
     if operacao == "save":
