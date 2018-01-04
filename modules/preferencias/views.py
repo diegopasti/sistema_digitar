@@ -42,7 +42,7 @@ def adicionar_salario(request):
     else:
         raise Http404
 
-@login_required
+
 def validar_formulario(formulario):
     if formulario.is_valid():
         return True
@@ -134,7 +134,6 @@ def get_salario_vigente(request):
     from django.contrib.humanize.templatetags.humanize import intcomma
     #return
     data_atual = date.today()
-
     try:
         salario_vigente = SalarioMinimo.objects.filter(inicio_vigencia__lte=data_atual).latest('inicio_vigencia')
     except:
@@ -147,11 +146,12 @@ def get_salario_vigente(request):
 
     response_dict = {}
 
-    if salario_vigente:
+    if salario_vigente is not None:
         response_dict['id_salario_vigencia_atual'] = salario_vigente.id
         response_dict['salario_vigencia_atual'] = "R$ %s" % intcomma(salario_vigente.valor)
         response_dict['inicio_vigencia_atual'] = salario_vigente.inicio_vigencia.strftime("%Y-%m-%d")
     else:
+        print("Entro aqui salario_vigente = None")
         response_dict['id_salario_vigencia_atual'] = None
         response_dict['salario_vigencia_atual'] = None
         response_dict['inicio_vigencia_atual'] = None
