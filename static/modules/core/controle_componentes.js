@@ -141,7 +141,7 @@ function success_notify(title,description){
 }
 
 function error_notify(id,title,description){
-  document.getElementById(id).focus();
+  if(id!=null){document.getElementById(id).focus();}
   return notify("error",title,description);
 }
 

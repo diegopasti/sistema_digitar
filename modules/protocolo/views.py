@@ -149,7 +149,6 @@ def validar_temporalidade(data_primeira_operacao,hora_primeira_operacao,data_seg
 
 @login_required
 def cadastro_protocolo(request, protocolo_id=None):
-    print("to vindo nessa porcaria")
     erro = False
     if (request.method == "POST"):
         
@@ -482,7 +481,10 @@ class ParametroProtocolo:
     
 
 def criar_parametro_entidade_para_protocolo(entidade_id):
+    print("Eu chego com o ID:",id)
     pessoa = entidade.objects.get(pk=entidade_id)
+    print("Eu pego a pessoa:",pessoa.nome_razao)
+    print("A localização tem ID:",pessoa.endereco_id)
     localizacao = localizacao_simples.objects.get(pk=pessoa.endereco_id)
     endereco = "%s, %s, %s, %s," % (localizacao.logradouro, localizacao.numero, localizacao.bairro, localizacao.municipio)
     endereco = endereco.title()
@@ -494,7 +496,10 @@ def criar_parametro_entidade_para_protocolo(entidade_id):
     parametros.nome = pessoa.nome_razao
     parametros.cpf_cnpj = pessoa.cpf_cnpj
     parametros.endereco = endereco
-    parametros.complemento = localizacao.complemento.title()
+    try:
+        parametros.complemento = localizacao.complemento.title()
+    except:
+        pass
     #parametros.codigo_protocolo = "%05d"%(pessoa.numeracao_protocolo)
 
 
