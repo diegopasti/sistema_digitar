@@ -84,7 +84,7 @@
 						<h5 class="box-title">Cadastro de Usuários</h5>
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
-								<a id='bt_adicionar' role="button" class="btn btn-sm btn-primary " ng-class="{'disabled':registro_selecionado!=null}" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-disabled="registro_selecionado!=null">Adicionar</a>
+								<a id='bt_adicionar' role="button" class="btn btn-sm btn-primary " ng-class="{'disabled':registro_selecionado!=null}" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-click="open_modal_add()" ng-disabled="registro_selecionado!=null">Adicionar</a>
 								<a id='bt_servicos' role="button" class="btn btn-sm btn-primary"  ng-class="{'disabled':registro_selecionado==null}" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_alterar_usuario" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</a>
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
 									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
@@ -115,8 +115,9 @@
 									<th class='text-center' style="width: 180px;" ng-click="sortType='first_name';sortReverse=!sortReverse">Nome Completo</th>
 									<th class='text-center' style="width: 180px;" ng-click="sortType='email';sortReverse=!sortReverse">email</th>
 									<th class='text-center' style="width: 100px;" ng-click="sortType='groups';sortReverse=!sortReverse">Grupo</th>
-									<th class='text-center' style="width: 140px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">data de registro</th>
-									<th class='text-center' style="width: 10px;"  ng-click="sortType='is_active';sortReverse=!sortReverse">Status</th>
+									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">data de registro</th>
+									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">data de registro</th>
+									<th class='text-center' style="width: 5px;"  ng-click="sortType='is_active';sortReverse=!sortReverse">Status</th>
 								</tr>
 								</thead>
 
@@ -137,10 +138,14 @@
 										<span ng-if="usuario.groups[0]==2">SUPERVISOR</span>
 										<span ng-if="usuario.groups[0]==3">OPERADOR</span>
 									</td>
-									<td class="text-center" style="width: 140px;">{{ usuario.date_joined|date:'d/M/y'}} ás {{ usuario.date_joined|date:'H:mm'}}</td>
-									<td class="text-center"  style="width: 10px;">
-										<span ng-if="usuario.is_active==false">INATIVO</span>
-										<span ng-if="usuario.is_active==true">ATIVO</span>
+									<td class="text-center" style="width: 90px;">{{ usuario.date_joined|date:'d/M/y'}} ás {{ usuario.date_joined|date:'H:mm'}}</td>
+									<td class="text-center" style="width: 90px;">
+										<span ng-if="usuario.last_login!=none">{{ usuario.last_login|date:'d/M/y'}} ás {{ usuario.last_login|date:'H:mm'}}</span>
+										<span ng-if="usuario.last_login==none">Sem Acesso</span>
+									</td>
+									<td class="text-center"  style="width: 5px;">
+										<span ng-if="usuario.is_active==false" title="Inativo"><i class="fa fa-close" style="color: darkgray" aria-hidden="true"></i></span>
+										<span ng-if="usuario.is_active==true" title="Ativo"><i class="fa fa-check" style="color: green" aria-hidden="true"></i></span>
 									</td>
 								</tr>
 
@@ -149,8 +154,9 @@
 									<td style="width:150px;"></td>
 									<td style="width:180px;"></td>
 									<td style="width: 180px;"></td>
-									<td style="width:140px;"></td>
-									<td style="width:10px;"></td>
+									<td style="width:90px;"></td>
+									<td style="width:90px;"></td>
+									<td style="width:5px;"></td>
 								</tr>
 
 								<tr ng-if="resultado.length == 0">
