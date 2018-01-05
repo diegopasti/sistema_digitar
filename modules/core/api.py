@@ -8,6 +8,7 @@ from libs.default.core import BaseController
 from modules.nucleo.models import Backup
 #from modules.user.models import User
 from sistema_contabil import settings
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium import webdriver
 
 
@@ -132,8 +133,12 @@ class ConfigurationsController(BaseController):
 
     def manager_dropbox(self,request):
         drive = settings.SELENIUM_CHROMEDRIVER
+        binary = FirefoxBinary(settings.MOZILLA_FIREFOX_TEST_PATH)
+        capabilities = webdriver.DesiredCapabilities().FIREFOX
+        capabilities["marionette"] = True
         admin = settings.ADM_DROPBOX
         key = settings.KEY_DROPBOX
+        #browser = webdriver.Firefox(firefox_binary=binary, executable_path=settings.SELENIUM_GECKODRIVER_MOZILLA,capabilities=capabilities)
         browser = webdriver.Chrome(executable_path=str(drive))
         browser.get("https://www.dropbox.com/home/backup")
         list_of_inputs = browser.find_elements_by_xpath("//div/input[starts-with(@id,'pyxl')]")
