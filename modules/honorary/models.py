@@ -1,15 +1,14 @@
 # -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
-
-import datetime
-from decimal import Decimal
-
 from django.contrib.auth.models import User
-from django.db import models
 from modules.entidade.models import entidade
-
 from modules.entidade.formularios import MENSAGENS_ERROS
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import pre_save
 from modules.servico.models import Plano
+from django.db import models
+from decimal import Decimal
+import datetime
 
 
 class Contrato(models.Model):
@@ -26,20 +25,28 @@ class Contrato(models.Model):
     valor_honorario = models.DecimalField("Valor:", max_digits=6, decimal_places=2, null=True,blank=False)
     valor_total = models.DecimalField("Total:", max_digits=8, decimal_places=2, null=True, blank=False)
     dia_vencimento  = models.CharField("Dia do Vencimento",null=True,default=5,max_length=2)
-    data_vencimento = models.DateField("Data de Vencimento",null=True)
+    data_vencimento = models.DateField("Data de Vencimento",null=True,blank=True)
 
-    desconto_temporario = models.DecimalField("Desconto Temporário:", max_digits=5,default=0, decimal_places=2, null=True,blank=True)
-    desconto_temporario_ativo  = models.DecimalField("Desconto Temporário Ativo:", max_digits=5,default=0, decimal_places=2, null=True,blank=True)
+    desconto_temporario = models.DecimalField("Desconto Temporário:", max_digits=10,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
+    desconto_temporario_ativo  = models.DecimalField("Desconto Temporário Ativo:", max_digits=10,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
     desconto_inicio = models.DateField(null=True)
     desconto_fim    = models.DateField(null=True)
 
-    desconto_indicacoes = models.DecimalField("Desconto por Indicações:", max_digits=5, decimal_places=2, default=0, null=True,blank=True)
-    servicos_contratados = models.CharField("Serviços:",null=True,max_length=100)
+    desconto_indicacoes = models.DecimalField("Desconto por Indicações:", max_digits=7, decimal_places=2, default=0, null=True,blank=True)
+    servicos_contratados = models.CharField("Serviços:",null=True,blank=True,max_length=100)
     cadastrado_por = models.ForeignKey(User,  related_name = "cadastrado_por",default=1)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     ultima_alteracao = models.DateTimeField(null=True, auto_now=True)
     alterado_por = models.ForeignKey(User, related_name = "alterado_por",default=1)
     ativo = models.BooleanField(default=True)
+
+    #def save(self, *args, **kwargs):
+    #    self.servicos_contratados = self.plano.servicos
+    #    self.totalizar_honorario()
+    #    super().save(self)
+    #    #    print("SALVEI O CONTRATO!")
+    #    #    models.Model.save(self, *args, **kwargs)
+    #    #    #super(Contrato).save(self, *args, **kwargs)
 
     def serialize(self):
         serialized_values = {}
@@ -51,7 +58,7 @@ class Contrato(models.Model):
         self.desconto_indicacoes = desconto_fidelidade
         desconto_total = Decimal(desconto_temporario)/100 + Decimal(desconto_fidelidade)/100
         self.valor_total = Decimal(self.valor_honorario)*(1-desconto_total)
-        self.save()
+        #self.save()
 
     def calcular_desconto_temporario(self, competencia=None):
         if self.desconto_temporario is not None:
@@ -96,6 +103,13 @@ class Contrato(models.Model):
                         desconto = desconto + item.taxa_desconto
             return desconto
 
+#def pre_save_contract(sender, instance, **kwargs):
+#    instance.servicos_contratados = instance.plano.servicos
+#    instance.totalizar_honorario()
+#    #instance.save()
+#    print("SALVEI O CONTRATO CALCULADO")
+
+#pre_save.connect(pre_save_contract, sender=Contrato)
 
 class Indicacao (models.Model):
     cliente = models.ForeignKey(entidade, related_name = "cliente")
@@ -182,15 +196,22 @@ class Honorary(models.Model):
     def verify_provents_values(self, honorary):
         return honorary
 
-
     def verify_contract_values(self, honorary, contract):
         honorary.contract = contract
-        honorary.initial_value_contract = contract.valor_honorario
-        honorary.temporary_discount = contract.calcular_desconto_temporario(honorary.competence)
-        honorary.fidelity_discount = contract.calcular_desconto_fidelidade()
-        honorary.contract_discount = honorary.temporary_discount + honorary.fidelity_discount
-        honorary.final_value_contract = Decimal(honorary.initial_value_contract)*(1 - (honorary.contract_discount / 100))
-        honorary.total_honorary = honorary.final_value_contract
+        if honorary.contract.ativo:
+            honorary.initial_value_contract = contract.valor_honorario
+            honorary.temporary_discount = contract.calcular_desconto_temporario(honorary.competence)
+            honorary.fidelity_discount = contract.calcular_desconto_fidelidade()
+            honorary.contract_discount = honorary.temporary_discount + honorary.fidelity_discount
+            honorary.final_value_contract = Decimal(honorary.initial_value_contract)*(1 - (honorary.contract_discount / 100))
+            honorary.total_honorary = honorary.final_value_contract
+        else:
+            honorary.initial_value_contract = 0
+            honorary.temporary_discount = 0
+            honorary.fidelity_discount = 0
+            honorary.contract_discount = 0
+            honorary.final_value_contract = Decimal(0)
+            honorary.total_honorary = Decimal(0)
         return honorary
 
     """

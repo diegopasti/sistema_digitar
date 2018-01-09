@@ -11,13 +11,17 @@ def validate_formulary(view):
         form.request = request
         if not form.is_valid():
             if 'id' in request.POST:
+                print("VOU PEGAR O OBJETO QUE JA EXISTE")
                 controller.object = form.get_object(int(request.POST['id']))
             else:
+                print("VOU CRIRA UM OBJETO")
                 controller.object = form.get_object()
         else:
             if 'id' in request.POST:
+                print("FORM VALID: VOU PEGAR O OBJETO QUE JA EXISTE")
                 controller.object = form.get_object(int(request.POST['id']))
             else:
+                print("FORM VALID: CRIAR OBJETO")
                 controller.object = form.get_object()
 
         if hasattr(controller.object,'cadastrado_por'): controller.object.cadastrado_por = request.user

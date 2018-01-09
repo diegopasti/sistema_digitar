@@ -75,8 +75,17 @@ class Notify:
                         result = metodo()
                     else:
                         result = metodo
+
                 else:
-                    result = ''
+                    if "__" in item:
+                        related_field_parts = item.split("__")
+                        related_field = object
+                        for element in related_field_parts:
+                            related_field = getattr(related_field, element, None)
+                        result = related_field
+                    else:
+                        result = ''
+
                 response_model[item] = result
         response_model['id'] = object.id
         response_model['selected'] = ''
@@ -173,16 +182,18 @@ class BaseController(Notify):
 
     @request_ajax_required
     @validate_formulary
-    def save(self, request, formulary=None):
+    def save(self, request, formulary=None, extra_fields=None, is_response=True):
         if self.full_exceptions == {}:
-            response_dict = self.execute(self.object, self.object.save)
+            response_dict = self.execute(self.object, self.object.save, extra_fields)
         else:
             response_dict = self.notify.error(self.full_exceptions)
-        return self.response(response_dict)
+        if is_response:
+            return self.response(response_dict)
+        else:
+            return response_dict
 
     @request_ajax_required
     def filter(self, request, model, queryset=None, order_by="-id", list_fields=None, limit=None, extra_fields=None):
-        print("DENTRO DO CORE: ",request.user)
         if queryset is None:
             model_list = model.objects.all().order_by(order_by)
         else:
@@ -197,31 +208,29 @@ class BaseController(Notify):
         return self.response(response_dict)
 
     @request_ajax_required
-    def object(self, request, model):
-        """
-        if queryset is None:
-            model_list = model.objects.all().order_by(order_by)
-        else:
-            model_list = queryset
+    def object(self, request,model, pk, extra_fields=None, is_response=False):
+        try:
+            object = model.objects.get(pk=pk)
+            response_dict = self.notify.success(object, extra_fields=extra_fields)
+        except Exception as erro:
+            response_dict = self.notify.error(erro)
 
-        if limit is not None:
-            model_list = model_list.limit(limit)
-        response_dict = {}
-        response_dict['result'] = True
-        response_dict['object'] = self.notify.datalist(model_list, list_fields, extra_fields)
-        response_dict['message'] = str(len(self.notify.datalist(model_list, list_fields)))+" Registros carregados com sucesso!"
-        """
-        response_dict = {}
-        return self.response(response_dict)
+        if is_response:
+            return self.response(response_dict)
+        else:
+            return response_dict
 
     @request_ajax_required
     @validate_formulary
-    def update(self, request, formulary):
+    def update(self, request, formulary, extra_fields=None, is_response=True):
         if self.full_exceptions == {}:
-            response_dict = self.execute(self.object, self.object.save)
+            response_dict = self.execute(self.object, self.object.save, extra_fields)
         else:
             response_dict = self.notify.error(self.full_exceptions)
-        return self.response(response_dict)
+        if is_response:
+            return self.response(response_dict)
+        else:
+            return response_dict
 
     @request_ajax_required
     def delete(self, request, model, object_id):
@@ -253,7 +262,6 @@ class BaseController(Notify):
             self.report_operation(request, model)
         return self.response(response_dict)
 
-
     def report_operation(self, request, model):
         operation = RestrictedOperation()
         operation.user = request.user
@@ -265,14 +273,10 @@ class BaseController(Notify):
         operation.save()
         return
 
-
-
-
-
-    def execute(self, object, action):
+    def execute(self, object, action, extra_fields=None):
         try:
             action()
-            response_dict = self.notify.success(object)
+            response_dict = self.notify.success(object, extra_fields=extra_fields)
         except Exception as e:
             response_dict = self.notify.error(e)
         return response_dict
@@ -287,7 +291,6 @@ class BaseController(Notify):
                 object.full_clean()
 
             except Exception as exception:
-                print("DEU ERRO: ",exception)
                 self.model_exceptions = exception.message_dict
 
         self.full_exceptions = {}
@@ -296,8 +299,8 @@ class BaseController(Notify):
         else:
             self.form_exceptions = {}
 
-        print("FORM EXCEPTIONS: ", self.form_exceptions)
-        print("MODEL EXCEPTIONS: ", self.model_exceptions)
+        #print("FORM EXCEPTIONS: ", self.form_exceptions)
+        #print("MODEL EXCEPTIONS: ", self.model_exceptions)
 
         self.full_exceptions.update(self.model_exceptions)
         self.full_exceptions.update(self.form_exceptions)
@@ -343,7 +346,6 @@ class BaseController(Notify):
         data = json.dumps(response_dict, default=json_serial)
         data = data.replace('RESPONSE_SIZE', str(sys.getsizeof(data) - 16))
         response = HttpResponse(data)  # after generate response noramlization reduce size in 16 bytes
-
         return response
 
     def filter_request(self, request, formulary=None):
@@ -362,6 +364,8 @@ class BaseController(Notify):
 
 class BaseForm:
 
+    model = None
+
     def format_validate_response(self):
         response_errors = {}
         if self.errors:
@@ -378,6 +382,7 @@ class BaseForm:
     def get_object(self, object_id=None):
         if object_id is not None:
             object = self.model.objects.get(pk=int(object_id))
+            print("ATUALIZAR DESCONTO DE: ",object.desconto_temporario)
         else:
             object = self.model()
 
@@ -395,7 +400,8 @@ class BaseForm:
                             value = field.to_python(self.data[attribute])
                         else:
                             value = None
-                    else:
-                        value = int(self.data[attribute])
-                setattr(object, attribute, value)
+                        setattr(object, attribute, value)
+                    #else:
+                    #    pass #value = int(self.data[attribute])
+
         return object

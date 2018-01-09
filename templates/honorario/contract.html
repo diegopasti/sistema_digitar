@@ -160,20 +160,18 @@ table th{
 						<h5 class="box-title">Contratos</h5>
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
-								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="load_fields();">Contrato</a>
+								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="open_contract();">Contrato</a>
 								<a href="#" id='bt_servicos' role="button" class="btn btn-sm btn-default" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]"  data-toggle="modal" data-target="#modal_servicos" ng-click="carregar_servicos_contratados();" style='margin-left: 5px;'>Serviços</a>
 								<!--<a href="#" role="button" id="bt_consultar_cliente" class="btn btn-sm btn-default pull-left desabilitado" style='margin-left: 5px;'><i class="fa fa-pencil-square-o fa-1x"></i> Editar</a>-->
 								<a href="#" id='bt_indicacoes' role="button" class="btn btn-sm btn-default pull-left" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" data-toggle="modal" data-target="#modal_indicacoes" ng-click="carregar_indicacao()" style='margin-left: 5px;'> Indicações</a>
 
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
-									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" ng-disabled="registro_selecionado==null" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right">
-										<li><a href="#">Action</a></li>
-										<li><a href="#">Another action</a></li>
-										<li><a href="#">Something else here</a></li>
-										<li role="separator" class="divider"></li>
-										<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>
+										<!--<li role="separator" class="divider"></li>-->
+										<li><a ng-click="">Encerrar Contrato</a></li>
+										<!--<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>-->
 									</ul>
 								</div>
 							</div>
@@ -203,9 +201,9 @@ table th{
 
 											<th class='center' ng-hide='screen0 || screen1 || screen2 || screen3' ng-click="sortType = 'descontos'; sortReverse = !sortReverse">Desc (%)</th>
 
-											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Ult. Alteração</th>
-
 											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Total (R$)</th>
+
+											<th class='center' ng-hide='screen0 || screen1 || screen2' ng-click="sortType = 'plano'; sortReverse = !sortReverse" >Ult. Alteração</th>
 										</tr>
 									</thead>
 
@@ -215,7 +213,7 @@ table th{
 										</tr>
 
 										<tr ng-if="contratos_carregados == false">
-											<td colspan="8" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
+											<td colspan="9" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
 												Aguarde.. Carregando...<br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
 											</td>
 										</tr>
@@ -230,41 +228,41 @@ table th{
 											</td>
 
 											<td ng-hide='screen0 || screen1' ng-class="{true:'left', false:'center'}[contrato.plano=='']">
-												<span ng-if="contrato.plano">{{ contrato.plano }}</span>
-												<span ng-if="!contrato.plano"></span>
+												<span ng-if="contrato.contrato!=null">{{ contrato.contrato.plano__nome }}</span>
+												<span ng-if="contrato.contrato==null"></span>
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{true:'left', false:'center'}[contrato.contrato.vigencia_inicio=='']" style="width: 80px;">
 												<span ng-if="contrato.contrato.vigencia_inicio">{{ contrato.contrato.vigencia_inicio| date: 'dd/MM/yyyy' }}</span>
-												<span ng-if="!contrato.plano"></span>
+												<span ng-if="contrato.contrato==null"></span>
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{true:'left', false:'center'}[contrato.contrato.vigencia_fim=='']" style="width: 80px;">
 												<span ng-if="contrato.contrato.vigencia_fim">{{ contrato.contrato.vigencia_fim | date: 'dd/MM/yyyy' }}</span>
-												<span ng-if="!contrato.plano"></span>
+												<span ng-if="contrato.contrato==null"></span>
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'right': contrato.contrato.valor_honorario, 'center': !contrato.plano  }" style="width: 130px;">
 												<span ng-if="contrato.contrato.valor_honorario">{{ contrato.contrato.valor_honorario | currency:"" }}</span>
-												<span ng-if="!contrato.plano"></span>
+												<span ng-if="contrato.contrato==null"></span>
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 80px;">
-												<span ng-if="contrato.plano" title="Desconto Temporário: {{ contrato.contrato.desconto_temporario_ativo }}% disponivel de {{ contrato.contrato.desconto_temporario }}% concedido e Desconto Fidelidade: {{ contrato.contrato.desconto_indicacoes }}%">
+												<span ng-if="contrato.contrato!=null" title="Desconto Temporário: {{ contrato.contrato.desconto_temporario_ativo }}% disponivel de {{ contrato.contrato.desconto_temporario }}% concedido e Desconto Fidelidade: {{ contrato.contrato.desconto_indicacoes }}%">
 													{{ contrato.contrato.desconto_temporario_ativo -- contrato.contrato.desconto_indicacoes }}</span>
-												<span ng-if="!contrato.plano"></span>
+												<span ng-if="contrato.contrato==null"></span>
 											</td>
 
-											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 90px;" title="Atualizado {{ contrato.contrato.ultima_alteracao| date: 'dd/MM/yyyy' }} às {{ contrato.contrato.ultima_alteracao| date: 'HH:mm:ss' }}">
-												<span ng-if="contrato.plano" >
+											<td ng-hide='screen0 || screen1 || screen2' class="text-right" style="width: 130px;">
+												<span ng-if="contrato.contrato!=null">{{ contrato.contrato.valor_total | currency:"" }}</span>
+												<span ng-if="contrato.contrato==null"></span>
+											</td>
+
+											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 90px;">
+												<span ng-if="contrato.contrato!=null" title="Atualizado {{ contrato.contrato.ultima_alteracao| date: 'dd/MM/yyyy' }} às {{ contrato.contrato.ultima_alteracao| date: 'HH:mm:ss' }}">
 													{{ contrato.contrato.ultima_alteracao| date: 'dd/MM/yyyy' }}
 												</span>
-												<span ng-if="!contrato.plano"></span>
-											</td>
-
-											<td ng-hide='screen0 || screen1 || screen2' ng-class="{'right': contrato.plano, 'center':!contrato.plano }" style="width: 130px;">
-												<span ng-if="contrato.plano">{{ contrato.contrato.valor_total | currency:"" }}</span>
-												<span ng-if="!contrato.plano"></span>
+												<span ng-if="contrato.contrato==null"></span>
 											</td>
 										</tr>
 
@@ -276,8 +274,8 @@ table th{
 											<td class='center' style="width: 80px;"></td>
 											<td class='right' style="width: 130px;"></td>
 											<td class='center' style="width: 80px;"></td>
-											<td class='center' style="width: 90px;"></td>
 											<td class='right' style="width: 130px;"></td>
+											<td class='center' style="width: 90px;"></td>
 										</tr>
 
 										<tr ng-if="resultado.length === 0 && (contratos|filter:filterIds()).length > 0">
@@ -323,21 +321,21 @@ table th{
 
 	<div id="modal_adicionar_contrato" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 70%">
-			<!--  > -->
+
 			<form id="form_adicionar_contrato" method="post" novalidate autocomplete="off" ng-submit="esta_adicionando? adicionar_contrato() : alterar_contrato()">
 				{% csrf_token %}
 				<div class="modal-content">
 
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h5 id="titulo_modal_adicionar_contrato" style="font-weight: bold">Definir Contrato</h5>
+						<h5 id="titulo_modal_adicionar_contrato" style="font-weight: bold">Definir Contrato {% verbatim %}ESTA ADICIONANDO: {{ esta_adicionando }}{% endverbatim %}</h5>
 					</div>
 
 					<div class="modal-body" style="padding: 35px;padding-top: 10px;">
 
 						<div class="row no-gutter fluid">
 							<div class="col-md-3 col-xs-12 col-sm-12">
-								<div class="form-group">
+								<div class="form-group field" id="field_tipo_cliente">
 									<sub><label>{{ formulario_contrato.tipo_cliente.label }}</label></sub>
 										<div id="select_tipo_cliente" style="border-radius: 4px;">
 											{{ formulario_contrato.tipo_cliente }}
@@ -346,7 +344,7 @@ table th{
 							</div>
 
 							<div class="col-md-3 col-xs-12 col-sm-12">
-								<div class="form-group">
+								<div class="form-group field" id="field_plano">
 									<sub><label>{{ formulario_contrato.plano.label }}</label></sub>
 										<div id="select_plano" style="border-radius: 4px;">
 											{{ formulario_contrato.plano }}
@@ -357,16 +355,16 @@ table th{
 
 						<hr>
 
-						<div class="row no-gutter  fluid">
+						<div class="row no-gutter fluid">
 							<div class="col-md-2 col-xs-12 col-sm-6">
-								<div class="form-group">
+								<div class="form-group field" id="field_vigencia_inicio">
 									<sub><label>{{ formulario_contrato.vigencia_inicio.label }}</label></sub>
 									{{ formulario_contrato.vigencia_inicio }}
 								</div>
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-6">
-								<div class="form-group">
+								<div class="form-group field" id="field_vigencia_fim">
 									<sub><label>{{ formulario_contrato.vigencia_fim.label }}</label></sub>
 									{{ formulario_contrato.vigencia_fim }}
 									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
@@ -374,7 +372,7 @@ table th{
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-4">
-								<div class="form-group">
+								<div class="form-group field" id="field_tipo_vencimento">
 									<sub><label>{{ formulario_contrato.tipo_vencimento.label }}</label></sub>
 									<div id="select_tipo_vencimento" style="border-radius: 4px;">
 										{{ formulario_contrato.tipo_vencimento }}
@@ -383,7 +381,7 @@ table th{
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-4">
-								<div class="form-group" id="group_dia_vencimento">
+								<div class="form-group field" id="field_dia_vencimento">
 									<sub><label>{{ formulario_contrato.dia_vencimento.label }}</label></sub>
 									<div id="select_dia_vencimento" style="border-radius: 4px;">
 										{{ formulario_contrato.dia_vencimento }}
@@ -392,14 +390,14 @@ table th{
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-4">
-								<div class="form-group" id="group_data_venvimento">
+								<div class="form-group field" id="field_data_venvimento">
 									<sub><label>{{ formulario_contrato.data_vencimento.label }}</label></sub>
 									{{ formulario_contrato.data_vencimento }}
 								</div>
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-12">
-								<div class="form-group" >
+								<div class="form-group field" id="field_tipo_honorario">
 									<sub><label>{{ formulario_contrato.tipo_honorario.label }}</label></sub>
 									<div id="select_tipo_honorario" style="border-radius: 4px;">
 										{{ formulario_contrato.tipo_honorario }}
@@ -410,21 +408,21 @@ table th{
 
 						<div class="row no-gutter">
 							<div class="col-md-2 col-xs-12">
-								<div class="form-group" id="group_taxa_honorario">
+								<div class="form-group field" id="field_taxa_honorario">
 									<sub><label>{{ formulario_contrato.taxa_honorario.label }}</label></sub>
 									{{ formulario_contrato.taxa_honorario }}
 								</div>
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-4">
-								<div class="form-group" id="group_valor_honorario">
+								<div class="form-group field" id="field_valor_honorario">
 									<sub><label>{{ formulario_contrato.valor_honorario.label }}</label></sub>
 									{{ formulario_contrato.valor_honorario }}
 								</div>
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-6">
-								<div class="form-group">
+								<div class="form-group field" id="field_desconto_inicio">
 									<sub><label>{{ formulario_contrato.desconto_inicio.label }}</label></sub>
 									{{ formulario_contrato.desconto_inicio }}
 									<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
@@ -432,14 +430,14 @@ table th{
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-6">
-								<div class="form-group">
+								<div class="form-group field" id="field_desconto_fim">
 									<sub><label>{{ formulario_contrato.desconto_fim.label }}</label></sub>
 									{{ formulario_contrato.desconto_fim }}
 								</div>
 							</div>
 
 							<div class="col-md-2 col-xs-12 col-sm-6">
-								<div class="form-group">
+								<div class="form-group field" id="field_desconto_temporario">
 									<sub><label>{{ formulario_contrato.desconto_temporario.label }}</label></sub>
 									{{ formulario_contrato.desconto_temporario }}
 								</div>
@@ -449,9 +447,9 @@ table th{
 								<style>
 									#total[type="text"]:disabled{background-color: #fff;border: hidden; text-align: right;border-bottom: 1px solid #cccccc; border-top: 0px;box-shadow:0 0px 0px #fff}
 								</style>
-								<div class="form-group" id="group_total">
-									<sub><label>{{ formulario_contrato.total.label }}</label></sub>
-									{{ formulario_contrato.total }}
+								<div class="form-group field" id="field_valor_total">
+									<sub><label>{{ formulario_contrato.valor_total.label }}</label></sub>
+									{{ formulario_contrato.valor_total }}
 								</div>
 							</div>
 						</div>
@@ -494,7 +492,7 @@ table th{
 							{% verbatim %}
 
 							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style="padding-left: 5px; padding-top: 15px;">
-								<div class="form-group">
+								<div class="form-group field">
 									<button type="submit" id="bt_adicionar_indicacao" class="btn btn-sm btn-primary " data-toggle="modal" style="width: 100px;">
 										<span ng-if="indicacao_selecionada != null">Salvar</span>
 										<span ng-if="indicacao_selecionada == null">Adicionar</span>
@@ -503,7 +501,7 @@ table th{
 							</div>
 
 							<div class="col-lg-3 col-md-3 col-sm-2 col-xs-12 pull-right" style="padding-left: 5px; padding-top: 15px;">
-								<div class="form-group pull-right">
+								<div class="form-group field pull-right">
 									<button type="button" id="bt_desativar_indicacao" ng-hide="indicacao_selecionada == null" ng-disabled="indicacao_selecionada == null" class="btn btn-sm btn-default" ng-click="ativar_desativar_indicacao(indicacao_selecionada, $event)" style="width: 100px;">
 										<span ng-if="indicacao_selecionada.indicacao_ativa == true">Desativar</span>
 										<span ng-if="indicacao_selecionada.indicacao_ativa == false">Ativar</span>
