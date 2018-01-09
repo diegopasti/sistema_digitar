@@ -86,8 +86,8 @@ class entidade(models.Model):
     notificacao_responsavel = models.CharField("Nome do Responsável:", max_length=100, null=True, blank=True, unique=False, error_messages=MENSAGENS_ERROS)
 
     """ Responsabilidade e Supervisao pelo Cliente """
-    responsavel_cliente = models.ForeignKey("self", related_name='respondido_por', null=True, error_messages=MENSAGENS_ERROS)
-    supervisor_cliente = models.ForeignKey("self", related_name='supervisionado_por', null=True, error_messages=MENSAGENS_ERROS)
+    responsavel_cliente = models.ForeignKey(User, related_name='respondido_por', null=True, error_messages=MENSAGENS_ERROS)
+    supervisor_cliente = models.ForeignKey(User, related_name='supervisionado_por', null=True, error_messages=MENSAGENS_ERROS)
 
     """ preenchimento automatico """
     data_cadastro = models.DateTimeField(null=True, auto_now_add=True)
@@ -133,7 +133,7 @@ class Documento(models.Model):
     finalizado = models.BooleanField("Finalizado:", default=False)
     data_finalizado = models.DateTimeField(null=True)
 
-    criado_por = models.ForeignKey(entidade, related_name='criado_por', null=True)
+    criado_por = models.ForeignKey(User, related_name='criado_por', null=True)
     finalizado_por = models.ForeignKey(entidade, related_name='finalizado_por', null=True)
 
     notificar_cliente = models.BooleanField("Notificar Cliente:", default=False)

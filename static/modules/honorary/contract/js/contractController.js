@@ -94,10 +94,17 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			type: "GET",
 				url: "/api/contract/lista_contratos",
 				success: function (data) {
-					$scope.contratos = JSON.parse(data).object;//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
-					$scope.contratos_carregados = true;
-					$scope.$apply();
-					$scope.reajustar_tela();
+					try{
+						$scope.contratos = JSON.parse(data).object;//Object.keys(data).map(function(_) { return data[_]; }) //_(data).toArray();
+						$scope.contratos_carregados = true;
+						$scope.$apply();
+						$scope.reajustar_tela();
+					}
+					catch(err){
+						if(data.indexOf('ERRO403')!= -1){
+							error_notify(null,"Operação não autorizada","Contratos disponiveis apenas no nível Administrativo.");
+						}
+					}
 				},
 				failure: function (data) {
 					$scope.contratos = [];

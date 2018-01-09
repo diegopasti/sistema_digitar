@@ -144,6 +144,5 @@ urlpatterns = [
     # User Administration
     url(r'session_security/', include('session_security.urls')),
     url(r'error/access_denied',core_views.access_denied),
-    url(r'filter/', UserController.filter_users),
 
 ]

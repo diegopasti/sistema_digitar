@@ -142,13 +142,13 @@ legend {
 </style>
 {% endblock %}
 
-{% block breadcrumb_title %}Novo Registro{% endblock %}
+<!--{ block breadcrumb_title %}Novo Registro{ endblock %}
 
-{% block breadcrumb_block %}
+{ block breadcrumb_block %}
 <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
 <li><a href="/entidade">Clientes</a></li>
 <li class="active">Novo Registro</li>
-{% endblock %}
+{ endblock %}-->
 {% block conteudo %}
 
 <form action="" method="post" autocomplete="off">
@@ -1023,16 +1023,10 @@ function substituir_valor_nulo(valor){
 			/*{tipo_contato:'Jon', numero_contato: 30, cargo_setor: 'Developer'},
 					{tipo_contato:'Mike', numero_contato: 37, cargo_setor: 'Manager'},
 					{tipo_contato:'Allen', numero_contato: 50, cargo_setor: 'CEO'}
-					];*/
+					];
+			*/
 
-			$scope.editar_documento = function(index){
-					$('#tipo_documento').val($scope.documentos[index].tipo_documento);
-					$('#documento').val($scope.documentos[index].documento);
-					$('#documento_vencimento').val($scope.documentos[index].documento_vencimento);
-					$('#documento_senha').val($scope.documentos[index].documento_senha);
 
-					$scope.excluir_documento(index);
-			}
 
 			$scope.get_salario_vigente = function(){
 				$.ajax({
@@ -1050,15 +1044,13 @@ function substituir_valor_nulo(valor){
 			}
 
 			$scope.adicionar_documento = function(){
-					//alert("Veja os dados: "+$scope.tipo_documento+" - "+$scope.documento+" - "+$scope.documento_vencimento+" - "+$scope.documento_senha);
-
 					var notificar_cliente = $("#notificar_cliente").val();
 					var prazo_notificacao = $("#prazo_notificacao").val();
 
 					var documento = {
 							tipo_documento: substituir_valor_nulo($scope.tipo_documento),
 							documento: substituir_valor_nulo($scope.documento),
-							documento_vencimento: substituir_valor_nulo($scope.documento_vencimento),
+							documento_vencimento: substituir_valor_nulo($("#documento_vencimento").val()),
 							documento_senha: substituir_valor_nulo($scope.documento_senha),
 							notificar_cliente: notificar_cliente,
 							prazo_notificacao: prazo_notificacao
@@ -1095,6 +1087,15 @@ function substituir_valor_nulo(valor){
 
 			};
 
+			$scope.editar_documento = function(index){
+					$('#tipo_documento').val($scope.documentos[index].tipo_documento);
+					$('#documento').val($scope.documentos[index].documento);
+					$('#documento_vencimento').val($scope.documentos[index].documento_vencimento);
+					$('#documento_senha').val($scope.documentos[index].documento_senha);
+
+					$scope.excluir_documento(index);
+			}
+
 			$scope.excluir_documento = function(index){
 					$scope.documentos.splice(index, 1);
 
@@ -1111,7 +1112,6 @@ function substituir_valor_nulo(valor){
 							registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
 					}
 
-					alert("Veja:"+registro_temporario);
 					$('#tabela_documentos').val(registro_temporario);
 			};
 

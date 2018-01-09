@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary
 from modules.honorary.forms import FormContrato, FormProventos
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from libs.default.decorators import request_ajax_required
 from django.utils.decorators import method_decorator
 from modules.servico.models import Plano, Servico
@@ -113,6 +113,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_required('contrato.add_user',raise_exception=True))
     def get_lista_contratos(self, request):
         lista_clientes = entidade.objects.all().exclude(pk=1).order_by('-pk')
         response_dict = []
@@ -541,8 +542,8 @@ class ProventosController(BaseController):
 
     #never_cache - Para usar esse decorador precisamos usar esse metodo com o self e consequentemente instancia-lo no urls.
     @method_decorator(login_required)
+    #method_decorator(permission_required('user.can_add'))
     def filter_provents(self,request):
-        cache_page = cache.has_key(request.get_raw_uri())
         return BaseController().filter(request, Proventos, queryset=Proventos.objects.filter(is_active=True).order_by('-id'))
 
     #login_required

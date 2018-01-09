@@ -5,6 +5,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect
@@ -652,10 +653,13 @@ def visualizar_entidade(request,id):
             cliente.dia_vencimento_iss = formulario.cleaned_data['dia_vencimento_iss']
             cliente.taxa_iss = formulario.cleaned_data['taxa_iss']
 
-            cliente.responsavel_cliente = entidade.objects.get(pk=int(formulario.cleaned_data['responsavel_cliente']))
-            cliente.supervisor_cliente = entidade.objects.get(pk=int(formulario.cleaned_data['supervisor_cliente']))
+            cliente.responsavel_cliente = formulario.cleaned_data['responsavel_cliente']
+            cliente.supervisor_cliente = formulario.cleaned_data['supervisor_cliente']
 
-            cliente.observacoes = formulario.cleaned_data['observacoes']
+            cliente.notificacao_email = formulario.cleaned_data['notificacao_email'].lower()
+            cliente.notificacao_responsavel = formulario.cleaned_data['notificacao_responsavel'].upper()
+            cliente.notificacao_envio = formulario.cleaned_data['notificacao_envio']
+            cliente.observacoes = formulario.cleaned_data['observacoes'].upper()
 
             endereco.cep         = formulario.cleaned_data['cep']
             endereco.codigo_ibge = formulario.cleaned_data['codigo_municipio']
@@ -750,12 +754,20 @@ def visualizar_entidade(request,id):
                     dados = item.split("|")
 
                     if "+" in dados[0]:
+                        print("VEJA OS DADOS: ",dados)
                         registro = Documento()
                         registro.tipo = dados[1]
                         registro.nome = dados[2]
                         registro.senha = dados[4]
-                        registro.notificar_cliente = dados[5]
+                        if dados[5] == "SIM":
+                            registro.notificar_cliente = True
+                        else:
+                            registro.notificar_cliente = False
                         registro.prazo_notificar = dados[6]
+                        registro.criado_por = request.user
+                        #registro.vencimento = dados
+
+
                         registro.entidade = cliente
 
                         try:
@@ -872,7 +884,7 @@ def visualizar_entidade(request,id):
                           'erro': False},
                           )
 
-@method_decorator(login_required)
+@login_required
 def adicionar_entidade(request):
     if (request.method == "POST"):
         print("VEJA O QUE VEIO: ",request.POST)

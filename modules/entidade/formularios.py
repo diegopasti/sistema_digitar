@@ -7,6 +7,8 @@ Created on 2 de set de 2015
 
 import datetime
 from django import forms
+from django.contrib.auth.models import User
+
 from modules.entidade.models import entidade, localizacao_simples, contato, Documento, AtividadeEconomica
 from modules.entidade.utilitarios import remover_simbolos
 
@@ -99,6 +101,7 @@ def get_object_documentos(argumentos,formulario):
 
     if documentos != "":
         documentos = documentos.split("#")
+        print("VEJA OS DOCUMENTOS: ",documentos)
         for item in documentos:
             item = item.replace("undefined", "")
             dados = item.split("|")
@@ -154,14 +157,12 @@ def get_object_entidade(argumentos,formulario):
     registro.dia_vencimento_iss  = formulario.cleaned_data['dia_vencimento_iss']
     registro.taxa_iss            = formulario.cleaned_data['taxa_iss']
 
-    registro.responsavel_cliente = entidade.objects.get(pk=int(formulario.cleaned_data['responsavel_cliente']))
-    registro.supervisor_cliente  = entidade.objects.get(pk=int(formulario.cleaned_data['supervisor_cliente']))
+    registro.responsavel_cliente = formulario.cleaned_data['responsavel_cliente']
+    registro.supervisor_cliente  = formulario.cleaned_data['supervisor_cliente']
 
     registro.notificacao_email = formulario.cleaned_data['notificacao_email']
     registro.notificacao_responsavel = formulario.cleaned_data['notificacao_responsavel']
     registro.notificacao_envio = formulario.cleaned_data['notificacao_envio']
-
-
     registro.observacoes = formulario.cleaned_data['observacoes']
     return registro
 
@@ -337,15 +338,13 @@ class formulario_cadastro_entidade_completo(forms.Form):
     taxa_iss = forms.DecimalField("Taxa:",max_digits=5, decimal_places=2,required=False,
                                   widget=forms.TextInput(attrs={'class': "form-control", 'id': 'taxa_iss'}))
 
-    opcoes_responsaveis = (('1', 'MARCELO BORGUINGNON'), ('2', 'DIEGO PASTI'))
-
-    responsavel_cliente = forms.ChoiceField(label="Responsável:", required=False, choices=opcoes_responsaveis,
+    responsavel_cliente = forms.ModelChoiceField(label="Responsável:", required=False, queryset=User.objects.filter(is_active=True),
                                    widget=forms.Select(attrs={
                                        'class': "form-control uppercase",
                                        'id': 'responsavel_cliente'
                                    }))
 
-    supervisor_cliente = forms.ChoiceField(label="Supervisor:", required=False,choices=opcoes_responsaveis,
+    supervisor_cliente = forms.ModelChoiceField(label="Supervisor:", required=False,queryset=User.objects.filter(is_active=True),
                                      widget=forms.Select(attrs={
                                          'class': "form-control uppercase",
                                          'id': 'supervisor_cliente'
