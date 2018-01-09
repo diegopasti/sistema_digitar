@@ -211,6 +211,10 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		data_paramters['id'] = $scope.registro_selecionado.contrato.id;
 
 		function validate_function () {
+			if($scope.registro_selecionado.contrato.ativo==false){
+				warning_notify(null,"Atenção","Contrato do cliente "+$scope.registro_selecionado.cliente_nome+" já foi encerrado.");
+				return false;
+			}
 			confirmation = confirm("Atenção! Deseja mesmo finalizar o contrato?");
 			if(confirmation==true){
 				return true;
