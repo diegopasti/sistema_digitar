@@ -183,12 +183,16 @@ class BaseController(Notify):
     @request_ajax_required
     def filter(self, request, model, queryset=None, order_by="-id", list_fields=None, limit=None, extra_fields=None):
         if queryset is None:
-            model_list = model.objects.all().order_by(order_by)
+            if limit is not None:
+                model_list = model.objects.all().order_by(order_by)[:limit]
+            else:
+                model_list = model.objects.all().order_by(order_by)
+
         else:
             model_list = queryset
 
-        if limit is not None:
-            model_list = model_list.limit(limit)
+        print(model_list, len(model_list))
+
         response_dict = {}
         response_dict['result'] = True
         response_dict['object'] = self.notify.datalist(model_list, list_fields, extra_fields)

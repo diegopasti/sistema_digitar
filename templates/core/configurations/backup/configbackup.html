@@ -62,7 +62,7 @@
 										<h5 class="box-title">Controle de Backup</h5>
 
 										<div class="pull-right">
-											<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup()"> Criar Backup</a>
+											<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup_local()"> Criar Backup</a>
 											<a href="#" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="restore_backups()"> Restaurar Backup</a>
 										</div>
 									</div>
@@ -130,7 +130,7 @@
 
 																			<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
 																				<div class="left" style="left: 0px;">Arquivos armazenados: <span ng-show="loaded_backups == true">{{ backups_informations.total_files }} itens</span></div>
-																				<div class="left" style="left: 0px;">Espaço Utilizado: <span ng-show="loaded_backups == true">{{ backups_informations.used_space| number: 2 }} Kb</span></div>
+																				<div class="left" style="left: 0px;">Espaço Utilizado: <span ng-show="loaded_backups == true">{{ backups_informations.used_space/1024| number: 2 }} Kb</span></div>
 																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
 																				<!--<div class="pull-left">Plano de Armazenamento: Básico</div>
 																				<div class="pull-left">Agendamento de Backups: Diário - 00:00</div>
@@ -141,7 +141,7 @@
 																			<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
 																				<!--<div class="pull-right" ><a href="{{ shared_informations.folder_link }}" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-default" > Gerenciar Armazenamento</a></div>-->
 																				<!--<a href="#" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#" ng-click="manager_dropbox()"> Gerenciar Armazenamento</a>-->
-																				<a href="#" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#" ng-click="blocking_page()"> Gerenciar Armazenamento</a>
+																				<!--<a href="#" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#" ng-click="manager_dropbox()"> Gerenciar Armazenamento</a>-->
 																				<!--<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }} Kb</div>
 																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
 																				<div class="pull-left">Plano de Armazenamento: Básico</div>
@@ -180,8 +180,8 @@
 															</tr>
 
 															<tr class="list-unstyled" ng-show="loaded_backups == true" ng-repeat="item in backups">
-																<td><span class="pull-left" style="">{{ item.file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{ item.size }} Kb</span></span></td>
-																<td><span>{{ item.client_modified| date:'dd/MM/yyyy' }} ás {{ item.client_modified| date:'HH:mm' }}</span></td>
+																<td><span class="pull-left" style="">{{ item.backup_file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{item.backup_size/1024| number:2}} Kb</span></span></td>
+																<td><span>{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span></td>
 															</tr>
 														</table>
 													</div>
@@ -218,6 +218,7 @@
 <script src="{% static 'modules/core/mask.js' %}"></script>
 <script src="{% static 'modules/core/configurations/configurations_controller.js' %}"></script>
 <script src="{% static 'modules/core/configurations/configurations.js' %}"></script>
+
 {% endcompress %}
 
 <script type="text/javascript">
