@@ -2,13 +2,15 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from modules.entidade.formularios import formulario_justificar_operacao
-from modules.honorary.forms import FormContrato, FormIndicacao, FormProventos
+from modules.honorary.forms import FormContrato, FormIndicacao, FormProventos, FormHonoraryItem
+
 
 @login_required
 def honorary_page(request):
     form_contrato = FormContrato()
     form_indicacao = FormIndicacao()
-    return render(request,"honorario/honorary/honorary.html",{'formulario_contrato':form_contrato, 'formulario_indicacao':form_indicacao})
+    form_honorary_item = FormHonoraryItem()
+    return render(request,"honorario/honorary/honorary.html",{'formulario_contrato':form_contrato, 'formulario_indicacao':form_indicacao, 'formulario_proventos':form_honorary_item})
 
 @login_required
 def proventos_page(request):

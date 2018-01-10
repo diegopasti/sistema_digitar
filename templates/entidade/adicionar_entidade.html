@@ -1117,7 +1117,7 @@ function substituir_valor_nulo(valor){
 
 
 			$scope.salvar_entidade = function(dados){
-					alert("acho que é isso"+dados);
+					//alert("acho que é isso"+dados);
 			}
 
 			$scope.adicionar_atividade = function(){
@@ -1315,11 +1315,8 @@ function substituir_valor_nulo(valor){
 		});
 	});
 
-
-
 	$(function() {
 		$('#tipo_vencimento').change(function() {
-		alert("tem que ajeitar");
 			if(this.value == "VARIAVEL"){
 				habilitar_campo("dia_vencimento_iss");
 				habilitar_campo("taxa_iss");
@@ -1684,7 +1681,7 @@ $('#codigo_postal').blur(function(){
     }
 
     /*$(".numbers_only").keydown(function( event ) {
-        alert("Olha ai primeiro: "+event);
+        //alert("Olha ai primeiro: "+event);
         //if ( event.which == 13 ) {
         //    event.preventDefault();
         //}
@@ -1703,13 +1700,11 @@ $('#codigo_postal').blur(function(){
 <script>
 	$("#tipo_vencimento").val('{{ formulario_entidade.tipo_vencimento.initial }}').change();
 	if($("#tipo_vencimento").val()=="VARIAVEL"){
-		alert("VARIAVEL");
 		habilitar_campo("dia_vencimento_iss");
 		habilitar_campo("taxa_iss");
 		desabilitar_campo("data_vencimento_iss");
 	}
 	else{
-		alert("FIXO");
 		habilitar_campo("data_vencimento_iss");
 		desabilitar_campo("taxa_iss");
 		desabilitar_campo("dia_vencimento_iss");

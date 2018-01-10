@@ -165,23 +165,29 @@
 					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
 						<div class="row no-gutter fluid">
 							<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo">
-									<sub><label id="lb_tipo" for="tipo">{{ formulario_proventos.tipo.label }}</label> </sub>
-									{{ formulario_proventos.tipo }}
+								<div class="form-group field" id="field_type_item">
+									<sub><label id="lb_type_item" for="type_item">{{ formulario_proventos.type_item.label }}</label></sub>
+									{{ formulario_proventos.type_item }}
 								</div>
 							</div>
 
 							<div class="col-lg-6 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_nome">
-									<sub><label id="lb_nome" for="nome">{{ formulario_proventos.nome.label }}*</label></sub>
-									{{ formulario_proventos.nome }}
+								<div class="form-group field" id="field_item">
+									<sub><label id="lb_item" for="item">{{ formulario_proventos.item.label }}*</label></sub>
+									{% verbatim %}
+									<select id="item" class="form-control">
+										<option ng-repeat="option in provents_options" value="{{option.id}}">
+											{{ option.nome }}
+									</option>
+									</select>
+									{% endverbatim %}
 								</div>
 							</div>
 
 							<div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo_valor">
-									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_proventos.tipo_valor.label }}</label> </sub>
-									{{ formulario_proventos.tipo_valor }}
+								<div class="form-group field" id="field_quantity">
+									<sub><label id="lb_quantity" for="quantity">{{ formulario_proventos.quantity.label }}</label> </sub>
+									{{ formulario_proventos.quantity }}
 								</div>
 							</div>
 
@@ -284,6 +290,8 @@
 			</div>
 		</div>
 	</div>
+
+
 </div>
 {% endblock %}
 {% block recursos_complementares %}

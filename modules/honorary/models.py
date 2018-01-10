@@ -141,6 +141,8 @@ class Proventos(models.Model):
     alterado_por = models.ForeignKey(User, related_name='provento_alterado_por', default=1)
     is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.nome+"     (R$"+str(self.valor)+")"
 
 class Honorary(models.Model):
     class Meta:

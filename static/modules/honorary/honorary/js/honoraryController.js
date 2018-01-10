@@ -15,6 +15,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 	$scope.registro_selecionado 	= null;
 	$scope.esta_adicionando     	= true;
 	$scope.registros = [];
+	$scope.provents_options = [];
 
 	$scope.save_provent = function() {
 		var data_paramters = create_data_paramters('form_adicionar_contrato');
@@ -301,5 +302,31 @@ app.controller('MeuController', ['$scope', function($scope) {
 			$scope.registro_selecionado = null;
 			$scope.opcao_desabilitada = "desabilitado";
 			//$scope.apply();
+	}
+
+	$scope.load_provents = function(){
+		var data_paramters = {}
+
+		success_function = function(result,message,object,status){
+			alert("Veja o que veio: "+JSON.stringify(object));
+      if(result == true){
+				$scope.provents_options = object;
+				$scope.$apply();
+				alert("Carreguei")
+      }
+      else{
+      	alert("deu ero mesmo")
+      }
+		}
+
+    fail_function = function (result,message,data_object,status) {
+    	alert('deu erro')
+      //check_response_message_form('#form_adicionar_contrato', message);
+    }
+
+    validade_function = function () {
+     return  true;
+    }
+    request_api("/api/provents",data_paramters,validade_function,success_function,fail_function);
 	}
 }]);
