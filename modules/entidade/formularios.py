@@ -335,8 +335,7 @@ class formulario_cadastro_entidade_completo(forms.Form):
 
     dia_vencimento_iss = forms.IntegerField(label="Vencimento (Mensal):",required=False,error_messages=MENSAGENS_ERROS,
                                           widget=forms.TextInput(attrs={'class': "form-control", 'id': 'dia_vencimento_iss'}))
-    taxa_iss = forms.DecimalField("Taxa:",max_digits=5, decimal_places=2,required=False,
-                                  widget=forms.TextInput(attrs={'class': "form-control", 'id': 'taxa_iss'}))
+    taxa_iss = forms.CharField(label="Taxa:",max_length=10, required=False, widget=forms.TextInput(attrs={'class': "form-control", 'id': 'taxa_iss'}))
 
     responsavel_cliente = forms.ModelChoiceField(label="Responsável:", required=False, queryset=User.objects.filter(is_active=True),
                                    widget=forms.Select(attrs={

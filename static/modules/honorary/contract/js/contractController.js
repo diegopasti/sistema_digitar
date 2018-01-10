@@ -102,7 +102,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 					}
 					catch(err){
 						if(data.indexOf('ERRO403')!= -1){
-							error_notify(null,"Operação não autorizada","Contratos disponiveis apenas no nível Administrativo.");
+							error_notify(null,"Operação não autorizada","Nível de autonomia não permite o acesso à este recurso.");
 						}
 					}
 				},

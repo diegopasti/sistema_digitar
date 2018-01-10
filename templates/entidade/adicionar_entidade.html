@@ -627,7 +627,7 @@ legend {
 									<div class="row">
 										<div class="col-lg-2">
 											<div class="form-group">
-												<sub><label id="lb_tipo_vencimento" for="check_tipo_vencimento">{{ formulario_entidade.tipo_vencimento.label }}</label></sub>
+												<sub><label id="lb_tipo_vencimento" for="tipo_vencimento">{{ formulario_entidade.tipo_vencimento.initial }} - {{ formulario_entidade.tipo_vencimento.label }}</label></sub>
 												{{ formulario_entidade.tipo_vencimento }}
 												<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 											</div>
@@ -1240,153 +1240,171 @@ function substituir_valor_nulo(valor){
 </script>
 
 <script>
-        $(function() {
-          $('#tipo_honorario').change(function() {
-            if(this.value == "VARIAVEL"){
-              habilitar_campo("taxa_honorario");
-            }
-            else{
-              desabilitar_campo("taxa_honorario");
-            }
-          });
-        });
+	$(function() {
+		$('#tipo_honorario').change(function() {
+			if(this.value == "VARIAVEL"){
+				habilitar_campo("taxa_honorario");
+			}
+			else{
+				desabilitar_campo("taxa_honorario");
+			}
+		});
+	});
 
-        $(function() {
-          $('#valor_base').blur(function() {
+	$(function() {
+		$('#valor_base').blur(function() {
 
-            //var data = new Date(Date.fromString('09/05/2012', {order: 'DMY'}))
+			//var data = new Date(Date.fromString('09/05/2012', {order: 'DMY'}))
 
-            var valor_base = parseFloat(this.value.replace(".","").replace(",","."))
-            angular.element(document.getElementById('controle_angular')).scope().set_valor_base_contrato(valor_base);
+			var valor_base = parseFloat(this.value.replace(".","").replace(",","."))
+			angular.element(document.getElementById('controle_angular')).scope().set_valor_base_contrato(valor_base);
 
 
-          });
-        });
+		});
+	});
 
-        function calcular_honorario(){
-          var desconto = $("#desconto_temporario").val();
-          var valor_base = angular.element(document.getElementById('controle_angular')).scope().get_valor_base_contrato();
-          var valor_final = valor_base;
-          var desconto_inicio = $("#desconto_inicio").val()
-          var desconto_fim = $("#desconto_fim").val()
-          if (valor_base && desconto_inicio && desconto_fim && desconto){
-            desconto_inicio = desconto_inicio.split('/')
-            desconto_inicio = desconto_inicio[2]+"-"+desconto_inicio[1]+"-"+desconto_inicio[0];
+	function calcular_honorario(){
+		var desconto = $("#desconto_temporario").val();
+		var valor_base = angular.element(document.getElementById('controle_angular')).scope().get_valor_base_contrato();
+		var valor_final = valor_base;
+		var desconto_inicio = $("#desconto_inicio").val()
+		var desconto_fim = $("#desconto_fim").val()
+		if (valor_base && desconto_inicio && desconto_fim && desconto){
+			desconto_inicio = desconto_inicio.split('/')
+			desconto_inicio = desconto_inicio[2]+"-"+desconto_inicio[1]+"-"+desconto_inicio[0];
 
-            desconto_fim = desconto_fim.split('/')
-            desconto_fim = desconto_fim[2]+"-"+desconto_fim[1]+"-"+desconto_fim[0];
-            var data_atual = new Date().getTime();
-            var data_inicio = new Date(desconto_inicio).getTime();
-            var data_fim = new Date(desconto_fim).getTime();
+			desconto_fim = desconto_fim.split('/')
+			desconto_fim = desconto_fim[2]+"-"+desconto_fim[1]+"-"+desconto_fim[0];
+			var data_atual = new Date().getTime();
+			var data_inicio = new Date(desconto_inicio).getTime();
+			var data_fim = new Date(desconto_fim).getTime();
 
-            if ((data_atual >= data_inicio) && (data_atual <= data_fim)) {
-              var valor_desconto = parseFloat(desconto)/100;
-              valor_final = valor_base*(1-valor_desconto);
-            }
-            else{
-              alert("Desconto Temporário não está na validade.")
-            }
-          }
-          else{
-            //alert("Se tem algum campo do desconto nao preenchido ele sera desconsiderado")
-          }
-          $('#valor_honorario').val(valor_final*100).trigger('mask.maskMoney');
+			if ((data_atual >= data_inicio) && (data_atual <= data_fim)) {
+				var valor_desconto = parseFloat(desconto)/100;
+				valor_final = valor_base*(1-valor_desconto);
+			}
+			else{
+				alert("Desconto Temporário não está na validade.")
+			}
+		}
+		else{
+			//alert("Se tem algum campo do desconto nao preenchido ele sera desconsiderado")
+		}
+		$('#valor_honorario').val(valor_final*100).trigger('mask.maskMoney');
+	}
 
-        }
+	$(function() {
+		$('#valor_base').blur(function() {
+			calcular_honorario();
+		});
 
-        $(function() {
-          $('#valor_base').blur(function() {
-            calcular_honorario();
-          });
+		$('#desconto_inicio').blur(function() {
+			calcular_honorario();
+		});
 
-          $('#desconto_inicio').blur(function() {
-            calcular_honorario();
-          });
+		$('#desconto_fim').blur(function() {
+			calcular_honorario();
+		});
 
-          $('#desconto_fim').blur(function() {
-            calcular_honorario();
-          });
+		$('#desconto_temporario').blur(function() {
+			calcular_honorario();
+		});
 
-          $('#desconto_temporario').blur(function() {
-            calcular_honorario();
-          });
+		$('#valor_honorario').blur(function() {
+			calcular_honorario();
+		});
+	});
 
-          $('#valor_honorario').blur(function() {
-            calcular_honorario();
-          });
-        });
 
-        $(function() {
-            $('#tipo_vencimento').change(function() {
-                if(this.value == "VARIAVEL"){
-                    habilitar_campo("dia_vencimento_iss");
-                    habilitar_campo("taxa_iss");
-                    desabilitar_campo("data_vencimento_iss");
-                }
-                else{
-                    habilitar_campo("data_vencimento_iss");
-                    desabilitar_campo("taxa_iss");
-                    desabilitar_campo("dia_vencimento_iss");
-                }
-            });
-        });
 
-        configurar_valor_padrao("inscricao_estadual","ISENTO");
-        configurar_valor_padrao("inscricao_produtor_rural","ISENTO");
-        configurar_valor_padrao("inscricao_imovel_rural","ISENTO");
-        configurar_valor_padrao("inscricao_junta_comercial","ISENTO");
+	$(function() {
+		$('#tipo_vencimento').change(function() {
+		alert("tem que ajeitar");
+			if(this.value == "VARIAVEL"){
+				habilitar_campo("dia_vencimento_iss");
+				habilitar_campo("taxa_iss");
+				desabilitar_campo("data_vencimento_iss");
+				$("#data_vencimento_iss").val("");
+			}
+			else{
+				habilitar_campo("data_vencimento_iss");
+				desabilitar_campo("taxa_iss");
+				desabilitar_campo("dia_vencimento_iss");
+				$("#taxa_iss").val("");
+				$("#dia_vencimento_iss").val("");
+			}
+		});
+	});
 
-        $('#inscricao_municipal').blur(function(){
-            configurar_inscricao_municipal();
-        });
 
-        $('#inscricao_municipal').focus(function(){
-            if($('#inscricao_municipal').val() == "ISENTO"){
-                $('#inscricao_municipal').val("");
-            }
-            desabilitar_campo("tipo_vencimento");
-        });
+	configurar_valor_padrao("inscricao_estadual","ISENTO");
+	configurar_valor_padrao("inscricao_produtor_rural","ISENTO");
+	configurar_valor_padrao("inscricao_imovel_rural","ISENTO");
+	configurar_valor_padrao("inscricao_junta_comercial","ISENTO");
 
-        //desabilitar_fieldset("fieldset_iss");
+	$('#inscricao_municipal').blur(function(){
+			configurar_inscricao_municipal();
+	});
 
-        desabilitar_campo("tipo_vencimento");
-        desabilitar_campo("data_vencimento_iss");
-        desabilitar_campo("dia_vencimento_iss");
-        desabilitar_campo("taxa_iss");
-        desabilitar_campo("documento_senha");
-        desabilitar_campo("taxa_honorario");
+	$('#inscricao_municipal').focus(function(){
+			if($('#inscricao_municipal').val() == "ISENTO"){
+					$('#inscricao_municipal').val("");
+			}
+			desabilitar_campo("tipo_vencimento");
+	});
 
-        var notificar_cliente = document.getElementById('notificar_cliente');
-        if(notificar_cliente.value =='SIM'){
-            habilitar_campo("prazo_notificacao");
-        }
-        else{
-            desabilitar_campo("prazo_notificacao");
-        }
+	//desabilitar_fieldset("fieldset_iss");
 
-        $('#tipo_contato').blur(function(){
-          var campo_telefone = document.getElementById('tipo_contato');
-                $("#numero_contato").unmask();
+	desabilitar_campo("tipo_vencimento");
+	desabilitar_campo("data_vencimento_iss");
+	desabilitar_campo("dia_vencimento_iss");
+	desabilitar_campo("taxa_iss");
+	desabilitar_campo("documento_senha");
+	desabilitar_campo("taxa_honorario");
 
-          if (campo_telefone.value == 'CELULAR') {
-                    $("#numero_contato").mask("(99) 99999-9999");
-                }
+	var notificar_cliente = document.getElementById('notificar_cliente');
+	if(notificar_cliente.value =='SIM'){
+		habilitar_campo("prazo_notificacao");
+	}
+	else{
+		desabilitar_campo("prazo_notificacao");
+	}
 
-                if (campo_telefone.value == 'COMERCIAL') {
-                    $("#numero_contato").mask("(99) 9999-9999");
-                }
+	$('#tipo_contato').blur(function(){
+		var campo_telefone = document.getElementById('tipo_contato');
+		$("#numero_contato").unmask();
 
-                if (campo_telefone.value == 'RESIDENCIAL') {
-                    $("#numero_contato").mask("(99) 9999-9999");
-                }
-        });
+		if (campo_telefone.value == 'CELULAR') {
+			$("#numero_contato").mask("(99) 99999-9999");
+		}
 
-        $('#apelido_fantasia').blur(function(){
-            var sugestao = "";
-            sugestao += '<option value="'+$('#apelido_fantasia').val().toUpperCase()+'" />';
-            document.getElementById('sugestao_responsavel').innerHTML = sugestao;
-        });
-    </script>
+		if (campo_telefone.value == 'COMERCIAL') {
+				$("#numero_contato").mask("(99) 9999-9999");
+		}
+
+		if (campo_telefone.value == 'RESIDENCIAL') {
+				$("#numero_contato").mask("(99) 9999-9999");
+		}
+	});
+
+	$('#apelido_fantasia').blur(function(){
+		var sugestao = "";
+		sugestao += '<option value="'+$('#apelido_fantasia').val().toUpperCase()+'" />';
+		document.getElementById('sugestao_responsavel').innerHTML = sugestao;
+	});
+
+	//$("#tipo_vencimento option[value=FIXO]").attr('selected','selected');
+	//$('#tipo_vencimento').val('FIXO').trigger("render");
+	//$("#tipo_vencimento option[value='FIXO']").attr('selected','selected');
+	//$('#tipo_vencimento').change();
+	//% if formulario_entidade.tipo_vencimento.initial %}
+	//	$('#tipo_vencimento').val('FIXO').change();
+	//	alert("TIPO: { formulario_entidade.tipo_vencimento.initial }}");
+	//% else %}
+	//	alert("VAZIO: { formulario_entidade.tipo_vencimento.initial }}");
+	//% endif %}
+
+</script>
 
 <script type="text/javascript">
 $('#codigo_postal').blur(function(){
@@ -1424,6 +1442,7 @@ $('#codigo_postal').blur(function(){
             }
 
             angular.element(document.getElementById('controle_angular')).scope().get_salario_vigente();
+            $('#taxa_iss').maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
             $('#valor_base').maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
             $('#valor_honorario').maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
             $("#desconto_inicio").mask("99/99/9999");
@@ -1680,5 +1699,22 @@ $('#codigo_postal').blur(function(){
     //});
 
     </script>
+
+<script>
+	$("#tipo_vencimento").val('{{ formulario_entidade.tipo_vencimento.initial }}').change();
+	if($("#tipo_vencimento").val()=="VARIAVEL"){
+		alert("VARIAVEL");
+		habilitar_campo("dia_vencimento_iss");
+		habilitar_campo("taxa_iss");
+		desabilitar_campo("data_vencimento_iss");
+	}
+	else{
+		alert("FIXO");
+		habilitar_campo("data_vencimento_iss");
+		desabilitar_campo("taxa_iss");
+		desabilitar_campo("dia_vencimento_iss");
+	}
+
+</script>
 
 {% endblock %}
