@@ -134,7 +134,7 @@ label {
                         <div class="row">
 
                             <div class="col-md-3 col-md-push-9">
-                                <button type="submit" id="bt_submit_servico" ng-class="{'desabilitado': modal_servico == ''}" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_documento">Salvar</button>
+                                <button type="submit" id="bt_submit_servico" ng-class="{'desabilitado': (modal_servico == '' || modal_descricao == '')}" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_documento">Salvar</button>
                                 <!-- <a href="#modal_adicionar_documento" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
                             </div>
                         </div>
@@ -183,7 +183,7 @@ label {
                                             </th>
 
                                             <th style="text-align: center;vertical-align: middle;">
-                                                <a id="caret_servico" ng-click="sortType = 'nome'; sortReverse = !sortReverse" style="display:block;">Serviço
+                                                <a id="caret_servico" nzg-click="sortType = 'nome'; sortReverse = !sortReverse" style="display:block;">Serviço
                                                      <span class='caret_one pull-right' ng-class="sortType == 'nome' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
                                                     <span class='caret_two pull-right' ng-class="sortType == 'nome' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
                                                 </a>
