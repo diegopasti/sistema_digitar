@@ -1,16 +1,13 @@
 # -*- encoding: utf-8 -*-
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.utils.decorators import method_decorator
-
-from libs.default.core import BaseController
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from libs.default.decorators import request_ajax_required
-from modules.nucleo.models import RestrictedOperation
+from django.utils.decorators import method_decorator
+from libs.default.core import BaseController
 
-from modules.nucleo.utils import response_format_error, generate_activation_code, generate_random_password, \
-    response_format_success
+from modules.nucleo.models import RestrictedOperation
+from modules.nucleo.utils import response_format_error, generate_activation_code, generate_random_password, response_format_success
 from modules.nucleo.comunications import send_generate_activation_code, resend_generate_activation_code ,send_reset_password
-from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormUpdateProfile, FormAlterarPassword, \
-    FormChangePassword, FromChangePersonalInfo
+from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormUpdateProfile, FormAlterarPassword, FormChangePassword, FromChangePersonalInfo
 from django.contrib.auth.models import Permission, User
 from django.http import HttpResponse
 import json
@@ -163,6 +160,8 @@ class UserController(BaseController):
 
 
     #@user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied',redirect_field_name=None)
-    @login_required
-    def filter_users(request):
-        return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','last_login','id','groups'],extra_fields=['get_full_name'])
+    @method_decorator(login_required)
+    @method_decorator(permission_required('user.can_add', raise_exception=True))
+    def filter_users(self, request):
+        print("ATE AQUI TEM REQUEST: ",request)
+        return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','id','groups'],extra_fields=['get_full_name'])

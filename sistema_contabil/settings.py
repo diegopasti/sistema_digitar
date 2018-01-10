@@ -257,8 +257,8 @@ BOWER_INSTALLED_APPS = (
     'select2',
     'labelauty',
     'multiple-select',
-    'jquery.maskedinput'
-
+    'jquery.maskedinput',
+    'blockui'
 
     #'bootstrap#3.3.7',#3.3.2
     #'font-awesome#4.7.0',#4.2
@@ -334,7 +334,6 @@ if SERVER_DIGITAR :
     WORKING_SERVER = "http://192.168.1.115:8010"
 
     from modules.nucleo.working_api import WorkingManager
-
 
     try:
         if "runserver" in sys.argv:

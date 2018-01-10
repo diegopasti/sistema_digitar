@@ -9,7 +9,63 @@ from modules.honorary.models import Contrato, Proventos
 from modules.servico.models import Plano
 
 
-class FormContrato(forms.Form):
+class FormHonoraryItem(forms.Form, BaseForm):
+
+    model = Proventos
+
+    options_type_provent = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
+    type_item = forms.ChoiceField(
+        label="Tipo", choices=options_type_provent, required=True, error_messages=MENSAGENS_ERROS,
+        widget=forms.Select(
+            attrs={
+                'id': 'type_item', 'class': "form-control"
+            }
+        )
+    )
+
+    item = forms.ChoiceField(label='Item', required=True, error_messages=MENSAGENS_ERROS,
+        widget=forms.Select(
+            attrs={'id': 'item', 'class': "form-control", 'ng-model':'item'}
+        )
+    )
+
+    quantity = forms.DecimalField(
+        label="Quantidade", max_digits=5, decimal_places=2, required=False, error_messages=MENSAGENS_ERROS,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'quantity', 'class': "form-control decimal", 'ng-model': 'quantity',
+                #'ng-blur': 'calcular_valor_base();calcular_total();', 'onkeyup': 'calcular_honorario()', 'ng-keyup': 'calcular_total()', 'ng-change': 'calcular_total()'
+            }
+        )
+    )
+
+    total_value = forms.CharField(
+        label="Total (R$)", max_length=20, required=False, error_messages=MENSAGENS_ERROS,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'total_value', 'class': "form-control readonly", 'ng-model': 'total_value'
+            }
+        )
+    )
+
+    #item = models.ForeignKey(Proventos, default=1)
+    #quantity = models.IntegerField("Total de débitos e créditos")
+    #unit_value = models.DecimalField("Valor final do contrato", max_digits=6, decimal_places=2, null=True, blank=False)
+    #total_value
+
+    #tipo_cliente = forms.ChoiceField(
+    #    label="Tipo de Contrato*", choices=opcoes_tipos_contratos, required=True, error_messages=MENSAGENS_ERROS,
+    #    widget=forms.Select(
+    #        attrs={
+    #            'id': 'tipo_cliente', 'class': "form-control", 'ng-model': 'tipo_cliente'
+    #        }
+    #    )
+    #)
+
+
+class FormContrato(forms.Form, BaseForm):
+
+    model = Contrato
     opcoes_tipos_contratos = (('PF', 'PESSOA FÍSICA'), ('PJ', 'PESSOA JURÍDICA'))
 
     tipo_cliente = forms.ChoiceField(
@@ -17,6 +73,16 @@ class FormContrato(forms.Form):
         widget=forms.Select(
             attrs={
                 'id': 'tipo_cliente', 'class': "form-control", 'ng-model':'tipo_cliente'
+            }
+        )
+    )
+
+    cliente = forms.ModelChoiceField(
+        label='Plano*', required=True,
+        queryset=entidade.objects.filter(ativo=True), empty_label=None,
+        widget=forms.Select(
+            attrs={
+                'class': "form-control", 'id': 'cliente',
             }
         )
     )
@@ -47,6 +113,15 @@ class FormContrato(forms.Form):
         widget=forms.Select(
             attrs={
                 'class': "form-control", 'id': 'plano',
+            }
+        )
+    )
+
+    servicos_contratados = forms.CharField(
+        label="Serviços Contratados", max_length=30, required=False, error_messages=MENSAGENS_ERROS,
+        widget=forms.TextInput(
+            attrs={
+                'class': "form-control uppercase", 'id': 'servicos_contratados', 'ng-model': 'servicos_contratados',
             }
         )
     )
@@ -89,11 +164,11 @@ class FormContrato(forms.Form):
         )
     )
 
-    total = forms.CharField(
+    valor_total = forms.CharField(
         label="Total (R$)",max_length=20, required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'id': 'total','class': "form-control readonly", 'ng-model':'total'
+                'id': 'valor_total','class': "form-control readonly", 'ng-model':'valor_total'
             }
         )
     )
@@ -129,7 +204,7 @@ class FormContrato(forms.Form):
     )
 
     desconto_temporario = forms.DecimalField(
-        label="Desconto Temp (%)", required=False, max_digits=5, decimal_places=2, error_messages=MENSAGENS_ERROS,
+        label="Desconto Temp (%)", required=False, max_digits=10, decimal_places=2, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
                 'id': 'desconto_temporario', 'class': "form-control decimal", 'ng-model':'desconto_temporario', 'ng-change':'calcular_total()', 'ng-blur':'calcular_total()'
