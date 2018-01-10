@@ -477,14 +477,14 @@ class ProventosController(BaseController):
 class HonoraryController(BaseController):
 
     @method_decorator(login_required)
-    def filter(self,request):
+    def filter_honorary(self,request):
         for item in range(4):
             competence = self.get_competence(datetime.datetime.now().month+item)
             if Honorary.objects.filter(competence=competence).count() == 0:
                 entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
                 for entity in entity_list:
                     self.create_update_honorary(request, entity, competence)
-        return BaseController().filter(request, Honorary)
+        return self.filter(request, Honorary)
 
     @method_decorator(login_required)
     def generate_honoraries(self,request):
@@ -519,7 +519,7 @@ class HonoraryController(BaseController):
                 response_dict['message'] = "Honorários de " + completed_competence + " já foram finalizado!"
         return self.response(response_dict)
 
-    @method_decorator(login_required)
+
     def get_competence(self, month_number):
         current_year = datetime.datetime.now().year
         if month_number > 12:
@@ -528,7 +528,7 @@ class HonoraryController(BaseController):
         month_list_name = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
         return month_list_name[int(month_number)-1]+"/"+str(current_year)
 
-    @method_decorator(login_required)
+    #@method_decorator(login_required)
     def create_update_honorary(self, request, entity, competence):
         contract = Contrato.objects.filter(cliente=entity)
         if contract.count() == 0: contract = None
