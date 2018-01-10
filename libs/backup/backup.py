@@ -1,4 +1,5 @@
 from django.core.management import call_command
+from datetime import date
 import datetime
 import dropbox
 import shutil
@@ -43,6 +44,26 @@ class BackupManager:
         #print("Tamanho em bytes: "+str(size))
         #print("Pasta compartilhada: "+link_folder)
         return backup
+
+    def create_backup_local(self):
+        metadata = {}
+        start_timing_backup = datetime.datetime.now()
+        django.setup()
+        call_command('dbbackup', '-v', '1', '-z')
+        temp_file = DBBACKUP_STORAGE_OPTIONS['location'] + '/temp.dump.gz'
+        time = datetime.datetime.now()
+        basename = shutil.copy(temp_file, 'data/backup/' + time.strftime("%Y%m%d%H%M%S") + '.dump.gz')
+        new_filename = os.path.basename(basename)
+        print(new_filename)
+        size = os.path.getsize(basename)
+        print(size)
+        metadata['file_name'] = new_filename
+        metadata['size'] = size
+        #print(metadata)
+        self.clear_temp_file()
+        backup_duration = datetime.datetime.now() - start_timing_backup
+        print("Backup gerado em",backup_duration.total_seconds(),"segundos")
+        return metadata
 
     def restore_backup(self):
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
@@ -95,7 +116,6 @@ class BackupManager:
         #print(data)
         return metadata
 
-
     def download(self, file):
         self.file = (file)
         self.file.replace('/backup/', '')
@@ -122,24 +142,37 @@ class BackupManager:
         data['folder_link'] = link.url
         return data
 
-
     def upload(self):
         self.data = []
         data = {}
         temp_file = DBBACKUP_STORAGE_OPTIONS['location']+'/temp.dump.gz'
         time = datetime.datetime.now()
-        shutil.copy(temp_file,'data/backup/'+time.strftime("%Y%m%d%H%M%S")+'.dump.gz')
-        export_name = DROPBOX_ROOT_PATH+'/'+time.strftime("%Y%m%d%H%M%S")+'.dump.gz'
-
+        now = time.strftime("%p")
+        if now == 'AM':
+            now = 'MAT'
+        elif now == 'PM':
+            now = 'VESP'
+        dias = ('Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom')
+        hj = date.today()
+        dia = dias[hj.weekday()]
+        #shutil.copy(temp_file,'data/backup/'+time.strftime("%a"+"_"+"%Y%m%d%I%M%S"+"_"+"%p")+".dump.gz")
+        #export_name = DROPBOX_ROOT_PATH+'/'+time.strftime("%a"+"_"+"%Y%m%d%I%M%S"+"_"+"%p")+".dump.gz"
+        shutil.copy(temp_file,'data/backup/'+time.strftime(dia+"_"+now)+".dump.gz")
+        export_name = DROPBOX_ROOT_PATH+'/'+time.strftime(dia+"_"+now)+".dump.gz"
         with open(temp_file, 'rb') as f:
-            self.dropbox.files_upload(f.read(), export_name)
-        link = self.dropbox.sharing_create_shared_link_with_settings(export_name)
+            self.dropbox.files_upload(f.read(), export_name, mode=dropbox.files.WriteMode('overwrite'))
+        try:
+            link = self.dropbox.sharing_create_shared_link_with_settings(export_name)
+        except:
+            link = self.dropbox.sharing_create_shared_link(export_name)
+            file_metadata = self.dropbox.files_get_metadata(export_name)
+            print(file_metadata)
         url = link.url
         dl_url = re.sub(r"\?dl\=0", "?dl=1", url)
-        data['file_name'] = link.name
+        data['file_name'] = file_metadata.name
         data['link'] = dl_url
-        data['client_modified'] = link.client_modified
-        data['size'] = int(link.size)
+        data['client_modified'] = file_metadata.client_modified
+        data['size'] = int(file_metadata.size)
         data['folder_link'] = self.shared_folder()
         return data
         #return dl_url
@@ -160,6 +193,8 @@ if __name__=='__main__':
     backup_manage = BackupManager()
     if "create" in arguments:
         backup_manage.create_backup()
+    elif "create_local" in arguments:
+        backup_manage.create_backup_local()
     elif "restore" in arguments:
         backup_manage.restore_backup()
     elif "list" in arguments:
@@ -172,4 +207,3 @@ if __name__=='__main__':
         backup_manage.user_profile()
     else:
         pass
-

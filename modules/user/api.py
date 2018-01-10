@@ -47,7 +47,7 @@ class UserController(BaseController):
         else:
             return self.enable(request, User)
 
-
+    @method_decorator(login_required)
     @request_ajax_required
     def upate_user(self,request):
         return self.update(request,FormUpdateProfile)
@@ -67,11 +67,10 @@ class UserController(BaseController):
                     user.set_password(new_password)
                     try:
                         user.save()
-                        send_reset_password(new_password, email)
+                        send_reset_password(new_password, email, user.username)
                         response_dict = BaseController.notify.success(user, ['username','email','first_name','last_name'])
 
                     except Exception as erro:
-                        print("Erro! Verifique a excecao: ", erro)
                         response_dict = BaseController.notify.error({'email': 'Falha ao gerar nova senha.'})
                 else:
                     response_dict = BaseController.notify.error(

@@ -19,7 +19,28 @@ class ConfigurationsController(BaseController):
     def load_backups(self, request):
         x = BaseController().filter(request, model=Backup)
         print("VEJA O QUE TENHO QUE ENVIAR: ",x)
-        return BaseController().filter(request, model=Backup)
+        return BaseController().filter(request, model=Backup, limit=12)
+
+    def create_backup_local(self, request):
+        self.start_process(request)
+        backup_paramters = BackupManager().create_backup_local()
+        print('BACKUP REALIZADO COM SUCESSO.')
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['message'] = ""
+        response_dict['object'] = True
+        return self.response(response_dict)
+    """ backup = Backup()
+        backup.backup_file_name = backup_paramters['file_name']
+        backup.backup_link = 'Null'
+        backup.backup_size = backup_paramters['size']
+        self.get_exceptions(backup, None)
+        if self.full_exceptions == {}:
+            response_dict = self.execute(backup, backup.save)
+        else:
+            response_dict = self.notify.error(self.full_exceptions)
+        return self.response(response_dict)
+        """
 
     def create_backup(self,request):
         self.start_process(request)
@@ -76,7 +97,27 @@ class ConfigurationsController(BaseController):
 
     def check_available_space(self,request):
         self.start_process(request)
-        backup_list = BackupManager().list_backup()
+        backup_list = Backup.objects.all()
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['message'] = ""
+        response_dict['object'] = {}
+        response_dict['object']['total_files'] = len(backup_list)
+        response_dict['object']['total_space'] = 2000000000
+        response_dict['object']['used_space'] = 0
+
+        for item in backup_list:
+            response_dict['object']['used_space'] = response_dict['object']['used_space'] + item.backup_size
+        response_dict['object']['used_percent_space'] = round((response_dict['object']['used_space'] / response_dict['object']['total_space']) * 100, 2)
+
+        print("ESPACO DE ARMAZENAMENTO: ",response_dict)
+        return self.response(response_dict)
+
+    def check_available_space1(self,request):
+        self.start_process(request)
+        #backup_list = BackupManager().list_backup()
+        backup_list = Backup.objects.all()
+
         response_dict = {}
         response_dict['result'] = True
         response_dict['message'] = ""
@@ -129,7 +170,6 @@ class ConfigurationsController(BaseController):
         return self.response(response_dict)
 
     def manager_dropbox(self,request):
-        print("GERENCIAR O BACKUP O REQUEST: ",request)
         drive = settings.SELENIUM_CHROMEDRIVER
         binary = FirefoxBinary(settings.MOZILLA_FIREFOX_TEST_PATH)
         capabilities = webdriver.DesiredCapabilities().FIREFOX

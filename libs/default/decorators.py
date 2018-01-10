@@ -24,6 +24,7 @@ def validate_formulary(view):
                 print("FORM VALID: CRIAR OBJETO")
                 controller.object = form.get_object()
 
+        '''
         if hasattr(controller.object,'cadastrado_por'): controller.object.cadastrado_por = request.user
         elif hasattr(controller.object, 'created_by'): controller.object.created_by = request.user
         else: pass
@@ -31,7 +32,7 @@ def validate_formulary(view):
         if hasattr(controller.object, 'alterado_por'): controller.object.alterado_por = request.user
         elif hasattr(controller.object, 'updated_by'): controller.object.updated_by = request.user
         else: pass
-
+        '''
 
         controller.get_exceptions(controller.object, form)
         return view(controller, request, formulary, *args, **kwargs)

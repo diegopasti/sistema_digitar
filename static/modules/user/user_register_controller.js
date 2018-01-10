@@ -168,6 +168,13 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		$('#action_user').val('Operador')
 	}
 
+	$scope.open_modal_add = function () {
+		$('input[name=username] ').prop('readonly', false).val('');
+		$('input[name=email] ').val('');
+		$('input[name=first_name] ').val('');
+		$('input[name=last_name] ').val('');
+	};
+
 	$scope.open_object = function(){
 		reset_formulary('form_adicionar_usuario')
 		reset_formulary('form_alterar_usuario')
@@ -179,13 +186,8 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 			catch (err){
 			}
 		}
-
-		
-
+		$('input[name=username] ').prop('readonly', true);
 		$('#field_group_update > [name=groups]').val($scope.registro_selecionado.groups[0])
-		//$( "#field_group_update > #groups option:selected" ).val(2)
-		//$("#groups select").val('Operador');
-		//$('#group select').val(2)
 	}
 
 	$scope.reajustar_tela = function (){
