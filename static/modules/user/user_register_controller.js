@@ -103,13 +103,13 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
     request_api("/api/user/reset_password/",data_paramters,validade_function,success_function,fail_function);
 	}
 
-
 	$scope.load_users = function (){
     $.ajax({
       type: 'GET',
-      url: "/api/filter",
+      url: "/api/user/filter",
 
       success: function (data) {
+      	alert("VEJA O QUE VEIO: "+data);
 				data = data.replace("<html><head></head><body>{","{")
 				data = data.replace("}</body></html>","}")
 				$scope.usuarios = JSON.parse(data).object;
@@ -121,7 +121,8 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
       },
 
       failure: function (data) {
-        notify_response_message(["Não foi possivel carregar a lista"]);
+      	alert("VEJA O QUE VEIO: "+data);
+        notify_error(["Não foi possivel carregar a lista"]);
       },
     })
 	}

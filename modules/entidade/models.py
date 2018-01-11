@@ -73,10 +73,12 @@ class entidade(models.Model):
     natureza_juridica = models.CharField("Natureza Jurídica:", max_length=500, null=True, blank=True)
     regime_apuracao = models.CharField("Regime Tributário:", max_length=20, null=True, blank=True, error_messages=MENSAGENS_ERROS)
     regime_desde = models.DateField("Desde:", null=True, blank=True)
-    tipo_vencimento_iss = models.CharField("Tipo do Vencimento:", max_length=8, null=True, blank=True, default=None)
+
+    opcoes_tipo_vencimento = (('FIXO', 'FIXO'), ('VARIAVEL', 'VARIAVEL'))
+    tipo_vencimento_iss = models.CharField("Tipo do Vencimento:", max_length=8,choices=opcoes_tipo_vencimento, null=True, blank=True, default=None)
     data_vencimento_iss = models.DateField("Vencimento (Anual):", null=True, blank=True)
     dia_vencimento_iss = models.IntegerField("Vencimento (Mensal):", null=True, blank=True)
-    taxa_iss = models.DecimalField("Taxa:", max_digits=5, decimal_places=2, null=True, blank=True)
+    taxa_iss = models.CharField("Taxa:", max_length=10, null=True, blank=True)
 
     observacoes = models.TextField("Observações Administrativas", null=True, blank=True)
 
@@ -86,8 +88,8 @@ class entidade(models.Model):
     notificacao_responsavel = models.CharField("Nome do Responsável:", max_length=100, null=True, blank=True, unique=False, error_messages=MENSAGENS_ERROS)
 
     """ Responsabilidade e Supervisao pelo Cliente """
-    responsavel_cliente = models.ForeignKey("self", related_name='respondido_por', null=True, error_messages=MENSAGENS_ERROS)
-    supervisor_cliente = models.ForeignKey("self", related_name='supervisionado_por', null=True, error_messages=MENSAGENS_ERROS)
+    responsavel_cliente = models.ForeignKey(User, related_name='respondido_por', null=True, error_messages=MENSAGENS_ERROS)
+    supervisor_cliente = models.ForeignKey(User, related_name='supervisionado_por', null=True, error_messages=MENSAGENS_ERROS)
 
     """ preenchimento automatico """
     data_cadastro = models.DateTimeField(null=True, auto_now_add=True)
@@ -133,7 +135,7 @@ class Documento(models.Model):
     finalizado = models.BooleanField("Finalizado:", default=False)
     data_finalizado = models.DateTimeField(null=True)
 
-    criado_por = models.ForeignKey(entidade, related_name='criado_por', null=True)
+    criado_por = models.ForeignKey(User, related_name='criado_por', null=True)
     finalizado_por = models.ForeignKey(entidade, related_name='finalizado_por', null=True)
 
     notificar_cliente = models.BooleanField("Notificar Cliente:", default=False)

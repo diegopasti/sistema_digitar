@@ -3,8 +3,10 @@
 import datetime
 import json
 
+from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http.response import Http404, HttpResponseRedirect
@@ -627,6 +629,7 @@ def visualizar_entidade(request,id):
             endereco = localizacao_simples.objects.get(id=cliente.endereco.id)
         except:
             endereco = localizacao_simples()
+
         if formulario.is_valid():
             #print("olha, estou querendo alterar:")
             #lista_objetos = load_objects_from_form(formulario,cliente,cliente.endereco,meus_contatos,minhas_atividades)
@@ -651,11 +654,21 @@ def visualizar_entidade(request,id):
             cliente.data_vencimento_iss = formulario.cleaned_data['data_vencimento_iss']
             cliente.dia_vencimento_iss = formulario.cleaned_data['dia_vencimento_iss']
             cliente.taxa_iss = formulario.cleaned_data['taxa_iss']
+            cliente.inscricao_junta_comercial = formulario.cleaned_data['inscricao_junta_comercial']
+            try:
+                cliente.taxa_iss = Decimal(formulario.cleaned_data['taxa_iss'].replace('.','').replace(',','.'))
+                print("COLOQUEI O VALOR DECIMAL: ",cliente.taxa_iss)
+            except:
+                cliente.taxa_iss = formulario.cleaned_data['taxa_iss']
+                print("COLOQUEI O DIRETO", cliente.taxa_iss)
 
-            cliente.responsavel_cliente = entidade.objects.get(pk=int(formulario.cleaned_data['responsavel_cliente']))
-            cliente.supervisor_cliente = entidade.objects.get(pk=int(formulario.cleaned_data['supervisor_cliente']))
+            cliente.responsavel_cliente = formulario.cleaned_data['responsavel_cliente']
+            cliente.supervisor_cliente = formulario.cleaned_data['supervisor_cliente']
 
-            cliente.observacoes = formulario.cleaned_data['observacoes']
+            cliente.notificacao_email = formulario.cleaned_data['notificacao_email'].lower()
+            cliente.notificacao_responsavel = formulario.cleaned_data['notificacao_responsavel'].upper()
+            cliente.notificacao_envio = formulario.cleaned_data['notificacao_envio']
+            cliente.observacoes = formulario.cleaned_data['observacoes'].upper()
 
             endereco.cep         = formulario.cleaned_data['cep']
             endereco.codigo_ibge = formulario.cleaned_data['codigo_municipio']
@@ -710,9 +723,7 @@ def visualizar_entidade(request,id):
                 atividades = atividades.split("#")
                 for item in atividades:
                     item = item.replace("undefined", "")
-                    print("olha o item:",item)
                     dados = item.split("|")
-                    print("olha os dados_aividade-:",dados)
 
                     if "+" in dados[0]:
                         registro = AtividadeEconomica()
@@ -754,8 +765,15 @@ def visualizar_entidade(request,id):
                         registro.tipo = dados[1]
                         registro.nome = dados[2]
                         registro.senha = dados[4]
-                        registro.notificar_cliente = dados[5]
+                        if dados[5] == "SIM":
+                            registro.notificar_cliente = True
+                        else:
+                            registro.notificar_cliente = False
                         registro.prazo_notificar = dados[6]
+                        registro.criado_por = request.user
+                        #registro.vencimento = dados
+
+
                         registro.entidade = cliente
 
                         try:
@@ -834,6 +852,7 @@ def visualizar_entidade(request,id):
                         'inscricao_municipal': cliente.inscricao_municipal,
                         'inscricao_junta_comercial': cliente.inscricao_junta_comercial,
                         'inscricao_produtor_rural': cliente.inscricao_produtor_rural,
+                        'inscricao_imovel_rural' : cliente.inscricao_imovel_rural,
                         'cep': cliente.endereco.cep,
                         'endereco': cliente.endereco.logradouro,
                         'bairro': cliente.endereco.bairro,
@@ -844,22 +863,25 @@ def visualizar_entidade(request,id):
                         'complemento':cliente.endereco.complemento,
                         'codigo_municipio': cliente.endereco.codigo_ibge,
 
-                        'contatos': contatos_serializado,
-                        'atividade_economica':atividades_serializadas,
+            'contatos': contatos_serializado,
+            'atividade_economica':atividades_serializadas,
 
-                        'responsavel_cliente': responsavel_cliente,
-                        'supervisor_cliente':supervisor_cliente,
+            'tipo_vencimento': cliente.tipo_vencimento_iss,
+            'data_vencimento_iss': cliente.data_vencimento_iss,
+            'dia_vencimento_iss': cliente.dia_vencimento_iss,
+            'taxa_iss':cliente.taxa_iss,
 
-                        'notificacao_email': cliente.notificacao_email,
+            'responsavel_cliente': responsavel_cliente,
+            'supervisor_cliente':supervisor_cliente,
 
+            'notificacao_email': cliente.notificacao_email,
+            'notificacao_envio': cliente.notificacao_envio,
+            'notificacao_responsavel': cliente.notificacao_responsavel,
+            'tabela_documentos':documentos_serializados,
+            'observacoes':cliente.observacoes
 
-                        'notificacao_envio': cliente.notificacao_envio,
-                        'notificacao_responsavel': cliente.notificacao_responsavel,
-                        'tabela_documentos':documentos_serializados,
-                        'observacoes':cliente.observacoes
-
-                            }
-                        )
+            }
+        )
 
     return render(request,"entidade/adicionar_entidade.html",
                           {'dados': [],
@@ -872,7 +894,7 @@ def visualizar_entidade(request,id):
                           'erro': False},
                           )
 
-@method_decorator(login_required)
+@login_required
 def adicionar_entidade(request):
     if (request.method == "POST"):
         print("VEJA O QUE VEIO: ",request.POST)
@@ -1117,7 +1139,6 @@ def verificar_erro(formulario):
         if erros != []:
             if campo.name == 'contatos':
                 msg = "Erro! Pelo menos um contato deve ser informado."
-
             else:
                 erro = erros[0][0]
                 msg = campo.label + " " + erro

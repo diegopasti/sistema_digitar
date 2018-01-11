@@ -132,7 +132,6 @@ application.controller('register_controller', function($scope) {
   }
 });
 
-
 application.controller('login_controller', function($scope) {
 
   $scope.login_autentication = function () {

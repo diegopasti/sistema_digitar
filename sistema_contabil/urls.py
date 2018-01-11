@@ -89,8 +89,9 @@ urlpatterns = [
 
     url(r'^contract/$', honorario_views.contract_page),
     url(r'^api/contract/lista_contratos$', ContractController().get_lista_contratos),
-    url(r'^api/contract/salvar_contrato', honorario_api.salvar_contrato),
+    url(r'^api/contract/salvar_contrato', ContractController().salvar_contrato),
     url(r'^api/contract/alterar_contrato', ContractController().alterar_contrato),
+    url(r'^api/contract/close', ContractController().close_contract),
     url(r'^api/contract/atualizar_contrato', ContractController().atualizar_contrato),
     url(r'^api/contract/carregar_servicos_contratados/(?P<cliente_id>\d+)/(?P<plano_id>\d+)/', ContractController().carregar_servicos_contratados),
     url(r'^api/contract/atualizar_servicos', ContractController().atualizar_servicos),
@@ -144,6 +145,5 @@ urlpatterns = [
     # User Administration
     url(r'session_security/', include('session_security.urls')),
     url(r'error/access_denied',core_views.access_denied),
-    url(r'filter/', UserController.filter_users),
 
 ]

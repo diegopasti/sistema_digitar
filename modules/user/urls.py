@@ -11,11 +11,8 @@ urlpatterns = [
     url(r'reactivate$', UserController().resend_activation_code),
     url(r'change_personal_info/$',UserController().change_personal_info),
 
-
-
-
     # User Administration
-    url(r'filter/', UserController.filter_users),
+    url(r'filter/', UserController().filter_users),
     url(r'save/first/register/', UserController().save_first_register),
     # APIs administrativas
     url(r'chage_active/$', UserController().change_active),

@@ -169,8 +169,6 @@ def cadastro_protocolo(request, protocolo_id=None):
 
                 if len(filtro_por_documento) != 0:
                     return report_protocols_per_documents(request,form_relatorio)
-
-
                  
                 if filtro_por_cliente == '':
                     resultado = protocolo.objects.all()

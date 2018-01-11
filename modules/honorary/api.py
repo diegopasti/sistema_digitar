@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary
 from modules.honorary.forms import FormContrato, FormProventos
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from libs.default.decorators import request_ajax_required
 from django.utils.decorators import method_decorator
 from modules.servico.models import Plano, Servico
@@ -62,63 +62,58 @@ def company_was_indicated(company):
     else:
         return False
 
-@login_required
-def salvar_contrato(request):
-    result, form = filter_request(request,FormContrato)
-    if result:
-        contrato = form.form_to_object()
-        cliente = entidade.objects.get(pk=int(request.POST['cliente']))
-        contrato.cliente = cliente
-
-        plano = Plano.objects.get(pk=int(request.POST['plano']))
-        contrato.servicos_contratados = plano.servicos
-        contrato.totalizar_honorario()
-        contrato.save()
-        response_dict = response_format_success_message(contrato,None)
-    else:
-        #print "VEJA OS ERROS: ",form.errors.items()
-        #texto = ""
-        #for item in form.errors.items():
-        #    for erro in item[1]:
-        #        texto = texto+'- '+str(erro)+'<br>'
-        response_dict = response_format_error_message(form.errors)
-    return HttpResponse(json.dumps(response_dict))
-
 
 class ContractController(BaseController):
 
+    @method_decorator(login_required)
+    def salvar_contrato(self, request):
+        save_response = self.save(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
+        if save_response['result']:
+            contrato = Contrato.objects.get(pk=int(save_response['object']['id']))
+            contrato.totalizar_honorario()
+            contrato.save()
+
+            honoraries = Honorary.objects.filter(contract=contrato)
+            for honorary in honoraries:
+                honorary = Honorary().update_honorary(honorary, contract=contrato)
+                honorary.updated_by = request.user
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary.save()
+
+            return self.response(super().object(request, Contrato, contrato.id, extra_fields=['plano__nome']))
+        else:
+            return self.response(save_response)
+
+        """
+        result, form = filter_request(request, FormContrato)
+        if result:
+            contrato = form.form_to_object()
+            cliente = entidade.objects.get(pk=int(request.POST['cliente']))
+            contrato.cliente = cliente
+
+            plano = Plano.objects.get(pk=int(request.POST['plano']))
+            contrato.servicos_contratados = plano.servicos
+            contrato.totalizar_honorario()
+            contrato.save()
+            response_dict = response_format_success_message(contrato, None)
+        else:
+            # print "VEJA OS ERROS: ",form.errors.items()
+            # texto = ""
+            # for item in form.errors.items():
+            #    for erro in item[1]:
+            #        texto = texto+'- '+str(erro)+'<br>'
+            response_dict = response_format_error_message(form.errors)
+        
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! "+form.errors
+
+        return self.response(response_dict)
+        """
+
     @request_ajax_required
     @method_decorator(login_required)
-    def carregar_servicos_contratados(self, request, cliente_id, plano_id):
-        response_dict = []
-        id_cliente = int(cliente_id)
-        cliente = entidade.objects.get(pk=id_cliente)
-        contrato = Contrato.objects.get(cliente=cliente)
-
-        plano = Plano.objects.get(pk=int(plano_id))
-        lista_servicos = plano.servicos.split(';')
-        if plano is not None:
-            for item in lista_servicos:
-                servico = Servico.objects.get(pk=int(item))
-                response_object = {}
-                response_object['id'] = servico.id
-                response_object['nome'] = servico.nome
-                response_object['descricao'] = servico.descricao
-
-                if str(servico.id) in contrato.servicos_contratados:
-                    response_object['ativo'] = True
-                else:
-                    response_object['ativo'] = False
-                response_dict.append(response_object)
-
-        response_final = {}
-        response_final['result'] = True
-        response_final['object'] = response_dict
-        response_final['message'] = str(len(response_dict)) + " Serviços carregados com sucesso!"
-        return self.response(response_final)
-
-    @request_ajax_required
-    @method_decorator(login_required)
+    @method_decorator(permission_required('contrato.add_user',raise_exception=True))
     def get_lista_contratos(self, request):
         lista_clientes = entidade.objects.all().exclude(pk=1).order_by('-pk')
         response_dict = []
@@ -127,8 +122,21 @@ class ContractController(BaseController):
             response_cliente['cliente_id'] = item.id
             response_cliente['cliente_nome'] = item.nome_razao
             response_cliente['selecionado'] = False
-            contrato = Contrato.objects.filter(cliente=item.id)
+            response_cliente['contrato'] = {}
 
+            try:
+                contrato = Contrato.objects.get(cliente_id=item.id)
+                result = self.object(request, Contrato, contrato.id, extra_fields=['plano__nome'])
+                response_cliente['contrato'] = result['object']
+            except:
+                response_cliente['contrato'] = None
+
+            """
+            #try:
+            #    contrato = Contrato.objects.get(cliente=item.id)
+            #except:
+            #    contrato = {}
+            
             if len(contrato) != 0:
                 contrato = contrato[0]
                 response_cliente['contrato'] = {}
@@ -190,6 +198,7 @@ class ContractController(BaseController):
                 response_cliente['contrato']['data_cadastro'] = None
                 response_cliente['contrato']['ultima_alteracao'] = None
                 response_cliente['contrato']['alterado_por'] = None
+            """
 
             response_dict.append(response_cliente)
         response_final = {}
@@ -201,6 +210,25 @@ class ContractController(BaseController):
     @request_ajax_required
     @method_decorator(login_required)
     def alterar_contrato(self, request):
+        update_response = self.update(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
+        if update_response['result']:
+            contrato = Contrato.objects.get(pk=int(request.POST['id']))
+            contrato.totalizar_honorario()
+            contrato.save()
+
+            honoraries = Honorary.objects.filter(contract=contrato)
+            for honorary in honoraries:
+                honorary = Honorary().update_honorary(honorary, contract=contrato)
+                honorary.updated_by = request.user
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary.save()
+
+            return self.response(super().object(request, Contrato, contrato.id, extra_fields=['plano__nome']))
+        else:
+            return self.response(update_response)
+
+
+        """
         result, form = filter_request(request, FormContrato)
         response_dict = {}
         if result:
@@ -225,6 +253,40 @@ class ContractController(BaseController):
             response_dict['message'] = "Erro! "+form.errors
 
         return self.response(response_dict)
+        """
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def close_contract(self, request):
+        try:
+            contrato = Contrato.objects.get(pk=int(request.POST['id']))
+            contrato.ativo = False
+
+            honoraries = Honorary.objects.filter(contract=contrato)
+            for honorary in honoraries:
+                honorary = Honorary().update_honorary(honorary, contract=contrato)
+                honorary.updated_by = request.user
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary.save()
+
+        except Exception as e:
+            contrato = None
+            response_dict = self.notify.error(e)
+
+        if contrato is not None:
+            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome'])
+            if(response_dict['result']):
+                honoraries = Honorary.objects.filter(contract=contrato)
+                for honorary in honoraries:
+                    honorary = Honorary().update_honorary(honorary, contract=contrato)
+                    honorary.updated_by = request.user
+                    honorary.updated_by_name = request.user.get_full_name()
+                    honorary.save()
+            print("VEJA O RESULTADO: ",response_dict)
+            return self.response(response_dict)
+        else:
+            return self.response(response_dict)
+
 
     @request_ajax_required
     @method_decorator(login_required)
@@ -241,6 +303,36 @@ class ContractController(BaseController):
             contract_selected.save()
             response_dict = self.notify.success(contract_selected)
         return self.response(response_dict)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    def carregar_servicos_contratados(self, request, cliente_id, plano_id):
+        response_dict = []
+        id_cliente = int(cliente_id)
+        cliente = entidade.objects.get(pk=id_cliente)
+        contrato = Contrato.objects.get(cliente=cliente)
+
+        plano = Plano.objects.get(pk=int(plano_id))
+        lista_servicos = plano.servicos.split(';')
+        if plano is not None:
+            for item in lista_servicos:
+                servico = Servico.objects.get(pk=int(item))
+                response_object = {}
+                response_object['id'] = servico.id
+                response_object['nome'] = servico.nome
+                response_object['descricao'] = servico.descricao
+
+                if str(servico.id) in contrato.servicos_contratados:
+                    response_object['ativo'] = True
+                else:
+                    response_object['ativo'] = False
+                response_dict.append(response_object)
+
+        response_final = {}
+        response_final['result'] = True
+        response_final['object'] = response_dict
+        response_final['message'] = str(len(response_dict)) + " Serviços carregados com sucesso!"
+        return self.response(response_final)
 
     @request_ajax_required
     @method_decorator(login_required)
@@ -269,7 +361,6 @@ class ContractController(BaseController):
             #print("EMPRESA INDICADA: ",item['indicacao'])
             indication_client = entidade.objects.get(id=int(item['indicacao']))
             item['indication_name'] = indication_client.nome_razao
-
 
         response_dict = {}
         if len(lista_indicacoes) == 0:
@@ -337,38 +428,41 @@ class ContractController(BaseController):
     @request_ajax_required
     @method_decorator(login_required)
     def alterar_indicacao(self,request):
-        empresa_id = request.POST['empresa']
-        empresa_nome = request.POST['empresa_nome']
+        from django.utils.timezone import now, localtime
+        client_id = int(request.POST['cliente_id'])
+        indicated_company = request.POST['empresa']
+        indicated_name = request.POST['empresa_nome']
         taxa_desconto = float(request.POST['taxa_desconto'].replace('.','').replace(',','.'))
-        indicacao_bd = Indicacao.objects.get(indicacao=empresa_id)
+        indicacao_bd = Indicacao.objects.get(indicacao=indicated_company)
 
-        if (indicacao_bd.indicacao.nome_razao == empresa_nome and indicacao_bd.taxa_desconto != taxa_desconto):
-
+        if (indicacao_bd.indicacao.nome_razao == indicated_name and indicacao_bd.taxa_desconto != taxa_desconto):
+            indicacao_bd.taxa_desconto = taxa_desconto
+            indicacao_bd.ultima_alteracao = localtime(now())
             try:
-                Indicacao.objects.filter(indicacao=empresa_id).update(taxa_desconto=taxa_desconto)
-                contrato = Contrato.objects.get(cliente_id=int(empresa_id))
+                indicacao_bd.save()
+                response_dict = self.notify.success(indicacao_bd, extra_fields=['indication_name'])
+                response_dict['object']['indication_name'] = indicacao_bd.indicacao.nome_razao
+
+            except Exception as erro:
+                response_dict = self.notify.error(erro)
+
+            if response_dict['result']:
+                #Indicacao.objects.filter(indicacao=indicated_company).update(taxa_desconto=taxa_desconto,ultima_alteracao = localtime(now()))
+                contrato = Contrato.objects.get(cliente_id=client_id)
                 contrato.totalizar_honorario()
+                contrato.ultima_alteracao = localtime(now())
                 contrato.save()
 
-                honoraries = Honorary.objects.filter(contract=contrato)
+                honoraries = Honorary.objects.filter(contract=contrato, )
                 for honorary in honoraries:
                     honorary = Honorary().update_honorary(honorary, contract=contrato)
+                    honorary.last_update = localtime(now())
                     honorary.updated_by = request.user
                     honorary.updated_by_name = request.user.get_full_name()
                     honorary.save()
-
-                response_dict = response_format_success_message(indicacao_bd, ['indicacao', 'cliente', 'taxa_desconto'])
-            except:
-                response_dict = response_format_error_message(False)
-
         else:
             response_dict = response_format_error_message(False)
-
-        response_final = {}
-        response_final['result'] = True
-        response_final['object'] = response_dict
-        response_final['message'] = ""
-        return self.response(response_final)
+        return self.response(response_dict)
 
     @request_ajax_required
     @method_decorator(login_required)
@@ -409,14 +503,11 @@ class ContractController(BaseController):
                 honorary.updated_by = request.user
                 honorary.updated_by_name = request.user.get_full_name()
                 honorary.save()
-
-        print("BOM, VEJA A RESPOSTA: ",response_dict)
         return self.response(response_dict)
 
     @request_ajax_required
     @method_decorator(login_required)
     def deletar_indicacao(self, request):
-        print("VEJA O QUE VEIO: ",request.POST)
         empresa = request.POST['indicated_company']
         indicacao_bd = Indicacao.objects.get(indicacao_id=int(empresa))
         response_final = {}
@@ -451,8 +542,8 @@ class ProventosController(BaseController):
 
     #never_cache - Para usar esse decorador precisamos usar esse metodo com o self e consequentemente instancia-lo no urls.
     @method_decorator(login_required)
+    #method_decorator(permission_required('user.can_add'))
     def filter_provents(self,request):
-        cache_page = cache.has_key(request.get_raw_uri())
         return BaseController().filter(request, Proventos, queryset=Proventos.objects.filter(is_active=True).order_by('-id'))
 
     #login_required
@@ -519,13 +610,20 @@ class HonoraryController(BaseController):
                 response_dict['message'] = "Honorários de " + completed_competence + " já foram finalizado!"
         return self.response(response_dict)
 
-    @method_decorator(login_required)
     def get_competence(self, month_number):
+        month_list_name = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ']
+        current_month = datetime.datetime.now().month
         current_year = datetime.datetime.now().year
-        if month_number > 12:
+        if month_number == 0:
+            month_number = 12
+            current_year = current_year - 1
+
+        elif month_number > 12:
             month_number = month_number - 12
             current_year = current_year + 1
-        month_list_name = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+        else:
+            pass
+
         return month_list_name[int(month_number)-1]+"/"+str(current_year)
 
     @method_decorator(login_required)

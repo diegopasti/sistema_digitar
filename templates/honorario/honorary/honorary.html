@@ -45,7 +45,7 @@
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
 									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
-										<li><a ng-click="close_current_competences()" style="cursor: pointer;">Encerrar Competência</a></li>
+										<li><a id="close_competence" ng-click="close_current_competences()" style="cursor: pointer;">Encerrar Competência</a></li>
 										<li><a ng-click="load_competences()" style="cursor: pointer;">Atualizar Contratos</a></li>
 									</ul>
 								</div>
@@ -94,7 +94,7 @@
 												<td class='text-right' style="width: 90px;">{{ registro.total_credit| currency:"" }}</td>
 												<td class='text-right' style="width: 90px;">{{ registro.total_repayment| currency:"" }}</td>
 
-												<td class='text-center' style="width: 90px;" title="Atualizado {{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:MM' }}">{{ registro.last_update| date: 'dd/MM/yyyy' }}</td>
+												<td class='text-center' style="width: 90px;" title="Atualizado {{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}">{{ registro.last_update| date: 'dd/MM/yyyy' }}</td>
 												<td class="text-left" style="width: 100px;">{{ registro.updated_by_name }}</td>
 												<td class='text-center' style="width: 100px;">
 													<span ng-show="registro.is_closed==false">EM CONFECÇÃO</span>
@@ -165,23 +165,29 @@
 					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
 						<div class="row no-gutter fluid">
 							<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo">
-									<sub><label id="lb_tipo" for="tipo">{{ formulario_proventos.tipo.label }}</label> </sub>
-									{{ formulario_proventos.tipo }}
+								<div class="form-group field" id="field_type_item">
+									<sub><label id="lb_type_item" for="type_item">{{ formulario_proventos.type_item.label }}</label></sub>
+									{{ formulario_proventos.type_item }}
 								</div>
 							</div>
 
 							<div class="col-lg-6 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_nome">
-									<sub><label id="lb_nome" for="nome">{{ formulario_proventos.nome.label }}*</label></sub>
-									{{ formulario_proventos.nome }}
+								<div class="form-group field" id="field_item">
+									<sub><label id="lb_item" for="item">{{ formulario_proventos.item.label }}*</label></sub>
+									{% verbatim %}
+									<select id="item" class="form-control">
+										<option ng-repeat="option in provents_options" value="{{option.id}}">
+											{{ option.nome }}
+									</option>
+									</select>
+									{% endverbatim %}
 								</div>
 							</div>
 
 							<div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo_valor">
-									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_proventos.tipo_valor.label }}</label> </sub>
-									{{ formulario_proventos.tipo_valor }}
+								<div class="form-group field" id="field_quantity">
+									<sub><label id="lb_quantity" for="quantity">{{ formulario_proventos.quantity.label }}</label> </sub>
+									{{ formulario_proventos.quantity }}
 								</div>
 							</div>
 
@@ -284,6 +290,8 @@
 			</div>
 		</div>
 	</div>
+
+
 </div>
 {% endblock %}
 {% block recursos_complementares %}
