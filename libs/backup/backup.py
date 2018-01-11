@@ -165,8 +165,8 @@ class BackupManager:
             link = self.dropbox.sharing_create_shared_link_with_settings(export_name)
         except:
             link = self.dropbox.sharing_create_shared_link(export_name)
-            file_metadata = self.dropbox.files_get_metadata(export_name)
-            print(file_metadata)
+        file_metadata = self.dropbox.files_get_metadata(export_name)
+        print(file_metadata)
         url = link.url
         dl_url = re.sub(r"\?dl\=0", "?dl=1", url)
         data['file_name'] = file_metadata.name
@@ -187,6 +187,9 @@ class BackupManager:
         if os.path.isfile(backup_file):
             os.remove(backup_file)
 
+    def schedule_backup(self):
+        print('test')
+
 if __name__=='__main__':
     import sys
     arguments = sys.argv
@@ -205,5 +208,7 @@ if __name__=='__main__':
         backup_manage.delete_file()
     elif "share_folder" in arguments:
         backup_manage.user_profile()
+    elif "schedule" in arguments:
+        backup_manage.schedule_backup()
     else:
         pass
