@@ -5,27 +5,43 @@ from libs.default.core import BaseForm
 from modules.entidade.models import entidade
 
 from modules.entidade.formularios import MENSAGENS_ERROS
-from modules.honorary.models import Contrato, Proventos
+from modules.honorary.models import Contrato, Proventos, HonoraryItem
 from modules.servico.models import Plano
 
 
 class FormHonoraryItem(forms.Form, BaseForm):
 
-    model = Proventos
+    model = HonoraryItem
 
     options_type_provent = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
     type_item = forms.ChoiceField(
         label="Tipo", choices=options_type_provent, required=True, error_messages=MENSAGENS_ERROS,
         widget=forms.Select(
             attrs={
-                'id': 'type_item', 'class': "form-control"
+                'id': 'type_item', 'class': "form-control",'ng-blur':"change_provents_type()"
             }
         )
     )
 
-    item = forms.ChoiceField(label='Item', required=True, error_messages=MENSAGENS_ERROS,
+    item_id = forms.CharField(label='Item', required=True, error_messages=MENSAGENS_ERROS,
         widget=forms.Select(
-            attrs={'id': 'item', 'class': "form-control", 'ng-model':'item'}
+            attrs={'id': 'item', 'class': "form-control"}
+        )
+    )
+
+    honorary_id = forms.CharField(label='Item',max_length=10, required=True, error_messages=MENSAGENS_ERROS,
+        widget=forms.TextInput(
+            attrs={'id': 'honorary', 'class': "form-control"}
+        )
+    )
+
+    type_value = forms.ChoiceField(
+        label="Tipo do Valor", required=False, error_messages=MENSAGENS_ERROS,choices=(('R','REAIS'),('P','PERCENTUAL')),
+        widget=forms.Select(
+            attrs={
+                'id': 'type_value', 'class': "form-control",
+                # 'ng-blur': 'calcular_valor_base();calcular_total();', 'onkeyup': 'calcular_honorario()', 'ng-keyup': 'calcular_total()', 'ng-change': 'calcular_total()'
+            }
         )
     )
 
@@ -33,8 +49,18 @@ class FormHonoraryItem(forms.Form, BaseForm):
         label="Quantidade", max_digits=5, decimal_places=2, required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'id': 'quantity', 'class': "form-control decimal", 'ng-model': 'quantity',
+                'id': 'quantity', 'class': "form-control",'ng-keyup': 'calculate_provent_value()'
                 #'ng-blur': 'calcular_valor_base();calcular_total();', 'onkeyup': 'calcular_honorario()', 'ng-keyup': 'calcular_total()', 'ng-change': 'calcular_total()'
+            }
+        )
+    )
+
+    unit_value = forms.CharField(
+        label="Valor unitário", max_length=10, required=False, error_messages=MENSAGENS_ERROS,
+        widget=forms.TextInput(
+            attrs={
+                'id': 'unit_value', 'class': "form-control",'ng-keyup': 'calculate_provent_value()'
+                # 'ng-blur': 'calcular_valor_base();calcular_total();', 'onkeyup': 'calcular_honorario()', 'ng-keyup': 'calcular_total()', 'ng-change': 'calcular_total()'
             }
         )
     )
@@ -43,7 +69,7 @@ class FormHonoraryItem(forms.Form, BaseForm):
         label="Total (R$)", max_length=20, required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'id': 'total_value', 'class': "form-control readonly", 'ng-model': 'total_value'
+                'id': 'total_value', 'class': "form-control readonly",
             }
         )
     )
@@ -336,7 +362,7 @@ class FormProventos(forms.Form, BaseForm):
         )
     )
 
-    valor = forms.CharField(label="Valor", max_length=30, required=True, error_messages=MENSAGENS_ERROS,
+    valor = forms.CharField(label="Valor", max_length=30, required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
                 'class': "form-control uppercase", 'id': 'valor', 'ng-model': 'valor',

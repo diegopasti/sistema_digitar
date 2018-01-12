@@ -103,14 +103,18 @@ urlpatterns = [
 
     url(r'^provents/$', honorario_views.proventos_page),
     url(r'^api/provents$', ProventosController().filter_provents),
-    url(r'^api/provents/save$', ProventosController.save_provent),
-    url(r'^api/provents/update$', ProventosController.update_provent),
-    url(r'^api/provents/disable$', ProventosController.disable_provent),
+    url(r'^api/provents/save$', ProventosController().save_provent),
+    url(r'^api/provents/update$', ProventosController().update_provent),
+    url(r'^api/provents/disable$', ProventosController().disable_provent),
 
     url(r'^honorary/$', honorario_views.honorary_page),
     url(r'^api/honorary$', HonoraryController().filter),
+    url(r'^api/honorary/object', HonoraryController().get_object),
     url(r'^api/honorary/competences$', HonoraryController().generate_honoraries),
     url(r'^api/honorary/competences/current/close$', HonoraryController().close_current_competence),
+    url(r'^api/honorary/item/save$', HonoraryController().save_honorary_item),
+    url(r'^api/honorary/item$', HonoraryController().get_honorary_item),
+
 
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),
     #url(r'^api/preferencias/excluir_salario/(?P<id>\d+)/$', "preferencias.views.excluir_salario),

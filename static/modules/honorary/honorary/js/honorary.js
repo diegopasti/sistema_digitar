@@ -52,6 +52,10 @@ function configurar_formulario_padrao(){
 	}
 	$("#close_competence").text("Encerrar Competência ("+last_competence+")");
 	$("#competence").val(selected);
+
+	$("#unit_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+	$("#total_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+	$("#quantity").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
 }
 
 function resetar_formulario(){
@@ -78,3 +82,14 @@ $('.modal').on('hidden.bs.modal', function () {
 	var form = $("#"+modal_id+" form").attr('id');
 	reset_formulary(form)
 })
+
+function toTitleCase(str){
+	return str.replace(/\w\S*/g, function(txt){
+		if(txt.length >= 2){
+			return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+		}
+		else{
+			return txt;
+		}
+	});
+}

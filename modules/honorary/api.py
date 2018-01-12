@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
-from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary
-from modules.honorary.forms import FormContrato, FormProventos
+from decimal import Decimal
+
+from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary, HonoraryItem
+from modules.honorary.forms import FormContrato, FormProventos, FormHonoraryItem
 from django.contrib.auth.decorators import login_required, permission_required
 from libs.default.decorators import request_ajax_required
 from django.utils.decorators import method_decorator
@@ -113,7 +115,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
-    @method_decorator(permission_required('contrato.add_user',raise_exception=True))
+    #method_decorator(permission_required('contrato.add_contrato',raise_exception=True))
     def get_lista_contratos(self, request):
         lista_clientes = entidade.objects.all().exclude(pk=1).order_by('-pk')
         response_dict = []
@@ -543,13 +545,13 @@ class ProventosController(BaseController):
     #never_cache - Para usar esse decorador precisamos usar esse metodo com o self e consequentemente instancia-lo no urls.
     @method_decorator(login_required)
     #method_decorator(permission_required('user.can_add'))
-    def filter_provents(self,request):
+    def filter_provents(self, request):
         return BaseController().filter(request, Proventos, queryset=Proventos.objects.filter(is_active=True).order_by('-id'))
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)
     @method_decorator(login_required)
-    def save_provent(request):
+    def save_provent(self, request):
         #cache_page = cache.has_key('http://localhost:8020/api/provents')
         #print("VEJA SE TEM CACHE: ",cache_page)
         return BaseController().save(request, FormProventos)
@@ -557,15 +559,19 @@ class ProventosController(BaseController):
     #login_required
     #user_passes_test(lambda u: u.permissions.can_update_entity(), login_url='/error/access_denied', redirect_field_name=None)
     @method_decorator(login_required)
-    def update_provent(request):
+    def update_provent(self, request):
         return BaseController().update(request, FormProventos)
 
     @method_decorator(login_required)
-    def disable_provent(request):
+    def disable_provent(self, request):
         return BaseController().disable(request, Proventos)
 
 
 class HonoraryController(BaseController):
+
+    @method_decorator(login_required)
+    def get_object(self, request):
+        return self.object(request, Honorary, int(request.POST['id']),is_response=True)
 
     @method_decorator(login_required)
     def filter(self,request):
@@ -575,7 +581,7 @@ class HonoraryController(BaseController):
                 entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
                 for entity in entity_list:
                     self.create_update_honorary(request, entity, competence)
-        return BaseController().filter(request, Honorary)
+        return BaseController().filter(request, Honorary, extra_fields=['honorary_itens'])
 
     @method_decorator(login_required)
     def generate_honoraries(self,request):
@@ -643,6 +649,61 @@ class HonoraryController(BaseController):
 
         honorary.save()
         return honorary
+
+    @method_decorator(login_required)
+    def save_honorary_item(self, request):
+        print("VEJA O QUE VEIO: ",request.POST)
+        try:
+            honorary = Honorary.objects.get(pk=int(request.POST['honorary_id']))
+        except:
+            honorary = None
+        if honorary is not None:
+            response_dict = self.save(request, FormHonoraryItem, is_response=False, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+            if response_dict['result']:
+                honorary.number_debit_credit = honorary.number_debit_credit + 1
+                new_value =  Decimal(request.POST['total_value'])
+                if request.POST['type_item'] == "P":
+                    honorary.total_debit = honorary.total_debit + new_value
+                    honorary.total_debit_credit = honorary.total_debit_credit + new_value
+                    honorary.total_honorary = honorary.total_honorary + new_value
+
+                elif request.POST['type_item'] == "D":
+                    honorary.total_credit = honorary.total_credit + new_value
+                    honorary.total_debit_credit = honorary.total_debit_credit - new_value
+                    honorary.total_honorary = honorary.total_honorary - new_value
+
+                elif request.POST['type_item'] == "R":
+                    honorary.total_repayment = honorary.total_repayment + new_value
+                    honorary.total_debit_credit = honorary.total_debit_credit + new_value
+                    honorary.total_honorary = honorary.total_honorary - new_value
+                else:
+                    pass
+
+                honorary.updated_by_id = request.user.id
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+                if honorary_response['result']:
+                    response_dict['message'] = 'Honorário salvo com sucesso!'
+                else:
+                    response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
+        else:
+            response_dict = {}
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! Honorário informado não existe."
+        print("VEJA O QUE SAI:",response_dict)
+        return self.response(response_dict)
+
+    @method_decorator(login_required)
+    def get_honorary_item(self, request):
+        print("BUSCAR OS HONORARIOS: ", request.POST)
+        self.start_process(request)
+        queryset = HonoraryItem.objects.filter(honorary_id=int(request.POST['id']))
+        #if queryset.count() != 0:
+        return BaseController().filter(request, Honorary,queryset=queryset, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+        #else:
+        #   return self.response({'result':True, 'object':None, 'message':'Nenhum registro encontrado!'})
+
 
 """
 def get_lista_proventos_old(self,request):

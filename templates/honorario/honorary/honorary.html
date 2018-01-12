@@ -39,8 +39,8 @@
 						<h5 class="box-title">Controle de Honorários</h5>
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
-								<button id='bt_insert_provent' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_provents" ng-disabled="registro_selecionado!=null">Proventos e Descontos</button>
-								<button id='bt_honorary' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado!=null" style="margin-left: 5px;">Gerar Honorário</button>
+								<button id='bt_insert_provent' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_provents" ng-disabled="registro_selecionado==null" ng-click="get_honorary_item()">Proventos e Descontos</button>
+								<button id='bt_honorary' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" style="margin-left: 5px;">Gerar Honorário</button>
 
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
 									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
@@ -153,13 +153,13 @@
 	</div>
 
 	<div id="modal_provents" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-		<div class="modal-dialog" style="width: 80%;margin-left: auto; margin-right: auto;">
-			<form id="form_adicionar_contrato" novalidate autocomplete="off" ng-submit="esta_adicionando? save_provent() : update_provent()" onsubmit="return false;">
+		<div class="modal-dialog" style="width: 90%;margin-left: auto; margin-right: auto;">
+			<form id="form_honorary_item" novalidate autocomplete="off" ng-submit="save_honorary_item()" onsubmit="return false;">
 				{% csrf_token %}
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h5 id="titulo_modal_provents" class='modal_title' style="font-weight: bold">Adicionar Provento</h5>
+						<h5 id="titulo_modal_provents" class='modal_title' style="font-weight: bold">Proventos e Descontos</h5>
 					</div>
 
 					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
@@ -171,50 +171,221 @@
 								</div>
 							</div>
 
-							<div class="col-lg-6 col-md-3 col-sm-12 col-xs-12">
+							<div class="col-lg-5 col-md-3 col-sm-12 col-xs-12">
 								<div class="form-group field" id="field_item">
-									<sub><label id="lb_item" for="item">{{ formulario_proventos.item.label }}*</label></sub>
+									<sub><label id="lb_item" for="item">{{ formulario_proventos.item_id.label }}*</label></sub>
 									{% verbatim %}
-									<select id="item" class="form-control">
-										<option ng-repeat="option in provents_options" value="{{option.id}}">
+									<select id="item_id" class="form-control">
+										<option ng-repeat="option in provents_options" value="{{option.id}}" ng-show="view_provents_per_type(option)" ng-click="select_provent_option(option)">
 											{{ option.nome }}
-									</option>
+										</option>
 									</select>
 									{% endverbatim %}
 								</div>
 							</div>
 
-							<div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
+							<div class="col-lg-1 col-md-3 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_unit_value">
+									<sub><label id="lb_unit_value" for="unit_value">{{ formulario_proventos.unit_value.label }}*</label> </sub>
+									{{ formulario_proventos.unit_value}}
+								</div>
+							</div>
+
+							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
 								<div class="form-group field" id="field_quantity">
 									<sub><label id="lb_quantity" for="quantity">{{ formulario_proventos.quantity.label }}</label> </sub>
 									{{ formulario_proventos.quantity }}
 								</div>
 							</div>
 
-							<div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_valor">
-									<sub><label id="lb_valor" for="valor">{{ formulario_proventos.valor.label }}*</label> </sub>
-									{{ formulario_proventos.valor }}
+							<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
+								<div class="form-group field" id="field_total_value">
+									<sub><label id="lb_total_value" for="total_value">{{ formulario_proventos.total_value.label }}</label></sub>
+									{{ formulario_proventos.total_value }}
+								</div>
+							</div>
+
+							<div class="col-md-push-1 col-lg-1 col-md-1 col-sm-1 col-xs-12">
+								<div class="form-group field" id="field_save">
+									<sub><label id="lb_save" for="save"></label></sub>
+									<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
 								</div>
 							</div>
 						</div>
 
 						<div class="row no-gutter fluid">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_descricao">
-									<sub><label id="lb_descricao" for="descricao">{{ formulario_proventos.descricao.label }}</label> </sub>
-									{{ formulario_proventos.descricao }}
+								{% verbatim %}
+								<div class="dataTable_wrapper" style="margin-left: 0px;margin-right:0px;margin-bottom:0px;padding-bottom: 0px;">
+									<div class='row' style="padding-bottom: 0px;margin-bottom:0px;">
+										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+											<table class="table table-condensed  table-striped table-bordered table-hover" id="datatable">
+												<thead>
+													<tr class="linha_cabecalho">
+
+														<th class='center'>Tipo</th>
+
+														<th class="center">Item</th>
+
+														<th class="center">Data de Criação</th>
+
+														<th class="center">Cadastrado por</th>
+
+														<th class="center">Ultima alteração</th>
+
+														<th class="center">Alterado por</th>
+
+														<th class="center">Unit/Base</th>
+
+														<th class='center'>Quant/Taxa</th>
+
+														<th class='center'>Valor Total</th>
+
+
+													</tr>
+												</thead>
+
+												<style>
+													#datatable td{
+														padding: 0px;
+														padding-top: 4px;
+														height: 26px;
+													}
+												</style>
+
+												<tbody>
+													<tr ng-if="registro_selecionado.honorary_itens == '' && typeof(registro_selecionado.honorary_itens)=='string'">
+														<td colspan="9" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
+															Aguarde.. Carregando...<br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+														</td>
+													</tr>
+
+													<tr ng-if="registro_selecionado.honorary_itens.length > 0" class="angular-repeat linha_selecionavel {{ registro.selected }}" ng-repeat='registro in registro_selecionado.honorary_itens' ng-click="selecionar_linha_indicacao(registro)" style="font-size: 10px;">
+														<td class="left" style="padding-left: 6px; width: 70px;">
+															<span ng-if="registro.type_item=='P'">PROVENTO</span>
+															<span ng-if="registro.type_item=='D'">DESCONTO</span>
+															<span ng-if="registro.type_item=='R'">PROVENTO</span>
+														</td>
+														<td class="left"	style="padding-left: 6px;">{{ registro.item__nome }}</td>
+
+														<td class="center"	style="padding-left: 6px; width: 125px;">{{ registro.created_date | date:'dd/MM/yyyy' }} às {{ registro.created_date | date:'HH:mm:ss' }}</td>
+														<td class="left"	style="padding-left: 6px;">{{ registro.created_by__get_full_name }}</td>
+														<td class="center"	style="padding-left: 6px;width: 125px;">{{ registro.last_update | date:'dd/MM/yyyy' }} às {{ registro.last_update | date:'HH:mm:ss' }}</td>
+														<td class="left"	style="padding-left: 6px;">{{ registro.updated_by__get_full_name }}</td>
+
+														<td class="right"	style="padding-left: 6px; width: 90px;">
+															<span ng-if="registro.unit_value != '' && registro.unit_value != null">{{ registro.unit_value | currency:"" }}</span>
+														</td>
+														<td class="right"	style="padding-left: 6px; width: 90px;">
+															<span ng-if="registro.type_value=='R'">{{ registro.quantity | currency:""}}</span>
+															<span ng-if="registro.unit_value != '' && registro.unit_value != null && registro.type_value=='P'">{{ registro.quantity | currency:""}} %</span>
+														</td>
+														<td class="right"	style="padding-left: 6px; width: 90px;">
+															<span ng-if="registro.type_item=='P' || registro.type_item=='R' ">{{ registro.total_value| currency:"" }}</span>
+															<span ng-if="registro.type_item=='D'" style="color: #800000">- {{ registro.total_value| currency:"" }}</span>
+														</td>
+
+
+													</tr>
+
+													<tr ng-repeat="k in minimal_quantity_rows.slice(registro_selecionado.honorary_itens.length,minimal_quantity_rows.length)">
+													<td style="width:70px;"></td>
+													<td></td>
+													<td style="width:90px;"></td>
+														<td style="width:90px;"></td>
+													<td style="width:90px;"></td>
+													<td style="width:90px;"></td>
+													<td style="width:90px;"></td>
+													<td style="width:90px;"></td>
+													<td style="width:90px;"></td>
+												</tr>
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+
+									<style>
+										.custom-box-default{
+											padding-top: 2px;
+											padding-bottom: 2px;
+											padding-left: 12px;
+											padding-right: 12px;
+											border-radius: 3px;
+											border-top: 0px solid #ddd;
+											border-left: 0px solid #ddd;
+											border-right: 0px solid #ddd;
+											color: #888;
+											border-bottom: 2px solid #ddd;
+										}
+
+										.custom-box-primary{
+											padding-top: 2px;
+											padding-bottom: 2px;
+											padding-left: 12px;
+											padding-right: 12px;
+											border-radius: 3px;
+											border-top: 0px solid #ddd;
+											border-left: 0px solid #ddd;
+											border-right: 0px solid #ddd;
+											color: #888;
+											border-bottom: 2px solid #3C8dbc !important;
+										}
+
+										.custom-box-danger{
+											padding-top: 2px;
+											padding-bottom: 2px;
+											padding-left: 12px;
+											padding-right: 12px;
+											border-radius: 3px;
+											border-top: 0px solid #ddd;
+											border-left: 0px solid #ddd;
+											border-right: 0px solid #ddd;
+											color: #888;
+											border-bottom: 2px solid #800000 !important;
+										}
+									</style>
+
+									<div class='row status' style="padding-left: 20px;padding-right: 20px;">
+										<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+											<div class="custom-box-default">
+												<h6>Total de Proventos: <span class="pull-right">{{ registro_selecionado.total_debit | currency:"R$ "}}</span></h6>
+											</div>
+										</div>
+
+										<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+											<div class="custom-box-default">
+												<h6>Total de Descontos: <span class="pull-right">{{ registro_selecionado.total_credit | currency:"R$ "}}</span></h6>
+											</div>
+										</div>
+
+										<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+											<div class="custom-box-default">
+												<h6>Total de Ressarcimento: <span class="pull-right">{{ registro_selecionado.total_repayment | currency:"R$ "}}</span></h6>
+											</div>
+										</div>
+
+										<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+											<div ng-if='registro_selecionado.total_debit_credit==0' class="custom-box-defaul">
+												<h6 style="font-weight: bold;color: #555;">Total: <span class="pull-right">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span></h6>
+											</div>
+											<div ng-if='registro_selecionado.total_debit_credit>0' class="custom-box-primary">
+												<h6 style="font-weight: bold; color:#3C8dbc;">Total: <span class="pull-right">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span></h6>
+											</div>
+											<div ng-if='registro_selecionado.total_debit_credit < 0' class="custom-box-danger">
+												<h6 style="font-weight: bold;color: #800000;">Total: <span class="pull-right">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span></h6>
+											</div>
+										</div>
+									</div>
+									<br>
 								</div>
+								{% endverbatim %}
 							</div>
 						</div>
 					</div>
 
 					<div class="modal-footer">
-						<div class="row">
-							<div class="col-md-2 col-md-push-10" >
-								<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
-							</div>
-						</div>
+
 					</div>
 				</div>
 			</form>

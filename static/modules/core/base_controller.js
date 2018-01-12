@@ -61,11 +61,14 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
 function create_data_paramters(formulary_id){
 	var data_paramters = {};
 	$("#"+formulary_id+' input, '+"#"+formulary_id+' select, '+"#"+formulary_id+' textarea').each(function(index){
+
 		var input = $(this);
-		if (input.attr('id') != 'confirm_password' && input.attr('id') != 'password' && input.attr('id') != 'username'){
-			data_paramters[input.attr('id')] = input.val().toUpperCase();
-		}else{
+		if(input!=null){
+			if (input.attr('id') != 'confirm_password' && input.attr('id') != 'password' && input.attr('id') != 'username'){
+				data_paramters[input.attr('id')] = input.val().toUpperCase();
+			}else{
 			data_paramters[input.attr('id')] = input.val()
+			}
 		}
 	});
 	//alert("Vou sair com isso:"+JSON.stringify(data_paramters))

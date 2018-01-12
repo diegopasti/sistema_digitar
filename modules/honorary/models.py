@@ -134,7 +134,7 @@ class Proventos(models.Model):
 
     opcoes_tipos_valor = (('R', 'REAIS'), ('P', 'PERCENTUAL'))
     tipo_valor = models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valor, error_messages=MENSAGENS_ERROS)
-    valor = models.DecimalField("Valor:", max_digits=7, decimal_places=2, null=True, blank=False)
+    valor = models.CharField("Valor:", max_length=10, null=True, blank=True)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     cadastrado_por = models.ForeignKey(User, related_name='provento_cadastrado_por',  default=1)
     ultima_alteracao = models.DateTimeField(null=True, auto_now=True)
@@ -302,9 +302,17 @@ class HonoraryItem(models.Model):
         verbose_name_plural = "Items do Honorário"
 
     opcoes_tipos_item = (('P', 'PROVENTO'), ('D', 'DESCONTO'), ('R', 'RESSARCIMENTO'))
+    opcoes_tipos_valores = (('P', 'PERCENTUAL'), ('R', 'REAIS'))
     type_item = models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
+    type_value = models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valores, error_messages=MENSAGENS_ERROS)
     honorary = models.ForeignKey(Honorary, default=1)
     item = models.ForeignKey(Proventos, default=1)
-    quantity = models.IntegerField("Total de débitos e créditos")
-    unit_value = models.DecimalField("Valor final do contrato", max_digits=6, decimal_places=2, null=True, blank=False)
-    total_value = models.DecimalField("Valor final do contrato", max_digits=8, decimal_places=2, null=True, blank=False)
+    quantity = models.IntegerField("Quantidade",null=True,blank=True)
+    unit_value = models.CharField("Valor Unitário", max_length=8, null=True, blank=True)
+    total_value = models.CharField("Valor final do contrato", max_length=10, null=False, blank=False)
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, null=True, related_name="created_by")
+
+    last_update = models.DateTimeField("Ultima atualização", auto_now=True)
+    updated_by = models.ForeignKey(User, null=True, related_name="updated_by")

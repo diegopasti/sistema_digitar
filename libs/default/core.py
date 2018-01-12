@@ -23,7 +23,7 @@ import sys
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
-    print(obj, type(obj))
+    print("SERIALIZAR: ",obj, type(obj))
     if isinstance(obj, date):
         return obj.isoformat()
     if isinstance(obj, datetime):
@@ -80,13 +80,22 @@ class Notify:
                     if "__" in item:
                         related_field_parts = item.split("__")
                         related_field = object
+                        result = related_field
                         for element in related_field_parts:
                             related_field = getattr(related_field, element, None)
-                        result = related_field
+                            if  str(type(related_field)) == "<class 'method'>":
+                                result = related_field()
+                                print("CARA ISSO EH UM METODO: ",result)
+                            else:
+                                result = related_field
+                                print("EH UM ATTR: ",result)
+                            #print("PROCURANDO: ",element," --->> VEJA O TIPO: ",related_field,' -> ',type(related_field))
+
                     else:
                         result = ''
 
                 response_model[item] = result
+                print("")
         response_model['id'] = object.id
         response_model['selected'] = ''
         return response_model
@@ -202,9 +211,6 @@ class BaseController(Notify):
 
         else:
             model_list = queryset
-
-        print(model_list, len(model_list))
-
         response_dict = {}
         response_dict['result'] = True
         response_dict['object'] = self.notify.datalist(model_list, list_fields, extra_fields)
@@ -227,6 +233,7 @@ class BaseController(Notify):
     @request_ajax_required
     @validate_formulary
     def update(self, request, formulary, extra_fields=None, is_response=True):
+        print("VEJA SE TEVE EXCECOES: ",self.full_exceptions)
         if self.full_exceptions == {}:
             response_dict = self.execute(self.object, self.object.save, extra_fields)
         else:
@@ -282,6 +289,7 @@ class BaseController(Notify):
             action()
             response_dict = self.notify.success(object, extra_fields=extra_fields)
         except Exception as e:
+            print("DEU ERRO NA HORA DE SALVAR: ",e)
             response_dict = self.notify.error(e)
         return response_dict
 
@@ -303,8 +311,8 @@ class BaseController(Notify):
         else:
             self.form_exceptions = {}
 
-        #print("FORM EXCEPTIONS: ", self.form_exceptions)
-        #print("MODEL EXCEPTIONS: ", self.model_exceptions)
+        print("FORM EXCEPTIONS: ", self.form_exceptions)
+        print("MODEL EXCEPTIONS: ", self.model_exceptions)
 
         self.full_exceptions.update(self.model_exceptions)
         self.full_exceptions.update(self.form_exceptions)
@@ -347,6 +355,7 @@ class BaseController(Notify):
         response_dict['status']['response_size'] = "RESPONSE_SIZE"
         response_dict['status']['server_processing_time_duration'] = self.server_processing_time.total_seconds()  # datetime.datetime.now()
         response_dict['status']['cliente_processing_time_duration'] = ''
+        #print("\nRESPONSE: ",response_dict)
         data = json.dumps(response_dict, default=json_serial)
         data = data.replace('RESPONSE_SIZE', str(sys.getsizeof(data) - 16))
         response = HttpResponse(data)  # after generate response noramlization reduce size in 16 bytes
@@ -386,7 +395,6 @@ class BaseForm:
     def get_object(self, object_id=None):
         if object_id is not None:
             object = self.model.objects.get(pk=int(object_id))
-            print("ATUALIZAR DESCONTO DE: ",object.desconto_temporario)
         else:
             object = self.model()
 

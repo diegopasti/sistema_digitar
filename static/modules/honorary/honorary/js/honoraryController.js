@@ -1,5 +1,5 @@
 var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-app.controller('MeuController', ['$scope', function($scope) {
+app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.screen_height = window.innerHeight;
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
@@ -304,29 +304,215 @@ app.controller('MeuController', ['$scope', function($scope) {
 			//$scope.apply();
 	}
 
+	$scope.get_honorary = function(honorary_id){
+		var data_paramters = {};
+		data_paramters['id'] = honorary_id;
+
+		validate_function = function () {return true;}
+
+		success_function = function(result,message,object,status){
+			var itens = '';
+			var index = $scope.registros.indexOf($scope.registro_selecionado);
+			var backup_itens = $scope.registro_selecionado.honorary_itens;
+  		$scope.registros[index] = object;
+  		$scope.registros[index].honorary_itens = backup_itens;
+  		$scope.$apply();
+  		$scope.registro_selecionado = $scope.registros[index];
+  		$scope.$apply();
+			//success_notify("Operação realizada com sucesso!",JSON.stringify(object));
+		}
+		fail_function = function (result,message,data_object,status) {
+			for (var key in message) {
+				if (message.hasOwnProperty(key)) {
+					if(typeof(message[key]) == Array){
+						message[key].forEach(function(item, index){
+							set_wrong_field(key, item);
+						});
+					}
+					else{
+						error_notify(null,'Falha na Operação',message[key]);
+					}
+					return false;
+				}
+			}
+		}
+		request_api("/api/honorary/object",data_paramters,validate_function,success_function,fail_function);
+	}
+
+	$scope.get_honorary_item = function(){
+		if($scope.registro_selecionado.honorary_itens=='' || $scope.registro_selecionado.honorary_itens==[]){
+			var data_paramters = {};
+			data_paramters['id'] = $scope.registro_selecionado.id;
+
+			validate_function = function () {return true;}
+
+			success_function = function(result,message,object,status){
+				$scope.registro_selecionado.honorary_itens = object;
+				$scope.$apply();
+			}
+			fail_function = function (result,message,data_object,status) {
+				for (var key in message) {
+					if (message.hasOwnProperty(key)) {
+						if(typeof(message[key]) == Array){
+							message[key].forEach(function(item, index){
+								set_wrong_field(key, item);
+							});
+						}
+						else{
+							error_notify(null,'Falha na Operação',message[key]);
+						}
+						return false;
+					}
+				}
+			}
+			request_api("/api/honorary/item",data_paramters,validate_function,success_function,fail_function);
+		}
+		else{
+			success_notify("Operação realizada com sucesso!","Registros ja carregados: "+JSON.stringify($scope.registro_selecionado.honorary_itens));
+		}
+	}
+
+	$scope.save_honorary_item = function(){
+		if($scope.selected_option_provent!=null){
+			var data_paramters = {}
+			data_paramters['honorary_id'] = parseInt($scope.registro_selecionado.id);
+			data_paramters['type_item'] = $('#type_item').val();
+			data_paramters['type_value'] = $scope.selected_option_provent.tipo_valor;
+			data_paramters['item_id'] = $scope.selected_option_provent.id;
+			data_paramters['unit_value'] = $('#unit_value').val().replace(".","").replace(",",".");
+			data_paramters['quantity'] =  $('#quantity').val().replace(".","").replace(",",".");
+			data_paramters['total_value'] = $('#total_value').val().replace(".","").replace(",",".");
+			//setTimeout(function(){$("#item_id").val($scope.selected_option_provent.id.toString()).trigger('change');},5);
+
+			success_function = function(result,message,object,status){
+				if(result){
+					if ($scope.registro_selecionado.honorary_itens==''){
+						$scope.registro_selecionado.honorary_itens = [];
+					}
+					error_notify(null,'VEJA',JSON.stringify(object));
+					$scope.registro_selecionado.honorary_itens.push(object);
+					$scope.get_honorary($scope.registro_selecionado.id);
+					$("#quantity").val('');
+					$("#unit_value").val('');
+					$("#total_value").val('');
+					$scope.selected_option_provent = null;
+				}
+				else{
+					error_notify(null,"Falha na Operação",message);
+				}
+			}
+
+			fail_function = function (result,message,data_object,status) {
+				for (var key in message) {
+					if (message.hasOwnProperty(key)) {
+						if(typeof(message[key]) == Array){
+							message[key].forEach(function(item, index){
+								set_wrong_field(key, item);
+							});
+						}
+						else{
+							error_notify(null,'Falha na Operação',message[key]);
+						}
+						return false;
+					}
+				}
+			}
+
+			validate_function = function () {return true;}
+
+			request_api("/api/honorary/item/save",data_paramters,validate_function,success_function,fail_function);
+		}
+		else{
+			set_wrong_field("item", "Campo Obrigatório");
+		}
+	}
+
 	$scope.load_provents = function(){
 		var data_paramters = {}
 
 		success_function = function(result,message,object,status){
-			alert("Veja o que veio: "+JSON.stringify(object));
       if(result == true){
 				$scope.provents_options = object;
 				$scope.$apply();
-				alert("Carreguei")
       }
       else{
-      	alert("deu ero mesmo")
+      	error_notify(null,'Falha na Operação',message);
       }
 		}
 
     fail_function = function (result,message,data_object,status) {
-    	alert('deu erro')
-      //check_response_message_form('#form_adicionar_contrato', message);
+    	error_notify(null,"Falha na Operação",message);
     }
 
     validade_function = function () {
      return  true;
     }
     request_api("/api/provents",data_paramters,validade_function,success_function,fail_function);
+	}
+
+	$scope.view_provents_per_type = function(provent){
+		$scope.selected_type = $("#type_item").val();
+		var item_provent_selected = $("#item_id").val();
+		$("#item_id").val("");
+		if(provent.tipo==$scope.selected_type){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	$scope.change_provents_type = function(){
+		$scope.selected_type = $("#type_item").val();
+		$("#quantity").val('');
+		$("#unit_value").val("");
+		$("#total_value").val("");
+	}
+
+	$scope.select_provent_option = function(option){
+		$scope.selected_option_provent = option;
+		setTimeout(function(){$("#item_id").val(option.id.toString()).trigger('change');},10);
+		if($scope.selected_option_provent.tipo_valor=='R'){
+			$("#lb_unit_value").text("Valor unitário");
+			$("#lb_quantity").text("Quantidade");
+			$("#quantity").val('1');
+			$("#unit_value").val($filter('currency')(option.valor,"", 2));
+			$("#total_value").val($filter('currency')(option.valor*1,"", 2));
+		}
+		else{
+			if($scope.registro_selecionado.initial_value_contract != null){
+				$("#lb_unit_value").text("Valor Base");
+				$("#unit_value").val($filter('currency')($scope.registro_selecionado.initial_value_contract,"", 2));
+				$("#lb_quantity").text("Taxa (%)");
+				if(option.valor!=''){
+					$("#quantity").val($filter('currency')(option.valor,"", 2));
+					$("#total_value").val($filter('currency')(option.valor*$scope.registro_selecionado.initial_value_contract,"", 2));
+				}
+				else{
+					$("#quantity").val('');
+					$("#unit_value").val('');
+					$("#total_value").val('');
+				}
+			}
+			else{
+				$("#quantity").val('');
+				$("#unit_value").val('');
+				$("#total_value").val('');
+			}
+		}
+		return true;
+	}
+
+	$scope.calculate_provent_value = function(){
+		setTimeout(function(){$("#item_id").val($scope.selected_option_provent.id.toString()).trigger('change');},5);
+		var quantity = parseFloat($("#quantity").val().replace(".","").replace(",","."));
+		var unit_value = parseFloat($("#unit_value").val().replace(".","").replace(",","."));
+		if($scope.selected_option_provent.tipo_valor == 'R'){
+			var total_value = unit_value*quantity;
+		}
+		else{
+			var total_value = unit_value*(quantity/100);
+		}
+		$("#total_value").val($filter('currency')(total_value,"", 2));
 	}
 }]);
