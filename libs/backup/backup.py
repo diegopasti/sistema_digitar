@@ -175,7 +175,6 @@ class BackupManager:
         data['size'] = int(file_metadata.size)
         data['folder_link'] = self.shared_folder()
         return data
-        #return dl_url
 
     def delete_file(self,file=''):
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
