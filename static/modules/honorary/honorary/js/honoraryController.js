@@ -16,6 +16,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.esta_adicionando     	= true;
 	$scope.registros = [];
 	$scope.provents_options = [];
+	$scope.screen_model = null;
 
 	$scope.save_provent = function() {
 		var data_paramters = create_data_paramters('form_adicionar_contrato');

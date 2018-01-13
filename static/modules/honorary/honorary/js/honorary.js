@@ -50,7 +50,7 @@ function configurar_formulario_padrao(){
 
 			selectList.appendChild(option);
 	}
-	$("#close_competence").text("Encerrar Competência ("+last_competence+")");
+	document.getElementById('close_competence').setAttribute('title',"Encerrar Competência ("+last_competence+")");
 	$("#competence").val(selected);
 
 	$("#unit_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
@@ -82,6 +82,17 @@ $('.modal').on('hidden.bs.modal', function () {
 	var form = $("#"+modal_id+" form").attr('id');
 	reset_formulary(form)
 })
+
+/*$('.dropdown-menu li').click(function(e) {
+	//alert("cliquei em alguem: "+e.target)
+	//e.stopPropagation();
+	//$(this).dropdown('toggle');
+});
+
+$('.dropdown-menu').click(function(e) {
+	alert('cade')
+	e.stopPropagation();
+});*/
 
 function toTitleCase(str){
 	return str.replace(/\w\S*/g, function(txt){

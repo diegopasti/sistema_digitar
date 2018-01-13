@@ -93,8 +93,18 @@ tr.linha_selecionavel{
 }
 
 .disabled{
-	background: #EEE;
-	opacity: 0.7;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  color: grey;
+  opacity: 0.5;
+}
+
+.cursor_pointer {
+  cursor: pointer !important;
+}
+
+.cursor_not_allowed {
+  cursor: not-allowed;
 }
 
 label.disabled{
@@ -264,6 +274,10 @@ tr.linha_selecionavel{
   padding-bottom: 0px;
 }
 */
+
+.box-title{
+	padding-top: 4px;
+}
 
 .field{
 padding: 0px;
