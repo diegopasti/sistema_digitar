@@ -695,14 +695,78 @@ class HonoraryController(BaseController):
         return self.response(response_dict)
 
     @method_decorator(login_required)
+    def update_honorary_item(self, request):
+        try:
+            honorary = Honorary.objects.get(pk=int(request.POST['honorary_id']))
+        except:
+            honorary = None
+
+        if honorary is not None:
+            response_dict = self.update(request, FormHonoraryItem, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'],is_response=False)
+            if response_dict['result']:
+                honorary.number_debit_credit = honorary.number_debit_credit + 1
+                new_value =  Decimal(request.POST['total_value'])
+                if request.POST['type_item'] == "P":
+                    honorary.total_debit = honorary.total_debit + new_value
+                    honorary.total_debit_credit = honorary.total_debit_credit + new_value
+                    honorary.total_honorary = honorary.total_honorary + new_value
+
+                elif request.POST['type_item'] == "D":
+                    honorary.total_credit = honorary.total_credit + new_value
+                    honorary.total_debit_credit = honorary.total_debit_credit - new_value
+                    honorary.total_honorary = honorary.total_honorary - new_value
+
+                elif request.POST['type_item'] == "R":
+                    honorary.total_repayment = honorary.total_repayment + new_value
+                    honorary.total_debit_credit = honorary.total_debit_credit + new_value
+                    honorary.total_honorary = honorary.total_honorary - new_value
+                else:
+                    pass
+
+                honorary.updated_by_id = request.user.id
+                honorary.updated_by_name = request.user.get_full_name()
+                honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+                if honorary_response['result']:
+                    response_dict['message'] = 'Honorário salvo com sucesso!'
+                else:
+                    response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
+            else:
+                response_dict = {}
+                response_dict['result'] = False
+                response_dict['object'] = None
+                response_dict['message'] = "Erro! Honorário informado não existe."
+
+        print("VEJA A SAIDA: ",response_dict)
+        return self.response(response_dict)
+
+    @method_decorator(login_required)
+    def delete_honorary_item(self, request):
+        try:
+            object = HonoraryItem.objects.get(pk=int(request.POST['id']))
+            honorary = object.honorary
+            response_dict = self.delete_object(request, object, is_response=False)
+        except Exception as erro:
+            response_dict = self.notify.error(erro)
+
+        if response_dict['result']:
+            honorary = honorary.verify_contract_values(honorary=honorary, contract=honorary.contract)
+            honorary.verify_provents_values()
+            honorary.updated_by_id = request.user.id
+            honorary.updated_by_name = request.user.get_full_name()
+            honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome', 'created_by__get_full_name', 'updated_by__get_full_name'])
+            if honorary_response['result']:
+               response_dict['message'] = 'Honorário salvo com sucesso!'
+            else:
+               response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
+
+        print("VEJA A SAIDA: ", honorary_response)
+        return self.response(honorary_response)
+
+    @method_decorator(login_required)
     def get_honorary_item(self, request):
-        print("BUSCAR OS HONORARIOS: ", request.POST)
         self.start_process(request)
         queryset = HonoraryItem.objects.filter(honorary_id=int(request.POST['id']))
-        #if queryset.count() != 0:
         return BaseController().filter(request, Honorary,queryset=queryset, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
-        #else:
-        #   return self.response({'result':True, 'object':None, 'message':'Nenhum registro encontrado!'})
 
 
 """

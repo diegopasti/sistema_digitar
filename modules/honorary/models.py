@@ -191,16 +191,41 @@ class Honorary(models.Model):
         if not honorary.is_closed:
             if contract is not None:
                 honorary = self.verify_contract_values(honorary, contract)
-            honorary = self.verify_provents_values(honorary)
+            honorary = self.verify_provents_values()
         return honorary
 
+    def verify_provents_values(self):
+        provent_list = HonoraryItem.objects.filter(honorary=self)
+        self.number_debit_credit = 0
+        self.total_debit_credit = 0
+        self.total_repayment = 0
+        self.total_debit = 0
+        self.total_credit = 0
 
-    def verify_provents_values(self, honorary):
-        return honorary
+        if self.contract is None:
+            self.total_honorary = 0
+        else:
+            self.total_honorary = self.final_value_contract
+
+        for item in provent_list:
+            self.number_debit_credit = self.number_debit_credit + 1
+            new_value = Decimal(item.total_value)
+            if item.type_item == 'P' or item.type_item == 'R':
+                if item.type_item == 'P':
+                    self.total_debit = self.total_debit + new_value
+                else:
+                    self.total_repayment = self.total_repayment + new_value
+                self.total_debit_credit = self.total_debit_credit + new_value
+                self.total_honorary = self.total_honorary + new_value
+
+            else:
+                self.total_credit = self.total_credit + new_value
+                self.total_debit_credit = self.total_debit_credit - new_value
+                self.total_honorary = self.total_honorary - new_value
 
     def verify_contract_values(self, honorary, contract):
         honorary.contract = contract
-        if honorary.contract.ativo:
+        if honorary.contract is not None and honorary.contract.ativo:
             honorary.initial_value_contract = contract.valor_honorario
             honorary.temporary_discount = contract.calcular_desconto_temporario(honorary.competence)
             honorary.fidelity_discount = contract.calcular_desconto_fidelidade()

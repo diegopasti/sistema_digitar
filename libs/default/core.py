@@ -85,17 +85,12 @@ class Notify:
                             related_field = getattr(related_field, element, None)
                             if  str(type(related_field)) == "<class 'method'>":
                                 result = related_field()
-                                print("CARA ISSO EH UM METODO: ",result)
                             else:
                                 result = related_field
-                                print("EH UM ATTR: ",result)
-                            #print("PROCURANDO: ",element," --->> VEJA O TIPO: ",related_field,' -> ',type(related_field))
-
                     else:
                         result = ''
 
                 response_model[item] = result
-                print("")
         response_model['id'] = object.id
         response_model['selected'] = ''
         return response_model
@@ -233,7 +228,6 @@ class BaseController(Notify):
     @request_ajax_required
     @validate_formulary
     def update(self, request, formulary, extra_fields=None, is_response=True):
-        print("VEJA SE TEVE EXCECOES: ",self.full_exceptions)
         if self.full_exceptions == {}:
             response_dict = self.execute(self.object, self.object.save, extra_fields)
         else:
@@ -244,12 +238,23 @@ class BaseController(Notify):
             return response_dict
 
     @request_ajax_required
-    def delete(self, request, model, object_id):
+    def delete(self, request, model, object_id, is_response=True):
         self.request = request
         print("Excluir: ", model, '[', object_id, ']')
-        object = model.objects.filter(id=object_id)
-        response_dict = self.execute(object, object.delete)
-        return self.response(response_dict)
+        return self.delete_object(request,object,is_response=is_response)
+
+    @request_ajax_required
+    def delete_object(self, request, object, is_response=True):
+        self.request = request
+        try:
+            response_dict = self.execute(object, object.delete)
+        except Exception as erro:
+            response_dict = self.notify.error(erro)
+
+        if is_response:
+            return self.response(response_dict)
+        else:
+            return response_dict
 
     @request_ajax_required
     def disable(self, request, model):

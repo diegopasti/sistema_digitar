@@ -20,19 +20,16 @@ def validate_formulary(view):
             else:
                 controller.object = form.get_object()
 
-        #print("VAMOS VER O OBJETO: ",dir(controller.object))
         if hasattr(controller.object,'cadastrado_por'):
             controller.object.cadastrado_por = request.user
         elif hasattr(controller.object, 'created_by'):
-            print("TEM O CREATED")
             controller.object.created_by = request.user
         else:
-            print("NAO TEM CRIADO NEM CREATED?")
+            pass
 
         if hasattr(controller.object, 'alterado_por'): controller.object.alterado_por = request.user
         elif hasattr(controller.object, 'updated_by'):
             controller.object.updated_by = request.user
-            print("TEM O UPDATED")
         else: pass
 
 

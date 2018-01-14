@@ -36,7 +36,7 @@
 			<div class="box box-default" >
 				<div class="box-heading">
 					<div class="box-header with-border">
-						<h5 class="box-title">Controle de Honorários ({% verbatim %}{{ screen_model }}{% endverbatim %})</h5>
+						<h5 class="box-title">Controle de Honorários</h5>
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
 								<button id='bt_insert_provent' ng-if="screen_model > 3" role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_provents" ng-disabled="registro_selecionado==null" ng-click="get_honorary_item()">Proventos e Descontos</button>
@@ -165,7 +165,7 @@
 
 	<div id="modal_provents" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
 		<div class="modal-dialog" style="width: 90%;margin-left: auto; margin-right: auto;">
-			<form id="form_honorary_item" novalidate autocomplete="off" ng-submit="save_honorary_item()" onsubmit="return false;">
+			<form id="form_honorary_item" novalidate autocomplete="off" ng-submit="(selected_item==null) ? save_honorary_item() : update_honorary_item()" onsubmit="return false;">
 				{% csrf_token %}
 				<div class="modal-content">
 					<div class="modal-header">
@@ -211,7 +211,7 @@
 									</div>
 								</div>
 
-								<div class="col-lg-5 col-md-3 col-sm-6 col-xs-12">
+								<div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
 									<div class="form-group field" id="field_item">
 										<sub><label id="lb_item" for="item">{{ formulario_proventos.item_id.label }}*</label></sub>
 										{% verbatim %}
@@ -245,12 +245,15 @@
 									</div>
 								</div>
 
-								<div class="col-md-push-1 col-lg-1 col-md-1 col-sm-3 col-xs-12">
-									<div class="form-group field" id="field_save">
-										<sub><label id="lb_save" for="save"></label></sub>
-										<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="">Salvar</button>
+								<div class="col-lg-push-1 col-lg-2 col-md-push-1 col-md-1 col-sm-3 col-xs-12">
+									<div class="form-group field pull-right" id="field_save" style="margin-top:20px;">
+										<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary" style="width:90px;" title="Salvar novo item ao honorário."><i class="fa fa-floppy-o" aria-hidden="true"></i>
+ Salvar</button>
+										<button type="button" id="bt_delete_item" ng-disabled='selected_item == null' ng-click="delete_honorary_item()" title="Excluir item do honorário." class="btn btn-sm btn-danger" style="width:80px;"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir </button>
 									</div>
 								</div>
+
+
 							</div>
 						</div>
 
@@ -306,9 +309,9 @@
 														<tr ng-if="registro_selecionado.honorary_itens.length > 0" class="angular-repeat linha_selecionavel {{ item.selected }}" ng-repeat='item in registro_selecionado.honorary_itens' ng-click="selecionar_item(item)" style="font-size: 10px;">
 															<td class='center' style="width: 30px;">{{ $index }}</td>
 															<td class="left" style="padding-left: 6px; width: 70px;">
-																<span ng-if="registro.type_item=='P'">PROVENTO</span>
-																<span ng-if="registro.type_item=='D'">DESCONTO</span>
-																<span ng-if="registro.type_item=='R'">PROVENTO</span>
+																<span ng-if="item.type_item=='P'">PROVENTO</span>
+																<span ng-if="item.type_item=='D'">DESCONTO</span>
+																<span ng-if="item.type_item=='R'">PROVENTO</span>
 															</td>
 															<td class="left"	style="padding-left: 6px;">{{ item.item__nome }}</td>
 
@@ -318,15 +321,15 @@
 															<td class="left"	style="padding-left: 6px;">{{ item.updated_by__get_full_name }}</td>
 
 															<td class="right"	style="padding-left: 6px; width: 90px;">
-																<span ng-if="registro.unit_value != '' && registro.unit_value != null">{{ item.unit_value | currency:"" }}</span>
+																<span ng-if="item.unit_value != '0.00' && item.unit_value != '' && item.unit_value != null">{{ item.unit_value | currency:"" }}</span>
 															</td>
 															<td class="right"	style="padding-left: 6px; width: 90px;">
-																<span ng-if="registro.type_value=='R'">{{ item.quantity | currency:""}}</span>
-																<span ng-if="registro.unit_value != '' && registro.unit_value != null && registro.type_value=='P'">{{ item.quantity | currency:""}} %</span>
+																<span ng-if="item.type_value=='R'">{{ item.quantity | currency:""}}</span>
+																<span ng-if="item.unit_value != '0.00' && item.unit_value != '' && item.unit_value != null && item.type_value=='P'">{{ item.quantity | currency:""}} %</span>
 															</td>
 															<td class="right"	style="padding-left: 6px; width: 90px;">
-																<span ng-if="registro.type_item=='P' || registro.type_item=='R' ">{{ item.total_value| currency:"" }}</span>
-																<span ng-if="registro.type_item=='D'" style="color: #800000">- {{ item.total_value| currency:"" }}</span>
+																<span ng-if="item.type_item=='P' || item.type_item=='R' ">{{ item.total_value| currency:"" }}</span>
+																<span ng-if="item.type_item=='D'" style="color: #800000">- {{ item.total_value| currency:"" }}</span>
 															</td>
 														</tr>
 
@@ -415,7 +418,7 @@
 										</div>
 
 										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-											<div ng-if='registro_selecionado.total_debit_credit==0' class="custom_panel custom-box-defaul">
+											<div ng-if='registro_selecionado.total_debit_credit==0' class="custom_panel custom-box-default">
 												<h6 style="font-weight: bold;color: #555;">Total: <span class="pull-right">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span></h6>
 											</div>
 											<div ng-if='registro_selecionado.total_debit_credit > 0' class="custom_panel custom-box-primary">
