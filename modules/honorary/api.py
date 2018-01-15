@@ -847,7 +847,6 @@ class HonoraryController(BaseController):
         else:
              vencimento = " "
 
-
         contract_unit_value = None
         contract_temporary_discount_rate = None
         contract_temporary_discount_value = None

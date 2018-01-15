@@ -356,33 +356,33 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.get_honorary_item = function(){
-		if($scope.registro_selecionado.honorary_itens=='' || $scope.registro_selecionado.honorary_itens==[]){
-			var data_paramters = {};
-			data_paramters['id'] = $scope.registro_selecionado.id;
+		var data_paramters = {};
+		data_paramters['id'] = $scope.registro_selecionado.id;
 
-			validate_function = function () {return true;}
+		validate_function = function () {return true;}
 
-			success_function = function(result,message,object,status){
-				$scope.registro_selecionado.honorary_itens = object;
-				$scope.$apply();
-			}
-			fail_function = function (result,message,data_object,status) {
-				for (var key in message) {
-					if (message.hasOwnProperty(key)) {
-						if(typeof(message[key]) == Array){
-							message[key].forEach(function(item, index){
-								set_wrong_field(key, item);
-							});
-						}
-						else{
-							error_notify(null,'Falha na Operação',message[key]);
-						}
-						return false;
+		success_function = function(result,message,object,status){
+			$scope.registro_selecionado.honorary_itens = object;
+
+			$scope.$apply();
+		}
+		fail_function = function (result,message,data_object,status) {
+			for (var key in message) {
+				if (message.hasOwnProperty(key)) {
+					if(typeof(message[key]) == Array){
+						message[key].forEach(function(item, index){
+							set_wrong_field(key, item);
+						});
 					}
+					else{
+						error_notify(null,'Falha na Operação',message[key]);
+					}
+					return false;
 				}
 			}
-			request_api("/api/honorary/item",data_paramters,validate_function,success_function,fail_function);
 		}
+		request_api("/api/honorary/item",data_paramters,validate_function,success_function,fail_function);
+
 	}
 
 	$scope.save_honorary_item = function(){
