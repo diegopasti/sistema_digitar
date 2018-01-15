@@ -24,7 +24,7 @@ class Contrato(models.Model):
     taxa_honorario  = models.DecimalField("Honorário:", max_digits=5, decimal_places=2, null=True,blank=False)
     valor_honorario = models.DecimalField("Valor:", max_digits=6, decimal_places=2, null=True,blank=False)
     valor_total = models.DecimalField("Total:", max_digits=8, decimal_places=2, null=True, blank=False)
-    dia_vencimento  = models.CharField("Dia do Vencimento",null=True,default=5,max_length=2)
+    dia_vencimento  = models.CharField("Dia do Vencimento",null=False,default=5,max_length=2)
     data_vencimento = models.DateField("Data de Vencimento",null=True,blank=True)
 
     desconto_temporario = models.DecimalField("Desconto Temporário:", max_digits=10,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
@@ -191,7 +191,7 @@ class Honorary(models.Model):
         if not honorary.is_closed:
             if contract is not None:
                 honorary = self.verify_contract_values(honorary, contract)
-            honorary = self.verify_provents_values()
+            honorary.verify_provents_values()
         return honorary
 
     def verify_provents_values(self):

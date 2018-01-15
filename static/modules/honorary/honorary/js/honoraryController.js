@@ -305,6 +305,21 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 			//$scope.apply();
 	}
 
+	$scope.generate_honorary = function(){
+		if($scope.registro_selecionado != null){
+			window.open('/honorary/'+$scope.registro_selecionado.id);
+			//	data_paramters['id'] = $scope.registro_selecionado.id;
+
+			//	validate_function = function () {return true;}
+
+			//	success_function = function(result,message,object,status){
+			//		success_notify('Operação realizada com sucesso','Documento gerado com sucesso')
+			//	}
+
+			//	fail_function = function (result,message,data_object,status) {
+		}
+	}
+
 	$scope.get_honorary = function(honorary_id){
 		var data_paramters = {};
 		data_paramters['id'] = honorary_id;

@@ -108,15 +108,15 @@ urlpatterns = [
     url(r'^api/provents/disable$', ProventosController().disable_provent),
 
     url(r'^honorary/$', honorario_views.honorary_page),
+    url(r'^honorary/(?P<honorary_id>\d+)$', HonoraryController().generate_document),
     url(r'^api/honorary$', HonoraryController().filter),
-    url(r'^api/honorary/object', HonoraryController().get_object),
-    url(r'^api/honorary/competences$', HonoraryController().generate_honoraries),
-    url(r'^api/honorary/competences/current/close$', HonoraryController().close_current_competence),
+    url(r'^api/honorary/object$', HonoraryController().get_object),
     url(r'^api/honorary/item/save$', HonoraryController().save_honorary_item),
     url(r'^api/honorary/item/update$', HonoraryController().update_honorary_item),
     url(r'^api/honorary/item/delete$', HonoraryController().delete_honorary_item),
+    url(r'^api/honorary/competences$', HonoraryController().generate_honoraries),
+    url(r'^api/honorary/competences/current/close$', HonoraryController().close_current_competence),
 
-    url(r'^api/honorary/item$', HonoraryController().get_honorary_item),
 
 
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),

@@ -40,12 +40,12 @@
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
 								<button id='bt_insert_provent' ng-if="screen_model > 3" role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_provents" ng-disabled="registro_selecionado==null" ng-click="get_honorary_item()">Proventos e Descontos</button>
-								<button id='bt_honorary' role="button" ng-if="screen_model > 3" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" style="margin-left: 5px;">Gerar Honorário</button>
+								<button id='bt_honorary' role="button" ng-if="screen_model > 3" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" style="margin-left: 5px;" ng-click="generate_honorary();">Gerar Honorário</button>
 
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
 									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
-										<li ng-if='screen_model <= 3' ng-class="{disabled: registro_selecionado==null, cursor_pointer:registro_selecionado!=null }"><a><i class="fa fa-print" aria-hidden="true"></i>
+										<li ng-if='screen_model <= 3' ng-class="{disabled: registro_selecionado==null, cursor_pointer:registro_selecionado!=null }" ng-click="generate_honorary();"><a><i class="fa fa-print" aria-hidden="true"></i>
  Gerar Honorário</a></li>
 										<li ng-if='screen_model <= 3' ng-class="{disabled: registro_selecionado==null, cursor_pointer:registro_selecionado!=null}">
 											<a data-toggle="modal" data-target="#modal_provents" ng-click="get_honorary_item();">

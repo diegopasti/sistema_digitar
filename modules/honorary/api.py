@@ -1,21 +1,27 @@
 # -*- encoding: utf-8 -*-
 from decimal import Decimal
 
+import os
+
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary, HonoraryItem
 from modules.honorary.forms import FormContrato, FormProventos, FormHonoraryItem
 from django.contrib.auth.decorators import login_required, permission_required
 from libs.default.decorators import request_ajax_required
 from django.utils.decorators import method_decorator
+
+from modules.protocolo.views import formatar_cpf_cnpj
 from modules.servico.models import Plano, Servico
 from django.http import HttpResponse, Http404
 from libs.default.core import BaseController
-from modules.entidade.models import entidade
+from modules.entidade.models import entidade, contato
 from sistema_contabil import settings
 from django.core import serializers
 from django.core.cache import cache
 from django.utils import timezone
 import datetime
 import json
+
+from sistema_contabil.settings import BASE_DIR
 
 
 def filter_request(request, formulary=None):
@@ -675,7 +681,7 @@ class HonoraryController(BaseController):
                 elif request.POST['type_item'] == "R":
                     honorary.total_repayment = honorary.total_repayment + new_value
                     honorary.total_debit_credit = honorary.total_debit_credit + new_value
-                    honorary.total_honorary = honorary.total_honorary - new_value
+                    honorary.total_honorary = honorary.total_honorary + new_value
                 else:
                     pass
 
@@ -767,6 +773,178 @@ class HonoraryController(BaseController):
         self.start_process(request)
         queryset = HonoraryItem.objects.filter(honorary_id=int(request.POST['id']))
         return BaseController().filter(request, Honorary,queryset=queryset, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+
+    @method_decorator(login_required)
+    def generate_document(self, request, honorary_id):
+        print("VEJA O REQUEST: ",request, honorary_id)
+        path = os.path.join(BASE_DIR, "static/imagens/")
+
+        #parametros_emissor = criar_parametro_entidade_para_protocolo(1)
+        #protocolo_selecionado = protocolo.objects.get(pk=protocolo_id)
+
+        #documentos = item_protocolo.objects.filter(protocolo_id=protocolo_id)
+
+        """
+        if protocolo_selecionado.destinatario == None:
+            parametros_destinatario = ParametroProtocolo()
+            parametros_destinatario.entidade = None
+            parametros_destinatario.complemento = ''
+            parametros_destinatario.nome = protocolo_selecionado.nome_avulso
+            parametros_destinatario.cpf_cnpj = protocolo_selecionado.documento_avulso
+
+            if protocolo_selecionado.endereco_avulso != None:
+                parametros_destinatario.endereco = protocolo_selecionado.endereco_avulso.title()
+            else:
+                parametros_destinatario.endereco = ""
+
+            if protocolo_selecionado.contatos_avulso != None:
+                parametros_destinatario.contatos = [protocolo_selecionado.contatos_avulso]
+            else:
+                parametros_destinatario.contatos = []
+
+        else:
+            parametros_destinatario = criar_parametro_entidade_para_protocolo(protocolo_selecionado.destinatario_id)
+        """
+
+
+        """destinatario_nome = p.destinatario.nome_razao
+            destinatario_endereco = p.destinatario.endereco.get_endereco()
+            destinatario_cpf_cnpj = formatar_cpf_cnpj(p.destinatario.cpf_cnpj)
+            destinatario_contatos = contatos
+            destinatario_complemento = p.destinatario.endereco.complemento.title()
+        """
+
+        """
+        if protocolo_selecionado.doc_receptor != None:
+            documento_receptor = protocolo_selecionado.doc_receptor
+
+        else:
+            documento_receptor = ""
+        """
+
+        #linhas_extras = [1] * (10 - len(documentos))
+
+        date_hour_emission = datetime.datetime.now().strftime('%d/%m/%Y ÀS %H:%M:%S')
+        company = entidade.objects.get(pk=1)
+        company_contacts = contato.objects.filter(entidade=company)[:2]
+
+        honorary = Honorary.objects.get(pk=int(honorary_id))
+        client = honorary.entity
+        client_contacts = contato.objects.filter(entidade=client)[:2]
+
+        documentos = HonoraryItem.objects.filter(honorary=honorary)
+
+
+        valor_liquido = honorary.total_honorary - honorary.total_repayment
+
+        if honorary.contract is not None:
+            vencimento = honorary.contract.dia_vencimento
+            data_atual = datetime.datetime.now().strftime('/%m/%Y')
+            if len(vencimento) == 1:
+                vencimento = "0"+str(vencimento)+data_atual
+            else:
+                vencimento = str(vencimento)+data_atual
+        else:
+             vencimento = " "
+
+
+        contract_unit_value = None
+        contract_temporary_discount_rate = None
+        contract_temporary_discount_value = None
+
+        contract_fidelity_discount_rate = None
+        contract_fidelity_discount_value= None
+
+        if honorary.contract is not None:
+            if honorary.contract.ativo:
+                if honorary.contract.valor_honorario != 0:
+                    contract_unit_value = honorary.contract.valor_honorario
+
+                if honorary.contract.desconto_temporario_ativo is not None and honorary.contract.desconto_temporario_ativo > 0:
+                    contract_temporary_discount_rate = honorary.contract.desconto_temporario_ativo
+                    contract_temporary_discount_value = round(float(contract_unit_value) * (float(contract_temporary_discount_rate)/100.0), 2)
+
+                if honorary.contract.desconto_indicacoes is not None and honorary.contract.desconto_indicacoes > 0:
+                    contract_fidelity_discount_rate = honorary.contract.desconto_indicacoes
+                    contract_fidelity_discount_value = round(float(contract_unit_value) * (float(honorary.contract.desconto_indicacoes)/100.0), 2)
+
+        linhas_extras = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        offset = 0
+        if documentos.count() < 10:
+            if contract_unit_value is not None:
+                offset = offset + 1
+            if contract_temporary_discount_rate is not None:
+                offset = offset + 1
+            if contract_fidelity_discount_rate is not None:
+                offset = offset + 1
+            linhas_extras = linhas_extras[documentos.count()+offset:10]
+
+        else:
+            linhas_extras = []
+
+        #contrato = None
+        #if honorary.contract is not None:
+        #    if honorary.contract.ativo:
+        #        if honorary.contract.valor_honorario != 0:
+        #            contrato = {'description': 'HONORÁRIOS CONTÁBEIS CONF. CONTRATO - ' + Honorary.competence, 'quantity': '1,00', 'unit_value': honorary.contract.valor_honorario}
+
+
+
+
+
+
+
+
+        parametros = {
+            'emissor_nome': company.nome_razao, #parametros_emissor.nome,
+            'emissor_cpf_cnpj': formatar_cpf_cnpj(company.cpf_cnpj), #parametros_emissor.nome,formatar_cpf_cnpj(parametros_emissor.cpf_cnpj),
+            'emissor_endereco': company.endereco.get_endereco(), #parametros_emissor.nome,parametros_emissor.endereco,
+            'emissor_complemento': company.endereco.complemento.title(), #parametros_emissor.nome,parametros_emissor.complemento,
+            'emissor_contatos': company_contacts, #parametros_emissor.nome,parametros_emissor.contatos,
+            'destinatario_nome': client.nome_razao, #parametros_emissor.nome,parametros_destinatario.nome,
+            'destinatario_cpf_cnpj': formatar_cpf_cnpj(client.cpf_cnpj), #parametros_emissor.nome,formatar_cpf_cnpj(parametros_destinatario.cpf_cnpj),
+            'destinatario_endereco': client.endereco.get_endereco(), #parametros_emissor.nome,parametros_destinatario.endereco,
+            'destinatario_complemento': client.endereco.complemento.title(), #parametros_emissor.nome,parametros_destinatario.complemento,
+            'destinatario_contatos': client_contacts, #parametros_emissor.nome,parametros_destinatario.contatos,
+            'honorary': honorary,
+
+            'contract_unit_value':contract_unit_value,
+            'contract_temporary_discount_rate':contract_temporary_discount_rate,
+            'contract_temporary_discount_value': contract_temporary_discount_value,
+            'contract_fidelity_discount_rate':contract_fidelity_discount_rate,
+            'contract_fidelity_discount_value':contract_fidelity_discount_value,
+
+
+            'valor_liquido':valor_liquido,
+            'vencimento':vencimento,
+
+
+            'emitido_por': request.user.get_full_name(), #parametros_emissor.nome,protocolo_selecionado.emitido_por.title(),
+            'data_emissao': date_hour_emission, #parametros_emissor.nome,protocolo_selecionado.data_emissao,
+
+            'recebido_por': "", #parametros_emissor.nome,protocolo_selecionado.recebido_por,  # recebido_por,
+            'identificacao': "", #parametros_emissor.nome,protocolo_selecionado.doc_receptor if protocolo_selecionado.doc_receptor != None else "",
+            'data_entrega': "", #parametros_emissor.nome,protocolo_selecionado.data_recebimento,  # data_entrega,
+            'hora_entrega': "", #parametros_emissor.nome,protocolo_selecionado.hora_recebimento,  # hora_entrega,
+
+            'documentos': documentos, #parametros_emissor.nome,documentos,  # formulario.temporarios,
+            'linhas_extras': linhas_extras,  # 'documentos':[
+            #                  ["33","IMPOSTO DE RENDA","2015","","R$ 285,50"],
+            #                  ["8","EMISSAO DE CERTIFICADO DIGITAL","","31/12/2018","R$ 175,10"],
+            #                  ["14","CONTRATO - PLANO COMPLETO","","31/12/2018","R$ 475,00"],
+            #              ],
+            # 'formulario_protocolo':"Nada por enquanto",
+            # 'erro':"sem erros tambem",
+            # 'path':path,
+
+            'path_imagens': path
+
+            }
+
+        from django_xhtml2pdf.utils import generate_pdf
+        resp = HttpResponse(content_type='application/pdf')
+        result = generate_pdf('honorario/honorary_report.html', file_object=resp, context=parametros)
+        return result
 
 
 """
