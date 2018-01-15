@@ -19,37 +19,45 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
     url: url,
     data: data_paramters,
     success: function(data) {
-			var response = $.parseJSON(data);
-      var message = response['message'];
-      var result = response['result'];
-      var data_object = response['object'];//$.parseJSON()
-      var status = response['status'];
+			alert("Sucesso:" + JSON.stringify(data))
+			if (data.indexOf('ERRO403') != -1) {
+				error_notify(null, "Operação não autorizada", "Nível de autonomia não permite o acesso à este recurso.");
+				return false;
+			}
+			else
+			{
+				var response = $.parseJSON(data);
+				var message = response['message'];
+				var result = response['result'];
+				var data_object = response['object'];//$.parseJSON()
+				var status = response['status'];
 
-      if (result == true) {
-        //var moment_date = moment(data_object['fields']['joined_date']).format("DD/MM/YYYY - HH:mm:ss")
-        if (success_function != null) {
-        	var redirect = success_function(result,message,data_object,status);
-        }
-      }
+				if (result == true) {
+					//var moment_date = moment(data_object['fields']['joined_date']).format("DD/MM/YYYY - HH:mm:ss")
+					if (success_function != null) {
+						var redirect = success_function(result, message, data_object, status);
+					}
+				}
 
-      else {
-        if( typeof message === 'string' ) {
-          notify('error',"Falha na operação",message)
-        }
-        else {
-        	if(fail_function != null){
-        		fail_function(result,message,data_object,status);
-        	}
-        }
-      }
+				else {
+					if (typeof message === 'string') {
+						notify('error', "Falha na operação", message)
+					}
+					else {
+						if (fail_function != null) {
+							fail_function(result, message, data_object, status);
+						}
+					}
+				}
 
-     	register_action(start_request, status)
-      NProgress.done();
-      if (redirect){
-      	window.location = redirect;
-      }
-      return true;
-    },
+				register_action(start_request, status)
+				NProgress.done();
+				if (redirect) {
+					window.location = redirect;
+				}
+				return true;
+			}
+		},
     failure: function(data){
     	alert('Erro: '+JSON.stringify(data))
     	NProgress.done();
