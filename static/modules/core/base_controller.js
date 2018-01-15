@@ -19,7 +19,6 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
     url: url,
     data: data_paramters,
     success: function(data) {
-			alert("Sucesso:" + JSON.stringify(data))
 			if (data.indexOf('ERRO403') != -1) {
 				error_notify(null, "Operação não autorizada", "Nível de autonomia não permite o acesso à este recurso.");
 				return false;

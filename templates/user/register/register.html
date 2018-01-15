@@ -7,7 +7,6 @@
 <div ng-controller="register_controller">
   <form id='form_register' method="POST" autocomplete="off" ng-submit="save_first_user()" novalidate>
     {% csrf_token %}
-    <h1><!--<i class="fa fa-paw></i>--> SistemaWeb</h1>
     <div>
       {{ formulario_register.username }}
     </div>
@@ -24,16 +23,15 @@
       {{ formulario_register.last_name }}
     </div>
 
-    <div>
-      {{ formulario_register.password }}
-    </div>
+    <div class="row">
+			<div class="col-lg-6">
+				{{ formulario_register.password }}
+			</div>
 
-    <div>
-      {{ formulario_register.confirm_password }}
-    </div>
+			<div class="col-lg-6">
+				{{ formulario_register.confirm_password }}
+			</div>
 
-		<div>
-      <h2>CRIAR CAMPO DE SELECAO DE GRUPO</h2>
     </div>
 
     <br>
@@ -53,9 +51,6 @@
       <div class="clearfix"></div>
       <br />
 
-      <div>
-        <p>©2016 All Rights Reserved. Privacy and Terms</p>
-      </div>
     </div>
   </form>
 </div>

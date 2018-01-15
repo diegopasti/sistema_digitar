@@ -22,14 +22,17 @@ class UserController(BaseController):
         senha = request.POST['password']
         nome = request.POST['first_name'].lower()
         sobrenome = request.POST['last_name'].lower()
-
-        user = User.objects.create_superuser(username, email, senha, first_name=nome, last_name=sobrenome)
+        try:
+            user = User.objects.create_superuser(username, email, senha, first_name=nome, last_name=sobrenome)
+        except Exception as ex:
+            user = None
+            print("Olha a exeption;",ex)
         if user is not None:
             # activation_code = generate_activation_code(email)
             # send_generate_activation_code(email, activation_code)
             response_dict = self.notify.success(user, list_fields=['username'])
         else:
-            response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
+            response_dict = self.notify.error('Não foi possivel criar o usuario')
         return self.response(response_dict)
 
     @request_ajax_required

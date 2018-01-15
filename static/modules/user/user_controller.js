@@ -69,17 +69,16 @@ application.controller('register_controller', function($scope) {
 	$scope.confirm_password = "";
 
 	$scope.save_first_user = function () {
-		alert("venho?")
 		var data_paramters = create_data_paramters('form_register');
-		alert("Olha o data:\n"+JSON.stringify(data_paramters))
 
 		success_function = function(result,message,object,status){
-			alert("olha no q deu:"+JSON.stringify(message))
-			alert("resultado:"+result)
+
+			notify('success','Operação concluida','Administrador criado com sucesso')
+			return "/"
 		}
 
 		fail_function = function (result,message,data_object,status) {
-			alert('n deu'+JSON.stringify(message)+"\n"+data_object)
+			notify('error','Erro! Operação não concluída',JSON.stringify(message))
 		}
 
 		validate_function = function () {
