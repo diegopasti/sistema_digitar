@@ -70,7 +70,6 @@ application.controller('register_controller', function($scope) {
 
 	$scope.save_first_user = function () {
 		var data_paramters = create_data_paramters('form_register');
-
 		success_function = function(result,message,object,status){
 
 			notify('success','Operação concluida','Administrador criado com sucesso')
@@ -78,7 +77,7 @@ application.controller('register_controller', function($scope) {
 		}
 
 		fail_function = function (result,message,data_object,status) {
-			notify('error','Erro! Operação não concluída',JSON.stringify(message))
+			notify('error','Erro! Operação não concluída','Usuario ainda não cadastrado')
 		}
 
 		validate_function = function () {
@@ -86,7 +85,6 @@ application.controller('register_controller', function($scope) {
 		}
 		//var base_controller = new BaseController();
 		//base_controller.request("/api/provents/save",data_paramters,validate_function,success_function,fail_function);
-		alert("Chegando")
 		request_api("/api/user/save/first/register/",data_paramters,validate_function,success_function,fail_function);
 	}
 

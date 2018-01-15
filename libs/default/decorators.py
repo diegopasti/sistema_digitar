@@ -76,7 +76,7 @@ def request_post_required(view):
     return _wrapped_view
 
 
-def permission_level_required(nivel_requerido, login_url=None, raise_exception=False):
+def     permission_level_required(nivel_requerido, login_url=None, raise_exception=False):
 
     '''
     Decorador View
