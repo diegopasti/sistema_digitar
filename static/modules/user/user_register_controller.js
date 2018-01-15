@@ -109,15 +109,23 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
       url: "/api/user/filter",
 
       success: function (data) {
-      	alert("VEJA O QUE VEIO: "+data);
-				data = data.replace("<html><head></head><body>{","{")
-				data = data.replace("}</body></html>","}")
-				$scope.usuarios = JSON.parse(data).object;
-        $("#loading_tbody").fadeOut();
-        $scope.usuarios_carregados = true;
-        $scope.tdboy = $("#table_usuarios tbody").height();
-        $scope.$apply();
-
+      	try
+				{
+					alert("VEJA O QUE VEIO: " + data);
+					data = data.replace("<html><head></head><body>{", "{")
+					data = data.replace("}</body></html>", "}")
+					$scope.usuarios = JSON.parse(data).object;
+					$("#loading_tbody").fadeOut();
+					$scope.usuarios_carregados = true;
+					$scope.tdboy = $("#table_usuarios tbody").height();
+					$scope.$apply();
+				}
+				catch(err)
+				{
+					if(data.indexOf('ERRO403')!= -1){
+						error_notify(null,"Operação não autorizada","Nível de autonomia não permite o acesso à este recurso.");
+					}
+				}
       },
 
       failure: function (data) {
