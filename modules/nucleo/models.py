@@ -9,8 +9,8 @@ from modules.user.models import User
 
 
 class Backup(models.Model):
-    created_date = models.DateTimeField(auto_now_add=True, null=False)
-    backup_file_name = models.CharField("Nome do Arquivo", null=False, blank=False, max_length=100, validators=[],error_messages=ERRORS_MESSAGES)
+    created_date = models.DateTimeField(auto_now=True, null=False)
+    backup_file_name = models.CharField("Nome do Arquivo", null=False, blank=False,unique=True, max_length=15, validators=[],error_messages=ERRORS_MESSAGES)
     backup_size = models.PositiveIntegerField("Tamanho do Arquivo", null=False, error_messages=ERRORS_MESSAGES)
     backup_link = models.CharField("Endereço", null=False, blank=False, max_length=100, validators=[], error_messages=ERRORS_MESSAGES)
 

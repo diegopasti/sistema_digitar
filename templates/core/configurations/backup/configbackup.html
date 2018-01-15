@@ -27,10 +27,11 @@
 									<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
 										{% verbatim %}
 										<div class="row">
-											<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">ef
+											<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
 												<div class="pull-left" style="left: 0px;">Versão Atual: {{ version_informations.local }} </div>
 												<div class="pull-left" style="left: 0px;">Última Atualização: {{ version_informations.last_update }} </div>
-												<!--<div class="pull-left" style="left: 0px;">Último Backup: {{  }} </div>-->
+												<div class="pull-left" style="left: 0px;">Armazenamento local: {{ system_informations.folder_size }} Kb</div>
+												<div class="pull-left" style="left: 0px;">Armazenamento local: {{ system_informations.total_files }} itens</div>
 											</div>
 										</div>
 									 {% endverbatim %}
@@ -226,6 +227,7 @@ $(document).ready(function(){
 	angular.element(document.getElementById('configuration_controller')).scope().load()
 	angular.element(document.getElementById('configuration_controller')).scope().load_backups_informations()
 	angular.element(document.getElementById('configuration_controller')).scope().load_version_informations()
+	angular.element(document.getElementById('configuration_controller')).scope().load_system_informations()
 	angular.element(document.getElementById('configuration_controller')).scope().shared_folder()
 });
 </script>
