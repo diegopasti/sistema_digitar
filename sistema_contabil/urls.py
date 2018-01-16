@@ -35,7 +35,7 @@ handler403 = 'modules.core.views.access_denied'
 
 urlpatterns = [
 
-    url(r'admin/register/first_user',view_usuario.register_first_user),
+    url(r'admin/setup',view_usuario.register_first_user),
     url(r'^$', entidade_views.index),
     #url(r'^admin/filebrowser/', include(site.urls)),
     #url(r'^adminurl/filebrowser/', include(site.urls)),
