@@ -20,8 +20,11 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
 
 		success_function = function(result,message,object,status){
-			notify_success_message(['Novo Usuário adicionado com Sucesso'])
-			$scope.usuarios.splice(0,0,object)
+			notify_success_message(['Novo Usuário adicionado com Sucesso']);
+			$scope.usuarios.splice(0,0,{});
+			$scope.usuarios[0] = object;
+			$scope.usuarios[0]['get_full_name'] = object['first_name']+ ' ' + object['last_name'];
+			$scope.usuarios[0]['groups'] =  [object['group_id']];
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_usuario', message);
 			$("#modal_adicionar_usuario").modal('hide');
@@ -54,7 +57,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 				var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
 				notify_success_message(["Usuário atualizado com sucesso"])
 				$scope.usuarios[posicao] = object;
-				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name']
+				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name'];
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
 				check_response_message_form('#form_alterar_usuario', message);
@@ -109,15 +112,23 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
       url: "/api/user/filter",
 
       success: function (data) {
-      	alert("VEJA O QUE VEIO: "+data);
-				data = data.replace("<html><head></head><body>{","{")
-				data = data.replace("}</body></html>","}")
-				$scope.usuarios = JSON.parse(data).object;
-        $("#loading_tbody").fadeOut();
-        $scope.usuarios_carregados = true;
-        $scope.tdboy = $("#table_usuarios tbody").height();
-        $scope.$apply();
-
+      	try
+				{
+					alert("VEJA O QUE VEIO: " + data);
+					data = data.replace("<html><head></head><body>{", "{")
+					data = data.replace("}</body></html>", "}")
+					$scope.usuarios = JSON.parse(data).object;
+					$("#loading_tbody").fadeOut();
+					$scope.usuarios_carregados = true;
+					$scope.tdboy = $("#table_usuarios tbody").height();
+					$scope.$apply();
+				}
+				catch(err)
+				{
+					if(data.indexOf('ERRO403')!= -1){
+						error_notify(null,"Operação não autorizada","Nível de autonomia não permite o acesso à este recurso.");
+					}
+				}
       },
 
       failure: function (data) {

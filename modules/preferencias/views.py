@@ -8,11 +8,14 @@ from django.forms.models import model_to_dict
 from django.http.response import Http404
 from django.shortcuts import render, HttpResponse
 from django.template import RequestContext
+
+from libs.default.decorators import permission_level_required
 from modules.preferencias.formularios import adicionar_salario_minimo
 
 from modules.preferencias.models import SalarioMinimo
 
 @login_required
+@permission_level_required(1,'/error/access_denied')
 def controle_preferencias(request):
     formulario_salario = adicionar_salario_minimo()
     return render(request, "preferencias/preferencias.html",{'formulario_salario':formulario_salario})

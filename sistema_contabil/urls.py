@@ -137,6 +137,7 @@ urlpatterns = [
     url(r'^system/configurations', core_views.system_configurations),
     url(r'configurations/backup$', ConfigurationsController().load_backups),
     url(r'configurations/backup/info$', ConfigurationsController().check_available_space),
+    url(r'configurations/backup/system_info$', ConfigurationsController().check_available_system_space),
     url(r'configurations/backup/create$', ConfigurationsController().create_backup),
     url(r'configurations/backup/local$', ConfigurationsController().create_backup_local),
     url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),

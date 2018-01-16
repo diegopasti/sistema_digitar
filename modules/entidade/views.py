@@ -15,7 +15,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 
 from libs.default.core import BaseController
-from libs.default.decorators import request_ajax_required
+from libs.default.decorators import request_ajax_required, permission_level_required
 from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco
 from modules.entidade.models import entidade, contato
 from modules.entidade.service import consultar_codigo_postal_viacep  # consultar_codigo_postal_default
@@ -53,6 +53,7 @@ def buscar_fontes(request):
     return render(request,"index.html")
 
 @login_required
+@permission_level_required(3,'/error/access_denied')
 def cadastro_entidades(request):
     usuario_admin = False
     dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')
@@ -653,6 +654,8 @@ def visualizar_entidade(request,id):
             cliente.tipo_vencimento_iss = formulario.cleaned_data['tipo_vencimento']
             cliente.data_vencimento_iss = formulario.cleaned_data['data_vencimento_iss']
             cliente.dia_vencimento_iss = formulario.cleaned_data['dia_vencimento_iss']
+            cliente.taxa_iss = formulario.cleaned_data['taxa_iss']
+            cliente.inscricao_junta_comercial = formulario.cleaned_data['inscricao_junta_comercial']
             try:
                 cliente.taxa_iss = Decimal(formulario.cleaned_data['taxa_iss'].replace('.','').replace(',','.'))
                 print("COLOQUEI O VALOR DECIMAL: ",cliente.taxa_iss)
@@ -837,29 +840,29 @@ def visualizar_entidade(request,id):
 
         #formulario_contrato = FormularioContrato()
 
-        formulario = formulario_cadastro_entidade_completo(
-            initial={
-            'cpf_cnpj':cliente.cpf_cnpj,
-            'nome_razao':cliente.nome_razao,
-            'apelido_fantasia':cliente.apelido_fantasia,
-            'nascimento_fundacao':cliente.nascimento_fundacao,
-            'natureza_juridica':cliente.natureza_juridica,
-            'regime_apuracao':cliente.regime_apuracao,
-            'regime_desde': cliente.regime_desde,
-            'nome_filial': cliente.nome_filial.upper(),
-            'inscricao_estadual': cliente.inscricao_estadual,
-            'inscricao_municipal': cliente.inscricao_municipal,
-            'inscricao_junta_comercial': cliente.inscricao_junta_comercial,
-            'inscricao_produtor_rural': cliente.inscricao_produtor_rural,
-            'cep': cliente.endereco.cep,
-            'endereco': cliente.endereco.logradouro,
-            'bairro': cliente.endereco.bairro,
-            'municipio': cliente.endereco.municipio,
-            'estado': cliente.endereco.estado,
-            'pais':cliente.endereco.pais,
-            'numero_endereco': cliente.endereco.numero,
-            'complemento':cliente.endereco.complemento,
-            'codigo_municipio': cliente.endereco.codigo_ibge,
+        formulario = formulario_cadastro_entidade_completo(initial={
+                        'cpf_cnpj':cliente.cpf_cnpj,
+                        'nome_razao':cliente.nome_razao,
+                        'apelido_fantasia':cliente.apelido_fantasia,
+                        'nascimento_fundacao':cliente.nascimento_fundacao,
+                        'natureza_juridica':cliente.natureza_juridica,
+                        'regime_apuracao':cliente.regime_apuracao,
+                        'regime_desde': cliente.regime_desde,
+                        'nome_filial': cliente.nome_filial.upper(),
+                        'inscricao_estadual': cliente.inscricao_estadual,
+                        'inscricao_municipal': cliente.inscricao_municipal,
+                        'inscricao_junta_comercial': cliente.inscricao_junta_comercial,
+                        'inscricao_produtor_rural': cliente.inscricao_produtor_rural,
+                        'inscricao_imovel_rural' : cliente.inscricao_imovel_rural,
+                        'cep': cliente.endereco.cep,
+                        'endereco': cliente.endereco.logradouro,
+                        'bairro': cliente.endereco.bairro,
+                        'municipio': cliente.endereco.municipio,
+                        'estado': cliente.endereco.estado,
+                        'pais':cliente.endereco.pais,
+                        'numero_endereco': cliente.endereco.numero,
+                        'complemento':cliente.endereco.complemento,
+                        'codigo_municipio': cliente.endereco.codigo_ibge,
 
             'contatos': contatos_serializado,
             'atividade_economica':atividades_serializadas,

@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from libs.default.decorators import request_get_required
+from libs.default.decorators import request_get_required, permission_level_required
 from modules.nucleo.utils import check_valid_activation_code
 from modules.user.forms import FormRegister, FormLogin, FormResetPassword, FormActivationCode, \
     FormConfirmRegister, FormUpdateProfile, FormAlterarPassword, FormChangePassword, FromChangePersonalInfo
@@ -89,6 +89,7 @@ def profile (request):
     return render(request,"user/profile.html",{'form_change_password':form_change_password,'form_change_email':form_change_email})
 
 @login_required
+@permission_level_required(2, login_url='/access_deny/')
 def user_page (request):
     form_register = FormRegister()
     form_update_register = FormUpdateProfile()

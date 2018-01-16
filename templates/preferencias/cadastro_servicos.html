@@ -120,21 +120,17 @@ label {
                             {{ formulario.descricao }}
 
                         </div>
-                        <!--<div class="row">
-                            <div class="col-lg-3 col-lg-push-9">
-                                <button type="button" id="bt_submit_servico" class="btn btn-primary form-control" ng-click="adicionar_servico()" style="position: relative; margin-top: 20px">Salvar</button>
-                                <!-- <a href="#modal_adicionar_servico" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  ->
-                            </div>
-                        </div>
-                        -->
-
                     </div>
 
                     <div class="modal-footer">
                         <div class="row">
-
                             <div class="col-md-3 col-md-push-9">
-                                <button type="submit" id="bt_submit_servico" ng-class="{'desabilitado': modal_servico == ''}" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_documento">Salvar</button>
+                                <button type="submit" id="bt_submit_servico" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_documento">Salvar</button>
+															<script>
+																$('#modal_descricao').on('input', function() {
+																	alert("faz algo aqui")
+																});
+															</script>
                                 <!-- <a href="#modal_adicionar_documento" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
                             </div>
                         </div>
@@ -183,7 +179,7 @@ label {
                                             </th>
 
                                             <th style="text-align: center;vertical-align: middle;">
-                                                <a id="caret_servico" ng-click="sortType = 'nome'; sortReverse = !sortReverse" style="display:block;">Serviço
+                                                <a id="caret_servico" nzg-click="sortType = 'nome'; sortReverse = !sortReverse" style="display:block;">Serviço
                                                      <span class='caret_one pull-right' ng-class="sortType == 'nome' && !sortReverse ? 'fa fa-caret-up caret_actived' : 'fa fa-caret-up caret_disabled' "></span>
                                                     <span class='caret_two pull-right' ng-class="sortType == 'nome' && sortReverse ? 'fa fa-caret-down caret_actived' : 'fa fa-caret-down caret_disabled' "></span>
                                                 </a>
@@ -371,49 +367,51 @@ label {
         }
 
         $scope.alterar_servico = function() {
+        		var old_nome = $scope.registro_selecionado.nome;
+        		var old_descricao = $scope.registro_selecionado.descricao;
             var servico = $('#modal_servico').val().toUpperCase();
             var descricao = $('#modal_descricao').val().toUpperCase();
 
 
-            if(servico){
+            if(!(old_nome == (servico) && old_descricao == (descricao))){
                 if (confirm('Deseja mesmo alterar esse Serviço?')) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/api/preferencias/alterar_servico/" + $scope.registro_selecionado.id + "/",
-                        data: {
-                            servico: servico,
-                            descricao: descricao,
-                            csrfmiddlewaretoken: '{{ csrf_token }}'
-                        },
+										$.ajax({
+											type: "POST",
+											url: "/api/preferencias/alterar_servico/" + $scope.registro_selecionado.id + "/",
+											data: {
+												servico: servico,
+												descricao: descricao,
+												csrfmiddlewaretoken: '{{ csrf_token }}'
+											},
 
-                        success: function (data) {
+											success: function (data) {
 
-                            var resultado = $.parseJSON(data);
+												var resultado = $.parseJSON(data);
 
-                            if (resultado['success'] == true) {
-                                $scope.registro_selecionado.nome = servico;
-                                $scope.registro_selecionado.descricao = descricao;
-                                $scope.registro_selecionado.selecionado = '';
-                                $scope.$apply();
-                                $scope.resetar_formulario_servico();
-                            }
+												if (resultado['success'] == true) {
+													$scope.registro_selecionado.nome = servico;
+													$scope.registro_selecionado.descricao = descricao;
+													$scope.registro_selecionado.selecionado = '';
+													$scope.$apply();
+													$scope.resetar_formulario_servico();
+												}
 
-                            else {
-                                alert(resultado["message"]);
-                            }
-                        },
-                        failure: function (data) {
-                            alert('Erro! Falha na execução do ajax');
-                        }
-                    });
-                }
+												else {
+													alert(resultado["message"]);
+												}
+											},
+											failure: function (data) {
+												alert('Error! problema na execução do ajax');
+											}
+										});
+								}
 
                 else{
                     //e.preventDefault();
                 }
             }
             else{
-                alert('Erro! Preencha os campos antes de enviar');
+                alert('Nenhuma mudança detectada');
             }
 
             $scope.verificar_servicos();

@@ -69,13 +69,15 @@ class BackupManager:
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
         start_timing_backup = datetime.datetime.now()
         list_files = self.dropbox.files_list_folder(DROPBOX_ROOT_PATH)
+        #print(list_files.entries[-1].path_display)
         most_recent_backup = self.download(list_files.entries[-1].path_display)
         print(most_recent_backup)
         django.setup()
         call_command('dbrestore', '-v','0', '-i', 'temp.dump.gz', '-z', '-q','--noinput')
-        self.clear_temp_file()
+        #self.clear_temp_file()
         backup_duration = datetime.datetime.now() - start_timing_backup
         print("Backup Restaurado em", backup_duration.total_seconds(), "segundos")
+        self.clear_temp_file()
         return True
 
     def list_backup(self):
@@ -149,10 +151,10 @@ class BackupManager:
         time = datetime.datetime.now()
         now = time.strftime("%p")
         if now == 'AM':
-            now = 'MAT'
+            now = 'mat'
         elif now == 'PM':
-            now = 'VESP'
-        dias = ('Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom')
+            now = 'vesp'
+        dias = ('seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom')
         hj = date.today()
         dia = dias[hj.weekday()]
         #shutil.copy(temp_file,'data/backup/'+time.strftime("%a"+"_"+"%Y%m%d%I%M%S"+"_"+"%p")+".dump.gz")
@@ -165,8 +167,8 @@ class BackupManager:
             link = self.dropbox.sharing_create_shared_link_with_settings(export_name)
         except:
             link = self.dropbox.sharing_create_shared_link(export_name)
-            file_metadata = self.dropbox.files_get_metadata(export_name)
-            print(file_metadata)
+        file_metadata = self.dropbox.files_get_metadata(export_name)
+        print(file_metadata)
         url = link.url
         dl_url = re.sub(r"\?dl\=0", "?dl=1", url)
         data['file_name'] = file_metadata.name
@@ -175,7 +177,6 @@ class BackupManager:
         data['size'] = int(file_metadata.size)
         data['folder_link'] = self.shared_folder()
         return data
-        #return dl_url
 
     def delete_file(self,file=''):
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
@@ -186,6 +187,9 @@ class BackupManager:
         backup_file = DBBACKUP_STORAGE_OPTIONS['location'] + '/temp.dump.gz'
         if os.path.isfile(backup_file):
             os.remove(backup_file)
+
+    def schedule_backup(self):
+        print('test')
 
 if __name__=='__main__':
     import sys
@@ -205,5 +209,7 @@ if __name__=='__main__':
         backup_manage.delete_file()
     elif "share_folder" in arguments:
         backup_manage.user_profile()
+    elif "schedule" in arguments:
+        backup_manage.schedule_backup()
     else:
         pass

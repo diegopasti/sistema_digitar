@@ -83,54 +83,71 @@ application.controller('configurations_controller', function ($scope) {
     }
 	}
 
-$scope.create_backup_local = function () {
-    if (confirm('Este processo pode ser demorado, deseja prosseguir?')) {
-      $.blockUI({ message: "<h1>Remote call in progress...</h1>" });
-      $.blockUI({
-        message: '<h1>Por favor aguarde...</h1><img src="http://127.0.0.1:8000/static/imagens/ajax-loader.gif" />',
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#000',
-          '-webkit-border-radius': '10px',
-          '-moz-border-radius': '10px',
-          opacity: .5,
-          color: '#fff'}
-      });
+  $scope.create_backup_local = function () {
+      if (confirm('Este processo pode ser demorado, deseja prosseguir?')) {
+        $.blockUI({ message: "<h1>Remote call in progress...</h1>" });
+        $.blockUI({
+          message: '<h1>Por favor aguarde...</h1><img src="http://127.0.0.1:8000/static/imagens/ajax-loader.gif" />',
+          css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff'}
+        });
 
-      NProgress.start();
-      var start_request = Date.now();
+        NProgress.start();
+        var start_request = Date.now();
+        $.ajax({
+          type: 'GET',
+          url: "/api/core/configurations/backup/local",
+
+          success: function (data) {
+            $scope.creating_backup = true;
+            var response = JSON.parse(data);
+            var item = response.object;
+            if(response.result){
+              //$scope.backups.splice(0, 0, item);
+              $scope.$apply();
+            }
+            register_action(start_request, status);
+            $scope.load_backups_informations()
+            $scope.load()
+            NProgress.done();
+          },
+
+          failure: function () {
+            alert("Não foi possivel carregar a lista");
+            $scope.loaded_backups = true;
+            register_action(start_request, status);
+            NProgress.done();
+          }
+        })
+      }
+      else{
+        return false;
+      }
+  }
+
+
+  $scope.load_system_informations = function(){
       $.ajax({
         type: 'GET',
-        url: "/api/core/configurations/backup/local",
+        url: "/api/core/configurations/backup/system_info",
 
         success: function (data) {
-          $scope.creating_backup = true;
-          var response = JSON.parse(data);
-          var item = response.object;
-          if(response.result){
-            //$scope.backups.splice(0, 0, item);
-            $scope.$apply();
-          }
-          register_action(start_request, status);
-          $scope.load_backups_informations()
-          $scope.load()
-          NProgress.done();
+          $scope.system_informations = JSON.parse(data).object;
+          $("#loading_tbody").fadeOut();
+          $scope.$apply();
         },
 
         failure: function () {
-          alert("Não foi possivel carregar a lista");
-          $scope.loaded_backups = true;
-          register_action(start_request, status);
-          NProgress.done();
+          alert("Não foi possivel carregar a lista")
         }
       })
     }
-    else{
-      return false;
-    }
-	}
-
 
 	$scope.load_backups_informations = function(){
     $.ajax({
@@ -168,6 +185,8 @@ $scope.create_backup_local = function () {
       success: function (data) {
         $scope.restore_backups_informations = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
+        $scope.load_backups_informations()
+        $scope.load()
         $.unblockUI();
         success_notify('Operação realizada com Sucesso','Restauração concluída com sucesso.');
         $scope.$apply();

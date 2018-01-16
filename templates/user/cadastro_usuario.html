@@ -116,14 +116,14 @@
 									<th class='text-center' style="width: 180px;" ng-click="sortType='email';sortReverse=!sortReverse">email</th>
 									<th class='text-center' style="width: 100px;" ng-click="sortType='groups';sortReverse=!sortReverse">Grupo</th>
 									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">data de registro</th>
-									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">data de registro</th>
+									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">Ultimo Acesso</th>
 									<th class='text-center' style="width: 5px;"  ng-click="sortType='is_active';sortReverse=!sortReverse">Status</th>
 								</tr>
 								</thead>
 
 								<tbody style="font-size: 11px;"><!-- /height:{{ table_maximun_body_heigth }}px; /-->
 								<tr id="divCarregando" ng-if="usuarios_carregados == false" style="height: 10px">
-									<td colspan="7" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
+									<td colspan="8" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
 										<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></br></br>Aguarde.. Carregando...
 									</td>
 								</tr>
@@ -156,6 +156,7 @@
 									<td style="width: 180px;"></td>
 									<td style="width:90px;"></td>
 									<td style="width:90px;"></td>
+									<td style="width:5px;"></td>
 									<td style="width:5px;"></td>
 								</tr>
 

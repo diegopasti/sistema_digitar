@@ -182,7 +182,7 @@ class ContractController(BaseController):
 
                 response_cliente['contrato']['cadastrado_por'] = contrato.cadastrado_por.get_full_name()
                 response_cliente['contrato']['data_cadastro'] = str(contrato.data_cadastro.strftime('%d/%m/%Y'))
-                response_cliente['contrato']['ultima_alteracao'] = contrato.ultima_alteracao
+                response_cliente['contrato']['ultima_alteracao'] = str(contrato.ultima_alteracao.strftime('%d/%m/%Y'))
                 response_cliente['contrato']['alterado_por'] = contrato.alterado_por.get_full_name()
 
             else:

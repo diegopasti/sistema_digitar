@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from sistema_contabil import settings
 from functools import wraps
@@ -72,3 +73,24 @@ def request_post_required(view):
         else:
             raise PermissionDenied()
     return _wrapped_view
+
+
+def permission_level_required(nivel_requerido, login_url=None, raise_exception=False):
+
+    '''
+    Decorador View
+    Um usuário só pode ter no máximo um grupo, dessa forma eu pego o id do grupo e filtro o acesso
+    de acordo com esse numero, o nível hierarquico é Administrador, Supervisor e Operador, Com isso
+    temos respectivamente 1,2,3 quanto menor o numero maior as suas permissões, assim sempre perguntamos
+    se o nivel do grupo é menor ou igual para assim permitirmos ou não seu acesso
+    '''
+
+    def check_perms(user):
+        nivel = user.groups.values_list('id',flat=True)
+        if (int(nivel[0]) <= nivel_requerido):
+            return True
+        if raise_exception:
+            raise PermissionDenied
+        return False
+    return user_passes_test(check_perms, login_url=login_url)
+

@@ -189,6 +189,10 @@ class ConfigurationsController(BaseController):
         response_dict['object'] = True
         return self.response(response_dict)
 
+    def last_backup(self, request):
+        x = BaseController().filter(request, model=Backup)
+        print("VEJA O QUE TENHO QUE ENVIAR: ",x)
+        return BaseController().filter(request, model=Backup, limit=1)
 
 class AbstractAPI:
 
