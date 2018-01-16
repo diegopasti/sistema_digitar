@@ -1,4 +1,3 @@
-import os
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.utils.decorators import method_decorator
@@ -9,7 +8,7 @@ from libs.default.core import BaseController
 from modules.nucleo.models import Backup
 #from modules.user.models import User
 from sistema_contabil import settings
-#from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium import webdriver
 
 
@@ -114,26 +113,6 @@ class ConfigurationsController(BaseController):
         print("ESPACO DE ARMAZENAMENTO: ",response_dict)
         return self.response(response_dict)
 
-    def check_available_system_space(self,request):
-        self.start_process(request)
-        total_size = 0
-        for dirpath, dirnames, filenames in os.walk(settings.DBBACKUP_STORAGE_OPTIONS['location']):
-            for f in filenames:
-                fp = os.path.join(dirpath, f)
-                total_size += os.path.getsize(fp)
-                file_count = len(filenames)
-        print(settings.DBBACKUP_STORAGE_OPTIONS['location'])
-        print(total_size)
-        print(file_count)
-        response_dict = {}
-        response_dict['result'] = True
-        response_dict['message'] = ""
-        response_dict['object'] = {}
-        response_dict['object']['total_files'] = file_count
-        response_dict['object']['folder_size'] = total_size
-
-        return self.response(response_dict)
-
     def check_available_space1(self,request):
         self.start_process(request)
         #backup_list = BackupManager().list_backup()
@@ -192,7 +171,7 @@ class ConfigurationsController(BaseController):
 
     def manager_dropbox(self,request):
         drive = settings.SELENIUM_CHROMEDRIVER
-        binary = 'temporario_pra n dar erro'#FirefoxBinary(settings.MOZILLA_FIREFOX_TEST_PATH)
+        binary = FirefoxBinary(settings.MOZILLA_FIREFOX_TEST_PATH)
         capabilities = webdriver.DesiredCapabilities().FIREFOX
         capabilities["marionette"] = True
         admin = settings.ADM_DROPBOX
