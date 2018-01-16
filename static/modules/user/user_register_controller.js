@@ -18,23 +18,13 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 	$scope.save_usuario = function() {
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
-		var grupos = {
-			1 : 'Administrador',
-			2 : 'Supervisor',
-			3 : 'Operador'
-		};
 
 		success_function = function(result,message,object,status){
 			notify_success_message(['Novo Usuário adicionado com Sucesso']);
 			$scope.usuarios.splice(0,0,{});
-			alert("usuarios:\n"+JSON.stringify($scope.usuarios));
 			$scope.usuarios[0] = object;
 			$scope.usuarios[0]['get_full_name'] = object['first_name']+ ' ' + object['last_name'];
-			alert("Grupo: "+ object['groups']);
-			var grupo = grupos[object['groups'][0]];
-			alert("pego esse grupo:"+grupo);
-			$scope.usuarios[0]['groups'] = grupo;
-			alert("usuarios2:\n"+JSON.stringify($scope.usuarios));
+			$scope.usuarios[0]['groups'] =  [object['group_id']];
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_usuario', message);
 			$("#modal_adicionar_usuario").modal('hide');
@@ -67,7 +57,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 				var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
 				notify_success_message(["Usuário atualizado com sucesso"])
 				$scope.usuarios[posicao] = object;
-				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name']
+				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name'];
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
 				check_response_message_form('#form_alterar_usuario', message);
