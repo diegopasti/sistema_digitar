@@ -8,7 +8,7 @@ from libs.default.core import BaseController
 from modules.nucleo.models import Backup
 #from modules.user.models import User
 from sistema_contabil import settings
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+#from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium import webdriver
 
 
@@ -171,7 +171,7 @@ class ConfigurationsController(BaseController):
 
     def manager_dropbox(self,request):
         drive = settings.SELENIUM_CHROMEDRIVER
-        binary = FirefoxBinary(settings.MOZILLA_FIREFOX_TEST_PATH)
+        binary = 'temporario_pra n dar erro'#FirefoxBinary(settings.MOZILLA_FIREFOX_TEST_PATH)
         capabilities = webdriver.DesiredCapabilities().FIREFOX
         capabilities["marionette"] = True
         admin = settings.ADM_DROPBOX

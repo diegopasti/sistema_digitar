@@ -386,7 +386,6 @@ class BaseForm:
     def get_object(self, object_id=None):
         if object_id is not None:
             object = self.model.objects.get(pk=int(object_id))
-            print("ATUALIZAR DESCONTO DE: ",object.desconto_temporario)
         else:
             object = self.model()
 

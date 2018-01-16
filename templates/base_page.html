@@ -117,6 +117,7 @@
             <ul class="dropdown-menu">
               <li class="user-header">
                 <i class="fa fa-user-o" aria-hidden="true"></i>
+								<p>Nivel de acesso: <b>{{ request.user.groups.values_list.0.1 }}</b></p>
                 <p>{{ request.user.get_full_name|title }}<small>{{  request.user.date_joined  }}</small></p>
               </li>
               <li class="user-body">
