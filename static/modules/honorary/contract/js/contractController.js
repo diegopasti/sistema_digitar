@@ -475,11 +475,26 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	$scope.calcular_total = function () {
 		var honorario = $('#valor_honorario').val();
 		var desconto = $('#desconto_temporario').val();
-		if (!(honorario == '')) {
-			honorario = Number(honorario.replace(/\./g,'').replace(',','.'));
-			desconto = Number(desconto.replace(/\./g,'').replace(',','.'));
-			var valor_total =honorario * (1 - (desconto/100))
-			$('#valor_total').val($filter('currency')(valor_total,"R$ ", 2));
+		if (!(honorario == '')){
+			if(desconto != ""){
+				if(verificar_vigencia_desconto()){
+					honorario = Number(honorario.replace(/\./g,'').replace(',','.'));
+					desconto = Number(desconto.replace(/\./g,'').replace(',','.'));
+					var valor_total = honorario * (1 - (desconto/100))
+					$('#valor_total').val($filter('currency')(valor_total,"R$ ", 2));
+				}
+				else{
+					honorario = Number(honorario.replace(/\./g,'').replace(',','.'));
+					//desconto = Number(desconto.replace(/\./g,'').replace(',','.'));
+					var valor_total = honorario;
+					$('#valor_total').val($filter('currency')(valor_total,"R$ ", 2));
+				}
+			}
+			else{
+				honorario = Number(honorario.replace(/\./g,'').replace(',','.'));
+				var valor_total = honorario;
+				$('#valor_total').val($filter('currency')(valor_total,"R$ ", 2));
+			}
 		}
 	}
 

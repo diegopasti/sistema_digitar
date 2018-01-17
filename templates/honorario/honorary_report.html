@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Honorário</title>
+		<meta charset="utf-8">
+	
+		{% load staticfiles %}
+		
+		<!-- <link rel="stylesheet" type="text/css" href="{% static 'styles/protocolo.css' %}"/>   -->
+		
+		<style>
+			@page {
+				margin: 0.5cm;
+				size: A4 portrait;
+				
+				@frame {
+					-pdf-frame-content: company_logo;
+					left: 1cm;
+					top: 0.7cm;
+					height: 1.9cm;
+				}
+			    
+				@frame {
+					-pdf-frame-content: page_title;
+					/*-pdf-frame-border: 1;*/
+					width: 10cm;
+					height: 1.5cm;
+					left: 10.1cm;
+					top: 1cm;
+				}
+
+				@frame {
+					-pdf-frame-content: hr_titulo;
+					left: 9.0cm;
+					top: 1.7cm;
+				}
+
+				@frame {
+					-pdf-frame-content: codigo_protocolo;
+					/*-pdf-frame-border: 1;*/
+					width: 10cm;
+					height: 0.68cm;
+					left: 0.5cm;
+					top: 13.4cm;
+
+				}
+
+				@frame {
+					-pdf-frame-content: painel_emissor;
+					/* -pdf-frame-border: 1; */
+					width: 19cm;
+					height: 1.5cm;
+					left: 1.1cm;
+					top: 2.9cm;
+				}
+
+				@frame {
+					-pdf-frame-content: label_emissor;
+					/* -pdf-frame-border: 1; */
+					width: 2cm;
+					height: 0.8cm;
+					left: 1.1cm;
+					top: 2.75cm;
+				}
+
+				@frame {
+					-pdf-frame-content: painel_telefone_emissor;
+					/* -pdf-frame-border: 1; */
+					text-align: center;
+					width: 4.0cm;
+					height: 1.3cm;
+					right: 0.7cm;
+					top: 2.8cm;
+					padding-top: 1px;
+				}
+
+				@frame {
+					-pdf-frame-content: line_separator_entidades;
+					padding-left: 39px;
+					padding-right: 39px;
+					top: 4.2cm;
+				}
+
+				@frame {
+					-pdf-frame-content: label_destinatario;
+					width: 2cm;
+					height: 0.8cm;
+					left: 1.1cm;
+					top: 5cm;
+				}
+
+				@frame {
+					-pdf-frame-content: painel_destinatario;
+					/* -pdf-frame-border: 1; */
+					width: 19cm;
+					height: 1.5cm;
+					left: 1.1cm;
+					top: 4.7cm;
+				}
+
+				@frame {
+					-pdf-frame-content: painel_telefone_destinatario;
+					/* -pdf-frame-border: 1; */
+					text-align: center;
+					width: 4cm;
+					height: 1.3cm;
+					right: 0.7cm;
+					top: 4.6cm;
+					padding-top: 1px;
+				}
+
+				@frame {
+					-pdf-frame-content: tabela_documentos;
+					width: 18.5cm;
+					height: 9.73cm;
+					left: 1.28cm;
+					top: 6.47cm;
+				}
+
+				@frame {
+					-pdf-frame-content: tabela_resumo;
+					width: 18.5cm;
+					height: 2cm;
+					left: 1.26cm;
+					top: 12.4cm;
+				}
+
+				@frame {
+					-pdf-frame-content: tabela_resumo2;
+					width: 18.5cm;
+					height: 2cm;
+					left: 1.26cm;
+					top: 27.3cm;
+				}
+
+				@frame {
+					-pdf-frame-content: background_tabela;
+					width: 19cm;
+					left: 1cm;
+					top: 7.2cm;
+					padding-left: 5px;
+				}
+
+				@frame {
+					-pdf-frame-content: recebido_por;
+					width: 19cm;
+					left: 1cm;
+					top: 12cm;
+					padding-top: 1px;
+				}
+
+				@frame {
+					-pdf-frame-content: nome_receptor;
+					/* -pdf-frame-border: 1; */
+					width: 10cm;
+					height: 0.7cm;
+					left: 3cm;
+					top: 12.2cm;
+				}
+
+				@frame {
+					-pdf-frame-content: cpf_receptor;
+					/* -pdf-frame-border: 1;*/
+					width: 3.35cm;
+					height: 0.7cm;
+					left: 2.5cm;
+					top: 12.8cm;
+				}
+
+				@frame {
+					-pdf-frame-content: data_entrega;
+					/* -pdf-frame-border: 1;*/
+					width: 2.2cm;
+					height: 0.7cm;
+					left: 6.1cm;
+					top: 12.81cm;
+				}
+
+				@frame {
+					-pdf-frame-content: hora_entrega;
+					/* -pdf-frame-border: 1;*/
+					width: 2.2cm;
+					height: 0.7cm;
+					left: 8.45cm;
+					top: 12.81cm;
+				}
+
+				@frame {
+					-pdf-frame-content: primeira_via_label;
+					width: 3cm;
+					left: 0.6cm;
+					top: 13.95cm;
+					padding-top: 1px;
+				}
+
+				@frame {
+					-pdf-frame-content: segunda_via_label;
+					width: 3cm;
+					left: 0.6cm; /*right: -0.1cm;*/
+					top: 29cm;
+					padding-top: 1px;
+				}
+
+				@frame {
+					-pdf-frame-content: line_separador_vias;
+					padding-left: 0px;
+					padding-right: -20px;
+					top: 14.10cm; /* 14.85cm */
+				}
+
+
+				/* ------------ */
+				/*  SEGUNDA VIA */
+				/* ------------ */
+
+				@frame {
+					-pdf-frame-content: company_logo2;
+					width: 6cm;
+					left: 1cm;
+					top: 15.0cm;
+					height: 1.9cm;
+				}
+
+				@frame {
+					-pdf-frame-content: page_title2;
+					/* -pdf-frame-border: 1; */
+					width: 10cm;
+					height: 1.5cm;
+					left: 10.1cm;
+					top: 15.4cm;
+				}
+
+				@frame {
+					-pdf-frame-content: hr_titulo2;
+					left: 9.1cm;
+					top: 16cm;
+				}
+
+				@frame {
+					-pdf-frame-content: codigo_protocolo2;
+					width: 10cm;
+					height: 1.1cm;
+					left: 0.5cm;
+					top: 28.6cm;
+				}
+
+				@frame {
+					-pdf-frame-content: painel_emissor2;
+					/* -pdf-frame-border: 1; */
+					width: 19cm;
+					height: 1.5cm;
+					left: 1cm;
+					top: 17.2cm; /* 17.8cm; */
+				}
+
+				@frame {
+					-pdf-frame-content: label_emissor2;
+					/* -pdf-frame-border: 1; */
+					width: 2cm;
+					height: 0.8cm;
+					left: 1cm;
+					top: 17.05cm;
+				}
+
+				@frame {
+					-pdf-frame-content: painel_telefone_emissor2;
+					/* -pdf-frame-border: 1; */
+					text-align: center;
+					width: 4.0cm;
+					height: 1.3cm;
+					right: 1cm;
+					top: 17.1cm;
+					padding-top: 1px;
+				}
+
+				@frame {
+					-pdf-frame-content: line_separator_entidades2;
+					padding-left: 39px;
+					padding-right: 39px;
+					top: 18.5cm;
+				}
+
+				@frame {
+					-pdf-frame-content: label_destinatario2;
+					width: 2cm;
+					height: 0.8cm;
+					left: 1cm;
+					top: 19.3cm;
+				}
+
+				@frame {
+					-pdf-frame-content: painel_destinatario2;
+					/* -pdf-frame-border: 1; */
+					width: 19cm;
+					height: 1.5cm;
+					left: 1cm;
+					top: 19cm;
+				}
+
+				@frame {
+					-pdf-frame-content: painel_telefone_destinatario2;
+					/* -pdf-frame-border: 1; */
+					text-align: center;
+					width: 4cm;
+					height: 1.3cm;
+					right: 1cm;
+					top: 19.5cm;
+					}
+
+				@frame {
+					-pdf-frame-content: tabela_documentos2;
+					width: 18.5cm;
+					height: 4.73cm;
+					left: 1.28cm;
+					top: 21.4cm;
+				}
+
+				@frame {
+					-pdf-frame-content: background_tabela2;
+					width: 19cm;
+					left: 1cm;
+					top: 22.1cm;
+					padding-left: 5px;
+				}
+
+				@frame {
+					-pdf-frame-content: recebido_por2;
+					width: 19cm;
+					left: 1cm;
+					top: 26.9cm;
+					padding-top: 1px;
+				}
+
+				@frame {
+					-pdf-frame-content: nome_receptor2;
+					/* -pdf-frame-border: 1; */
+					width: 10cm;
+					height: 0.7cm;
+					left: 3cm;
+					top: 27.1cm;
+				}
+
+				@frame {
+					-pdf-frame-content: cpf_receptor2;
+					/* -pdf-frame-border: 1;*/
+					width: 3.35cm;
+					height: 0.7cm;
+					left: 2.5cm;
+					top: 27.7cm;
+				}
+
+				@frame {
+					-pdf-frame-content: data_entrega2;
+					/* -pdf-frame-border: 1;*/
+					width: 2.2cm;
+					height: 0.7cm;
+					left: 6.1cm;
+					top: 27.71cm;
+				}
+
+				@frame {
+					-pdf-frame-content: hora_entrega2;
+					/* -pdf-frame-border: 1;*/
+					width: 2.2cm;
+					height: 0.7cm;
+					left: 8.45cm;
+					top: 27.71cm;
+				}
+			}
+			
+			#page_title{
+				text-align: right;
+			}
+			
+			#codigo_protocolo2{
+				/*text-align: left;*/
+			}
+			
+			#codigo_protocolo{
+				/*text-align: left;*/
+			}
+
+			.negrito{
+				font-weight: bold; 
+			}
+			
+			.center{
+				text-align: center;
+			}
+			
+			.left{
+				text-align: left;
+			}
+			
+			.padrao_medio{
+				height: 40px;
+			}
+			
+			tr.padrap {
+				padding: 10px;
+			}
+			
+			td.codigo{
+				padding-left: 2px; 
+				width:45px;
+			}
+			
+			td.documento{
+				text-align: left;
+				padding-left: 20px; 
+				width:1100px;
+			}
+			
+		</style>
+		
+	</head>
+	
+	<body id="pagina">
+	
+		<table border=1 style="padding: 5px;">
+			<tr>
+				<td>
+					<div id="company_logo">
+						<img src="{{ path_imagens }}exemplo_logo.png" width="100%"  alt="logo"/>
+					</div>
+					<div id="page_title" style="text-align: right;">
+						<p style="font-size: 11pt;font-weight:bold;color: #666; padding-bottom:-40px;">RECIBO DE SERVIÇOS CONTÁBEIS PRESTADOS<br></p>
+						<span style="font-size: 11px;font-weight: bold;color: #777;">COMPETÊNCIA: {{ honorary.competence }}</span>
+					</div>
+					
+					<!--<div id="hr_titulo">
+						<img src="{{ path_imagens }}line.png" width="200px" height="6px"/>
+					</div>-->
+					
+					<br>
+					
+					<!--<div id='codigo_protocolo'>
+						<span style="color: #777;text-align: left;font-size: 10px;">EMITIDO POR {{ emitido_por }} EM</span>
+						<span style="color: #777;text-align: right;font-size: 10px;">{{ data_emissao }}</span>
+					</div>-->
+					
+					<!--<div id="label_emissor">
+						<img src="{{ path_imagens }}emissor.png" height="60px"/>
+					</div>-->
+					
+					<div id='painel_emissor'>
+						<font size=4 class='negrito'>{{ emissor_nome }} - {{ emissor_cpf_cnpj }} - CRC-ES: 3629/O-2</font><br>
+						<font size=4>{{ emissor_endereco }}<br>{{ emissor_complemento }}</font>
+					</div>	
+					
+					<div id='painel_telefone_emissor'>
+						
+						<table border=0>
+							<tr style="padding-top:3px">
+								<td class="codigo">
+									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
+								</td>
+								
+								<td>
+									<font size=4>
+										{% for item in emissor_contatos %}
+										{{ item.numero }}<br>
+										{% endfor %}
+									</font>
+								</td>
+							</tr>
+						</table>	
+					</div>
+					
+					<div id='line_separator_entidades'>
+						<img src="{{ path_imagens }}line.png" width="980px" height="6px"/>
+					</div>
+					<br>
+					
+					<!--<div id="label_destinatario">
+						<img src="{{ path_imagens }}destinatario.png"/>
+					</div>-->
+					
+					<div id='painel_destinatario'>
+						<font size=4 class='negrito'>{{ destinatario_nome }}
+						
+						{% if destinatario_cpf_cnpj != "" %}
+							- {{ destinatario_cpf_cnpj }}
+						{% endif %}	
+						</font><br>
+						<font size=4>{{ destinatario_endereco }}<br>{{ destinatario_complemento }}</font>
+					</div>	
+					
+					{% if destinatario_contatos|length > 0 %}
+					<div id='painel_telefone_destinatario'>
+						
+						<table border=0>
+							<tr style="padding-top:3px">
+								<td class="codigo">
+									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
+								</td>
+								
+								<td>
+									<font size=4>
+										{% for item in destinatario_contatos %}
+											{{ item.numero }}<br>
+										{% endfor %}
+									</font>
+								</td>
+							</tr>
+						</table>
+									
+					</div>
+					{% endif %}
+
+					<style>
+						#tabela_documentos td{
+							border-bottom: 0px solid #ccc;
+						}
+					</style>
+					
+					<div id="tabela_documentos">
+						<table style="border: 0.1px solid #666;">
+							<tr style="font-size: 11px;color: #666;padding-bottom: 1px;">
+								<th class="center"  style="width: 40px;">COD</th>
+								<th>DESCRIÇÃO DOS SERVIÇOS</th>
+								<th>QUANT.</th>
+								<th>UNIT.</th>
+								<th>TOTAL</th>
+							</tr>
+
+							{% if contract_unit_value != None %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center">1</td>
+								<td width='447px' style="padding-left: 4px;">HONORÁRIOS CONTÁBEIS CONF. CONTRATO</td>
+								<td class="center">1</td>
+								<td width='86px' style="text-align: right;" >{{ contract_unit_value }}</td>
+								<td width='86px' style="text-align: right;">{{ contract_unit_value }}</td>
+							</tr>
+							{% endif %}
+
+							{% if contract_temporary_discount_rate != None %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center">2</td>
+								<td width='447px' style="padding-left: 4px;">DESCONTO TEMPORÁRIO CONF. CONTRATO</td>
+								<td class="center"></td>
+								<td width='86px' style="text-align: right;" >{{ contract_temporary_discount_rate }}%</td>
+								<td width='86px' style="text-align: right;">-{{ contract_temporary_discount_value }}</td>
+							</tr>
+							{% endif %}
+
+							{% if contract_fidelity_discount_rate != None %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center">3</td>
+								<td width='447px' style="padding-left: 4px;">DESCONTO FIDELIDADE</td>
+								<td class="center"></td>
+								<td width='86px' style="text-align: right;" >{{ contract_fidelity_discount_rate }}%</td>
+								<td width='86px' style="text-align: right;">-{{ contract_fidelity_discount_value }}</td>
+							</tr>
+							{% endif %}
+						
+						{% for item in documentos %}						
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center">{{ item.item.id }}</td>
+								<td width='447px' style="padding-left: 4px;">{{ item.item.nome }}</td>
+
+								{% if item.quantity != None and item.quantity != '' %}
+								<td class="center" width='74px;' style="">{{ item.quantity }}</td>
+								{% else %}
+									<td width='74px;'></td>
+								{% endif %}
+
+								{% if item.unit_value != None and item.unit_value != '' %}
+									<td width='86px' style="text-align: right;">R$ {{ item.unit_value }}</td>
+								{% else %}
+									<td width='86px'></td>
+								{% endif %}
+								
+								{% if item.valor != "0,00" %}
+									{% if item.type_item == "D" %}
+										<td width='86px'  style="text-align: right;">- R$ {{ item.total_value }}</td>
+									{% else %}
+										<td width='86px'  style="text-align: right;">R$ {{ item.total_value }}</td>
+									{% endif %}
+
+								{% else %}
+									<td width='86px' style="text-align: right;"></td>
+								{% endif %}
+								
+							</tr>
+						{% endfor %}
+
+						{% for item in linhas_extras %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center" style="color:white;">-</td>
+								<td width='447px'> </td>
+								<td width='74px'></td>
+								<td width='86px'></td>
+								<td width='86px'></td>
+							</tr>
+
+						{% endfor %}
+						</table>
+					</div>
+
+					<div id="tabela_resumo">
+						<table style="padding-top: 4px;padding-bottom: 0px;margin-top: 10px;">
+							<tr style="padding-bottom: -2px;">
+								<td style="width: 100px;color: #666;text-align: center; font-weight: bold;">
+									<div style="margin-left: 10px;margin-right: 10px;border-bottom: 0.5px solid #999;">R$ {{ valor_liquido }}</div>
+								</td>
+
+								<td style="width: 100px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
+									<div style="margin-left: 10px;margin-right: 10px;border-bottom: 0.5px solid #999;">R$ {{ honorary.total_honorary }}</div>
+								</td>
+
+								<td style="width: 100px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
+									{% if vencimento == " " %}
+										<div style="margin-left: 10px;margin-right: 10px;border-bottom: 0.5px solid #999;color: white;">-</div>
+									{% else %}
+										<div style="margin-left: 10px;margin-right: 10px;border-bottom: 0.5px solid #999;">{{ vencimento}}</div>
+									{% endif %}
+								</td>
+
+								<td style="width: 400px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
+									<div style="margin-left: 50px;margin-right: 10px;border-bottom: 0.5px solid #999; color: white;">.</div>
+								</td>
+							</tr>
+
+							<tr style="padding-top: 3px;">
+								<td style="color: #666;font-weight: bold;text-align: center">Valor Nota Fiscal</td>
+								<td style="color: #666;font-weight: bold;text-align: center">Liquido à Receber (DUPL)</td>
+								<td style="color: #666;font-weight: bold;text-align: center">Vencimento</td>
+								<td style="color: #666;font-weight: bold;text-align: center;padding-left: 35px;">Assinatura</td>
+							</tr>
+						</table>
+					</div>
+
+					<br><br><br><br>
+					<br><br><br><br>
+					<br><br><br><br>
+					<br><br><br><br>
+					<br><br><br><br>
+					<br><br><br><br>
+					<br>
+
+					<!--<div id="background_tabela">
+						<img src="{{ path_imagens }}tabela_transparente.png"/>
+					</div>-->
+					
+					<br>
+
+					<!--
+					{ if recebido_por %}
+						<div id="nome_receptor">
+							<font size=4>{{ recebido_por }}</font>
+						</div>
+						
+						<div id="cpf_receptor">
+							<font size=4>{{ identificacao }}</font>
+						</div>
+						
+						<div id="data_entrega">
+							<font size=4>{{ data_entrega|date:"d/m/Y" }}</font>
+						</div>
+						
+						<div id="hora_entrega">
+							<font size=4>{{ hora_entrega }}</font>
+						</div>
+					
+					{ endif %}
+
+					<div id="recebido_por">
+						<img src="{{ path_imagens }}recebido_por.png" />
+					</div>-->
+					<br><br><br>
+			
+				</td>
+			</tr>
+		</table>
+
+		<div id="primeira_via_label">
+			<span style="color: #777;text-align: right;font-size: 10px;">1ª VIA - DIGITAR</span>
+		</div>
+		
+		<div id="line_separador_vias">
+			{% load staticfiles %}
+			<img src="{{ path_imagens }}dashed.png" width="1800px" height="10px"/>
+		</div>
+		
+		<div id="segunda_via_label">
+			<!--<img src="{{ path_imagens }}segunda_via.png" height="16px" />-->
+			<span style="color: #777;text-align: right;font-size: 10px;">2ª VIA - CLIENTE</span>
+		</div>
+
+		<!--  SEGUNDA VIA -->
+		
+		<br><br>
+		<table border=1 style="padding: 5px">
+			<tr>
+				<td>
+					<div id="company_logo2">
+						{% load staticfiles %}
+						<img src="{{ path_imagens }}exemplo_logo.png" width="100%"  alt="logo"/>
+					</div>
+					
+					<div id="page_title2" style="text-align: right;">
+						<p style="font-size: 11pt;font-weight:bold;color: #666; padding-bottom:-40px;">RECIBO DE SERVIÇOS CONTÁBEIS PRESTADOS<br></p>
+						<p><span style="font-size: 11px;font-weight: bold;color: #777;">COMPETÊNCIA: {{ honorary.competence }}</span></p>
+					</div>
+					<br>
+					
+					<!--<div id='codigo_protocolo2'>
+						<span style="color: #777;text-align: left;font-size: 10px;">EMITIDO POR {{ emitido_por }} EM</span>
+						<span style="color: #777;text-align: right;font-size: 10px;">{{ data_emissao }}</span>
+					</div>
+					
+					<!--<div id="label_emissor2">
+						{% load staticfiles %}
+						<img src="{{ path_imagens }}emissor.png" height="60px"/>
+					</div>-->
+					
+					<div id='painel_emissor2'>
+						<font size=4 class='negrito'>{{ emissor_nome }} - {{ emissor_cpf_cnpj }} - CRC-ES: 3629/O-2</font><br>
+						<font size=4>{{ emissor_endereco }}<br>{{ emissor_complemento }}</font>
+					</div>	
+					
+					<div id='painel_telefone_emissor2'>
+						
+						<table border=0>
+							<tr style="padding-top:3px">
+								<td class="codigo">
+									{% load staticfiles %}
+									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
+								</td>
+								
+								<td>
+									<font size=4>
+										{% for item in emissor_contatos %}
+										{{ item.numero }}<br>
+										{% endfor %}
+									</font>
+								</td>
+							</tr>
+						</table>	
+					</div>	
+					
+					
+					<div id='line_separator_entidades2'>
+						{% load staticfiles %}
+						<img src="{{ path_imagens }}line.png" width="980px" height="6px"/>
+					</div>
+					<br>
+					
+					<!--<div id="label_destinatario2">
+						<img src="{{ path_imagens }}destinatario.png"/>
+					</div>-->
+					
+					<div id='painel_destinatario2'>
+						<font size=4 class='negrito'>{{ destinatario_nome }}
+						
+						{% if destinatario_cpf_cnpj %}
+							- {{ destinatario_cpf_cnpj }}
+						{% endif %}	
+						</font><br>
+						<font size=4>{{ destinatario_endereco }}<br>{{ destinatario_complemento }}</font>
+					</div>	
+					
+					{% if destinatario_contatos|length > 0 %}
+					<div id='painel_telefone_destinatario2'>
+						
+						<table border=0>
+							<tr style="padding-top:3px">
+								<td class="codigo">
+									{% load staticfiles %}
+									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
+								</td>
+								
+								<td>
+									<font size=4>
+										{% for item in destinatario_contatos %}
+											{{ item.numero }}<br>
+										{% endfor %}
+									</font>
+								</td>
+							</tr>
+						</table>
+									
+					</div>
+					{% endif %}
+
+					<!--
+					<div id="tabela_documentos2">
+						<table>
+						
+						{% for item in documentos %}						
+							<tr style="padding:0px;">
+								{% if item.id == None %}
+									<td class="center" width='25px'>0</td>
+								{% else %}
+									<td class="center" width='25px'>{{ item.item.id }}</td> <!--{ forloop.counter }}->
+								{% endif %}
+								<td width='447px' style="padding-left: 4px;">{{ item.documento }}
+								
+								{% if item.complemento != "" %}
+									 - {{ item.complemento }}
+								{% endif %}
+								</td>
+									
+								<td class="center" width='74px' style="padding-left: 0px;">{{ item.referencia }}</td>
+								<td class="center" width='73px' style="padding-left: 0px;">{{ item.vencimento }}</td>
+								
+								{% if item.valor != "0,00" %}
+									<td class="center" width='86px' style="padding-left: 0px;">R$ {{ item.valor }}</td>
+								{% else %}
+									<td class="center" width='86px'></td>
+								{% endif %}
+							</tr>
+	
+						{% endfor %}
+															
+						</table>
+					
+					</div>
+					-->
+
+					<div id="tabela_documentos2">
+						<table style="border: 0.1px solid #666;">
+							<tr style="font-size: 11px;color: #666;padding-bottom: 1px;">
+								<th class="center"  style="width: 40px;">COD</th>
+								<th>DESCRIÇÃO DOS SERVIÇOS</th>
+								<th>QUANT.</th>
+								<th>UNIT.</th>
+								<th>TOTAL</th>
+							</tr>
+
+							{% if contract_unit_value != None %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center">1</td>
+								<td width='447px' style="padding-left: 4px;">HONORÁRIOS CONTÁBEIS CONF. CONTRATO</td>
+								<td class="center">1</td>
+								<td width='86px' style="text-align: right;" >{{ contract_unit_value }}</td>
+								<td width='86px' style="text-align: right;">{{ contract_unit_value }}</td>
+							</tr>
+							{% endif %}
+
+							{% if contract_temporary_discount_rate != None %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center">2</td>
+								<td width='447px' style="padding-left: 4px;">DESCONTO TEMPORÁRIO CONF. CONTRATO</td>
+								<td class="center"></td>
+								<td width='86px' style="text-align: right;" >{{ contract_temporary_discount_rate }}%</td>
+								<td width='86px' style="text-align: right;">-{{ contract_temporary_discount_value }}</td>
+							</tr>
+							{% endif %}
+
+							{% if contract_fidelity_discount_rate != None %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center">3</td>
+								<td width='447px' style="padding-left: 4px;">DESCONTO FIDELIDADE</td>
+								<td class="center"></td>
+								<td width='86px' style="text-align: right;" >{{ contract_fidelity_discount_rate }}%</td>
+								<td width='86px' style="text-align: right;">-{{ contract_fidelity_discount_value }}</td>
+							</tr>
+							{% endif %}
+
+						{% for item in documentos %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center">{{ item.item.id }}</td>
+								<td width='447px' style="padding-left: 4px;">{{ item.item.nome }}</td>
+
+								{% if item.quantity != None and item.quantity != '' %}
+								<td class="center" width='74px;' style="">{{ item.quantity }}</td>
+								{% else %}
+									<td width='74px;'></td>
+								{% endif %}
+
+								{% if item.unit_value != None and item.unit_value != '' %}
+									<td width='86px' style="text-align: right;">R$ {{ item.unit_value }}</td>
+								{% else %}
+									<td width='86px'></td>
+								{% endif %}
+
+								{% if item.valor != "0,00" %}
+									{% if item.type_item == "D" %}
+										<td width='86px'  style="text-align: right;">- R$ {{ item.total_value }}</td>
+									{% else %}
+										<td width='86px'  style="text-align: right;">R$ {{ item.total_value }}</td>
+									{% endif %}
+
+								{% else %}
+									<td width='86px' style="text-align: right;"></td>
+								{% endif %}
+
+							</tr>
+						{% endfor %}
+
+						{% for item in linhas_extras %}
+							<tr style="padding-top:3px;padding-bottom:-3px;">
+								<td class="center" style="color:white;">-</td>
+								<td width='447px'> </td>
+								<td width='74px'></td>
+								<td width='86px'></td>
+								<td width='86px'></td>
+							</tr>
+
+						{% endfor %}
+						</table>
+					</div>
+
+					<div id="tabela_resumo2">
+						<table style="padding-top: 4px;padding-bottom: 0px;margin-top: 10px;">
+							<tr style="padding-bottom: -2px;">
+								<td style="width: 100px;color: #666;text-align: center; font-weight: bold;">
+									<div style="margin-left: 10px;margin-right: 10px;border-bottom: 0.5px solid #999;">R$ {{ valor_liquido }}</div>
+								</td>
+
+								<td style="width: 100px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
+									<div style="margin-left: 10px;margin-right: 10px;border-bottom: 0.5px solid #999;">R$ {{ honorary.total_honorary }}</div>
+								</td>
+
+								<td style="width: 100px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
+									{% if vencimento == " " %}
+										<div style="margin-left: 10px;margin-right: 10px;border-bottom: 0.5px solid #999;color: white;">-</div>
+									{% else %}
+										<div style="margin-left: 10px;margin-right: 10px;border-bottom: 0.5px solid #999;">{{ vencimento}}</div>
+									{% endif %}
+								</td>
+
+								<td style="width: 400px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
+									<div style="margin-left: 50px;margin-right: 10px;border-bottom: 0.5px solid #999; color: white;">.</div>
+								</td>
+							</tr>
+
+							<tr style="padding-top: 3px;">
+								<td style="color: #666;font-weight: bold;text-align: center">Valor Nota Fiscal</td>
+								<td style="color: #666;font-weight: bold;text-align: center">Liquido à Receber (DUPL)</td>
+								<td style="color: #666;font-weight: bold;text-align: center">Vencimento</td>
+								<td style="color: #666;font-weight: bold;text-align: center;padding-left: 35px;">Assinatura</td>
+
+							</tr>
+						</table>
+					</div>
+					
+					<br><br><br><br>
+					<br><br><br>
+					<br><br><br><br>
+					<br><br><br><br>
+					<br><br><br><br>
+					<br><br><br><br>
+					<br><br><br><br>
+					
+
+					<br><br><br><br>
+				</td>
+			</tr>
+		</table>
+	
+	</body>
+</html>

@@ -117,7 +117,7 @@ class FormContrato(forms.Form, BaseForm):
         label="Início do Contrato", required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'id': 'vigencia_inicio', 'class': "form-control", 'ng-model':'vigencia_inicio'
+                'id': 'vigencia_inicio', 'class': "form-control", 'ng-model':'vigencia_inicio','onblur':'verificar_data_vigencia()'
             }
         )
     )
@@ -176,7 +176,7 @@ class FormContrato(forms.Form, BaseForm):
         label="Tipo do Honorário", choices=opcoes_tipos_honorario, initial='VARIAVEL',
         required=False,error_messages=MENSAGENS_ERROS,
         widget=forms.Select(
-            attrs={'id': 'tipo_honorario', 'class': "form-control", 'ng-model':'tipo_honorario', 'onchange':'verificar_tipo_honorario()'}
+            attrs={'id': 'tipo_honorario', 'class': "form-control", 'onchange':'verificar_tipo_honorario()'}
         )
     )
 
@@ -205,7 +205,7 @@ class FormContrato(forms.Form, BaseForm):
         label="Tipo do Vencimento", choices=opcoes_tipos_vencimento,
         required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.Select(
-            attrs={'id': 'tipo_vencimento', 'class': "form-control", 'onchange':'verificar_tipo_vencimento()'}
+            attrs={'id': 'tipo_vencimento', 'class': "form-control", }
         )
     )
 
@@ -241,7 +241,7 @@ class FormContrato(forms.Form, BaseForm):
     desconto_inicio = forms.DateField(
         label="Início do Desconto", required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
-            attrs={'id': 'desconto_inicio', 'class': "form-control", 'ng-model':'desconto_inicio'}
+            attrs={'id': 'desconto_inicio', 'class': "form-control", 'ng-model':'desconto_inicio', 'ng-blur':'calcular_total()'}
         )
     )
 
@@ -249,7 +249,7 @@ class FormContrato(forms.Form, BaseForm):
         label="Término do Desconto", required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'id': 'desconto_fim', 'class': "form-control", 'ng-model':'desconto_fim'
+                'id': 'desconto_fim', 'class': "form-control", 'ng-model':'desconto_fim','ng-blur':'calcular_total()'
             }
         )
     )
