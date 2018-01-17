@@ -119,18 +119,28 @@ class ConfigurationsController(BaseController):
         total_size = 0
         for dirpath, dirnames, filenames in os.walk(settings.DBBACKUP_STORAGE_OPTIONS['location']):
             for f in filenames:
-                fp = os.path.join(dirpath, f)
-                total_size += os.path.getsize(fp)
+                filepath = os.path.join(dirpath, f)
+                total_size += os.path.getsize(filepath)/1024
                 file_count = len(filenames)
-        print(settings.DBBACKUP_STORAGE_OPTIONS['location'])
+        #print(settings.DBBACKUP_STORAGE_OPTIONS['location'])
         print(total_size)
-        print(file_count)
+        #print(file_count)
+        if total_size < 1024:
+            total_size = '{0:.2f}'.format(total_size)
+            suffix = ' Kb'
+        elif total_size >= 1024:
+            total_size = '{0:.1f}'.format(total_size/1024)
+            suffix = ' Mb'
+        elif total_size >= 1024*1024:
+            total_size = '{0:.1f}'.format(total_size/1024)
+            suffix = ' Gb'
+
         response_dict = {}
         response_dict['result'] = True
         response_dict['message'] = ""
         response_dict['object'] = {}
         response_dict['object']['total_files'] = file_count
-        response_dict['object']['folder_size'] = total_size
+        response_dict['object']['folder_size'] = total_size + suffix
 
         return self.response(response_dict)
 
