@@ -1,3 +1,4 @@
+import os
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.utils.decorators import method_decorator
@@ -111,6 +112,36 @@ class ConfigurationsController(BaseController):
         response_dict['object']['used_percent_space'] = round((response_dict['object']['used_space'] / response_dict['object']['total_space']) * 100, 2)
 
         print("ESPACO DE ARMAZENAMENTO: ",response_dict)
+        return self.response(response_dict)
+
+    def check_available_system_space(self,request):
+        self.start_process(request)
+        total_size = 0
+        for dirpath, dirnames, filenames in os.walk(settings.DBBACKUP_STORAGE_OPTIONS['location']):
+            for f in filenames:
+                filepath = os.path.join(dirpath, f)
+                total_size += os.path.getsize(filepath)/1024
+                file_count = len(filenames)
+        #print(settings.DBBACKUP_STORAGE_OPTIONS['location'])
+        print(total_size)
+        #print(file_count)
+        if total_size < 1024:
+            total_size = '{0:.2f}'.format(total_size)
+            suffix = ' Kb'
+        elif total_size >= 1024:
+            total_size = '{0:.1f}'.format(total_size/1024)
+            suffix = ' Mb'
+        elif total_size >= 1024*1024:
+            total_size = '{0:.1f}'.format(total_size/1024)
+            suffix = ' Gb'
+
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['message'] = ""
+        response_dict['object'] = {}
+        response_dict['object']['total_files'] = file_count
+        response_dict['object']['folder_size'] = total_size + suffix
+
         return self.response(response_dict)
 
     def check_available_space1(self,request):

@@ -1,0 +1,240 @@
+{% extends 'base_page.html' %}
+{% block titulo_pagina %}Sistema Contábil - Configurações {% endblock %}
+
+{% block recursos_necessarios %}
+{% load static %}
+<script src="{% static 'bower_components/angularUtils-pagination/dirPagination.js'%}"></script>
+<script src="{% static 'modules/core/configurations/configurations_controller.js' %}"></script>
+{% endblock %}
+
+{% block conteudo_principal %}
+
+<div id="angular_content" ng-cloak ng-app="modules.configurations">
+  <div id="configuration_controller" ng-controller="configurations_controller">
+
+    <div class="main_content" style="padding: 0px;padding-top: 0px;margin-top:0px;">
+		<div class="tab-content">
+			<div id="entity_identification" class="tab-pane fade in active">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2 >Configurações</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <div class="btn-group" role="group" aria-label="...">
+                <style>
+                  .panel_toolbox a.btn {
+                    color: #999;
+                    width: 35px;
+                  }
+
+                  .panel_toolbox ul li a{
+                    padding-left: 8px;
+                  }
+                </style>
+                <a id='bt_identification' href="#entity_identification" data-toggle="modal" data-target="#modal_identification" role="button" class="btn btn-sm btn-success" title="Adicionar nova Entidade" style="color: #fff;padding-right: 6px;width: 40px;"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></a><!-- data-toggle="form" data-target="#modal_add_entity" -->
+                <a id='bt_contacts' href="#entity_contact" data-toggle="tab" ng-hide="S1 || S2" role="button" class="btn btn-sm btn-default pull-left" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" onclick="angular.element(document.getElementById('contact_controller')).scope().load_contacts();angular.element(document.getElementById('email_controller')).scope().load_emails();" title="Contatos" style='color: #999;margin-left: 5px;'><i class="fa fa-address-book-o fa-lg" style="margin-left:-1px;" aria-hidden="true"></i></a><!-- data-toggle="form" data-target="#modal_entity_email" ng-click="carregar_indicacao()" -->
+                <a id='bt_locations' href="#entity_locations" data-toggle="tab" ng-hide="S1 || S2" role="button" class="btn btn-sm btn-default pull-left" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" onclick="angular.element(document.getElementById('contact_controller')).scope().load_contacts();" title="Endereços" style='color: #999;margin-left: 5px;'><i class="fa fa-map-marker fa-lg" aria-hidden="true"></i></a><!-- data-toggle="form" data-target="#modal_entity_email" ng-click="carregar_indicacao()" -->
+                <a id='bt_credit' href="#entity_credit" data-toggle="tab" ng-hide="S1 || S2" role="button" class="btn btn-sm btn-default pull-left" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" onclick="angular.element(document.getElementById('contact_controller')).scope().load_contacts();" style='color: #999;margin-left: 5px;' title="Crédito"><i class="fa fa-credit-card fa-lg" aria-hidden="true" style="margin-left: -2px;"></i></a><!-- data-toggle="form" data-target="#modal_entity_email" ng-click="carregar_indicacao()" -->
+                <a id='bt_history' href="#entity_history" data-toggle="tab" ng-hide="S1 || S2" role="button" class="btn btn-sm btn-default pull-left" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" onclick="angular.element(document.getElementById('contact_controller')).scope().load_contacts();" style='color: #999;margin-left: 5px;' title="Histórico"><i class="fa fa-history fa-lg" aria-hidden="true"></i></a><!-- data-toggle="form" data-target="#modal_entity_email" ng-click="carregar_indicacao()" -->
+
+                <div class="btn-group" role="group">
+                  <button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu pull-right dropdown-menu-right">
+                    <li ng-show="S1 || S2" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" onclick="angular.element(document.getElementById('contact_controller')).scope().load_contacts();angular.element(document.getElementById('email_controller')).scope().load_emails();"><a href="#"><i class="fa fa-address-book-o" style="margin-left:-1px;" aria-hidden="true"></i> Contatos</a></li>
+                    <li ng-show="S1 || S2" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" onclick=""><a href="#"><i class="fa fa-map-marker" aria-hidden="true" style="width: 10px;"></i> Endereços</a></li>
+                    <li ng-show="S1 || S2" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" onclick=""><a href="#"><i class="fa fa-credit-card" aria-hidden="true" style="margin-left: -2px;"></i> Créditos</a></li>
+                    <li ng-show="S1 || S2" ng-class="{true:'desabilitado', false:''}[registro_selecionado==null]" onclick=""><a href="#"><i class="fa fa-history" aria-hidden="true"></i> Histórico</a></li>
+                    <li><a href="#">Desativar</a></li>
+                    <!--<li role="separator" class="divider"></li>
+                    <li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="form">Desativar</a></li>-->
+                  </ul>
+                </div>
+              </div>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+
+          <div class="x_content">
+            <div class="dataTable_wrapper">
+              <div class='row'>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pull-left">
+                  <div class="x_panel" style="padding-bottom: 0px;">
+										<div class="x_title">
+											<h2>Backups</h2>
+
+											<ul class="nav navbar-right panel_toolbox">
+												<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+												</li>
+												<li class="dropdown">
+													<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+													<ul class="dropdown-menu" role="menu">
+														<li><a ng-click="create_backup()">Criar Backup</a>
+														</li>
+														<li><a href="#">Restaurar Backup</a>
+														</li>
+													</ul>
+												</li>
+												<li><a class="close-link"><i class="fa fa-close"></i></a>
+												</li>
+											</ul>
+
+											<div class="clearfix"></div>
+										</div>
+
+										<div class="x_content">
+											{% verbatim %}
+											<div class="row">
+												<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
+													<div ng-if="(backups|filter:filterIds()).length == 0" style="text-align: center;">
+														<p style='background: blue;'>
+															<div style=""><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
+														<div style="margin-left: 0px;">Atenção! Nenhum backup encontrado.<br><a style="cursor: pointer;font-weight: bold;" ng-click="create_backup()">Clique aqui para gerar um backup imediatamente.</a></div>
+															</p>
+													</div>
+												</div>
+											</div>
+
+
+											<style>
+												#table_backups tr td{
+													padding: 0px;
+													height: 26px;
+												}
+
+												#table_backups tr td:first-child{
+													padding-left: 8px;
+												}
+
+												#table_backups tr td:last-child,th:last-child{
+													width: 140px;
+													 text-align: center;
+												}
+											</style>
+
+
+											<div class="row">
+												<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
+													<table class="table table-bordered table-striped">
+														<tr>
+															<th colspan="2" style="text-align: left; padding-left: 8px;">Armazenamento em Nuvem</th>
+														</tr>
+
+														<tr>
+															<td>
+																<br>
+
+																<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+																	<div class="left" style="left: 0px;">Espaço utilizado</div>
+																	<div class="pull-right" style="right: 0px;">{{ backups_informations.used_percent_space }}%</div>
+																	<div class="progress progress_sm" style="width: 100%;">
+																		<div class="progress-bar bg-green pull-left" role="progressbar" data-transitiongoal="{{ backups_informations.used_percent_space }}" style="width: {{ backups_informations.used_percent_space }}%;" aria-valuenow="{{ backups_informations.used_percent_space }}"></div>
+																	</div>
+																</div>
+
+																<br>
+
+																<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
+																	<div class="row">
+
+																		<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
+																			<div class="pull-left">Plano de Armazenamento: Básico</div>
+																			<div class="pull-left">Agendamento de Backups: Diário - 00:00</div>
+																			<div class="pull-left">Reciclagem automática: Ativada</div>
+																			<div class="pull-left">Limpeza manual de arquivos</div>
+																		</div>
+
+																		<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
+																			<div class="left" style="left: 0px;">Arquivos armazenados: {{ backups_informations.total_files }} itens</div>
+																			<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }}</div>
+																			<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
+																			<div class="left" style="left: 0px;">Espaço Promocional: 500 Mb</div>
+																			<br>
+
+																		</div>
+																	</div>
+																	<br>
+
+																	<div class="row">
+																		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">Clique aqui para saber como obter espaço adicional gratuitamente</div>
+																	</div>
+
+																	<!--<div class="pull-right" style="right: 0px;">Limpeza automática: Ativada</div>-->
+																</div>
+															</td>
+														</tr>
+													</table>
+												</div>
+
+												<div class="col-lg-6 col-sm-6 col-sm-12 col-xs-12">
+													<table id='table_backups' class="table table-hover table-striped table-bordered">
+														<tr>
+															<th>Ultimos arquivos</th>
+															<th>Data de Criação</th>
+														</tr>
+														<tr class="list-unstyled " ng-repeat="item in backups">
+															<td><span class="pull-left" style="">{{ item.backup_file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{ item.backup_size }} Kb</span></span></td>
+															<td><span>{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span></td>
+
+
+															<!--<td>
+																<div class="block" style=" border-bottom: 0px solid #DDDDDD">
+																	<div class="block_content" style="overflow: hidden;text-overflow: ellipsis;">
+																	<span class="title">
+																		<a style="color:#999;"><b>{{ item.backup_file_name }}</b><span style="color: #B3C1C3; font-size: 11px; alignment:center "> { item.backup_size | Filesize }</span></a>
+																			<span class="pull-right" style="color:#B3C1C3;font-size: 11px;padding-bottom:0px;margin-top: 3px" >{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span>
+																	</span>
+																	</div>
+																</div>
+															</td>
+
+															<td>
+
+															</td>-->
+														</tr>
+													</table>
+												</div>
+											</div>
+											{% endverbatim %}
+
+
+										</div>
+									</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+			</div>
+
+			<div id="entity_contact" class="tab-pane fade">
+				nada 1
+			</div>
+
+			<div id="entity_endereco" class="tab-pane fade">
+				nada 2
+			</div>
+		</div>
+	</div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block recursos_complementares %}
+{% load static %}
+<script src="{% static 'modules/core/configurations/configurations.js' %}"></script>
+
+
+  <script type="text/javascript">
+	function post_screen_verified(){
+	}
+
+	$(document).ready(function(){
+		post_screen_verified();
+		angular.element(document.getElementById('configuration_controller')).scope().load()
+		angular.element(document.getElementById('configuration_controller')).scope().load_backups_informations()
+
+  	terminate_setup()
+	});
+</script>
+{% endblock %}

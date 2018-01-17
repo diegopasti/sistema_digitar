@@ -113,8 +113,10 @@ application.controller('configurations_controller', function ($scope) {
               $scope.$apply();
             }
             register_action(start_request, status);
-            $scope.load_backups_informations()
+            //$scope.load_backups_informations()
+            $scope.load_system_informations()
             $scope.load()
+            $.unblockUI();
             NProgress.done();
           },
 
