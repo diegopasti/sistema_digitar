@@ -20,8 +20,11 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
 
 		success_function = function(result,message,object,status){
-			notify_success_message(['Novo Usuário adicionado com Sucesso'])
-			$scope.usuarios.splice(0,0,object)
+			notify_success_message(['Novo Usuário adicionado com Sucesso']);
+			$scope.usuarios.splice(0,0,{});
+			$scope.usuarios[0] = object;
+			$scope.usuarios[0]['get_full_name'] = object['first_name']+ ' ' + object['last_name'];
+			$scope.usuarios[0]['groups'] =  [object['group_id']];
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_usuario', message);
 			$("#modal_adicionar_usuario").modal('hide');
@@ -54,7 +57,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 				var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
 				notify_success_message(["Usuário atualizado com sucesso"])
 				$scope.usuarios[posicao] = object;
-				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name']
+				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name'];
 				$scope.registro_selecionado = null;
 				$scope.esta_adicionando = true;
 				check_response_message_form('#form_alterar_usuario', message);

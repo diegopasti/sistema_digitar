@@ -15,7 +15,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 
 from libs.default.core import BaseController
-from libs.default.decorators import request_ajax_required
+from libs.default.decorators import request_ajax_required, permission_level_required
 from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco
 from modules.entidade.models import entidade, contato
 from modules.entidade.service import consultar_codigo_postal_viacep  # consultar_codigo_postal_default
@@ -53,6 +53,7 @@ def buscar_fontes(request):
     return render(request,"index.html")
 
 @login_required
+@permission_level_required(3,'/error/access_denied')
 def cadastro_entidades(request):
     usuario_admin = False
     dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')

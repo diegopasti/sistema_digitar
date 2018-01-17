@@ -6,12 +6,14 @@ from django.shortcuts import HttpResponse, render
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
 
+from libs.default.decorators import permission_level_required
 from modules.servico.models import Servico, Plano
 import json
 
 from modules.servico.formularios import formulario_adicionar_servico, formulario_adicionar_plano
 
 @login_required
+@permission_level_required(2,'/error/access_denied')
 def cadastro_planos(request):
     formulario_plano = formulario_adicionar_plano()
     return render(request,"servico/controle_planos.html",{'formulario_plano': formulario_plano},)
@@ -101,6 +103,7 @@ def serializar_plano(plano):
     return texto
 
 @login_required
+@permission_level_required(3,'/error/access_denied')
 def cadastro_servico(request):
     erro = False
     servicos = []#Servico.objects.all()
