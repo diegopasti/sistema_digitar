@@ -112,7 +112,9 @@ function initial_temporary_is_valid(){
 
 function get_date_contract(field){
 	if($('#'+field).val()!="" && $('#'+field).val()!="__/__/____"){
-		return new Date($('#'+field).val());
+		var numbers = $('#'+field).val().split('/')
+		var date = new Date(numbers[2], numbers[1]-1, numbers[0])
+		return date;
 	}
 	else{
 		return null;
@@ -134,9 +136,13 @@ function verificar_vigencia_desconto(){
 			//alert("INI: "+data_inicio+" ---> FIM: "+data_fim);
 			if(data_inicio!=data_fim){
 				if(data_inicio<data_fim){
-					if(current_date>data_inicio){
-						//alert("INICIO EXISTE, TA ANTES DO FIM, E ESTA DENTRO DA VIGENCIA")
-						can_apply_discount = true;
+					if(current_date=>data_inicio){
+						if(current_date<=data_fim){
+							can_apply_discount = true;
+						}
+						else{
+							can_apply_discount = false;
+						}
 					}
 					else{
 						//alert("INICIO EXISTE, TA ANTES DO FIM, NAO CHEGOU NA VIGENCIA");
@@ -154,7 +160,6 @@ function verificar_vigencia_desconto(){
 				set_wrong_field('desconto_fim','Data de encerramento e início não podem ser iguais.')
 				can_apply_discount = false;
 			}
-
 		}
 		else{
 			if(current_date>data_inicio){

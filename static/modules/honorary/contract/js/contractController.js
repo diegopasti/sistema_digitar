@@ -133,6 +133,10 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	$scope.adicionar_contrato = function() {
 		var data_paramters = $scope.get_data_from_form();
+		data_paramters['taxa_honorario'] = data_paramters['taxa_honorario'].replace('.','').replace(',','.');
+		data_paramters['valor_honorario'] = data_paramters['valor_honorario'].replace('.','').replace(',','.');
+		data_paramters['valor_total'] = data_paramters['valor_total'].replace('.','').replace(',','.');
+		data_paramters['desconto_temporario'] = data_paramters['desconto_temporario'].replace('.','').replace(',','.');
 
 		function validate_function(){
 			return true
