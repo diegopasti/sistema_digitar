@@ -155,3 +155,9 @@ function reset_formulary(formulary_id){
     clean_wrong_field(id);
   });
 }
+
+$('.modal').on('show.bs.modal', function () {
+	var modal_id = $(this).attr('id');
+	setTimeout(function(){$("#"+modal_id+" form input[type=text]").val('').focus()},100);
+	//alert("ABRI O MODAL VOU PEGAR O FOCO NO PRIMEIRO CAMPO DE DIGITACAO")
+})

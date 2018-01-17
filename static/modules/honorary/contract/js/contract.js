@@ -4,6 +4,7 @@ function configurar_formulario_padrao(){
 	$("#tipo_honorario").val('FIXO');
 	$("#tipo_vencimento").val('MENSAL');
 	$("#dia_vencimento").val('5');
+	$("#tipo_honorario").val('VARIAVEL');
 	configurar_campo_data('vigencia_inicio');
 	configurar_campo_data('vigencia_fim');
 	configurar_campo_data('data_vencimento');
@@ -39,28 +40,36 @@ function verificar_tipo_vencimento () {
 
 function verificar_tipo_honorario () {
 	var tipo_vencimento = $('#select_tipo_honorario option:selected').val();
-	if (tipo_vencimento == 'VARIAVEL'){
+	if (tipo_vencimento == 'FIXO'){
 		$('#valor_honorario').val('');
-		$('#taxa_honorario').val('1')
+		$('#taxa_honorario').val('')
 		habilitar('field_valor_honorario');
+		desabilitar('field_taxa_honorario')
 		$("#valor_total").val('');
 	}
 	else{
-		$('#taxa_honorario').val('')
+		$('#taxa_honorario').val('');
+		$('#valor_honorario').val('');
+		habilitar('field_taxa_honorario');
 		desabilitar('field_valor_honorario')
-		$("#valor_total").val('')
+		$("#valor_total").val('');
+		calcular_honorario();
 	}
 
 }
 
-function calcular_honorario() {
+function calcular_honorario(){
 	var salario_vigente = angular.element(document.getElementById('controle_angular')).scope().salario_vigente;
 	salario_vigente = Number(salario_vigente.replace('R$ ','').replace('.','').replace(',','.')); //975.3
 	var multiplicador = $('#taxa_honorario').val().replace(',','.')
 	if (multiplicador != ''){
 		var valor_total = salario_vigente * (Number(multiplicador))
 		valor_total = Math.round(valor_total*10000)/100.0;
-		$('#valor_honorario').val(valor_total).trigger('mask.maskMoney')
+		$('#valor_honorario').val(valor_total).trigger('mask.maskMoney');
+	}
+	else{
+		$('#taxa_honorario').val('1')
+		$('#valor_honorario').val(salario_vigente*100).trigger('mask.maskMoney');
 	}
 }
 

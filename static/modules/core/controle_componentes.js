@@ -170,4 +170,3 @@ function marcar_campo_errado(campo){
 function desmarcar_campo_errado(){
 	$("#"+campo+" input").removeClass('wrong_field')
 }
-

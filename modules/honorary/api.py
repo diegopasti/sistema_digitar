@@ -76,7 +76,9 @@ class ContractController(BaseController):
     @method_decorator(login_required)
     def salvar_contrato(self, request):
         save_response = self.save(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
+        print("SALVEI: ")
         if save_response['result']:
+            print("VOU ATUALIZAR O CONTRTAO DELE E OS HONORARIOS")
             contrato = Contrato.objects.get(pk=int(save_response['object']['id']))
             contrato.totalizar_honorario()
             contrato.save()

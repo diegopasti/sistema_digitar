@@ -98,7 +98,7 @@ class FormContrato(forms.Form, BaseForm):
         label="Tipo de Contrato*", choices=opcoes_tipos_contratos, required=True,error_messages=MENSAGENS_ERROS,
         widget=forms.Select(
             attrs={
-                'id': 'tipo_cliente', 'class': "form-control", 'ng-model':'tipo_cliente'
+                'id': 'tipo_cliente', 'class': "form-control",
             }
         )
     )
@@ -205,7 +205,7 @@ class FormContrato(forms.Form, BaseForm):
         label="Tipo do Vencimento", choices=opcoes_tipos_vencimento,
         required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.Select(
-            attrs={'id': 'tipo_vencimento', 'class': "form-control", 'ng-model': 'tipo_vencimento', 'onchange':'verificar_tipo_vencimento()'}
+            attrs={'id': 'tipo_vencimento', 'class': "form-control", 'onchange':'verificar_tipo_vencimento()'}
         )
     )
 
@@ -215,7 +215,7 @@ class FormContrato(forms.Form, BaseForm):
         label="Dia do Vencimento", required=False, error_messages=MENSAGENS_ERROS,choices=opcoes_dias,
         widget=forms.Select(
             attrs={
-                'id': 'dia_vencimento','class': "form-control decimal", 'ng-model':'dia_vencimento',
+                'id': 'dia_vencimento','class': "form-control decimal",
             }
         )
     )
