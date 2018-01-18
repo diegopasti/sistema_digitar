@@ -21,6 +21,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sistemaweb.settings")
 
 from dbbackup.management.commands import dbbackup
 
+
 DROPBOX_OAUTH2_TOKEN = 'r2VjuxIaDQAAAAAAAAAAD7YKqJlAJSdXsRz3IWYGHs2Q_BEnim1nOc3-LA1PspKi'
 DROPBOX_ROOT_PATH = '/sistemaweb/backup'
 DROPBOX_ROOT_PATH_NEW = '/sistemaweb/backup'
