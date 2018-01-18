@@ -275,6 +275,7 @@ class FormContrato(forms.Form, BaseForm):
         else:
             print("ERRORS:",self.errors)
             print("VALORES: ",self.data)
+        print("Vou retornar isso: ",form_data)
         return form_data
 
     def validar_inicio_fim_contrato(self):

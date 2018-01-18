@@ -114,7 +114,6 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
       success: function (data) {
       	try
 				{
-					alert("VEJA O QUE VEIO: " + data);
 					data = data.replace("<html><head></head><body>{", "{")
 					data = data.replace("}</body></html>", "}")
 					$scope.usuarios = JSON.parse(data).object;
@@ -132,7 +131,6 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
       },
 
       failure: function (data) {
-      	alert("VEJA O QUE VEIO: "+data);
         notify_error(["Não foi possivel carregar a lista"]);
       },
     })
@@ -161,7 +159,6 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		validate_function = function () {
 		 return validate_justify();
 		};
-		alert("Olha o q eu pego:"+JSON.stringify(data_paramters))
 		request_api("/api/user/chage_active/",data_paramters,validate_function,success_function,fail_function);
 	};
 
@@ -174,8 +171,8 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 	$scope.confirm_active = function(){
 		var object_name = $scope.registro_selecionado.first_name + ' ' + $scope.registro_selecionado.last_name;
-		$('#action_type').val('Reativar')
-		$('#action_object').val(object_name)
+		$('#action_type').val('Reativar');
+		$('#action_object').val(object_name);
 		$('#action_user').val('Operador')
 	}
 
@@ -189,15 +186,17 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.open_object = function(){
 		reset_formulary('form_adicionar_usuario')
 		reset_formulary('form_alterar_usuario')
+		alert("regitro_selecionado:"+JSON.stringify($scope.registro_selecionado))
 		for (var key in $scope.registro_selecionado) {
 			try{
-				$('input[name='+key+']').val($scope.registro_selecionado[key])
+				$('input[name='+key+'_update]').val($scope.registro_selecionado[key])
 				//$("#"+key).val($scope.registro_selecionado[key]);
 			}
 			catch (err){
+				alert("olha o erro:"+err)
 			}
 		}
-		$('input[name=username] ').prop('readonly', true);
+		$('input[name=username_update] ').prop('readonly', true);
 		$('#field_group_update > [name=groups]').val($scope.registro_selecionado.groups[0])
 	}
 

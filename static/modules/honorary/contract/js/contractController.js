@@ -116,7 +116,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	$scope.atualizar_contrato = function(cliente) {
 		var data = {cliente : cliente}
-
+		alert("Olha o data:\n"+JSON.stringify(data))
 		function validate_function () {return true}
 
 		success_function = function(result,message,object,status){
@@ -133,16 +133,13 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	$scope.adicionar_contrato = function() {
 		var data_paramters = $scope.get_data_from_form();
-		data_paramters['taxa_honorario'] = data_paramters['taxa_honorario'].replace('.','').replace(',','.');
-		data_paramters['valor_honorario'] = data_paramters['valor_honorario'].replace('.','').replace(',','.');
-		data_paramters['valor_total'] = data_paramters['valor_total'].replace('.','').replace(',','.');
-		data_paramters['desconto_temporario'] = data_paramters['desconto_temporario'].replace('.','').replace(',','.');
+		alert("Olha o data>"+JSON.stringify(data_paramters))
 
-		function validate_function(){
+			validate_function = function(){
 			return true
 		}
 
-		function success_function(result,message,data_object,status) {
+		success_function = function(result,message,data_object,status) {
 			//alert("VEJA O RESULT: "+JSON.stringify(message))
 			/*
 			$scope.registro_selecionado.contrato.tipo_cliente = $('#tipo_cliente option:selected').text()
@@ -163,21 +160,23 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 			$scope.registro_selecionado.contrato.desconto_temporario = message.fields.desconto_temporario
 			*/
-
+			alert("deu True")
 			$scope.registro_selecionado.contrato = data_object;
 			$scope.registro_selecionado.plano = $('#select_plano option:selected').text();
 			$scope.$apply()
 			$('#modal_adicionar_contrato').modal('hide');
 		}
 
-		function fail_function(result,message,data_object,status) {
+		fail_function = function(result,message,data_object,status) {
+			alert("deu false")
 			$.each(message, function( index, value ) {
 				//alert("ERRO: "+index + ": " + value );
 				notificar('error','Falha na Operação',value);
-				marcar_campo_errado(index)
+				marcar_campo_errado(index);
 				$("#"+index).focus();
 			});
 		}
+		alert("chego ate aqui?");
 		request_api("/api/contract/salvar_contrato",data_paramters,validate_function,success_function,fail_function)
 	}
 
@@ -189,7 +188,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			if(data_paramters==null){return false}
 			else{return true}
 		}
-
+		alert("Olha o data:\n"+JSON.stringify(data_paramters))
 		function success_function(result,message,data_object,status) {
 			$scope.registro_selecionado.contrato = data_object;
 			$scope.$apply();
@@ -258,7 +257,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
     var dia_vencimento = $('#select_dia_vencimento option:selected').val();
     var data_vencimento = $("#data_vencimento").val();
 		var tipo_honorario = $('#select_tipo_honorario option:selected').val();
-    var taxa_honorario = $("#taxa_honorario").val();
+    var taxa_honorario = $("#taxa_honorario").val().replace('.','').replace(',','.');
     var valor_honorario = $('#valor_honorario').val().replace(".","").replace(",",".");
     var desconto_inicio = $('#desconto_inicio').val();
     var desconto_fim = $('#desconto_fim').val();
@@ -444,6 +443,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	}
 
 	$scope.open_contract = function(){
+		alert("Registro:	"+JSON.stringify($scope.registro_selecionado))
 		if ($scope.registro_selecionado.contrato != null){
 			$scope.esta_adicionando = false;
 			var plano = $scope.registro_selecionado.contrato.plano;
@@ -456,8 +456,11 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 				$('#plano option:first').prop('selected','selected');
 			}
 
+			//var date =  new Date(2016, 10, 5);//$filter('date')($scope.registro_selecionado.contrato.vigencia_inicio,'dd/MM/yyyy')
+			$('#vigencia_inicio').datepicker().datepicker( "setDate", "10/12/2012" )
+			alert("Olha:"+JSON.stringify($('#vigencia_inicio').val()))
 			//s$('#tipo_cliente').find('option:selected').val($scope.registro_selecionado.contato.tipo_cliente)
-			$('#vigencia_inicio').val($filter('date')($scope.registro_selecionado.contrato.vigencia_inicio,'dd/MM/yyyy'));
+			//$('#vigencia_inicio').datepicker($filter('date')($scope.registro_selecionado.contrato.vigencia_inicio,'dd/MM/yyyy'));
 			$('#vigencia_fim').val($filter('date')($scope.registro_selecionado.contrato.vigencia_fim,'dd/MM/yyyy'));
 			$('#dia_vencimento option:selected').text($scope.registro_selecionado.contrato.dia_vencimento);
 			$("#data_vencimento").val($filter('date')($scope.registro_selecionado.contrato.data_vencimento,'dd/MM/yyyy'));
