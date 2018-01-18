@@ -76,7 +76,6 @@ def request_post_required(view):
 
 
 def permission_level_required(nivel_requerido, login_url=None, raise_exception=False):
-
     '''
     Decorador View
     Um usuário só pode ter no máximo um grupo, dessa forma eu pego o id do grupo e filtro o acesso

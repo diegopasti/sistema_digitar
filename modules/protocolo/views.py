@@ -598,7 +598,7 @@ def novo_emitir_protocolo(request):
     formulario_protocolo = formulario_emitir_protocolo()
     clientes = entidade.objects.all().filter(ativo=True).exclude(id=1).order_by('-id')
     documentos = documento.objects.all()
-    return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':'Marcelo Bourguignon','formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos})
+    return render(request,"protocolo/novo_emitir_protocolo.html",{'operador':request.user.get_full_name(),'formulario_protocolo':formulario_protocolo,'destinatarios':clientes ,'documentos':documentos})
 
 @login_required
 def emitir_protocolo_identificado(request,operador):
@@ -661,6 +661,13 @@ def visualizar_protocolo(request, protocolo_id):
         documento_receptor = ""
 
     linhas_extras = [1] * (10 - len(documentos))
+
+    pd = parametros_destinatario
+    print("VEJA OS PARAMETROS DO DESTINATARIO: ",pd.nome)
+    print("VEJA OS PARAMETROS DO cpf: ", pd.cpf_cnpj, type(pd.cpf_cnpj))
+    print("VEJA OS PARAMETROS DO endereco: ", pd.endereco, type(pd.endereco))
+    print("VEJA OS PARAMETROS DO complemento: ", pd.complemento,type(pd.complemento))
+    print("VEJA OS PARAMETROS DO contatos: ", pd.contatos, type(pd.contatos))
 
     parametros = {'emissor_nome': parametros_emissor.nome,
         'emissor_cpf_cnpj': formatar_cpf_cnpj(parametros_emissor.cpf_cnpj),
@@ -736,7 +743,7 @@ def salvar_protocolo(request):
 
         novo_protocolo = protocolo()
         novo_protocolo.emissor = parametros_emissor.entidade
-        novo_protocolo.emitido_por = dados['operador'].upper()
+        novo_protocolo.emitido_por = request.user.get_full_name()
         novo_protocolo.destinatario = parametros_destinatario.entidade
 
         cliente = parametros_destinatario.entidade

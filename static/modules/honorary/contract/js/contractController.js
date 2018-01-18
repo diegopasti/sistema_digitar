@@ -133,10 +133,11 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	$scope.adicionar_contrato = function() {
 		var data_paramters = $scope.get_data_from_form();
-		data_paramters['taxa_honorario'] = data_paramters['taxa_honorario'].replace('.','').replace(',','.');
-		data_paramters['valor_honorario'] = data_paramters['valor_honorario'].replace('.','').replace(',','.');
-		data_paramters['valor_total'] = data_paramters['valor_total'].replace('.','').replace(',','.');
-		data_paramters['desconto_temporario'] = data_paramters['desconto_temporario'].replace('.','').replace(',','.');
+		alert("VEJA O DATA PARAMS: "+JSON.stringify(data_paramters));
+		data_paramters['taxa_honorario'] = 	$('#taxa_honorario').val().replace('.','').replace(',','.');
+		data_paramters['valor_honorario'] = 	$('#valor_honorario').val().replace('.','').replace(',','.');
+		data_paramters['valor_total'] = $('#valor_total').val().replace('R$ ','').replace('.','').replace(',','.');
+		data_paramters['desconto_temporario'] = $('#desconto_temporario').val().replace('.','').replace(',','.');
 
 		function validate_function(){
 			return true
@@ -548,7 +549,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		$scope.servicos_carregados = false;
 		$.ajax({
 			type: "GET",
-				url: "/api/contract/carregar_servicos_contratados/"+$scope.registro_selecionado.cliente_id+"/"+$scope.registro_selecionado.plano_id,
+				url: "/api/contract/carregar_servicos_contratados/"+$scope.registro_selecionado.cliente_id,
 				success: function (data) {
 					$scope.servicos_contratados = JSON.parse(data).object;
 					$scope.servicos_carregados = true;

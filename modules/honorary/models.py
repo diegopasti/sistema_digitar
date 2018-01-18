@@ -19,7 +19,7 @@ class Contrato(models.Model):
     tipo_cliente  = models.CharField("Tipo do Cliente:",max_length=2,null=False,default='PJ',choices = opcoes_tipos_clientes,error_messages=MENSAGENS_ERROS)
 
     vigencia_inicio = models.DateField(null=True)
-    vigencia_fim    = models.DateField(null=True)
+    vigencia_fim    = models.DateField(null=True,blank=True)
 
     taxa_honorario  = models.DecimalField("Honorário:", max_digits=5, decimal_places=2, null=True,blank=False)
     valor_honorario = models.DecimalField("Valor:", max_digits=6, decimal_places=2, null=True,blank=False)
@@ -29,8 +29,8 @@ class Contrato(models.Model):
 
     desconto_temporario = models.DecimalField("Desconto Temporário:", max_digits=10,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
     desconto_temporario_ativo  = models.DecimalField("Desconto Temporário Ativo:", max_digits=10,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
-    desconto_inicio = models.DateField(null=True)
-    desconto_fim    = models.DateField(null=True)
+    desconto_inicio = models.DateField(null=True,blank=True)
+    desconto_fim    = models.DateField(null=True,blank=True)
 
     desconto_indicacoes = models.DecimalField("Desconto por Indicações:", max_digits=7, decimal_places=2, default=0, null=True,blank=True)
     servicos_contratados = models.CharField("Serviços:",null=True,blank=True,max_length=100)

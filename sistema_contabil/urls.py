@@ -93,7 +93,7 @@ urlpatterns = [
     url(r'^api/contract/alterar_contrato', ContractController().alterar_contrato),
     url(r'^api/contract/close', ContractController().close_contract),
     url(r'^api/contract/atualizar_contrato', ContractController().atualizar_contrato),
-    url(r'^api/contract/carregar_servicos_contratados/(?P<cliente_id>\d+)/(?P<plano_id>\d+)/', ContractController().carregar_servicos_contratados),
+    url(r'^api/contract/carregar_servicos_contratados/(?P<cliente_id>\d+)', ContractController().carregar_servicos_contratados),
     url(r'^api/contract/atualizar_servicos', ContractController().atualizar_servicos),
     url(r'^api/contract/lista_indicacao/(?P<cliente_id>\d+)/', ContractController().get_lista_indicacoes),
     url(r'^api/contract/salvar_indicacao/', ContractController().salvar_indicacao),
