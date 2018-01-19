@@ -21,9 +21,9 @@ class FormLogin(FormAbstractUsername, FormAbstractPassword,BaseForm):
 
 class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirmPassword,FormAbstractEmail,BaseForm):
     model = User
-    grupos = {(1, 'Administrador'),
-              (2, 'Supervisor'),
-              (3, 'Operador')}
+    grupos = {(1, 'ADMINISTRADOR'),
+              (2, 'SUPERVISOR'),
+              (3, 'OPERADOR')}
 
     """choices = ((1, 'Gerente'), (2, 'Administrador'), (3, 'Operador'), (4, 'Sem acesso'))
     level_permission = forms.ChoiceField(
@@ -47,7 +47,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'id': 'first_name', 'name': 'primeiro_nome', 'class': "form-control ",
+                'id': 'first_name', 'name': 'primeiro_nome', 'class': "form-control uppercase",
                 'autocomplete': "off", 'ng-model': 'primeiro_nome', 'required': "required",
             }
         )
@@ -60,7 +60,7 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'id': 'last_name', 'name': 'sobrenome', 'class': "form-control ",
+                'id': 'last_name', 'name': 'sobrenome', 'class': "form-control uppercase",
                 'autocomplete': "off", 'ng-model': 'sobrenome', 'required': "required",
             }
         )
@@ -84,12 +84,12 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
         super(FormAbstractPassword, self).__init__(*args, **kwargs)
         super(FormAbstractConfirmPassword, self).__init__(*args, **kwargs)
         super(FormAbstractEmail, self).__init__(*args,**kwargs)
-        self.fields['username'].widget.attrs['placeholder'] = 'Login..'
-        self.fields['email'].widget.attrs['placeholder'] = 'Email..'
-        self.fields['first_name'].widget.attrs['placeholder'] = 'Primeiro nome..'
-        self.fields['last_name'].widget.attrs['placeholder'] = 'Sobrenome..'
-        self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
-        self.fields['confirm_password'].widget.attrs['placeholder'] = 'Confirmar senha..'
+        #self.fields['username'].widget.attrs['placeholder'] = 'Login..'
+        #self.fields['email'].widget.attrs['placeholder'] = 'Email..'
+        #self.fields['first_name'].widget.attrs['placeholder'] = 'Primeiro nome..'
+        #self.fields['last_name'].widget.attrs['placeholder'] = 'Sobrenome..'
+        #self.fields['password'].widget.attrs['placeholder'] = 'Senha..'
+        #self.fields['confirm_password'].widget.attrs['placeholder'] = 'Confirmar senha..'
 
 
     def clean(self):
@@ -102,9 +102,9 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
 
 class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
     model = User
-    grupos = {(1,'Administrador'),
-              (2,'Supervisor'),
-              (3,'Operador')}
+    grupos = {(1,'ADMINISTRADOR'),
+              (2,'SUPERVISOR'),
+              (3,'OPERADOR')}
 
 
     first_name = forms.CharField(
@@ -154,8 +154,8 @@ class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
         self.fields['email'].required = False
         self.fields['username'].widget.attrs['name'] =  'update_' + self.fields['username'].widget.attrs['name']
         self.fields['email'].widget.attrs['name'] = 'update_' + self.fields['email'].widget.attrs['name']
-        self.fields['username'].widget.attrs['placeholder'] = 'Username..'
-        self.fields['email'].widget.attrs['placeholder'] = 'Informe seu Email..'
+        #self.fields['username'].widget.attrs['placeholder'] = 'Username..'
+        #self.fields['email'].widget.attrs['placeholder'] = 'Informe seu Email..'
 
 
 class FormConfirmRegister(FormAbstractEmail):

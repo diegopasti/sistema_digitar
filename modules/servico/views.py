@@ -73,7 +73,6 @@ def excluir_plano(request):
     else:
         raise Http404
 
-
 def serializar_plano(plano):
     texto = {}
     texto['id'] = str(plano.id)
@@ -103,7 +102,7 @@ def serializar_plano(plano):
     return texto
 
 @login_required
-@permission_level_required(3,'/error/access_denied')
+@permission_level_required(2,'/error/access_denied')
 def cadastro_servico(request):
     erro = False
     servicos = []#Servico.objects.all()
@@ -150,7 +149,6 @@ def excluir_servico(request,servico_id):
 
     else:
         raise Http404
-
 
 def executar_operacao(registro,operacao):
     response_dict = {}

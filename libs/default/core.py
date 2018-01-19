@@ -169,17 +169,16 @@ class BaseController(Notify):
             nome = request.POST['first_name'].upper()
             sobrenome = request.POST['last_name'].upper()
             grupo = request.POST['groups']
-
-            user = User.objects._create_user(username, email, senha,first_name=nome, last_name=sobrenome)
-            if user is not None:
+            try:
+                user = User.objects._create_user(username, email, senha,first_name=nome, last_name=sobrenome)
                 my_group = Group.objects.get(id=int(grupo))
                 my_group.user_set.add(user)
-                response_dict = self.notify.success(user, list_fields=['email','username','is_active','date_joined','first_name','last_name','id','groups'],extra_fields=['group_id'])
+                response_dict = self.notify.success(user, list_fields=['email', 'username', 'is_active', 'date_joined', 'first_name', 'last_name', 'id', 'groups'],
+                                                    extra_fields=['group_id'])
                 response_dict['object']['group_id'] = my_group.id
-            else:
-                response_dict = self.notify.error({'username': 'Nao foi possivel criar objeto.'})
-
-
+            except Exception as erro:
+                print("QUAL O ERRO: ",erro)
+                response_dict = self.notify.error(erro)
         else:
             response_dict = self.get_exceptions(None, form) #self.notify.error({'email': 'Formulário com dados inválidos.'})
         return self.response(response_dict)

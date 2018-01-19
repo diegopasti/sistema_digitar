@@ -45,7 +45,6 @@ def adicionar_salario(request):
     else:
         raise Http404
 
-
 def validar_formulario(formulario):
     if formulario.is_valid():
         return True

@@ -189,4 +189,4 @@ class UserController(BaseController):
     @method_decorator(login_required)
     @method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
     def filter_users(self, request):
-        return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','id','groups'],extra_fields=['get_full_name'])
+        return BaseController().filter(request, User,list_fields=['email','username','is_active','date_joined','first_name','last_name','id','groups','last_login'],extra_fields=['get_full_name'],order_by='id')
