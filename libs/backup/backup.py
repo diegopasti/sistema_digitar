@@ -191,6 +191,7 @@ class BackupManager:
     def schedule_backup(self):
         print('test')
 
+
 if __name__=='__main__':
     import sys
     arguments = sys.argv
