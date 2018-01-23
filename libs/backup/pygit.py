@@ -76,9 +76,21 @@ def check_update():
         pass
         print('\nVC JÁ ESTÁ COM A ÚLTIMA VERSÃO INSTALADA.')
 
-
     return data
-        
+
+
+def install():
+    import os
+
+    disc_c = os.path.expanduser('~')
+    print(disc_c)
+
+    os.chdir(disc_c + '\Empresa\Projetos\sistema_digitar')
+
+    os.system(
+        disc_c + '\PythonVirtualEnvs\sistema_digitar\Scripts\python.exe ' + disc_c + '\Empresa\Projetos\sistema_digitar\manage.py install_packages')
+
+
 def update():
 
     try:

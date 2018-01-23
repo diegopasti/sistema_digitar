@@ -181,7 +181,6 @@ class ConfigurationsController(BaseController):
     def version_update(self,request):
         self.start_process(request)
         version_check = check_update()
-        #print('DICT VERSION:',version_check)
         response_dict = {}
         response_dict['result'] = True
         response_dict['message'] = ""
@@ -199,7 +198,6 @@ class ConfigurationsController(BaseController):
     def update(self,request):
         self.start_process(request)
         updating = update()
-        #print('DICT VERSION:',updating)
 
     def shared_folder(self,request):
         self.start_process(request)
@@ -209,7 +207,6 @@ class ConfigurationsController(BaseController):
         response_dict['message'] = ""
         response_dict['object'] = backup_link_folder
         #print("OLHE A LISTA:", backup_link_folder)
-        #print("VEJA O DICIONÁRIO:", response_dict)
         return self.response(response_dict)
 
     def manager_dropbox(self,request):
