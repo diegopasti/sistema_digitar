@@ -156,3 +156,4 @@ urlpatterns = [
     url(r'error/access_denied',core_views.access_denied),
 
 ]
+
