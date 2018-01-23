@@ -12,10 +12,8 @@ class Command(BaseCommand):
         backup_paramters = BackupManager().create_backup()
         try:
             backup = Backup.objects.get(backup_file_name=backup_paramters['file_name'])
-            print("JA EXISTE")
         except:
             backup = Backup()
-            print("VOU CRIAR")
 
         backup.backup_file_name = backup_paramters['file_name']
         backup.backup_link = backup_paramters['link']
