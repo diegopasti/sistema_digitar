@@ -181,7 +181,6 @@ class ConfigurationsController(BaseController):
     def version_update(self,request):
         self.start_process(request)
         version_check = check_update()
-        #print('DICT VERSION:',version_check)
         response_dict = {}
         response_dict['result'] = True
         response_dict['message'] = ""
