@@ -95,12 +95,14 @@ def update():
 
     try:
         porcelain.pull(LOCAL_REPO, REMOTE_REPO)
+        install()
         print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
     except:
         pass
         try:
             os.remove(HEADS)
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
+            install()
             print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
         except:
             pass
