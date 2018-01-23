@@ -2,7 +2,6 @@ import os
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.utils.decorators import method_decorator
-
 from libs.backup.backup import BackupManager
 from libs.backup.pygit import check_update, update
 from libs.default.core import BaseController
