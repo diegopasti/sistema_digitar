@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
+
+import decimal
 from django.contrib.auth.models import User
 from modules.entidade.models import entidade
 from modules.entidade.formularios import MENSAGENS_ERROS
@@ -229,7 +231,7 @@ class Honorary(models.Model):
             honorary.initial_value_contract = contract.valor_honorario
             honorary.temporary_discount = contract.calcular_desconto_temporario(honorary.competence)
             honorary.fidelity_discount = contract.calcular_desconto_fidelidade()
-            honorary.contract_discount = honorary.temporary_discount + honorary.fidelity_discount
+            honorary.contract_discount = honorary.temporary_discount + decimal.Decimal(honorary.fidelity_discount)
             honorary.final_value_contract = Decimal(honorary.initial_value_contract)*(1 - (honorary.contract_discount / 100))
             honorary.total_honorary = honorary.final_value_contract
         else:

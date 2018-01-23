@@ -506,10 +506,8 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			url: "/api/contract/clientes/" + $scope.registro_selecionado.cliente_id,
 
 			success: function (data) {
-				//alert("VEJA A RESPOSTA: "+JSON.stringify(data))
 				$scope.registro_selecionado.clientes = JSON.parse(data);
 				$scope.$apply();
-				//alert("VEJA O QUE TEMOS NAS INDICACOES: "+$scope.registro_selecionado.indicacoes[0].cliente_id)
 			},
 			failure: function (data) {
 				$scope.clientes = [];
@@ -659,18 +657,17 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			empresa : empresa,
 			taxa_desconto : taxa_desconto,
 			cliente_id : cliente_id
-		}
+		};
 
 		function validate_function () {
 			if(empresa == '' || taxa_desconto==''){
-				alert('Preecha os campos')
+				alert('Preecha os campos');
 				return false
 			}
 			return true
 		}
 
 		function success_function(result,message,data_object,status) {
-			data_object.taxa_desconto = taxa_desconto;
 			$scope.registro_selecionado.indicacoes.push(data_object);
 			$scope.calcular_total_desconto_fidelidade();
 			$scope.atualizar_contrato(cliente_id);
@@ -681,13 +678,13 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			alert('Empresa informada já foi indicada anteriormente')
 		}
 		request_api("/api/contract/salvar_indicacao/",data,validate_function,success_function,fail_function)
-	}
+	};
 
 	$scope.carregar_indicacao_selecionada = function(){
-		var indica = $scope.indicacao_selecionada.indicacao
-		$('#taxa_desconto_indicacao').val($scope.indicacao_selecionada.taxa_desconto)
+		var indica = $scope.indicacao_selecionada.indicacao;
+		$('#taxa_desconto_indicacao').val($scope.indicacao_selecionada.taxa_desconto);
 		$('#indicacao').val(indica)
-	}
+	};
 
 	$scope.alterar_indicacao = function () {
 		var taxa_desconto = $('#taxa_desconto_indicacao').val().replace(".","").replace(',','.');
