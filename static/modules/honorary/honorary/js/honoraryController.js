@@ -253,70 +253,52 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.selecionar_linha = function(registro) {
-			//alert("veja o index: "+registro.entity_name_id+"-"+registro.entity_name_nome);
-			//alert("veja se tem plano: "+registro.plano)
-
-			if ($scope.registro_selecionado != null){
-					//alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
-					if (registro.selecionado=='selected'){
-							//alert("O cara clicou na linha que ja tava selecionada");
-							$scope.desmarcar_linha_selecionada();
-							//registro.selecionado = "";
-							$scope.registro_selecionado = null;
-							//$scope.opcao_desabilitada = "desabilitado";
-							//alert("desmarquei entao deixa como se fosse adicionar")
-							$scope.esta_adicionando = true;
-					}
-
-					else{
-							$scope.desmarcar_linha_selecionada();
-							registro.selecionado = "selected";
-							$scope.registro_selecionado = registro;
-							$scope.opcao_desabilitada = "";
-
-							if(registro.plano == null){
-								$scope.esta_adicionando = true;
-							}
-							else{
-								$scope.esta_adicionando = false;
-							}
-					}
+		if ($scope.registro_selecionado != null){
+			if (registro.selecionado=='selected'){
+				$scope.desmarcar_linha_selecionada();
+				$scope.registro_selecionado = null;
+				$scope.esta_adicionando = true;
 			}
 
 			else{
-					registro.selecionado = 'selected';
-					$scope.registro_selecionado = registro;
-					$scope.opcao_desabilitada = "";
+				$scope.desmarcar_linha_selecionada();
+				registro.selecionado = "selected";
+				$scope.registro_selecionado = registro;
+				$scope.opcao_desabilitada = "";
 
-					if($scope.registro_selecionado.plano){
-						$scope.esta_adicionando = false;
-					}
-					else{
-						$scope.esta_adicionando = true;
-					}
+				if(registro.plano == null){
+					$scope.esta_adicionando = true;
+				}
+				else{
+					$scope.esta_adicionando = false;
+				}
 			}
-			//$scope.$apply();
+		}
+
+		else{
+			registro.selecionado = 'selected';
+			$scope.registro_selecionado = registro;
+			$scope.opcao_desabilitada = "";
+
+			if($scope.registro_selecionado.plano){
+				$scope.esta_adicionando = false;
+			}
+			else{
+				$scope.esta_adicionando = true;
+			}
+		}
+		//$scope.$apply();
 	}
 
 	$scope.desmarcar_linha_selecionada = function(){
-			$scope.registro_selecionado.selecionado = "";
-			$scope.registro_selecionado = null;
-			$scope.opcao_desabilitada = "desabilitado";
-			//$scope.apply();
+		$scope.registro_selecionado.selecionado = "";
+		$scope.registro_selecionado = null;
+		$scope.opcao_desabilitada = "desabilitado";
 	}
 
 	$scope.generate_honorary = function(){
 		if($scope.registro_selecionado != null){
 			window.open('/honorary/'+$scope.registro_selecionado.id);
-			//	data_paramters['id'] = $scope.registro_selecionado.id;
-
-			//	validate_function = function () {return true;}
-
-			//	success_function = function(result,message,object,status){
-			//		success_notify('Operação realizada com sucesso','Documento gerado com sucesso')
-			//	}
-
-			//	fail_function = function (result,message,data_object,status) {
 		}
 	}
 
@@ -386,56 +368,62 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.save_honorary_item = function(){
-		if($scope.selected_option_provent!=null){
-			var data_paramters = {}
-			data_paramters['honorary_id'] = parseInt($scope.registro_selecionado.id);
-			data_paramters['type_item'] = $('#type_item').val();
-			data_paramters['type_value'] = $scope.selected_option_provent.tipo_valor;
-			data_paramters['item_id'] = $scope.selected_option_provent.id;
-			data_paramters['unit_value'] = $('#unit_value').val().replace(".","").replace(",",".");
-			data_paramters['quantity'] =  $('#quantity').val().replace(".","").replace(",",".");
-			data_paramters['total_value'] = $('#total_value').val().replace(".","").replace(",",".");
-			//setTimeout(function(){$("#item_id").val($scope.selected_option_provent.id.toString()).trigger('change');},5);
+		alert("VEJA QUANTOS ITENS EU TENHO: "+$scope.registro_selecionado.honorary_itens.lenght)
+		if($scope.registro_selecionado.honorary_itens.lenght < 10){
+			if($scope.selected_option_provent!=null){
+				var data_paramters = {}
+				data_paramters['honorary_id'] = parseInt($scope.registro_selecionado.id);
+				data_paramters['type_item'] = $('#type_item').val();
+				data_paramters['type_value'] = $scope.selected_option_provent.tipo_valor;
+				data_paramters['item_id'] = $scope.selected_option_provent.id;
+				data_paramters['unit_value'] = $('#unit_value').val().replace(".","").replace(",",".");
+				data_paramters['quantity'] =  $('#quantity').val().replace(".","").replace(",",".");
+				data_paramters['total_value'] = $('#total_value').val().replace(".","").replace(",",".");
+				//setTimeout(function(){$("#item_id").val($scope.selected_option_provent.id.toString()).trigger('change');},5);
 
-			success_function = function(result,message,object,status){
-				if(result){
-					if ($scope.registro_selecionado.honorary_itens==''){
-						$scope.registro_selecionado.honorary_itens = [];
+				success_function = function(result,message,object,status){
+					if(result){
+						if ($scope.registro_selecionado.honorary_itens==''){
+							$scope.registro_selecionado.honorary_itens = [];
+						}
+						$scope.registro_selecionado.honorary_itens.push(object);
+						$scope.get_honorary($scope.registro_selecionado.id);
+						$("#quantity").val('');
+						$("#unit_value").val('');
+						$("#total_value").val('');
+						$scope.selected_option_provent = null;
 					}
-					$scope.registro_selecionado.honorary_itens.push(object);
-					$scope.get_honorary($scope.registro_selecionado.id);
-					$("#quantity").val('');
-					$("#unit_value").val('');
-					$("#total_value").val('');
-					$scope.selected_option_provent = null;
-				}
-				else{
-					error_notify(null,"Falha na Operação",message);
-				}
-			}
-
-			fail_function = function (result,message,data_object,status) {
-				for (var key in message) {
-					if (message.hasOwnProperty(key)) {
-						if(typeof(message[key]) == Array){
-							message[key].forEach(function(item, index){
-								set_wrong_field(key, item);
-							});
-						}
-						else{
-							error_notify(null,'Falha na Operação',message[key]);
-						}
-						return false;
+					else{
+						error_notify(null,"Falha na Operação",message);
 					}
 				}
+
+				fail_function = function (result,message,data_object,status) {
+					for (var key in message) {
+						if (message.hasOwnProperty(key)) {
+							if(typeof(message[key]) == Array){
+								message[key].forEach(function(item, index){
+									set_wrong_field(key, item);
+								});
+							}
+							else{
+								error_notify(null,'Falha na Operação',message[key]);
+							}
+							return false;
+						}
+					}
+				}
+
+				validate_function = function () {return true;}
+
+				request_api("/api/honorary/item/save",data_paramters,validate_function,success_function,fail_function);
 			}
-
-			validate_function = function () {return true;}
-
-			request_api("/api/honorary/item/save",data_paramters,validate_function,success_function,fail_function);
+			else{
+				set_wrong_field("item", "Campo Obrigatório");
+			}
 		}
 		else{
-			set_wrong_field("item", "Campo Obrigatório");
+			error_notify(null,'Falha na operação','Cada honorário deve conter no máximo dez itens.')
 		}
 	}
 
@@ -615,7 +603,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
     validade_function = function () {
      return  true;
     }
-    request_api("/api/provents",data_paramters,validade_function,success_function,fail_function);
+    request_api("/api/honorary/provents/options",data_paramters,validade_function,success_function,fail_function);
 	}
 
 	$scope.selecionar_item = function(registro){
@@ -648,16 +636,11 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		$("#unit_value").val("");
 		$("#quantity").val("");
 		$("#total_value").val("");
-		//$scope.opcao_desabilitada = "desabilitado";
 	}
 
 	$scope.load_item_selected = function(){
 		$("#type_item").val($scope.selected_item.type_item);
-		//alert("VAMOS VER O TIPO: "+$scope.selected_item.item);//JSON.stringify($scope.selected_item));
-		//$("#item_id").val($scope.selected_item.item).change();
-		//$scope.selected_option_provent = $scope.selected_item.item;
 		setTimeout(function(){$("#item_id").val($scope.selected_item.item.toString()).trigger('change');},10);
-
 		$("#unit_value").val($filter('currency')($scope.selected_item.unit_value,"", 2));
 		$("#total_value").val($filter('currency')($scope.selected_item.total_value,"", 2));
 		$("#quantity").val($filter('currency')($scope.selected_item.quantity,"", 2));
@@ -742,10 +725,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 			var quantity = parseFloat($("#quantity").val().replace(".","").replace(",","."));
 			var unit_value = parseFloat($("#unit_value").val().replace(".","").replace(",","."));
-			//alert("UNIT: "+unit_value+" -> QUANT: "+quantity);
 
-		//alert("VEJA O ITEM: "+$scope.selected_item.item);//JSON.stringify($scope.selected_item));
-			//alert("VEJA SE TEM COMO PEGAR O TIPO DO VALOR CADASTRADO: "+$scope.selected_option_provent.tipo_valor)
 			if($scope.selected_option_provent.tipo_valor == 'R'){
 				var total_value = unit_value*quantity;
 			}
