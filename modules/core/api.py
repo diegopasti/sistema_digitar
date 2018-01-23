@@ -209,7 +209,6 @@ class ConfigurationsController(BaseController):
         response_dict['message'] = ""
         response_dict['object'] = backup_link_folder
         #print("OLHE A LISTA:", backup_link_folder)
-        #print("VEJA O DICIONÁRIO:", response_dict)
         return self.response(response_dict)
 
     def manager_dropbox(self,request):
