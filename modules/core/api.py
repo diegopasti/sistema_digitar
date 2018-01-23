@@ -95,17 +95,6 @@ class ConfigurationsController(BaseController):
         #    print('SOU RESPONSE',response_dict)
         return self.response(response_dict)
 
-    def check_available_system_space(self,request):
-        self.start_process(request)
-        response_dict = {}
-        response_dict['result'] = True
-        response_dict['message'] = ""
-        response_dict['object'] = {}
-        response_dict['object']['total_files'] = 0
-        response_dict['object']['total_space'] = 2000000000
-        response_dict['object']['used_space'] = 0
-        return self.response(response_dict)
-
 
     def check_available_space(self,request):
         self.start_process(request)
