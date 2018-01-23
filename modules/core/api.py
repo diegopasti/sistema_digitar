@@ -2,7 +2,6 @@ import os
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.utils.decorators import method_decorator
-
 from libs.backup.backup import BackupManager
 from libs.backup.pygit import check_update, update
 from libs.default.core import BaseController
@@ -96,17 +95,6 @@ class ConfigurationsController(BaseController):
         #    print('SOU RESPONSE',response_dict)
         return self.response(response_dict)
 
-    def check_available_system_space(self,request):
-        self.start_process(request)
-        response_dict = {}
-        response_dict['result'] = True
-        response_dict['message'] = ""
-        response_dict['object'] = {}
-        response_dict['object']['total_files'] = 0
-        response_dict['object']['total_space'] = 2000000000
-        response_dict['object']['used_space'] = 0
-        return self.response(response_dict)
-
 
     def check_available_space(self,request):
         self.start_process(request)
@@ -136,7 +124,7 @@ class ConfigurationsController(BaseController):
                 file_count = len(filenames)
         #print(settings.DBBACKUP_STORAGE_OPTIONS['location'])
         print(total_size)
-        #print(file_count)
+        
         if total_size < 1024:
             total_size = '{0:.2f}'.format(total_size)
             suffix = ' Kb'
