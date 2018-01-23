@@ -77,8 +77,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
     validade_function = function () {
 
-    	return (email_is_valid('email') && validade_variable_size(data_paramters['username'],6)
-					&& validade_variable_size(data_paramters['first_name'],3) && validade_variable_size(data_paramters['last_name'],3))
+    	return (validade_variable_size(data_paramters['first_name'],3) && validade_variable_size(data_paramters['last_name'],3))
 
     };
     request_api("/api/user/update/",data_paramters,validade_function,success_function,fail_function);
@@ -168,17 +167,16 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 	$scope.confirm_disable = function(){
 		var object_name = $scope.registro_selecionado.first_name + ' ' + $scope.registro_selecionado.last_name;
-		$('#action_type').val('Desativar')
-		$('#action_object').val(object_name)
-		$('#action_user').val('Operador')
-	}
+		$('#action_type').val('DESATIVAR');
+		$('#action_object').val(object_name);
+	};
 
 	$scope.confirm_active = function(){
 		var object_name = $scope.registro_selecionado.first_name + ' ' + $scope.registro_selecionado.last_name;
 		$('#action_type').val('Reativar');
 		$('#action_object').val(object_name);
 		$('#action_user').val('Operador')
-	}
+	};
 
 	$scope.open_modal_add = function () {
 		$('input[name=username] ').prop('readonly', false).val('');
@@ -187,22 +185,23 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		$('input[name=last_name] ').val('');
 	};
 
-	$scope.open_object = function(){
-		reset_formulary('form_adicionar_usuario')
-		reset_formulary('form_alterar_usuario')
-		alert("regitro_selecionado:"+JSON.stringify($scope.registro_selecionado))
+	$scope.open_object_user = function(){
+		reset_formulary('form_adicionar_usuario');
+		reset_formulary('form_alterar_usuario');
 		for (var key in $scope.registro_selecionado) {
 			try{
 				$('input[name='+key+'_update]').val($scope.registro_selecionado[key])
-				//$("#"+key).val($scope.registro_selecionado[key]);
+
+				$("#email").val($scope.registro_selecionado[key])
 			}
 			catch (err){
-				alert("olha o erro:"+err)
+
 			}
 		}
+
 		$('input[name=username_update] ').prop('readonly', true);
 		$('#field_group_update > [name=groups]').val($scope.registro_selecionado.groups[0])
-	}
+	};
 
 	$scope.reajustar_tela = function (){
 		$scope.screen_height = SCREEN_PARAMTERS['screen_height'];
@@ -225,12 +224,12 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 		$scope.table_maximun_body_heigth = SCREEN_PARAMTERS['table_maximun_body_height']+extra_height;
 		$scope.$apply();
-	}
+	};
 
 	$scope.select_filter_by = function (index) {
 			$scope.filter_by_index = parseInt($scope.filter_by);
 			$scope.apply();
-	}
+	};
 
 	$scope.get_filter_column = function(){
 			var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
@@ -244,8 +243,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 				default:
 					return {get_full_name : $scope.search}
 			}
-	}
-
+	};
 
 	$scope.selecionar_linha = function(registro) {
 			if ($scope.registro_selecionado != null){
@@ -284,7 +282,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 					}
 			}
 			//$scope.$apply();
-	}
+	};
 
 	$scope.desmarcar_linha_selecionada = function(){
 			$scope.registro_selecionado.selecionado = "";
@@ -292,4 +290,4 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 			$scope.opcao_desabilitada = "desabilitado";
 			//$scope.apply();
 	}
-}])
+}]);

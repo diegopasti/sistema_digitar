@@ -784,12 +784,12 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		var r = confirm("Deseja mesmo excluir essa indicação?");
 		if (r == true) {
 			var indicated_company = indicacao_selecionada.indicacao;
-			var cliente_id = $scope.registro_selecionado.cliente_id
+			var cliente_id = $scope.registro_selecionado.cliente_id;
 
 			var data = {
 				indicated_company : indicated_company,
 				cliente_id : cliente_id
-			}
+			};
 
 			function validate_function () {
 				if($('#indicacao').val()==''){
@@ -819,7 +819,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		} else {
 
 		}
-	}
+	};
 
 	$scope.desmarcar_linha_indicacao = function () {
 		$('#taxa_desconto_indicacao').val('')
