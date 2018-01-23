@@ -78,8 +78,8 @@ class ContractController(BaseController):
         save_response = self.save(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
         print("SALVEI: ",save_response)
         if save_response['result']:
-            print("VOU ATUALIZAR O CONTRTAO DELE E OS HONORARIOS")
             contrato = Contrato.objects.get(pk=int(save_response['object']['id']))
+            contrato.servicos_contratados = contrato.plano.servicos
             contrato.totalizar_honorario()
             contrato.save()
 
@@ -316,22 +316,20 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
-    def carregar_servicos_contratados(self, request, cliente_id, plano_id):
+    def carregar_servicos_contratados(self, request, cliente_id):
         response_dict = []
-        id_cliente = int(cliente_id)
-        cliente = entidade.objects.get(pk=id_cliente)
-        contrato = Contrato.objects.get(cliente=cliente)
+        cliente = entidade.objects.get(pk=int(cliente_id))
+        contrato = Contrato.objects.filter(cliente=cliente).first()
+        if contrato is not None:
+            plano = contrato.plano
+            servicos_plano = plano.servicos.split(';')
 
-        plano = Plano.objects.get(pk=int(plano_id))
-        lista_servicos = plano.servicos.split(';')
-        if plano is not None:
-            for item in lista_servicos:
+            for item in servicos_plano:
                 servico = Servico.objects.get(pk=int(item))
                 response_object = {}
                 response_object['id'] = servico.id
                 response_object['nome'] = servico.nome
                 response_object['descricao'] = servico.descricao
-
                 if str(servico.id) in contrato.servicos_contratados:
                     response_object['ativo'] = True
                 else:

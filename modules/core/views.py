@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 #from modules.core.models import NaturezaJuridica, EconomicActivity
+from libs.default.decorators import permission_level_required
 from modules.nucleo.working_api import WorkingApi, WorkingManager
 from django.http.response import Http404
 
@@ -13,6 +14,7 @@ def index(request):
     return render(request,"base_page.html")
 
 @login_required
+@permission_level_required(2,'/error/access_denied')
 def system_configurations(request):
     return render(request, "core/configurations/backup/configbackup.html")
 

@@ -464,12 +464,20 @@
 							- {{ destinatario_cpf_cnpj }}
 						{% endif %}	
 						</font><br>
-						<font size=4>{{ destinatario_endereco }}<br>{{ destinatario_complemento }}</font>
+						<font size=4>
+							{% if destinatario_endereco != "" %}
+								{{ destinatario_endereco }}
+							{% endif %}
+
+							{% if destinatario_complemento != "" %}
+								<br>{{ destinatario_complemento }}
+							{% endif %}
+							</font>
 					</div>	
 					
 					{% if destinatario_contatos|length > 0 %}
 					<div id='painel_telefone_destinatario'>
-						
+						{% if destinatario_contatos != "" %}
 						<table border=0>
 							<tr style="padding-top:3px">
 								<td class="codigo">
@@ -485,6 +493,7 @@
 								</td>
 							</tr>
 						</table>
+						{% endif %}
 									
 					</div>
 					{% endif %}
@@ -643,16 +652,24 @@
 					<div id='painel_destinatario2'>
 						<font size=4 class='negrito'>{{ destinatario_nome }}
 						
-						{% if destinatario_cpf_cnpj %}
+						{% if destinatario_cpf_cnpj != "" %}
 							- {{ destinatario_cpf_cnpj }}
-						{% endif %}	
+						{% endif %}
 						</font><br>
-						<font size=4>{{ destinatario_endereco }}<br>{{ destinatario_complemento }}</font>
+						<font size=4>
+							{% if destinatario_endereco != "" %}
+								{{ destinatario_endereco }}
+							{% endif %}
+
+							{% if destinatario_complemento != "" %}
+								<br>{{ destinatario_complemento }}
+							{% endif %}
+							</font>
 					</div>	
 					
 					{% if destinatario_contatos|length > 0 %}
 					<div id='painel_telefone_destinatario2'>
-						
+						{% if destinatario_contatos != "" %}
 						<table border=0>
 							<tr style="padding-top:3px">
 								<td class="codigo">
@@ -669,6 +686,7 @@
 								</td>
 							</tr>
 						</table>
+						{% endif %}
 									
 					</div>
 					{% endif %}

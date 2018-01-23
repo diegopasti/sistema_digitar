@@ -89,7 +89,7 @@ def profile (request):
     return render(request,"user/profile.html",{'form_change_password':form_change_password,'form_change_email':form_change_email})
 
 @login_required
-@permission_level_required(2, login_url='/access_deny/')
+@permission_level_required(2, login_url='/error/access_denied')
 def user_page (request):
     form_register = FormRegister()
     form_update_register = FormUpdateProfile()

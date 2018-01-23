@@ -4,9 +4,9 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
 
-	$scope.sortType           = 'username';
+	$scope.sortType           = 'codigo';
 	$scope.sortReverse        = false;
-	$scope.filter_by          = '1';
+	$scope.filter_by          = '0';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ['codigo','nome_completo','email','username'];
 	$scope.search             = '';
@@ -18,6 +18,10 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 
 	$scope.save_usuario = function() {
 		var data_paramters = create_data_paramters('form_adicionar_usuario');
+		data_paramters['first_name'] = data_paramters['first_name'].toUpperCase();
+		data_paramters['last_name'] = data_paramters['last_name'].toUpperCase();
+		data_paramters['email'] = data_paramters['email'].toLowerCase();
+		data_paramters['username'] = data_paramters['username'].toLowerCase();
 
 		success_function = function(result,message,object,status){
 			notify_success_message(['Novo Usuário adicionado com Sucesso']);
@@ -34,7 +38,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		}
 
 		fail_function = function (result,message,data_object,status) {
-			notify_response_message(['Não foi possivel adicionar o Usuário'])
+			notify_error(null,'Falha na operação',message);
 			check_response_message_form('#form_adicionar_usuario', message);
 		}
 

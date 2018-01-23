@@ -509,7 +509,7 @@
                 type: "POST",
                 url: "/api/protocolo/salvar",
                 data: {
-                  destinatario: $scope.destinatario,
+                  destinatario: $("#select_destinatarios").val(),
                   operador: $scope.operador,
 
                   complemento_identificacao: $scope.complemento_identificacao,

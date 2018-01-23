@@ -210,29 +210,53 @@
 
 					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
 						<div class="row no-gutter fluid">
-							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo">
-									<sub><label id="lb_tipo" for="tipo">{{ formulario_register.username.label }}</label> </sub>
-									{{ formulario_register.username }}
+							<div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_nome">
+									<sub><label id="lb_nome" for="nome">{{ formulario_register.first_name.label }}</label></sub>
+									{{ formulario_register.first_name }}
 								</div>
 							</div>
-							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_valor">
-									<sub><label id="lb_valor" for="valor">{{ formulario_register.email.label }}</label> </sub>
-									{{ formulario_register.email }}
+
+							<div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_tipo_valor">
+									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_register.last_name.label }}</label> </sub>
+									{{ formulario_register.last_name }}
 								</div>
 							</div>
 						</div>
 
 						<div class="row no-gutter fluid">
-							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							<div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_valor">
+									<sub><label id="lb_valor" for="valor">{{ formulario_register.email.label }}</label> </sub>
+									{{ formulario_register.email }}
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+								<div class="form-group field" id="field_tipo_valor">
+									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_register.groups.label }}</label> </sub>
+									{{ formulario_register.groups }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row no-gutter fluid">
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+								<div class="form-group field" id="field_tipo">
+									<sub><label id="lb_tipo" for="tipo">{{ formulario_register.username.label }}</label> </sub>
+									{{ formulario_register.username }}
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 								<div class="form-group field" id="field_password">
 									<sub><label id="lb_password" for="password">{{ formulario_register.password.label }}</label> </sub>
 									{{ formulario_register.password }}
 								</div>
 							</div>
 
-							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 								<div class="form-group field" id="field_confirm_password">
 									<sub><label id="lb_tipo_confirm_password" for="confirm_password">{{ formulario_register.confirm_password.label }}</label> </sub>
 									{{ formulario_register.confirm_password }}
@@ -240,28 +264,7 @@
 							</div>
 						</div>
 
-						<div class="row no-gutter fluid">
-							<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_nome">
-									<sub><label id="lb_nome" for="nome">{{ formulario_register.first_name.label }}</label></sub>
-									{{ formulario_register.first_name }}
-								</div>
-							</div>
 
-							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo_valor">
-									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_register.last_name.label }}</label> </sub>
-									{{ formulario_register.last_name }}
-								</div>
-							</div>
-
-							<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo_valor">
-									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_register.groups.label }}</label> </sub>
-									{{ formulario_register.groups }}
-								</div>
-							</div>
-						</div>
 
 					</div>
 					<div class="modal-footer">
