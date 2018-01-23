@@ -199,7 +199,6 @@ class ConfigurationsController(BaseController):
         self.start_process(request)
         updating = update()
         install_pack = install()
-        #print('DICT VERSION:',updating)
 
     def shared_folder(self,request):
         self.start_process(request)
