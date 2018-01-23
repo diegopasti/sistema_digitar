@@ -124,7 +124,7 @@ class ConfigurationsController(BaseController):
                 file_count = len(filenames)
         #print(settings.DBBACKUP_STORAGE_OPTIONS['location'])
         print(total_size)
-        #print(file_count)
+        
         if total_size < 1024:
             total_size = '{0:.2f}'.format(total_size)
             suffix = ' Kb'
