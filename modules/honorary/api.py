@@ -769,6 +769,11 @@ class HonoraryController(BaseController):
         return self.response(honorary_response)
 
     @method_decorator(login_required)
+    def get_provent_options(self, request):
+        queryset = Proventos.objects.filter(id__gt=3)
+        return BaseController().filter(request,model=Proventos,queryset=queryset,order_by='-pk')
+
+    @method_decorator(login_required)
     def get_honorary_item(self, request):
         self.start_process(request)
         queryset = HonoraryItem.objects.filter(honorary_id=int(request.POST['id']))

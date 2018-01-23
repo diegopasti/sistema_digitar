@@ -116,6 +116,7 @@ urlpatterns = [
     url(r'^api/honorary/item/update$', HonoraryController().update_honorary_item),
     url(r'^api/honorary/item/delete$', HonoraryController().delete_honorary_item),
     url(r'^api/honorary/competences$', HonoraryController().generate_honoraries),
+    url(r'^api/honorary/provents/options$', HonoraryController().get_provent_options),
     url(r'^api/honorary/competences/current/close$', HonoraryController().close_current_competence),
 
 
