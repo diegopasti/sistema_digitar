@@ -8,7 +8,7 @@ from libs.default.core import BaseController
 from modules.nucleo.models import Backup
 #from modules.user.models import User
 from sistema_contabil import settings
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+#from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium import webdriver
 
 
@@ -197,7 +197,7 @@ class ConfigurationsController(BaseController):
         #print("OLHE A LISTA:", backup_link_folder)
         return self.response(response_dict)
 
-    def manager_dropbox(self,request):
+    '''def manager_dropbox(self,request):
         drive = settings.SELENIUM_CHROMEDRIVER
         binary = FirefoxBinary(settings.MOZILLA_FIREFOX_TEST_PATH)
         capabilities = webdriver.DesiredCapabilities().FIREFOX
@@ -216,6 +216,7 @@ class ConfigurationsController(BaseController):
         response_dict['message'] = ""
         response_dict['object'] = True
         return self.response(response_dict)
+    '''
 
     def last_backup(self, request):
         x = BaseController().filter(request, model=Backup)

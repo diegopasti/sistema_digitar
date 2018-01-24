@@ -133,11 +133,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	$scope.adicionar_contrato = function() {
 		var data_paramters = $scope.get_data_from_form();
-		alert("VEJA O DATA PARAMS: "+JSON.stringify(data_paramters));
-		data_paramters['taxa_honorario'] = 	$('#taxa_honorario').val().replace('.','').replace(',','.');
-		data_paramters['valor_honorario'] = 	$('#valor_honorario').val().replace('.','').replace(',','.');
-		data_paramters['valor_total'] = $('#valor_total').val().replace('R$ ','').replace('.','').replace(',','.');
-		data_paramters['desconto_temporario'] = $('#desconto_temporario').val().replace('.','').replace(',','.');
+		alert("Olha o data>"+JSON.stringify(data_paramters))
 
 		function validate_function(){
 			return true
@@ -164,18 +160,19 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 			$scope.registro_selecionado.contrato.desconto_temporario = message.fields.desconto_temporario
 			*/
-
+			alert("deu True")
 			$scope.registro_selecionado.contrato = data_object;
 			$scope.registro_selecionado.plano = $('#select_plano option:selected').text();
 			$scope.$apply()
 			$('#modal_adicionar_contrato').modal('hide');
 		}
 
-		function fail_function(result,message,data_object,status) {
+		fail_function = function(result,message,data_object,status) {
+			alert("deu false")
 			$.each(message, function( index, value ) {
 				//alert("ERRO: "+index + ": " + value );
 				notificar('error','Falha na Operação',value);
-				marcar_campo_errado(index)
+				marcar_campo_errado(index);
 				$("#"+index).focus();
 			});
 		}
@@ -190,7 +187,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			if(data_paramters==null){return false}
 			else{return true}
 		}
-
+		alert("Olha o data:\n"+JSON.stringify(data_paramters))
 		function success_function(result,message,data_object,status) {
 			$scope.registro_selecionado.contrato = data_object;
 			$scope.$apply();
@@ -259,7 +256,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
     var dia_vencimento = $('#select_dia_vencimento option:selected').val();
     var data_vencimento = $("#data_vencimento").val();
 		var tipo_honorario = $('#select_tipo_honorario option:selected').val();
-    var taxa_honorario = $("#taxa_honorario").val();
+    var taxa_honorario = $("#taxa_honorario").val().replace('.','').replace(',','.');
     var valor_honorario = $('#valor_honorario').val().replace(".","").replace(",",".");
     var desconto_inicio = $('#desconto_inicio').val();
     var desconto_fim = $('#desconto_fim').val();
@@ -509,10 +506,8 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			url: "/api/contract/clientes/" + $scope.registro_selecionado.cliente_id,
 
 			success: function (data) {
-				//alert("VEJA A RESPOSTA: "+JSON.stringify(data))
 				$scope.registro_selecionado.clientes = JSON.parse(data);
 				$scope.$apply();
-				//alert("VEJA O QUE TEMOS NAS INDICACOES: "+$scope.registro_selecionado.indicacoes[0].cliente_id)
 			},
 			failure: function (data) {
 				$scope.clientes = [];
@@ -662,18 +657,17 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			empresa : empresa,
 			taxa_desconto : taxa_desconto,
 			cliente_id : cliente_id
-		}
+		};
 
 		function validate_function () {
 			if(empresa == '' || taxa_desconto==''){
-				alert('Preecha os campos')
+				alert('Preecha os campos');
 				return false
 			}
 			return true
 		}
 
 		function success_function(result,message,data_object,status) {
-			data_object.taxa_desconto = taxa_desconto;
 			$scope.registro_selecionado.indicacoes.push(data_object);
 			$scope.calcular_total_desconto_fidelidade();
 			$scope.atualizar_contrato(cliente_id);
@@ -684,13 +678,13 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			alert('Empresa informada já foi indicada anteriormente')
 		}
 		request_api("/api/contract/salvar_indicacao/",data,validate_function,success_function,fail_function)
-	}
+	};
 
 	$scope.carregar_indicacao_selecionada = function(){
-		var indica = $scope.indicacao_selecionada.indicacao
-		$('#taxa_desconto_indicacao').val($scope.indicacao_selecionada.taxa_desconto)
+		var indica = $scope.indicacao_selecionada.indicacao;
+		$('#taxa_desconto_indicacao').val($scope.indicacao_selecionada.taxa_desconto);
 		$('#indicacao').val(indica)
-	}
+	};
 
 	$scope.alterar_indicacao = function () {
 		var taxa_desconto = $('#taxa_desconto_indicacao').val().replace(".","").replace(',','.');
@@ -790,12 +784,12 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		var r = confirm("Deseja mesmo excluir essa indicação?");
 		if (r == true) {
 			var indicated_company = indicacao_selecionada.indicacao;
-			var cliente_id = $scope.registro_selecionado.cliente_id
+			var cliente_id = $scope.registro_selecionado.cliente_id;
 
 			var data = {
 				indicated_company : indicated_company,
 				cliente_id : cliente_id
-			}
+			};
 
 			function validate_function () {
 				if($('#indicacao').val()==''){
@@ -825,7 +819,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		} else {
 
 		}
-	}
+	};
 
 	$scope.desmarcar_linha_indicacao = function () {
 		$('#taxa_desconto_indicacao').val('')

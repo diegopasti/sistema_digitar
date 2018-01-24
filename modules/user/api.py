@@ -21,9 +21,9 @@ def criar_grupos_permissao():
     try:
         if len(lista) == 0 :
             print('Vou criar')
-            Group.objects.get_or_create(name='Administrador')
-            Group.objects.get_or_create(name='Supervisor')
-            Group.objects.get_or_create(name='Operador')
+            Group.objects.get_or_create(name='ADMINISTRADOR')
+            Group.objects.get_or_create(name='SUPERVISOR')
+            Group.objects.get_or_create(name='OPERADOR')
     except:
         print("Deu erro no filter")
         pass

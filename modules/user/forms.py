@@ -152,11 +152,23 @@ class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
         super(FormAbstractEmail,self).__init__(*args,**kwargs)
         self.fields['username'].required = False
         self.fields['email'].required = False
-        self.fields['username'].widget.attrs['name'] =  'update_' + self.fields['username'].widget.attrs['name']
-        self.fields['email'].widget.attrs['name'] = 'update_' + self.fields['email'].widget.attrs['name']
+        set_field_html_name(self.fields['username'], 'username_update')
+        set_field_html_name(self.fields['email'],'email_update')
+        set_field_html_name(self.fields['last_name'], 'last_name_update')
+        set_field_html_name(self.fields['first_name'], 'first_name_update')
         #self.fields['username'].widget.attrs['placeholder'] = 'Username..'
         #self.fields['email'].widget.attrs['placeholder'] = 'Informe seu Email..'
 
+def set_field_html_name(cls, new_name):
+    """
+    This creates wrapper around the normal widget rendering,
+    allowing for a custom field name (new_name).
+    """
+    old_render = cls.widget.render
+    def _widget_render_wrapper(name, value, attrs=None):
+        return old_render(new_name, value, attrs)
+
+    cls.widget.render = _widget_render_wrapper
 
 class FormConfirmRegister(FormAbstractEmail):
 

@@ -6,12 +6,12 @@ import os
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary, HonoraryItem
 from modules.honorary.forms import FormContrato, FormProventos, FormHonoraryItem
 from django.contrib.auth.decorators import login_required, permission_required
-from libs.default.decorators import request_ajax_required
+from libs.default.decorators import request_ajax_required, permission_level_required
 from django.utils.decorators import method_decorator
 
 from modules.protocolo.views import formatar_cpf_cnpj
 from modules.servico.models import Plano, Servico
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseForbidden
 from libs.default.core import BaseController
 from modules.entidade.models import entidade, contato
 from sistema_contabil import settings
@@ -76,7 +76,7 @@ class ContractController(BaseController):
     @method_decorator(login_required)
     def salvar_contrato(self, request):
         save_response = self.save(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
-        print("SALVEI: ")
+        print("SALVEI: ",save_response)
         if save_response['result']:
             contrato = Contrato.objects.get(pk=int(save_response['object']['id']))
             contrato.servicos_contratados = contrato.plano.servicos
@@ -515,16 +515,17 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def deletar_indicacao(self, request):
         empresa = request.POST['indicated_company']
+        cliente_id = request.POST['cliente_id']
         indicacao_bd = Indicacao.objects.get(indicacao_id=int(empresa))
         response_final = {}
         try:
             indicacao_bd.delete()
             response_final['result'] = True
             response_final['message'] = "Indicação excluida com sucesso!"
-
-            contrato = Contrato.objects.get(cliente_id=int(empresa))
+            contrato = Contrato.objects.get(cliente_id=int(cliente_id))
             contrato.totalizar_honorario()
             contrato.save()
 

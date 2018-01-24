@@ -85,7 +85,7 @@
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
 								<a id='bt_adicionar' role="button" class="btn btn-sm btn-primary " ng-class="{'disabled':registro_selecionado!=null}" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-click="open_modal_add()" ng-disabled="registro_selecionado!=null">Adicionar</a>
-								<a id='bt_servicos' role="button" class="btn btn-sm btn-primary"  ng-class="{'disabled':registro_selecionado==null}" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_alterar_usuario" ng-click="esta_adicionando=false;open_object();" style='margin-left: 5px;'>Editar</a>
+								<a id='bt_servicos' role="button" class="btn btn-sm btn-primary"  ng-class="{'disabled':registro_selecionado==null}" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_alterar_usuario" ng-click="esta_adicionando=false;open_object_user();" style='margin-left: 5px;'>Editar</a>
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
 									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
@@ -292,14 +292,14 @@
 					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
 						<div class="row no-gutter fluid">
 							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo">
-									<sub><label id="lb_tipo" for="tipo">{{ formulario_update.username.label }}</label> </sub>
+								<div class="form-group field" id="field_user_update">
+									<sub><label id="lb_user_update" for="user_update">{{ formulario_update.username.label }}</label> </sub>
 									{{ formulario_update.username }}
 								</div>
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_valor">
-									<sub><label id="lb_valor" for="valor">{{ formulario_update.email.label }}</label> </sub>
+								<div class="form-group field" id="field_email_update">
+									<sub><label id="lb_email_update" for="email_update">{{ formulario_update.email.label }}</label> </sub>
 									{{ formulario_update.email }}
 								</div>
 							</div>
@@ -307,15 +307,15 @@
 
 						<div class="row no-gutter fluid">
 							<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_nome">
-									<sub><label id="lb_nome" for="nome">{{ formulario_update.first_name.label }}</label></sub>
+								<div class="form-group field" id="field_nome_update">
+									<sub><label id="lb_nome_update" for="nome_update">{{ formulario_update.first_name.label }}</label></sub>
 									{{ formulario_update.first_name }}
 								</div>
 							</div>
 
 							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-								<div class="form-group field" id="field_tipo_valor">
-									<sub><label id="lb_tipo_valor" for="tipo_valor">{{ formulario_update.last_name.label }}</label> </sub>
+								<div class="form-group field" id="field_last_name_update">
+									<sub><label id="lb_last_name_update" for="last_name_update">{{ formulario_update.last_name.label }}</label> </sub>
 									{{ formulario_update.last_name }}
 								</div>
 							</div>
