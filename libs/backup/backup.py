@@ -7,7 +7,6 @@ import django
 import re
 import os
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sistema_contabil.settings")
 
 from sistema_contabil.settings import DBBACKUP_STORAGE_OPTIONS, DROPBOX_ROOT_PATH, DROPBOX_OAUTH2_TOKEN
