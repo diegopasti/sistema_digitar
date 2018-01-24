@@ -243,9 +243,9 @@ BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'static')
 BOWER_INSTALLED_APPS = (
     'jquery#2.2.0',
     'angular#1.6.4',
-    'bootstrap',     #3.3.7',#3.3.2
+    'bootstrap#3.3.7', #3.3.7',#3.3.2
     'jquery-ui',
-    'font-awesome',  #4.7.0',#4.2
+    'font-awesome', #4.7.0',#4.2
     'nprogress',
     'pnotify',
     'datatables.net-dt',
@@ -330,7 +330,7 @@ SELENIUM_CHROMEDRIVER = project_properties.chromedriver_path
 SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True
 WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
-WORKING_SERVER = "http://192.168.1.122:8010"
+WORKING_SERVER = "http://192.168.1.123:8010"
 if SERVER_DIGITAR:
     from modules.nucleo.working_api import WorkingManager
     try:

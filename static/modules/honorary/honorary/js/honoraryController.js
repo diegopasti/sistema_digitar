@@ -16,6 +16,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.esta_adicionando     	= true;
 	$scope.registros = [];
 	$scope.provents_options = [];
+	$scope.max_honorary_itens = 0;
 	$scope.screen_model = null;
 
 	$scope.save_provent = function() {
@@ -309,6 +310,8 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		validate_function = function () {return true;}
 
 		success_function = function(result,message,object,status){
+
+
 			var itens = '';
 			var index = $scope.registros.indexOf($scope.registro_selecionado);
 			var backup_itens = $scope.registro_selecionado.honorary_itens;
@@ -344,6 +347,18 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		validate_function = function () {return true;}
 
 		success_function = function(result,message,object,status){
+			$scope.max_honorary_itens = 0;
+			if($scope.registro_selecionado.contract != null){
+				$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
+			}
+
+			if($scope.registro_selecionado.temporary_discount > 0){
+				$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
+			}
+
+			if($scope.registro_selecionado.fidelity_discount > 0){
+				$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
+			}
 			$scope.registro_selecionado.honorary_itens = object;
 
 			$scope.$apply();
@@ -368,8 +383,23 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.save_honorary_item = function(){
-		alert("VEJA QUANTOS ITENS EU TENHO: "+$scope.registro_selecionado.honorary_itens.lenght)
-		if($scope.registro_selecionado.honorary_itens.lenght < 10){
+		if($scope.registro_selecionado.contract != null){
+			$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
+		}
+
+		if($scope.registro_selecionado.temporary_discount > 0){
+			$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
+		}
+
+		if($scope.registro_selecionado.fidelity_discount > 0){
+			$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
+		}
+
+		if($scope.registro_selecionado.honorary_itens == null || $scope.registro_selecionado.honorary_itens == ''){
+			$scope.registro_selecionado.honorary_itens = [];
+		}
+
+		if($scope.registro_selecionado.honorary_itens.length < 10-$scope.max_honorary_itens){
 			if($scope.selected_option_provent!=null){
 				var data_paramters = {}
 				data_paramters['honorary_id'] = parseInt($scope.registro_selecionado.id);
@@ -415,11 +445,11 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 				}
 
 				validate_function = function () {return true;}
-
 				request_api("/api/honorary/item/save",data_paramters,validate_function,success_function,fail_function);
 			}
 			else{
-				set_wrong_field("item", "Campo Obrigatório");
+				//set_wrong_field("item", "Campo Obrigatório");
+				error_notify(null,'Falha na operação','Item precisa ser informado.')
 			}
 		}
 		else{

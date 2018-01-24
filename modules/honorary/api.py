@@ -777,7 +777,7 @@ class HonoraryController(BaseController):
     def get_honorary_item(self, request):
         self.start_process(request)
         queryset = HonoraryItem.objects.filter(honorary_id=int(request.POST['id']))
-        return BaseController().filter(request, Honorary,queryset=queryset, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+        return BaseController().filter(request, HonoraryItem,queryset=queryset, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
 
     @method_decorator(login_required)
     def generate_document(self, request, honorary_id):
