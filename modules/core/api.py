@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from libs.backup.backup import BackupManager
-from libs.backup.pygit import check_update, update
+from libs.backup.pygit import check_update, update,install
 from libs.default.core import BaseController
 from modules.nucleo.models import Backup
 #from modules.user.models import User
@@ -187,6 +187,7 @@ class ConfigurationsController(BaseController):
         self.start_process(request)
         updating = update()
         print('DEU CERTO')
+        install_pack = install()
 
     def shared_folder(self,request):
         self.start_process(request)
