@@ -187,7 +187,16 @@ class ConfigurationsController(BaseController):
         self.start_process(request)
         updating = update()
         print('DEU CERTO')
-        install_pack = install()
+        try:
+            install_pack = install()
+            response_dict = {}
+            response_dict['result'] = True
+            response_dict['object'] = None
+            response_dict['message'] = 'Atualização realizada com sucesso.'
+        except Exception as error:
+            response_dict = self.notify.error(error)
+
+return self.response(response_dict)
 
     def shared_folder(self,request):
         self.start_process(request)
