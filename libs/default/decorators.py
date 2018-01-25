@@ -21,7 +21,7 @@ def validate_formulary(view):
             else:
                 controller.object = form.get_object()
 
-        '''
+
         if hasattr(controller.object,'cadastrado_por'):
             controller.object.cadastrado_por = request.user
         elif hasattr(controller.object, 'created_by'):
@@ -33,10 +33,10 @@ def validate_formulary(view):
         elif hasattr(controller.object, 'updated_by'):
             controller.object.updated_by = request.user
         else: pass
-        '''
+
 
         controller.get_exceptions(controller.object, form)
-        print("Olhas os exceptions:",controller.get_exceptions(controller.object, form))
+        #print("Olhas os exceptions:",controller.get_exceptions(controller.object, form))
         return view(controller, request, formulary, *args, **kwargs)
     return _wrapped_view
 

@@ -100,7 +100,7 @@
 												<td class="text-center" style="width: 60px;">{{ registro.competence }}</td>
 												<td class='text-left'>{{ registro.entity_name }}</td>
 												<td class='text-right' style="width: 90px;">{{ registro.initial_value_contract| currency:"" }}</td>
-												<td class='text-center' style="width: 100px;" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount| currency:'' }}%">{{ registro.contract_discount| currency:"" }} %</td>
+												<td class='text-center' style="width: 100px;" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount| currency:'' }}%">{{ (registro.contract_discount*registro.initial_value_contract)| currency:"" }} %</td>
 												<td class='text-right' style="width: 90px;">{{ registro.total_debit| currency:"" }}</td>
 												<td class='text-right' style="width: 90px;">{{ registro.total_credit| currency:"" }}</td>
 												<td class='text-right' style="width: 90px;">{{ registro.total_repayment| currency:"" }}</td>
@@ -193,8 +193,10 @@
 								</a>
 							</div>
 						</fieldset>
-
-						<div ng-class="{collapse: screen_model >= 1, in: screen_model > 4}" id="item_panel" style="margin-top:-10px;padding-bottom: 10px;">
+						{% verbatim %}
+						VEJA SE TA ABERTO: {{ registro_selecionado.is_closed }}
+						{% endverbatim %}
+						<div ng-if="registro_selecionado.is_closed==false" ng-class="{collapse: screen_model >= 1, in: screen_model > 4}" id="item_panel" style="margin-top:-10px;padding-bottom: 10px;">
 							<div class="row no-gutter fluid" stye="padding-left: 15px;">
 								<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
 									<div class="form-group field" id="field_type_item">
@@ -250,7 +252,6 @@
 						<div class="row no-gutter fluid">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 								{% verbatim %}
-								VEJA QUANTO TEM QUE DESCONTAR: {{ max_honorary_itens }}
 								<div class="dataTable_wrapper" style="margin-left: 0px;margin-right:0px;margin-bottom:0px;padding-bottom: 0px;">
 									<div class='row' style="padding-bottom: 0px;margin-bottom:0px;">
 										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -308,7 +309,7 @@
 															<td class="left" colspan="6" style="padding-left: 6px;">DESCONTO TEMPORÁRIO CONF. CONTRATO</td>
 															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.initial_value_contract | currency:"" }}</td>
 															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.temporary_discount | currency:"" }}%</td>
-															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.initial_value_contract*(registro_selecionado.temporary_discount/100) | currency:"" }}</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;color: #800000">- {{ registro_selecionado.initial_value_contract*(registro_selecionado.temporary_discount/100) | currency:"" }}</td>
 														</tr>
 
 														<tr ng-if="registro_selecionado.fidelity_discount>0" style="font-size: 10px;">
@@ -316,7 +317,7 @@
 															<td class="left" colspan="6" style="padding-left: 6px;">DESCONTO FIDELIDADE CONF. CONTRATO</td>
 															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.initial_value_contract | currency:"" }}</td>
 															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.fidelity_discount | currency:"" }}%</td>
-															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.initial_value_contract*(registro_selecionado.fidelity_discount/100) | currency:"" }}</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;color: #800000">- {{ registro_selecionado.initial_value_contract*(registro_selecionado.fidelity_discount/100) | currency:"" }}</td>
 														</tr>
 
 														<tr ng-if="registro_selecionado.honorary_itens.length > 0" class="angular-repeat linha_selecionavel {{ item.selected }}" ng-repeat='item in registro_selecionado.honorary_itens' ng-click="selecionar_item(item)" style="font-size: 10px;">
@@ -424,8 +425,8 @@
 										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
 											<div class="custom_panel custom-box-default">
 												<h6>Descontos:
-													<span class="pull-right" ng-if="registro_selecionado.temporary_discount>0">{{ registro_selecionado.total_credit--(registro_selecionado.initial_value_contract*(registro_selecionado.temporary_discount/100)) | currency:"R$ "}}</span>
-													<span class="pull-right" ng-if="registro_selecionado.temporary_discount==0">{{ registro_selecionado.total_credit | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.temporary_discount>0">- {{ registro_selecionado.total_credit--(registro_selecionado.initial_value_contract*(registro_selecionado.temporary_discount/100)) | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.temporary_discount==0">- {{ registro_selecionado.total_credit | currency:"R$ "}}</span>
 												</h6>
 											</div>
 										</div>
@@ -438,13 +439,23 @@
 
 										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
 											<div ng-if='registro_selecionado.total_debit_credit==0' class="custom_panel custom-box-default">
-												<h6 style="font-weight: bold;color: #555;">Total: <span class="pull-right">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span></h6>
+												<h6 style="font-weight: bold;color: #555;">Total:
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+												</h6>
 											</div>
 											<div ng-if='registro_selecionado.total_debit_credit > 0' class="custom_panel custom-box-primary">
-												<h6 style="font-weight: bold; color:#3C8dbc;">Total: <span class="pull-right">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span></h6>
+												<h6 style="font-weight: bold; color:#3C8dbc;">Total:
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+												</h6>
+
 											</div>
 											<div ng-if='registro_selecionado.total_debit_credit < 0' class="custom_panel custom-box-danger">
-												<h6 style="font-weight: bold;color: #800000;">Total: <span class="pull-right">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span></h6>
+												<h6 style="font-weight: bold;color: #800000;">Total:
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+												</h6>
 											</div>
 										</div>
 									</div>

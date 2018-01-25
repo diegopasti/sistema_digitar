@@ -383,6 +383,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.save_honorary_item = function(){
+		$scope.max_honorary_itens = 0;
 		if($scope.registro_selecionado.contract != null){
 			$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
 		}
@@ -400,6 +401,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		}
 
 		if($scope.registro_selecionado.honorary_itens.length < 10-$scope.max_honorary_itens){
+			alert("CADE O CARA: "+$scope.selected_option_provent.id);
 			if($scope.selected_option_provent!=null){
 				var data_paramters = {}
 				data_paramters['honorary_id'] = parseInt($scope.registro_selecionado.id);

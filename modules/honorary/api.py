@@ -659,7 +659,6 @@ class HonoraryController(BaseController):
 
     @method_decorator(login_required)
     def save_honorary_item(self, request):
-        print("VEJA O QUE VEIO: ",request.POST)
         try:
             honorary = Honorary.objects.get(pk=int(request.POST['honorary_id']))
         except:
@@ -698,7 +697,6 @@ class HonoraryController(BaseController):
             response_dict['result'] = False
             response_dict['object'] = None
             response_dict['message'] = "Erro! Honorário informado não existe."
-        print("VEJA O QUE SAI:",response_dict)
         return self.response(response_dict)
 
     @method_decorator(login_required)
@@ -742,8 +740,6 @@ class HonoraryController(BaseController):
                 response_dict['result'] = False
                 response_dict['object'] = None
                 response_dict['message'] = "Erro! Honorário informado não existe."
-
-        print("VEJA A SAIDA: ",response_dict)
         return self.response(response_dict)
 
     @method_decorator(login_required)
@@ -765,8 +761,6 @@ class HonoraryController(BaseController):
                response_dict['message'] = 'Honorário salvo com sucesso!'
             else:
                response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
-
-        print("VEJA A SAIDA: ", honorary_response)
         return self.response(honorary_response)
 
     @method_decorator(login_required)
@@ -782,67 +776,15 @@ class HonoraryController(BaseController):
 
     @method_decorator(login_required)
     def generate_document(self, request, honorary_id):
-        print("VEJA O REQUEST: ",request, honorary_id)
         path = os.path.join(BASE_DIR, "static/imagens/")
-
-        #parametros_emissor = criar_parametro_entidade_para_protocolo(1)
-        #protocolo_selecionado = protocolo.objects.get(pk=protocolo_id)
-
-        #documentos = item_protocolo.objects.filter(protocolo_id=protocolo_id)
-
-        """
-        if protocolo_selecionado.destinatario == None:
-            parametros_destinatario = ParametroProtocolo()
-            parametros_destinatario.entidade = None
-            parametros_destinatario.complemento = ''
-            parametros_destinatario.nome = protocolo_selecionado.nome_avulso
-            parametros_destinatario.cpf_cnpj = protocolo_selecionado.documento_avulso
-
-            if protocolo_selecionado.endereco_avulso != None:
-                parametros_destinatario.endereco = protocolo_selecionado.endereco_avulso.title()
-            else:
-                parametros_destinatario.endereco = ""
-
-            if protocolo_selecionado.contatos_avulso != None:
-                parametros_destinatario.contatos = [protocolo_selecionado.contatos_avulso]
-            else:
-                parametros_destinatario.contatos = []
-
-        else:
-            parametros_destinatario = criar_parametro_entidade_para_protocolo(protocolo_selecionado.destinatario_id)
-        """
-
-
-        """destinatario_nome = p.destinatario.nome_razao
-            destinatario_endereco = p.destinatario.endereco.get_endereco()
-            destinatario_cpf_cnpj = formatar_cpf_cnpj(p.destinatario.cpf_cnpj)
-            destinatario_contatos = contatos
-            destinatario_complemento = p.destinatario.endereco.complemento.title()
-        """
-
-        """
-        if protocolo_selecionado.doc_receptor != None:
-            documento_receptor = protocolo_selecionado.doc_receptor
-
-        else:
-            documento_receptor = ""
-        """
-
-        #linhas_extras = [1] * (10 - len(documentos))
-
         date_hour_emission = datetime.datetime.now().strftime('%d/%m/%Y ÀS %H:%M:%S')
         company = entidade.objects.get(pk=1)
         company_contacts = contato.objects.filter(entidade=company)[:2]
-
         honorary = Honorary.objects.get(pk=int(honorary_id))
         client = honorary.entity
         client_contacts = contato.objects.filter(entidade=client)[:2]
-
         documentos = HonoraryItem.objects.filter(honorary=honorary)
-
-
         valor_liquido = honorary.total_honorary - honorary.total_repayment
-
         if honorary.contract is not None:
             vencimento = honorary.contract.dia_vencimento
             data_atual = datetime.datetime.now().strftime('/%m/%Y')
@@ -887,18 +829,6 @@ class HonoraryController(BaseController):
         else:
             linhas_extras = []
 
-        #contrato = None
-        #if honorary.contract is not None:
-        #    if honorary.contract.ativo:
-        #        if honorary.contract.valor_honorario != 0:
-        #            contrato = {'description': 'HONORÁRIOS CONTÁBEIS CONF. CONTRATO - ' + Honorary.competence, 'quantity': '1,00', 'unit_value': honorary.contract.valor_honorario}
-
-
-
-
-
-
-
 
         parametros = {
             'emissor_nome': company.nome_razao, #parametros_emissor.nome,
@@ -919,31 +849,14 @@ class HonoraryController(BaseController):
             'contract_fidelity_discount_rate':contract_fidelity_discount_rate,
             'contract_fidelity_discount_value':contract_fidelity_discount_value,
 
-
             'valor_liquido':valor_liquido,
             'vencimento':vencimento,
+            'emitido_por': request.user.get_full_name(),
+            'data_emissao': date_hour_emission,
 
-
-            'emitido_por': request.user.get_full_name(), #parametros_emissor.nome,protocolo_selecionado.emitido_por.title(),
-            'data_emissao': date_hour_emission, #parametros_emissor.nome,protocolo_selecionado.data_emissao,
-
-            'recebido_por': "", #parametros_emissor.nome,protocolo_selecionado.recebido_por,  # recebido_por,
-            'identificacao': "", #parametros_emissor.nome,protocolo_selecionado.doc_receptor if protocolo_selecionado.doc_receptor != None else "",
-            'data_entrega': "", #parametros_emissor.nome,protocolo_selecionado.data_recebimento,  # data_entrega,
-            'hora_entrega': "", #parametros_emissor.nome,protocolo_selecionado.hora_recebimento,  # hora_entrega,
-
-            'documentos': documentos, #parametros_emissor.nome,documentos,  # formulario.temporarios,
-            'linhas_extras': linhas_extras,  # 'documentos':[
-            #                  ["33","IMPOSTO DE RENDA","2015","","R$ 285,50"],
-            #                  ["8","EMISSAO DE CERTIFICADO DIGITAL","","31/12/2018","R$ 175,10"],
-            #                  ["14","CONTRATO - PLANO COMPLETO","","31/12/2018","R$ 475,00"],
-            #              ],
-            # 'formulario_protocolo':"Nada por enquanto",
-            # 'erro':"sem erros tambem",
-            # 'path':path,
-
+            'documentos': documentos,
+            'linhas_extras': linhas_extras,
             'path_imagens': path
-
             }
 
         from django_xhtml2pdf.utils import generate_pdf
