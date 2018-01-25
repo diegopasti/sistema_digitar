@@ -269,14 +269,20 @@ application.controller('configurations_controller', function ($scope) {
       url: "/api/core/configurations/version/update",
 
       success: function (data) {
-        alert(JSON.stringify(data))
-        $scope.updating = JSON.parse(data).object;
-        $("#loading_tbody").fadeOut();
-        $.unblockUI();
+        var response = JSON.parse(data)
+        if(response.result == true){
+          $.unblockUI();
+          windows.location = '/logout';
+        }
+        else{
+          $.unblockUI();
+          error_notify(null, 'Falha na operação', response.message)
+        }
       },
 
       failure: function () {
-        alert("Não foi possivel carregar a lista")
+        $.unblockUI();
+          error_notify(null, 'Falha na operação', 'Atualização não pode ser concluída')
       }
     })
   }
