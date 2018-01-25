@@ -253,14 +253,26 @@ application.controller('configurations_controller', function ($scope) {
   }
 
   $scope.update = function(){
+    $.blockUI({
+        message: '<h1>Por favor aguarde...</h1><img src="http://127.0.0.1:8000/static/imagens/ajax-loader.gif" />',
+        css: {
+          border: 'none',
+          padding: '15px',
+          backgroundColor: '#000',
+          '-webkit-border-radius': '10px',
+          '-moz-border-radius': '10px',
+          opacity: .5,
+          color: '#fff'}
+      });
     $.ajax({
       type: 'GET',
       url: "/api/core/configurations/version/update",
 
       success: function (data) {
-        $scope.update = JSON.parse(data).object;
+        alert(JSON.stringify(data))
+        $scope.updating = JSON.parse(data).object;
         $("#loading_tbody").fadeOut();
-        $scope.$apply();
+        $.unblockUI();
       },
 
       failure: function () {
