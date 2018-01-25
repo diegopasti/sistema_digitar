@@ -1,15 +1,17 @@
 import os
+import time
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from libs.backup.backup import BackupManager
-from libs.backup.pygit import check_update, update
+from libs.backup.pygit import check_update, update, install
 from libs.default.core import BaseController
 from modules.nucleo.models import Backup
 #from modules.user.models import User
 from sistema_contabil import settings
 #from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium import webdriver
+from threading import Thread
 
 
 class ConfigurationsController(BaseController):
@@ -182,11 +184,22 @@ class ConfigurationsController(BaseController):
         response_dict['object']['last_update'] = version_check['last_update']
         #print("VEJA A VERSÃO: ",response_dict)
         return self.response(response_dict)
+    
+    def install_requirements(self):
+        updating = install()
+
+    def install_packages(self):
+        updating = update()
 
     def update(self,request):
         self.start_process(request)
-        updating = update()
-        print('DEU CERTO')
+        #updating = update()
+        packages = Thread(target=self.install_packages())
+        requirements = Thread(target=self.install_requirements())
+
+        packages.start()
+        time.sleep(5)
+        requirements.start()
 
     def shared_folder(self,request):
         self.start_process(request)
