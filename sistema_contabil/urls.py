@@ -145,9 +145,9 @@ urlpatterns = [
     url(r'configurations/version/info$', ConfigurationsController().version_update),
     url(r'configurations/version/update$', ConfigurationsController().update),
     url(r'configurations/backup/share$', ConfigurationsController().shared_folder),
-    url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),
+    #url(r'configurations/backup/restore$', ConfigurationsController().restore_backup),
     url(r'configurations/backup/backups$', ConfigurationsController().list_backups),
-    url(r'configurations/backup/manager$', ConfigurationsController().manager_dropbox),
+    #url(r'configurations/backup/manager$', ConfigurationsController().manager_dropbox),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'users/',view_usuario.user_page),
