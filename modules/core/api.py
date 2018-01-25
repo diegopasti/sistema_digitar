@@ -187,7 +187,6 @@ class ConfigurationsController(BaseController):
         self.start_process(request)
         updating = update()
         print('DEU CERTO')
-        return self.response("{'status':'null'}")
 
     def shared_folder(self,request):
         self.start_process(request)
