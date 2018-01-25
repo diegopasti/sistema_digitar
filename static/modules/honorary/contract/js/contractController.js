@@ -25,6 +25,8 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	$scope.esta_indicando					= false;
 	$scope.indicacoes_carregadas = false;
 	$scope.servicos_carregados = false;
+	$scope.dained_permission = false;
+	$scope.dained_permission_indication = false;
 
 	$scope.reajustar_tela = function (){
 		$scope.screen_height = window.innerHeight
@@ -103,6 +105,9 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 					catch(err){
 						if(data.indexOf('ERRO403')!= -1){
 							error_notify(null,"Operação não autorizada","Nível de autonomia não permite o acesso à este recurso.");
+							$scope.dained_permission = true;
+							$scope.contratos_carregados = true;
+							$scope.$apply();
 						}
 					}
 				},
@@ -122,7 +127,6 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		success_function = function(result,message,object,status){
 			$scope.registro_selecionado.contrato = object;
 			$scope.$apply();
-			resetar_formulario();
 		}
 
 		fail_function = function (result,message,data_object,status) {
@@ -184,10 +188,10 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		data_paramters['id'] = $scope.registro_selecionado.contrato.id;
 
 		function validate_function(){
-			if(data_paramters==null){return false}
+			if(data_paramters===null){return false}
 			else{return true}
 		}
-		alert("Olha o data:\n"+JSON.stringify(data_paramters))
+		//alert("Olha o data:\n"+JSON.stringify(data_paramters));
 		function success_function(result,message,data_object,status) {
 			$scope.registro_selecionado.contrato = data_object;
 			$scope.$apply();
@@ -237,14 +241,14 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			$scope.registro_selecionado.contrato = object;
 			$scope.$apply();
 			success_notify("Operação realizada com sucesso!","Contrato do cliente "+$scope.registro_selecionado.cliente_nome+" encerrado com sucesso!");
-		}
+		};
 
 		fail_function = function (result,message,data_object,status) {
 			notify(null,'Falha na operação!',message)
-		}
+		};
 		request_api("/api/contract/close/",data_paramters,validate_function,success_function,fail_function)
 
-	}
+	};
 
 	$scope.get_data_from_form = function(){
 		var tipo_cliente = $('#select_tipo_cliente option:selected').val();
@@ -634,10 +638,19 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			url: "/api/contract/lista_indicacao/" + $scope.registro_selecionado.cliente_id,
 
 			success: function (data) {
-				$scope.registro_selecionado.indicacoes = JSON.parse(data).object;
 				$scope.indicacoes_carregadas = true;
-				$scope.calcular_total_desconto_fidelidade();
-				$scope.$apply();
+				try {
+					$scope.registro_selecionado.indicacoes = JSON.parse(data).object;
+					$scope.calcular_total_desconto_fidelidade();
+					$scope.$apply();
+				}catch (err){
+					if (data.indexOf('ERRO403')!= -1){
+							error_notify(null,"Operação não autorizada","Nível de autonomia não permite o acesso à este recurso.");
+							$scope.dained_permission_indication = true;
+							$scope.$apply();
+					}
+				}
+
 			},
 			failure: function (data) {
 				$scope.indicacao = [];
@@ -649,9 +662,9 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	}
 
 	$scope.adicionar_indicacao = function () {
-		var empresa = $('#indicacao').val()
-		var taxa_desconto = $('#taxa_desconto_indicacao').val()
-		var cliente_id = $scope.registro_selecionado.cliente_id
+		var empresa = $('#indicacao').val();
+		var taxa_desconto = $('#taxa_desconto_indicacao').val();
+		var cliente_id = $scope.registro_selecionado.cliente_id;
 
 		var data = {
 			empresa : empresa,
@@ -660,7 +673,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		};
 
 		function validate_function () {
-			if(empresa == '' || taxa_desconto==''){
+			if(empresa === '' || taxa_desconto===''){
 				alert('Preecha os campos');
 				return false
 			}
@@ -668,11 +681,14 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		}
 
 		function success_function(result,message,data_object,status) {
+			notify('success','Operação concluída','Indicação registrada com sucesso');
 			$scope.registro_selecionado.indicacoes.push(data_object);
-			$scope.calcular_total_desconto_fidelidade();
-			$scope.atualizar_contrato(cliente_id);
 			$scope.$apply();
-		}
+			if (data_object['change_contract']===true){
+				$scope.calcular_total_desconto_fidelidade();
+				$scope.atualizar_contrato(cliente_id);
+			}
+		};
 
 		function fail_function(result,message,data_object,status) {
 			alert('Empresa informada já foi indicada anteriormente')
@@ -711,9 +727,10 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 				var index = $scope.registro_selecionado.indicacoes.indexOf($scope.indicacao_selecionada);
 				//data_object.taxa_desconto = $filter('currency')(data_object.taxa_desconto,"", 2)
 				$scope.registro_selecionado.indicacoes[index] = data_object;
-
-				$scope.calcular_total_desconto_fidelidade();
+				if (data_object['change_contract']===true){
 				$scope.atualizar_contrato(cliente_id);
+				}
+				$scope.calcular_total_desconto_fidelidade();
 				$scope.desmarcar_linha_indicacao();
 				$scope.$apply();
 				$("#taxa_desconto_indicacao").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
@@ -765,7 +782,9 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 					$scope.registro_selecionado.indicacoes[index] = data_object;
 					$scope.calcular_total_desconto_fidelidade();
 					$scope.$apply();
-					$scope.atualizar_contrato(cliente_id);
+					if (data_object['change_contract']===true){
+						$scope.atualizar_contrato(cliente_id);
+					}
 				}
 				else{
 				}
@@ -807,8 +826,9 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 				$scope.desmarcar_linha_indicacao();
 				$scope.registro_selecionado.indicacoes.splice($scope.registro_selecionado.indicacoes.indexOf(indicacao_selecionada), 1);
 				$scope.calcular_total_desconto_fidelidade();
-				$scope.$apply();
-				$scope.atualizar_contrato(cliente_id);
+				if (data_object['change_contract']===true){
+					$scope.atualizar_contrato(cliente_id);
+				}
 				$scope.$apply()
 			}
 

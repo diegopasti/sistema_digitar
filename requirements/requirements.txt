@@ -26,6 +26,7 @@ rjsmin==1.0.12 --install-option="--without-c-extensions"
 django-appconf==1.0
 django_compressor
 django-htmlmin
+Pillow==4.3.0
 
 # DJANGO-XHTML2PDF
 # NEED REPLACE 'import StringIO' to 'from io import StringIO' on file utils.py
@@ -34,7 +35,7 @@ django-htmlmin
 dulwich --global-option="--pure"
 django-filebrowser
 
-#Pillow==3.3.0
+
 #PyPDF2==1.26.0
 #reportlab==3.3.0
 #django-xhtml2pdf==0.0.3

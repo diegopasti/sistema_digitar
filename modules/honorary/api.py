@@ -74,6 +74,7 @@ def company_was_indicated(company):
 class ContractController(BaseController):
 
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def salvar_contrato(self, request):
         save_response = self.save(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
         print("SALVEI: ",save_response)
@@ -123,7 +124,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
-    #method_decorator(permission_required('contrato.add_contrato',raise_exception=True))
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def get_lista_contratos(self, request):
         lista_clientes = entidade.objects.all().exclude(pk=1).order_by('-pk')
         response_dict = []
@@ -219,6 +220,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
     def alterar_contrato(self, request):
         update_response = self.update(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
         if update_response['result']:
@@ -267,6 +269,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
     def close_contract(self, request):
         try:
             contrato = Contrato.objects.get(pk=int(request.POST['id']))
@@ -300,6 +303,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def atualizar_contrato(self, request):
         contract_selected = Contrato.objects.filter(cliente_id=int(request.POST['cliente']))
         response_dict = {}
@@ -316,6 +320,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
     def carregar_servicos_contratados(self, request, cliente_id):
         response_dict = []
         cliente = entidade.objects.get(pk=int(cliente_id))
@@ -344,6 +349,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
     def atualizar_servicos(self, request):
         cliente_id = request.POST['cliente_id']
         contract_selected = Contrato.objects.filter(cliente_id=int(cliente_id))
@@ -360,6 +366,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def get_lista_indicacoes(self, request, cliente_id):
         id_cliente = int(cliente_id)
         #lista_indicacoes = Indicacao.objects.filter(cliente=id_cliente)
@@ -384,6 +391,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def salvar_indicacao(self,request):
         empresa = request.POST['empresa']
         taxa_desconto = float(request.POST['taxa_desconto'].replace('.','').replace(',','.'))
@@ -405,24 +413,31 @@ class ContractController(BaseController):
 
                 indicacao.save()
                 # response_dict = response_format_success_message(indicacao,['indicacao','cliente','taxa_desconto','data_cadastro'])
-
-                contrato = Contrato.objects.get(cliente=cliente)
-                contrato.totalizar_honorario()
-                contrato.save()
-
-                honoraries = Honorary.objects.filter(contract=contrato)
-                for honorary in honoraries:
-                    honorary = Honorary().update_honorary(honorary, contract=contrato)
-                    honorary.updated_by = request.user
-                    honorary.updated_by_name = request.user.get_full_name()
-                    honorary.save()
-
                 response_dict = self.notify.success(indicacao, extra_fields=['indication_name'])
-
                 indication_client = entidade.objects.get(id=indicacao.indicacao_id)
                 response_dict['object']['indication_name'] = indication_client.nome_razao
 
-                #response_dict = response_format_success_message(indicacao, ['indicacao', 'cliente', 'taxa_desconto', 'data_cadastro'])
+                try:
+                    contrato = Contrato.objects.get(cliente=cliente)
+                    contrato.totalizar_honorario()
+                    contrato.save()
+                except:
+                    contrato = None
+
+                if contrato is not None:
+                    honoraries = Honorary.objects.filter(contract=contrato)
+                    for honorary in honoraries:
+                        honorary = Honorary().update_honorary(honorary, contract=contrato)
+                        honorary.updated_by = request.user
+                        honorary.updated_by_name = request.user.get_full_name()
+                        honorary.save()
+                    response_dict['object']['change_contract'] = True
+
+                else:
+                    response_dict['object']['change_contract'] = False
+                    response_dict['message'] = "Alerta! Cliente ainda não possui contrato para gerar descontos."
+
+                # response_dict = response_format_success_message(indicacao, ['indicacao', 'cliente', 'taxa_desconto', 'data_cadastro'])
                 # contrato.desconto_indicacoes = contrato.desconto_indicacoes + Decimal(taxa_desconto)
 
             else:
@@ -435,6 +450,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def alterar_indicacao(self,request):
         from django.utils.timezone import now, localtime
         client_id = int(request.POST['cliente_id'])
@@ -474,6 +490,7 @@ class ContractController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
     def alterar_boolean_indicacao(self, request):
         from django.utils.timezone import now, localtime
         client_company_id = int(request.POST['cliente'])
@@ -499,23 +516,29 @@ class ContractController(BaseController):
             indication_client = entidade.objects.get(id=indicated_company_id)
             response_dict['object']['indication_name'] = indication_client.nome_razao
 
-            contrato = Contrato.objects.get(cliente_id=int(client_company_id))
-            contrato.totalizar_honorario()
-            contrato.ultima_alteracao = now #timezone.localtime(timezone.now())
-            contrato.alterado_por = request.user
-            contrato.save()
+            try:
+                contrato = Contrato.objects.get(cliente_id=int(client_company_id))
+                contrato.totalizar_honorario()
+                contrato.ultima_alteracao = now #timezone.localtime(timezone.now())
+                contrato.alterado_por = request.user
+                contrato.save()
 
-            honoraries = Honorary.objects.filter(contract=contrato)
-            for honorary in honoraries:
-                honorary = Honorary().update_honorary(honorary, contract=contrato)
-                honorary.updated_by = request.user
-                honorary.updated_by_name = request.user.get_full_name()
-                honorary.save()
+                honoraries = Honorary.objects.filter(contract=contrato)
+                for honorary in honoraries:
+                    honorary = Honorary().update_honorary(honorary, contract=contrato)
+                    honorary.updated_by = request.user
+                    honorary.updated_by_name = request.user.get_full_name()
+                    honorary.save()
+                response_dict['object']['change_contract'] = True
+            except:
+                response_dict['object']['change_contract'] = False
+                response_dict['message'] = "Alerta! Cliente ainda não possui contrato para gerar descontos."
+
         return self.response(response_dict)
 
     @request_ajax_required
     @method_decorator(login_required)
-    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
+    @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
     def deletar_indicacao(self, request):
         empresa = request.POST['indicated_company']
         cliente_id = request.POST['cliente_id']
@@ -525,16 +548,22 @@ class ContractController(BaseController):
             indicacao_bd.delete()
             response_final['result'] = True
             response_final['message'] = "Indicação excluida com sucesso!"
-            contrato = Contrato.objects.get(cliente_id=int(cliente_id))
-            contrato.totalizar_honorario()
-            contrato.save()
+            response_final['object'] = {}
+            try:
+                contrato = Contrato.objects.get(cliente_id=int(cliente_id))
+                contrato.totalizar_honorario()
+                contrato.save()
 
-            honoraries = Honorary.objects.filter(contract=contrato)
-            for honorary in honoraries:
-                honorary = Honorary().update_honorary(honorary, contract=contrato)
-                honorary.updated_by = request.user
-                honorary.updated_by_name = request.user.get_full_name()
-                honorary.save()
+                honoraries = Honorary.objects.filter(contract=contrato)
+                for honorary in honoraries:
+                    honorary = Honorary().update_honorary(honorary, contract=contrato)
+                    honorary.updated_by = request.user
+                    honorary.updated_by_name = request.user.get_full_name()
+                    honorary.save()
+                response_final['object']['change_contract'] = True
+            except:
+                response_final['object']['change_contract'] = False
+                response_final['message'] = "Alerta! Cliente ainda não possui contrato para gerar descontos."
 
         except:
             response_final['result'] = False
@@ -863,7 +892,6 @@ class HonoraryController(BaseController):
         resp = HttpResponse(content_type='application/pdf')
         result = generate_pdf('honorario/honorary_report.html', file_object=resp, context=parametros)
         return result
-
 
 """
 def get_lista_proventos_old(self,request):

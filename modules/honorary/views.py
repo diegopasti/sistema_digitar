@@ -7,7 +7,7 @@ from modules.honorary.forms import FormContrato, FormIndicacao, FormProventos, F
 
 
 @login_required
-@permission_level_required(1,'/error/access_denied')
+@permission_level_required(2,'/error/access_denied')
 def honorary_page(request):
     form_contrato = FormContrato()
     form_indicacao = FormIndicacao()
@@ -22,7 +22,7 @@ def proventos_page(request):
     return render(request,"honorario/provents.html",{'formulario_proventos':form_proventos, 'form_desativar':form_desativar})
 
 @login_required
-@permission_level_required(1,'/error/access_denied')
+@permission_level_required(2,'/error/access_denied')
 def contract_page(request):
     form_contrato = FormContrato()
     form_indicacao = FormIndicacao()
