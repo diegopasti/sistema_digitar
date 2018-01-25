@@ -272,7 +272,7 @@ application.controller('configurations_controller', function ($scope) {
         var response = JSON.parse(data)
         if(response.result == true){
           $.unblockUI();
-          windows.location = '/logout';
+          window.location = '/logout';
         }
         else{
           $.unblockUI();
