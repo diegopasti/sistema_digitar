@@ -196,7 +196,7 @@ class ConfigurationsController(BaseController):
         except Exception as error:
             response_dict = self.notify.error(error)
 
-return self.response(response_dict)
+        return self.response(response_dict)
 
     def shared_folder(self,request):
         self.start_process(request)
