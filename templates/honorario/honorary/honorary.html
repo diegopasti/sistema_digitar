@@ -194,7 +194,7 @@
 							</div>
 						</fieldset>
 						{% verbatim %}
-						VEJA SE TA ABERTO: {{ registro_selecionado.is_closed }}
+						VEJA SE TA FECHADO: {{ registro_selecionado.is_closed }}
 						{% endverbatim %}
 						<div ng-if="registro_selecionado.is_closed==false" ng-class="{collapse: screen_model >= 1, in: screen_model > 4}" id="item_panel" style="margin-top:-10px;padding-bottom: 10px;">
 							<div class="row no-gutter fluid" stye="padding-left: 15px;">
