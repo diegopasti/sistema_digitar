@@ -17,12 +17,12 @@ FOR /F "tokens=5 delims= " %%P IN ('netstat -a -n -o ^| findstr :8000.*LISTENING
 ::@echo.
 
 ::Ativar ambiente virtual (Diego)
-c:\users\diego\PythonVirtualEnvs\sistema_digitar\Scripts\activate.bat & cd C:\Users\diego\OneDrive\Projetos\sistema_digitar & python manage.py install_packages & python manage.py runserver 0.0.0.0:8000
+::c:\users\diego\PythonVirtualEnvs\sistema_digitar\Scripts\activate.bat & cd C:\Users\diego\OneDrive\Projetos\sistema_digitar & python manage.py install_packages & python manage.py runserver 0.0.0.0:8000
 
 ::Ativar ambiente virtual (Lucas)
 ::c:\users\diego\PythonVirtualEnvs\sistema_digitar\Scripts\activate.bat & cd C:\Users\diego\OneDrive\Projetos\sistema_digitar & python manage.py install_packages & python manage.py runserver 0.0.0.0:8000
 ::Ativar ambiente virtual (Cleiton)
-::c:\users\diego\PythonVirtualEnvs\sistema_digitar\Scripts\activate.bat & cd C:\Users\diego\OneDrive\Projetos\sistema_digitar & python manage.py install_packages & python manage.py runserver 0.0.0.0:8000
+c:\users\helde\PythonVirtualEnvs\sistema_digitar\Scripts\activate.bat & cd C:\Users\helde\OneDrive\Projetos\sistema_digitar & python manage.py install_packages & python manage.py runserver 0.0.0.0:8000
 
 
 :: aguarda uma tecla ser pressionada
