@@ -295,11 +295,9 @@ class ContractController(BaseController):
                     honorary.updated_by = request.user
                     honorary.updated_by_name = request.user.get_full_name()
                     honorary.save()
-            print("VEJA O RESULTADO: ",response_dict)
             return self.response(response_dict)
         else:
             return self.response(response_dict)
-
 
     @request_ajax_required
     @method_decorator(login_required)
@@ -633,7 +631,6 @@ class HonoraryController(BaseController):
     @request_ajax_required
     @method_decorator(login_required)
     def close_current_competence(self, request):
-
         now = timezone.localtime(timezone.now())
         completed_competence = self.get_competence(datetime.datetime.now().month-1)
         exist_competence = Honorary.objects.filter(competence=completed_competence)
@@ -688,39 +685,46 @@ class HonoraryController(BaseController):
 
     @method_decorator(login_required)
     def save_honorary_item(self, request):
+        self.start_process(request)
         try:
             honorary = Honorary.objects.get(pk=int(request.POST['honorary_id']))
         except:
             honorary = None
         if honorary is not None:
-            response_dict = self.save(request, FormHonoraryItem, is_response=False, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
-            if response_dict['result']:
-                honorary.number_debit_credit = honorary.number_debit_credit + 1
-                new_value =  Decimal(request.POST['total_value'])
-                if request.POST['type_item'] == "P":
-                    honorary.total_debit = honorary.total_debit + new_value
-                    honorary.total_debit_credit = honorary.total_debit_credit + new_value
-                    honorary.total_honorary = honorary.total_honorary + new_value
+            if not honorary.is_closed:
+                response_dict = self.save(request, FormHonoraryItem, is_response=False, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+                if response_dict['result']:
+                    honorary.number_debit_credit = honorary.number_debit_credit + 1
+                    new_value =  Decimal(request.POST['total_value'])
+                    if request.POST['type_item'] == "P":
+                        honorary.total_debit = honorary.total_debit + new_value
+                        honorary.total_debit_credit = honorary.total_debit_credit + new_value
+                        honorary.total_honorary = honorary.total_honorary + new_value
 
-                elif request.POST['type_item'] == "D":
-                    honorary.total_credit = honorary.total_credit + new_value
-                    honorary.total_debit_credit = honorary.total_debit_credit - new_value
-                    honorary.total_honorary = honorary.total_honorary - new_value
+                    elif request.POST['type_item'] == "D":
+                        honorary.total_credit = honorary.total_credit + new_value
+                        honorary.total_debit_credit = honorary.total_debit_credit - new_value
+                        honorary.total_honorary = honorary.total_honorary - new_value
 
-                elif request.POST['type_item'] == "R":
-                    honorary.total_repayment = honorary.total_repayment + new_value
-                    honorary.total_debit_credit = honorary.total_debit_credit + new_value
-                    honorary.total_honorary = honorary.total_honorary + new_value
-                else:
-                    pass
+                    elif request.POST['type_item'] == "R":
+                        honorary.total_repayment = honorary.total_repayment + new_value
+                        honorary.total_debit_credit = honorary.total_debit_credit + new_value
+                        honorary.total_honorary = honorary.total_honorary + new_value
+                    else:
+                        pass
 
-                honorary.updated_by_id = request.user.id
-                honorary.updated_by_name = request.user.get_full_name()
-                honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
-                if honorary_response['result']:
-                    response_dict['message'] = 'Honorário salvo com sucesso!'
-                else:
-                    response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
+                    honorary.updated_by_id = request.user.id
+                    honorary.updated_by_name = request.user.get_full_name()
+                    honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+                    if honorary_response['result']:
+                        response_dict['message'] = 'Honorário salvo com sucesso!'
+                    else:
+                        response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
+            else:
+                response_dict = {}
+                response_dict['result'] = False
+                response_dict['object'] = None
+                response_dict['message'] = "Erro! Não é permitido a alteração de honorários encerrados."
         else:
             response_dict = {}
             response_dict['result'] = False
@@ -730,53 +734,67 @@ class HonoraryController(BaseController):
 
     @method_decorator(login_required)
     def update_honorary_item(self, request):
+        self.start_process(request)
         try:
             honorary = Honorary.objects.get(pk=int(request.POST['honorary_id']))
         except:
             honorary = None
 
         if honorary is not None:
-            response_dict = self.update(request, FormHonoraryItem, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'],is_response=False)
-            if response_dict['result']:
-                honorary.number_debit_credit = honorary.number_debit_credit + 1
-                new_value =  Decimal(request.POST['total_value'])
-                if request.POST['type_item'] == "P":
-                    honorary.total_debit = honorary.total_debit + new_value
-                    honorary.total_debit_credit = honorary.total_debit_credit + new_value
-                    honorary.total_honorary = honorary.total_honorary + new_value
+            if not honorary.is_closed:
+                response_dict = self.update(request, FormHonoraryItem, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'],is_response=False)
+                if response_dict['result']:
+                    honorary.number_debit_credit = honorary.number_debit_credit + 1
+                    new_value =  Decimal(request.POST['total_value'])
+                    if request.POST['type_item'] == "P":
+                        honorary.total_debit = honorary.total_debit + new_value
+                        honorary.total_debit_credit = honorary.total_debit_credit + new_value
+                        honorary.total_honorary = honorary.total_honorary + new_value
 
-                elif request.POST['type_item'] == "D":
-                    honorary.total_credit = honorary.total_credit + new_value
-                    honorary.total_debit_credit = honorary.total_debit_credit - new_value
-                    honorary.total_honorary = honorary.total_honorary - new_value
+                    elif request.POST['type_item'] == "D":
+                        honorary.total_credit = honorary.total_credit + new_value
+                        honorary.total_debit_credit = honorary.total_debit_credit - new_value
+                        honorary.total_honorary = honorary.total_honorary - new_value
 
-                elif request.POST['type_item'] == "R":
-                    honorary.total_repayment = honorary.total_repayment + new_value
-                    honorary.total_debit_credit = honorary.total_debit_credit + new_value
-                    honorary.total_honorary = honorary.total_honorary - new_value
+                    elif request.POST['type_item'] == "R":
+                        honorary.total_repayment = honorary.total_repayment + new_value
+                        honorary.total_debit_credit = honorary.total_debit_credit + new_value
+                        honorary.total_honorary = honorary.total_honorary - new_value
+                    else:
+                        pass
+
+                    honorary.updated_by_id = request.user.id
+                    honorary.updated_by_name = request.user.get_full_name()
+                    honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+                    if honorary_response['result']:
+                        response_dict['message'] = 'Honorário salvo com sucesso!'
+                    else:
+                        response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
                 else:
-                    pass
-
-                honorary.updated_by_id = request.user.id
-                honorary.updated_by_name = request.user.get_full_name()
-                honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
-                if honorary_response['result']:
-                    response_dict['message'] = 'Honorário salvo com sucesso!'
-                else:
-                    response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
+                    response_dict = {}
+                    response_dict['result'] = False
+                    response_dict['object'] = None
+                    response_dict['message'] = "Erro! Honorário informado não existe."
             else:
                 response_dict = {}
                 response_dict['result'] = False
                 response_dict['object'] = None
-                response_dict['message'] = "Erro! Honorário informado não existe."
+                response_dict['message'] = "Erro! Não é permitido a alteração de honorários encerrados."
         return self.response(response_dict)
 
     @method_decorator(login_required)
     def delete_honorary_item(self, request):
+        self.start_process(request)
         try:
             object = HonoraryItem.objects.get(pk=int(request.POST['id']))
             honorary = object.honorary
-            response_dict = self.delete_object(request, object, is_response=False)
+            if not honorary.is_closed:
+                response_dict = self.delete_object(request, object, is_response=False)
+            else:
+                response_dict = {}
+                response_dict['result'] = False
+                response_dict['object'] = None
+                response_dict['message'] = "Erro! Não é permitido a alteração de honorários encerrados."
         except Exception as erro:
             response_dict = self.notify.error(erro)
 
@@ -790,7 +808,9 @@ class HonoraryController(BaseController):
                response_dict['message'] = 'Honorário salvo com sucesso!'
             else:
                response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
-        return self.response(honorary_response)
+            return self.response(honorary_response)
+        else:
+            return self.response(response_dict)
 
     @method_decorator(login_required)
     def get_provent_options(self, request):
@@ -845,7 +865,17 @@ class HonoraryController(BaseController):
                     contract_fidelity_discount_value = round(float(contract_unit_value) * (float(honorary.contract.desconto_indicacoes)/100.0), 2)
 
         linhas_extras = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+        discount_rows = 0
+        if contract_unit_value is not None:
+            discount_rows = discount_rows + 1
+        if contract_temporary_discount_rate is not None:
+            discount_rows = discount_rows + 1
+        if contract_fidelity_discount_rate is not None:
+            discount_rows = discount_rows + 1
+
         offset = 0
+        print("VEJA O QUE TEM DE ITENS: ",documentos.count())
         if documentos.count() < 10:
             if contract_unit_value is not None:
                 offset = offset + 1
@@ -853,11 +883,12 @@ class HonoraryController(BaseController):
                 offset = offset + 1
             if contract_fidelity_discount_rate is not None:
                 offset = offset + 1
+            print("VEJA O OFFSET: ",offset)
             linhas_extras = linhas_extras[documentos.count()+offset:10]
 
         else:
+            print("NAO TEM LINHAS EXTRAS NO RELATORIO")
             linhas_extras = []
-
 
         parametros = {
             'emissor_nome': company.nome_razao, #parametros_emissor.nome,

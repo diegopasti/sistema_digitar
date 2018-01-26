@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Honorário</title>
+		<title>Sistema Digitar - Honorário</title>
 		<meta charset="utf-8">
-	
-		{% load staticfiles %}
-		
-		<!-- <link rel="stylesheet" type="text/css" href="{% static 'styles/protocolo.css' %}"/>   -->
-		
+			{% load staticfiles %}
+			<!-- <link rel="stylesheet" type="text/css" href="{% static 'styles/protocolo.css' %}"/>   -->
+
 		<style>
 			@page {
 				margin: 0.5cm;
@@ -122,7 +120,7 @@
 					width: 18.5cm;
 					height: 2cm;
 					left: 1.26cm;
-					top: 12.4cm;
+					top: 12cm;
 				}
 
 				@frame {
@@ -130,7 +128,7 @@
 					width: 18.5cm;
 					height: 2cm;
 					left: 1.26cm;
-					top: 27.3cm;
+					top: 26.9cm;
 				}
 
 				@frame {
@@ -312,7 +310,7 @@
 					width: 18.5cm;
 					height: 4.73cm;
 					left: 1.28cm;
-					top: 21.4cm;
+					top: 20.8cm;
 				}
 
 				@frame {
@@ -410,7 +408,6 @@
 				padding-left: 20px; 
 				width:1100px;
 			}
-			
 		</style>
 		
 	</head>
@@ -519,27 +516,27 @@
 							<tr style="font-size: 11px;color: #666;padding-bottom: 1px;">
 								<th class="center"  style="width: 40px;">COD</th>
 								<th>DESCRIÇÃO DOS SERVIÇOS</th>
+								<th>UNIT/BASE</th>
 								<th>QUANT.</th>
-								<th>UNIT.</th>
 								<th>TOTAL</th>
 							</tr>
 
 							{% if contract_unit_value != None %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">1</td>
-								<td width='447px' style="padding-left: 4px;">HONORÁRIOS CONTÁBEIS CONF. CONTRATO</td>
-								<td class="center">1</td>
-								<td width='86px' style="text-align: right;" >{{ contract_unit_value }}</td>
+								<td style="width: 447px;padding-left: 4px;">HONORÁRIOS CONTÁBEIS CONF. CONTRATO</td>
 								<td width='86px' style="text-align: right;">{{ contract_unit_value }}</td>
+								<td class="center" style="width: 74px;">1</td>
+								<td width='86px' style="text-align: right;" >{{ contract_unit_value }}</td>
 							</tr>
 							{% endif %}
 
 							{% if contract_temporary_discount_rate != None %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">2</td>
-								<td width='447px' style="padding-left: 4px;">DESCONTO TEMPORÁRIO CONF. CONTRATO</td>
-								<td class="center"></td>
-								<td width='86px' style="text-align: right;" >{{ contract_temporary_discount_rate }}%</td>
+								<td style="width: 447px;padding-left: 4px;">DESCONTO TEMPORÁRIO CONF. CONTRATO</td>
+								<td class="center" style="width: 74px;text-align: right;">{{ contract_unit_value }}</td>
+								<td width='86px' style="text-align: center;" >{{ contract_temporary_discount_rate }}%</td>
 								<td width='86px' style="text-align: right;">-{{ contract_temporary_discount_value }}</td>
 							</tr>
 							{% endif %}
@@ -547,49 +544,49 @@
 							{% if contract_fidelity_discount_rate != None %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">3</td>
-								<td width='447px' style="padding-left: 4px;">DESCONTO FIDELIDADE</td>
-								<td class="center"></td>
+								<td style="width: 447px;padding-left: 4px;">DESCONTO FIDELIDADE</td>
+								<td class="center" style="width: 74px;"></td>
 								<td width='86px' style="text-align: right;" >{{ contract_fidelity_discount_rate }}%</td>
 								<td width='86px' style="text-align: right;">-{{ contract_fidelity_discount_value }}</td>
 							</tr>
 							{% endif %}
-						
-						{% for item in documentos %}						
+
+						{% for item in documentos %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">{{ item.item.id }}</td>
-								<td width='447px' style="padding-left: 4px;">{{ item.item.nome }}</td>
-
-								{% if item.quantity != None and item.quantity != '' %}
-								<td class="center" width='74px;' style="">{{ item.quantity }}</td>
-								{% else %}
-									<td width='74px;'></td>
-								{% endif %}
+								<td style="width: 447px;padding-left: 4px;">{{ item.item.nome }}</td>
 
 								{% if item.unit_value != None and item.unit_value != '' %}
-									<td width='86px' style="text-align: right;">R$ {{ item.unit_value }}</td>
+									<td width='86px' style="text-align: right;">{{ item.unit_value }}</td>
 								{% else %}
 									<td width='86px'></td>
 								{% endif %}
-								
+
+								{% if item.quantity != None and item.quantity != '' %}
+								<td class="center" style="width: 74px;">{{ item.quantity }}</td>
+								{% else %}
+									<td style="width: 74px;"></td>
+								{% endif %}
+
 								{% if item.valor != "0,00" %}
 									{% if item.type_item == "D" %}
-										<td width='86px'  style="text-align: right;">- R$ {{ item.total_value }}</td>
+										<td width='86px'  style="text-align: right;">- {{ item.total_value }}</td>
 									{% else %}
-										<td width='86px'  style="text-align: right;">R$ {{ item.total_value }}</td>
+										<td width='86px'  style="text-align: right;">{{ item.total_value }}</td>
 									{% endif %}
 
 								{% else %}
 									<td width='86px' style="text-align: right;"></td>
 								{% endif %}
-								
+
 							</tr>
 						{% endfor %}
 
 						{% for item in linhas_extras %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center" style="color:white;">-</td>
-								<td width='447px'> </td>
-								<td width='74px'></td>
+								<td style="width: 447px;"> </td>
+								<td style="width: 74px;"></td>
 								<td width='86px'></td>
 								<td width='86px'></td>
 							</tr>
@@ -617,8 +614,10 @@
 									{% endif %}
 								</td>
 
-								<td style="width: 400px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
-									<div style="margin-left: 50px;margin-right: 10px;border-bottom: 0.5px solid #999; color: white;">.</div>
+								<td style="width: 100px;color: #AAA;text-align: center;padding-left: px; font-weight: bold;padding-left: 10px;padding-top:9px;">_____/_____/_______</td>
+
+								<td style="width: 300px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
+									<div style="margin-left: 35px;margin-right: 10px;border-bottom: 0.5px solid #999; color: white;">.</div>
 								</td>
 							</tr>
 
@@ -626,7 +625,8 @@
 								<td style="color: #666;font-weight: bold;text-align: center">Valor Nota Fiscal</td>
 								<td style="color: #666;font-weight: bold;text-align: center">Liquido à Receber (DUPL)</td>
 								<td style="color: #666;font-weight: bold;text-align: center">Vencimento</td>
-								<td style="color: #666;font-weight: bold;text-align: center;padding-left: 35px;">Assinatura</td>
+								<td style="color: #666;font-weight: bold;text-align: center;padding-left: 10px">Recebido em</td>
+								<td style="color: #666;font-weight: bold;text-align: center;padding-left: 15px;">Assinatura</td>
 							</tr>
 						</table>
 					</div>
@@ -642,7 +642,7 @@
 					<!--<div id="background_tabela">
 						<img src="{{ path_imagens }}tabela_transparente.png"/>
 					</div>-->
-					
+
 					<br>
 
 					<!--
@@ -650,26 +650,26 @@
 						<div id="nome_receptor">
 							<font size=4>{{ recebido_por }}</font>
 						</div>
-						
+
 						<div id="cpf_receptor">
 							<font size=4>{{ identificacao }}</font>
 						</div>
-						
+
 						<div id="data_entrega">
 							<font size=4>{{ data_entrega|date:"d/m/Y" }}</font>
 						</div>
-						
+
 						<div id="hora_entrega">
 							<font size=4>{{ hora_entrega }}</font>
 						</div>
-					
+
 					{ endif %}
 
 					<div id="recebido_por">
 						<img src="{{ path_imagens }}recebido_por.png" />
 					</div>-->
 					<br><br><br>
-			
+
 				</td>
 			</tr>
 		</table>
@@ -677,19 +677,19 @@
 		<div id="primeira_via_label">
 			<span style="color: #777;text-align: right;font-size: 10px;">1ª VIA - DIGITAR</span>
 		</div>
-		
+
 		<div id="line_separador_vias">
 			{% load staticfiles %}
 			<img src="{{ path_imagens }}dashed.png" width="1800px" height="10px"/>
 		</div>
-		
+
 		<div id="segunda_via_label">
 			<!--<img src="{{ path_imagens }}segunda_via.png" height="16px" />-->
 			<span style="color: #777;text-align: right;font-size: 10px;">2ª VIA - CLIENTE</span>
 		</div>
 
 		<!--  SEGUNDA VIA -->
-		
+
 		<br><br>
 		<table border=1 style="padding: 5px">
 			<tr>
@@ -698,37 +698,37 @@
 						{% load staticfiles %}
 						<img src="{{ path_imagens }}exemplo_logo.png" width="100%"  alt="logo"/>
 					</div>
-					
+
 					<div id="page_title2" style="text-align: right;">
 						<p style="font-size: 11pt;font-weight:bold;color: #666; padding-bottom:-40px;">RECIBO DE SERVIÇOS CONTÁBEIS PRESTADOS<br></p>
 						<p><span style="font-size: 11px;font-weight: bold;color: #777;">COMPETÊNCIA: {{ honorary.competence }}</span></p>
 					</div>
 					<br>
-					
+
 					<!--<div id='codigo_protocolo2'>
 						<span style="color: #777;text-align: left;font-size: 10px;">EMITIDO POR {{ emitido_por }} EM</span>
 						<span style="color: #777;text-align: right;font-size: 10px;">{{ data_emissao }}</span>
 					</div>
-					
+
 					<!--<div id="label_emissor2">
 						{% load staticfiles %}
 						<img src="{{ path_imagens }}emissor.png" height="60px"/>
 					</div>-->
-					
+
 					<div id='painel_emissor2'>
 						<font size=4 class='negrito'>{{ emissor_nome }} - {{ emissor_cpf_cnpj }} - CRC-ES: 3629/O-2</font><br>
 						<font size=4>{{ emissor_endereco }}<br>{{ emissor_complemento }}</font>
-					</div>	
-					
+					</div>
+
 					<div id='painel_telefone_emissor2'>
-						
+
 						<table border=0>
 							<tr style="padding-top:3px">
 								<td class="codigo">
 									{% load staticfiles %}
 									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
 								</td>
-								
+
 								<td>
 									<font size=4>
 										{% for item in emissor_contatos %}
@@ -737,40 +737,40 @@
 									</font>
 								</td>
 							</tr>
-						</table>	
-					</div>	
-					
-					
+						</table>
+					</div>
+
+
 					<div id='line_separator_entidades2'>
 						{% load staticfiles %}
 						<img src="{{ path_imagens }}line.png" width="980px" height="6px"/>
 					</div>
 					<br>
-					
+
 					<!--<div id="label_destinatario2">
 						<img src="{{ path_imagens }}destinatario.png"/>
 					</div>-->
-					
+
 					<div id='painel_destinatario2'>
 						<font size=4 class='negrito'>{{ destinatario_nome }}
-						
+
 						{% if destinatario_cpf_cnpj %}
 							- {{ destinatario_cpf_cnpj }}
-						{% endif %}	
+						{% endif %}
 						</font><br>
 						<font size=4>{{ destinatario_endereco }}<br>{{ destinatario_complemento }}</font>
-					</div>	
-					
+					</div>
+
 					{% if destinatario_contatos|length > 0 %}
 					<div id='painel_telefone_destinatario2'>
-						
+
 						<table border=0>
 							<tr style="padding-top:3px">
 								<td class="codigo">
 									{% load staticfiles %}
 									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
 								</td>
-								
+
 								<td>
 									<font size=4>
 										{% for item in destinatario_contatos %}
@@ -780,15 +780,15 @@
 								</td>
 							</tr>
 						</table>
-									
+
 					</div>
 					{% endif %}
 
 					<!--
 					<div id="tabela_documentos2">
 						<table>
-						
-						{% for item in documentos %}						
+
+						{% for item in documentos %}
 							<tr style="padding:0px;">
 								{% if item.id == None %}
 									<td class="center" width='25px'>0</td>
@@ -796,26 +796,26 @@
 									<td class="center" width='25px'>{{ item.item.id }}</td> <!--{ forloop.counter }}->
 								{% endif %}
 								<td width='447px' style="padding-left: 4px;">{{ item.documento }}
-								
+
 								{% if item.complemento != "" %}
 									 - {{ item.complemento }}
 								{% endif %}
 								</td>
-									
+
 								<td class="center" width='74px' style="padding-left: 0px;">{{ item.referencia }}</td>
 								<td class="center" width='73px' style="padding-left: 0px;">{{ item.vencimento }}</td>
-								
+
 								{% if item.valor != "0,00" %}
 									<td class="center" width='86px' style="padding-left: 0px;">R$ {{ item.valor }}</td>
 								{% else %}
 									<td class="center" width='86px'></td>
 								{% endif %}
 							</tr>
-	
+
 						{% endfor %}
-															
+
 						</table>
-					
+
 					</div>
 					-->
 
@@ -824,27 +824,27 @@
 							<tr style="font-size: 11px;color: #666;padding-bottom: 1px;">
 								<th class="center"  style="width: 40px;">COD</th>
 								<th>DESCRIÇÃO DOS SERVIÇOS</th>
+								<th>UNIT/BASE</th>
 								<th>QUANT.</th>
-								<th>UNIT.</th>
 								<th>TOTAL</th>
 							</tr>
 
 							{% if contract_unit_value != None %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">1</td>
-								<td width='447px' style="padding-left: 4px;">HONORÁRIOS CONTÁBEIS CONF. CONTRATO</td>
-								<td class="center">1</td>
-								<td width='86px' style="text-align: right;" >{{ contract_unit_value }}</td>
+								<td style="width: 447px;padding-left: 4px;">HONORÁRIOS CONTÁBEIS CONF. CONTRATO</td>
 								<td width='86px' style="text-align: right;">{{ contract_unit_value }}</td>
+								<td class="center" style="width: 74px;">1</td>
+								<td width='86px' style="text-align: right;" >{{ contract_unit_value }}</td>
 							</tr>
 							{% endif %}
 
 							{% if contract_temporary_discount_rate != None %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">2</td>
-								<td width='447px' style="padding-left: 4px;">DESCONTO TEMPORÁRIO CONF. CONTRATO</td>
-								<td class="center"></td>
-								<td width='86px' style="text-align: right;" >{{ contract_temporary_discount_rate }}%</td>
+								<td style="width: 447px;padding-left: 4px;">DESCONTO TEMPORÁRIO CONF. CONTRATO</td>
+								<td class="center" style="width: 74px;text-align: right;">{{ contract_unit_value }}</td>
+								<td width='86px' style="text-align: center;" >{{ contract_temporary_discount_rate }}%</td>
 								<td width='86px' style="text-align: right;">-{{ contract_temporary_discount_value }}</td>
 							</tr>
 							{% endif %}
@@ -852,8 +852,8 @@
 							{% if contract_fidelity_discount_rate != None %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">3</td>
-								<td width='447px' style="padding-left: 4px;">DESCONTO FIDELIDADE</td>
-								<td class="center"></td>
+								<td style="width: 447px;padding-left: 4px;">DESCONTO FIDELIDADE</td>
+								<td class="center" style="width: 74px;"></td>
 								<td width='86px' style="text-align: right;" >{{ contract_fidelity_discount_rate }}%</td>
 								<td width='86px' style="text-align: right;">-{{ contract_fidelity_discount_value }}</td>
 							</tr>
@@ -862,25 +862,25 @@
 						{% for item in documentos %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">{{ item.item.id }}</td>
-								<td width='447px' style="padding-left: 4px;">{{ item.item.nome }}</td>
-
-								{% if item.quantity != None and item.quantity != '' %}
-								<td class="center" width='74px;' style="">{{ item.quantity }}</td>
-								{% else %}
-									<td width='74px;'></td>
-								{% endif %}
+								<td style="width: 447px;padding-left: 4px;">{{ item.item.nome }}</td>
 
 								{% if item.unit_value != None and item.unit_value != '' %}
-									<td width='86px' style="text-align: right;">R$ {{ item.unit_value }}</td>
+									<td width='86px' style="text-align: right;">{{ item.unit_value }}</td>
 								{% else %}
 									<td width='86px'></td>
 								{% endif %}
 
+								{% if item.quantity != None and item.quantity != '' %}
+								<td class="center" style="width: 74px;">{{ item.quantity }}</td>
+								{% else %}
+									<td style="width: 74px;"></td>
+								{% endif %}
+
 								{% if item.valor != "0,00" %}
 									{% if item.type_item == "D" %}
-										<td width='86px'  style="text-align: right;">- R$ {{ item.total_value }}</td>
+										<td width='86px'  style="text-align: right;">- {{ item.total_value }}</td>
 									{% else %}
-										<td width='86px'  style="text-align: right;">R$ {{ item.total_value }}</td>
+										<td width='86px'  style="text-align: right;">{{ item.total_value }}</td>
 									{% endif %}
 
 								{% else %}
@@ -893,8 +893,8 @@
 						{% for item in linhas_extras %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center" style="color:white;">-</td>
-								<td width='447px'> </td>
-								<td width='74px'></td>
+								<td style="width: 447px;"> </td>
+								<td style="width: 74px;"></td>
 								<td width='86px'></td>
 								<td width='86px'></td>
 							</tr>
@@ -922,8 +922,11 @@
 									{% endif %}
 								</td>
 
-								<td style="width: 400px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
-									<div style="margin-left: 50px;margin-right: 10px;border-bottom: 0.5px solid #999; color: white;">.</div>
+
+								<td style="width: 100px;color: #AAA;text-align: center;padding-left: px; font-weight: bold;padding-left: 10px;padding-top:9px;">_____/_____/_______</td>
+
+								<td style="width: 300px;color: #666;text-align: center;padding-left: px; font-weight: bold;">
+									<div style="margin-left: 35px;margin-right: 10px;border-bottom: 0.5px solid #999; color: white;">.</div>
 								</td>
 							</tr>
 
@@ -931,11 +934,11 @@
 								<td style="color: #666;font-weight: bold;text-align: center">Valor Nota Fiscal</td>
 								<td style="color: #666;font-weight: bold;text-align: center">Liquido à Receber (DUPL)</td>
 								<td style="color: #666;font-weight: bold;text-align: center">Vencimento</td>
-								<td style="color: #666;font-weight: bold;text-align: center;padding-left: 35px;">Assinatura</td>
+								<td style="color: #666;font-weight: bold;text-align: center;padding-left: 10px">Recebido em</td>
+								<td style="color: #666;font-weight: bold;text-align: center;padding-left: 15px;">Assinatura</td>
 							</tr>
 						</table>
 					</div>
-					
 					<br><br><br><br>
 					<br><br><br>
 					<br><br><br><br>
@@ -943,12 +946,9 @@
 					<br><br><br><br>
 					<br><br><br><br>
 					<br><br><br><br>
-					
-
 					<br><br><br><br>
 				</td>
 			</tr>
 		</table>
-	
 	</body>
 </html>
