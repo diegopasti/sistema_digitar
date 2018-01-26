@@ -288,7 +288,8 @@ application.controller('configurations_controller', function ($scope) {
   }
 
   /* |<===============================================>| */
-  /*             Contralor do operations                 */
+  /*             Contralor do operations
+                   *  */
 
   $scope.loaded_operations = null;
   $scope.operations = null;
