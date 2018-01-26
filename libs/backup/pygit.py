@@ -80,7 +80,6 @@ def check_update():
 
 
 def install():
-    import os
 
     disc_c = os.path.expanduser('~')
     print(disc_c)
