@@ -37,10 +37,11 @@ function execute_ajax(url,request_method,data_paramters,success_function,fail_fu
     	var response = $.parseJSON(data);
       var message = response['message'];
       var resultado = response['result'];
-      if (resultado == true) {
+      if (resultado === true)
+      {
         var data_object = response['object'];
         //var moment_date = moment(data_object['fields']['joined_date']).format("DD/MM/YYYY - HH:mm:ss")
-        if (success_function != null) {
+        if (success_function !== null) {
           var redirect = success_function(data_object);
         }
       }

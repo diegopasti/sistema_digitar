@@ -133,7 +133,6 @@ application.controller('configurations_controller', function ($scope) {
       }
   }
 
-
   $scope.load_system_informations = function(){
       $.ajax({
         type: 'GET',
@@ -286,6 +285,32 @@ application.controller('configurations_controller', function ($scope) {
       }
     })
   }
+
+  /* |<===============================================>| */
+  /*             Contralor do operations                 */
+
+  $scope.loaded_operations = null;
+  $scope.operations = null;
+
+  $scope.load_operations = function() {
+    $.ajax({
+      type: 'GET',
+      url: '/api/core/configurations/operations',
+
+      success : function (data) {
+        alertt("deu")
+        $scope.operations = data;
+        alert("OLHA O OPERATIONS:"+JSON.stringify($scope.operations))
+        $scope.$apply()
+			},
+
+      failure: function () {
+        alert("num deu");
+        notify('error','Erro!','Não foi possivel carregar operações')
+			}
+    });
+  }
+
 });
 
 angular.module('filters', [])

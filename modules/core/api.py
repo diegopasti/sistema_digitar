@@ -5,12 +5,16 @@ from django.utils.decorators import method_decorator
 from libs.backup.backup import BackupManager
 from libs.backup.pygit import check_update, update,install
 from libs.default.core import BaseController
-from modules.nucleo.models import Backup
+from modules.nucleo.models import Backup, RestrictedOperation
 #from modules.user.models import User
 from sistema_contabil import settings
 #from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium import webdriver
 
+class RestrictedOperationCotroller (BaseController):
+    def load_operations (self, request):
+        print("Vindo aqui")
+        return BaseController().filter(request,RestrictedOperation)
 
 class ConfigurationsController(BaseController):
 
