@@ -191,7 +191,7 @@
 										<div class='row'>
 											<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 												{% verbatim %}
-												<table class="table table-condensed  table-striped table-bordered table-hover" id="table_usuarios" style="width: 100%;">
+												<table class="table table-condensed  table-striped table-bordered table-hover" id="table_operations" style="width: 100%;">
 													<thead>
 													<tr class="linha_cabecalho">
 														<th class='text-center' style="width: 10px;"  ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
@@ -204,7 +204,7 @@
 
 													<tbody style="font-size: 11px;">
 
-													<tr id="divOperationsCarregando" ng-if="usuarios_carregados == false" style="height: 10px">
+													<tr id="divOperationsCarregando" ng-if="loaded_operations == false" style="height: 10px">
 														<td colspan="8" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
 															<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></br></br>Aguarde.. Carregando...
 														</td>
