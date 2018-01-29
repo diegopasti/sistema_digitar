@@ -6,15 +6,33 @@ from libs.backup.backup import BackupManager
 from libs.backup.pygit import check_update, update,install
 from libs.default.core import BaseController
 from modules.nucleo.models import Backup, RestrictedOperation
-#from modules.user.models import User
+from modules.user.models import User
 from sistema_contabil import settings
 #from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium import webdriver
 
 class RestrictedOperationCotroller (BaseController):
     def load_operations (self, request):
-        print("Vindo aqui")
-        return BaseController().filter(request,RestrictedOperation)
+        self.start_process(request)
+        list = BaseController().filter(request, RestrictedOperation, extra_fields=['username'], is_response=False)
+        for operation in list['object']:
+            try:
+                user = User.objects.get(id=int(operation['user']))
+                operation['username'] = user.get_full_name()
+            except Exception as error:
+                print('SOU ERRO', error)
+        print(list['object'])
+        return self.response(list)
+        #print("Vindo aqui")
+        '''response_dict = {}
+        response_dict['result'] = False
+        response_dict['object'] = None
+        try:
+            list_operations = RestrictedOperation.objects.all()
+            for operation in list_operations:
+                operation_dict = {}
+                operation_dict['user']
+        return'''
 
 class ConfigurationsController(BaseController):
 
@@ -22,13 +40,13 @@ class ConfigurationsController(BaseController):
     #user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied', redirect_field_name=None)
     def load_backups(self, request):
         x = BaseController().filter(request, model=Backup)
-        print("VEJA O QUE TENHO QUE ENVIAR: ",x)
+        #print("VEJA O QUE TENHO QUE ENVIAR: ",x)
         return BaseController().filter(request, model=Backup, limit=12)
 
     def create_backup_local(self, request):
         self.start_process(request)
         backup_paramters = BackupManager().create_backup_local()
-        print('BACKUP REALIZADO COM SUCESSO.')
+        #print('BACKUP REALIZADO COM SUCESSO.')
         response_dict = {}
         response_dict['result'] = True
         response_dict['message'] = ""
@@ -68,9 +86,11 @@ class ConfigurationsController(BaseController):
         response_dict['message'] = ""
         response_dict['object'] = backup_paramters
         if backup_paramters is True:
-            print('RESTAURAÇÃO REALIZADA COM SUCESSO')
+            pass
+            #print('RESTAURAÇÃO REALIZADA COM SUCESSO')
         else:
-            print('ERRO',backup_paramters)
+            pass
+            #print('ERRO',backup_paramters)
         return self.response(response_dict)
 
     def list_backups(self,request):
@@ -115,7 +135,7 @@ class ConfigurationsController(BaseController):
             response_dict['object']['used_space'] = response_dict['object']['used_space'] + item.backup_size
         response_dict['object']['used_percent_space'] = round((response_dict['object']['used_space'] / response_dict['object']['total_space']) * 100, 2)
 
-        print("ESPACO DE ARMAZENAMENTO: ",response_dict)
+        #print("ESPACO DE ARMAZENAMENTO: ",response_dict)
         return self.response(response_dict)
 
     def check_available_system_space(self,request):
@@ -127,7 +147,7 @@ class ConfigurationsController(BaseController):
                 total_size += os.path.getsize(filepath)/1024
                 file_count = len(filenames)
         #print(settings.DBBACKUP_STORAGE_OPTIONS['location'])
-        print(total_size)
+        #print(total_size)
         
         if total_size < 1024:
             total_size = '{0:.2f}'.format(total_size)
@@ -190,7 +210,7 @@ class ConfigurationsController(BaseController):
     def update(self,request):
         self.start_process(request)
         updating = update()
-        print('DEU CERTO')
+        #print('DEU CERTO')
         try:
             install_pack = install()
             response_dict = {}
@@ -235,7 +255,7 @@ class ConfigurationsController(BaseController):
 
     def last_backup(self, request):
         x = BaseController().filter(request, model=Backup)
-        print("VEJA O QUE TENHO QUE ENVIAR: ",x)
+        #print("VEJA O QUE TENHO QUE ENVIAR: ",x)
         return BaseController().filter(request, model=Backup, limit=1)
 
 class AbstractAPI:

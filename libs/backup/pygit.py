@@ -15,9 +15,9 @@ def check_update():
     data = {}
     repo = Repo('.')
     local_ref = repo.head().decode('utf-8')
-    print('Versão local: ', local_ref)
+    #print('Versão local: ', local_ref)
     remote_commit = porcelain.ls_remote(REMOTE_REPO)[b"HEAD"].decode('utf-8')
-    print('\nVersão remota: ', remote_commit)
+    #print('\nVersão remota: ', remote_commit)
 
     with porcelain.open_repo_closing(repo) as r:
         walker = r.get_walker(max_entries=1)
@@ -33,7 +33,7 @@ def check_update():
     data['local'] = local_ref
     data['remote'] = remote_commit
     data['last_update'] = last_update
-    print(data)
+    #print(data)
 
     #tag_labels = tag_list(repo)
     #print(tag_labels)
@@ -70,11 +70,12 @@ def check_update():
     #for i in r:
         #print(i)
     if local_ref != remote_commit:
-        print('\nNOVA VERSÃO DISPONÍVEL,INSTALANDO...\n')
+        pass
+        #print('\nNOVA VERSÃO DISPONÍVEL,INSTALANDO...\n')
         #update()
     else:
         pass
-        print('\nVC JÁ ESTÁ COM A ÚLTIMA VERSÃO INSTALADA.')
+        #print('\nVC JÁ ESTÁ COM A ÚLTIMA VERSÃO INSTALADA.')
 
     return data
 
@@ -82,7 +83,7 @@ def check_update():
 def install():
 
     disc_c = os.path.expanduser('~')
-    print(disc_c)
+    #print(disc_c)
 
     os.chdir(disc_c + '\Empresa\Projetos\sistema_digitar')
 
@@ -94,16 +95,17 @@ def update():
 
     try:
         porcelain.pull(LOCAL_REPO, REMOTE_REPO)
-        print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
+        #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
     except:
         pass
         try:
             os.remove(HEADS)
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
-            print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
+            #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
         except:
             pass
         return
+
 
 if __name__ == '__main__':
     import sys

@@ -196,7 +196,7 @@ class BaseController(Notify):
             return response_dict
 
     @request_ajax_required
-    def filter(self, request, model, queryset=None, order_by="-id", list_fields=None, limit=None, extra_fields=None):
+    def filter(self, request, model, queryset=None, order_by="-id", list_fields=None, limit=None, extra_fields=None, is_response=True):
         if queryset is None:
             if limit is not None:
                 model_list = model.objects.all().order_by(order_by)[:limit]
@@ -209,7 +209,10 @@ class BaseController(Notify):
         response_dict['result'] = True
         response_dict['object'] = self.notify.datalist(model_list, list_fields, extra_fields)
         response_dict['message'] = str(len(self.notify.datalist(model_list, list_fields)))+" Registros carregados com sucesso!"
-        return self.response(response_dict)
+        if is_response:
+            return self.response(response_dict)
+        else:
+            return response_dict
 
     @request_ajax_required
     def object(self, request,model, pk, extra_fields=None, is_response=False):
