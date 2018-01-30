@@ -14,7 +14,6 @@ MASTER = '.git\\refs\\remotes\\HEAD'
 
 def check_update():
     data = {}
-    checkout()
     repo = Repo('.')
     local_ref = repo.head().decode('utf-8')
     #print('Versão local: ', local_ref)
@@ -105,11 +104,13 @@ def install():
 def update():
 
     try:
+        checkout()
         porcelain.pull(LOCAL_REPO, REMOTE_REPO)
         #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
     except:
         pass
         try:
+            checkout()
             os.remove(HEADS)
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
             #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
