@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponseForbidden
 from django.shortcuts import HttpResponse, render
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
@@ -19,6 +19,7 @@ def cadastro_planos(request):
     return render(request,"servico/controle_planos.html",{'formulario_plano': formulario_plano},)
 
 @login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def consultar_planos(request):
     #if True: #request.is_ajax()
     planos = Plano.objects.all().filter(ativo=True)
@@ -34,6 +35,7 @@ def consultar_planos(request):
     #raise Http404
 
 @login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def adicionar_plano(request):
     if request.is_ajax():
         plano = Plano()
@@ -47,6 +49,7 @@ def adicionar_plano(request):
         raise Http404
 
 @login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def atualizar_plano(request):
     if request.is_ajax():
         plano = Plano.objects.get(pk=int(request.POST["plano[id]"]))
@@ -62,6 +65,7 @@ def atualizar_plano(request):
         raise Http404
 
 @login_required
+@method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
 def excluir_plano(request):
     if request.is_ajax():
         plano_id = request.POST["plano_id"]
@@ -113,6 +117,7 @@ def cadastro_servico(request):
                               )
 
 @login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def adicionar_servico(request):
     if request.is_ajax():
         servico = Servico()
@@ -139,6 +144,7 @@ def alterar_servico(request,servico_id):
         raise Http404
 
 @login_required
+@method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
 def excluir_servico(request,servico_id):
     if request.is_ajax():
         servico = Servico.objects.get(pk=int(servico_id))
@@ -173,6 +179,7 @@ def executar_operacao(registro,operacao):
     return response_dict
 
 @login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def consultar_servicos(request):
     if True:#request.is_ajax():
         servicos = Servico.objects.all()

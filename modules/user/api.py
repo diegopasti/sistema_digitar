@@ -76,6 +76,7 @@ class UserController(BaseController):
     @request_ajax_required
     @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def upate_user(self,request):
+        self.start_process(request)
         return self.update(request,FormUpdateProfile)
 
     @request_ajax_required

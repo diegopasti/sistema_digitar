@@ -1,15 +1,21 @@
 # -*- encoding: utf-8 -*-
 from django.contrib import messages
-from django.http.response import Http404, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.http.response import Http404, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response
 from django.shortcuts import render
 from django.template.context import RequestContext
+from django.utils.decorators import method_decorator
+
+from libs.default.decorators import permission_level_required
 from modules.entidade.models import entidade, contato, localizacao_simples  # , Logradouro, Localizacao,
 from modules.entidade.utilitarios import remover_simbolos
 
 from modules.entidade.formularios import formulario_cadastro_entidade_completo
 from modules.nucleo.working_api import WorkingManager
 
+@login_required
+@method_decorator(permission_level_required(0, raise_exception=HttpResponseForbidden()))
 def system_configurations(request):
     return render(request, "core/configurations/backup/configurations.html")
 

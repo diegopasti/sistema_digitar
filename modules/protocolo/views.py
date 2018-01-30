@@ -14,9 +14,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from django.http.response import HttpResponse, Http404
+from django.http.response import HttpResponse, Http404, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.template.context import RequestContext
+from django.utils.decorators import method_decorator
+
+from libs.default.decorators import permission_level_required
 from modules.entidade.models import entidade, contato, localizacao_simples  # , localizacao
 
 from modules.entidade.views import verificar_erros_formulario
@@ -28,7 +31,8 @@ from sistema_contabil.settings import BASE_DIR
 
 #from sistema_contabil.settings import BASE_DIR, STATIC_URL
 #from endereco.models import localizacao
-
+@login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def cadastro_documentos(request):
     erro = False
     documentos = documento.objects.all()
@@ -65,7 +69,8 @@ def cadastro_documentos(request):
 
     return render(request,"protocolo/cadastro_documentos.html",{'dados': documentos,'formulario':formulario,'erro':erro})
 
-
+@login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def get_documento(request, id):
     doc = documento.objects.get(pk=id)
     if doc != None:
@@ -101,6 +106,7 @@ def excluir_documento(request, id):
     
 
 @login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def get_detalhes_protocolo(request,protocolo_id):
     #if request.is_ajax():
     resultado = {}
@@ -147,7 +153,9 @@ def validar_temporalidade(data_primeira_operacao,hora_primeira_operacao,data_seg
     
     return primeiro_datetime < segundo_datetime
 
+
 @login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def cadastro_protocolo(request, protocolo_id=None):
     erro = False
     if (request.method == "POST"):
@@ -407,7 +415,9 @@ def formatar_valor_tamanho_fixo(valor):
     print(novo_valor)
     return novo_valor
 """
+
 @login_required
+@method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
 def gerar_pdf(request,emissor, destinatario, protocolo):
     from django.template import Context# loader,Context, Template
     path = os.path.join(BASE_DIR, "static/imagens/")
