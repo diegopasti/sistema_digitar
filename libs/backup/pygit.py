@@ -1,5 +1,6 @@
 from dulwich import porcelain
 from dulwich.repo import Repo
+from dulwich.index import build_index_from_tree
 from dulwich.porcelain import tag_list
 from datetime import datetime,timedelta
 import time
@@ -13,6 +14,7 @@ MASTER = '.git\\refs\\remotes\\HEAD'
 
 def check_update():
     data = {}
+    checkout()
     repo = Repo('.')
     local_ref = repo.head().decode('utf-8')
     #print('Versão local: ', local_ref)
@@ -78,6 +80,15 @@ def check_update():
         #print('\nVC JÁ ESTÁ COM A ÚLTIMA VERSÃO INSTALADA.')
 
     return data
+
+
+def checkout(repo_path='.'):
+    repo = Repo(repo_path)
+    indexfile = repo.index_path()
+    obj_sto = repo.object_store
+    tree_id = repo[repo.head()].tree
+    build_index_from_tree(repo_path,indexfile,obj_sto,tree_id)
+    return [obj_sto.iter_tree_contents(tree_id)]
 
 
 def install():
