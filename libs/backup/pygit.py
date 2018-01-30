@@ -1,5 +1,6 @@
 from dulwich import porcelain
 from dulwich.repo import Repo
+from dulwich.index import build_index_from_tree
 from dulwich.porcelain import tag_list
 from datetime import datetime,timedelta
 import time
@@ -80,6 +81,15 @@ def check_update():
     return data
 
 
+def checkout(repo_path='.'):
+    repo = Repo(repo_path)
+    indexfile = repo.index_path()
+    obj_sto = repo.object_store
+    tree_id = repo[repo.head()].tree
+    build_index_from_tree(repo_path,indexfile,obj_sto,tree_id)
+    return [obj_sto.iter_tree_contents(tree_id)]
+
+
 def install():
 
     disc_c = os.path.expanduser('~')
@@ -94,11 +104,13 @@ def install():
 def update():
 
     try:
+        checkout()
         porcelain.pull(LOCAL_REPO, REMOTE_REPO)
         #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
     except:
         pass
         try:
+            checkout()
             os.remove(HEADS)
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
             #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
