@@ -22,7 +22,7 @@ def controle_preferencias(request):
     return render(request, "preferencias/preferencias.html",{'formulario_salario':formulario_salario})
 
 @login_required
-@method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
+@permission_level_required(1, raise_exception=HttpResponseForbidden())
 def adicionar_salario(request):
     if request.is_ajax():
         formulario = adicionar_salario_minimo(request.POST)
@@ -61,7 +61,7 @@ def validar_formulario(formulario):
                 return msg
 
 @login_required
-@method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
+@permission_level_required(1, raise_exception=HttpResponseForbidden())
 def alterar_salario(request,id):
     if request.is_ajax():
         formulario = adicionar_salario_minimo(request.POST)
@@ -87,7 +87,7 @@ def alterar_salario(request,id):
         raise Http404
 
 @login_required
-@method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
+@permission_level_required(1, raise_exception=HttpResponseForbidden())
 def excluir_salario(request,id):
     if request.is_ajax():
         salario = SalarioMinimo.objects.get(pk=int(id))
