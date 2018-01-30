@@ -145,7 +145,6 @@ application.controller('configurations_controller', function ($scope) {
       }
   }
 
-
   $scope.load_system_informations = function(){
       $.ajax({
         type: 'GET',
