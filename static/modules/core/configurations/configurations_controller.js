@@ -3,7 +3,6 @@
  */
 var application = angular.module('modules.configurations', ['angularUtils.directives.dirPagination','filters']);
 application.controller('configurations_controller', function ($scope) {
-	
   	$scope.screen_height = window.innerHeight;
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
