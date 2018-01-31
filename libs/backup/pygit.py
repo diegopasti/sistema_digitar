@@ -102,7 +102,7 @@ def update():
     try:
         checkout()
         porcelain.pull(LOCAL_REPO, REMOTE_REPO)
-        #print('\nOPERAÇÃO REALIZADA COM SUCESSO...1')
+        print('\nOPERAÇÃO REALIZADA COM SUCESSO...1')
     except:
         pass
         try:
