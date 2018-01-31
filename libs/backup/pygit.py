@@ -104,7 +104,6 @@ def update():
         checkout()
         porcelain.pull(LOCAL_REPO, REMOTE_REPO)
         print('\nOPERAÇÃO REALIZADA COM SUCESSO...1')
-        sys.exit()
     except:
         pass
         try:
@@ -112,7 +111,6 @@ def update():
             os.remove(HEADS)
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
             print('\nOPERAÇÃO REALIZADA COM SUCESSO...2')
-            sys.exit()
         except:
             print('Deu erro')
             pass
