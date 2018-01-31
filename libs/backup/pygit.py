@@ -35,7 +35,7 @@ def check_update():
     data['local'] = local_ref
     data['remote'] = remote_commit
     data['last_update'] = last_update
-    # print(data)
+    #print(data)
 
     # tag_labels = tag_list(repo)
     # print(tag_labels)
