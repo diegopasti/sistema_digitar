@@ -113,7 +113,6 @@ def update():
         except:
             print('Deu erro')
             pass
-        return
 
 
 if __name__ == '__main__':
