@@ -3,6 +3,7 @@ from dulwich.repo import Repo
 from dulwich.index import build_index_from_tree
 from dulwich.porcelain import tag_list
 from datetime import datetime,timedelta
+import shutil
 import time
 import os
 
@@ -103,17 +104,19 @@ def install():
 
 def update():
 
-    try:
-        porcelain.pull(LOCAL_REPO, REMOTE_REPO)
+    #try:
+        #porcelain.pull(LOCAL_REPO, REMOTE_REPO)
         #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
-    except:
-        pass
+    #except:
+        #pass
         try:
+            shutil.copy(MASTER, HEADS)
             os.remove(HEADS)
             checkout()
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
             # print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
         except:
+            print('Deu erro')
             pass
         return
 
