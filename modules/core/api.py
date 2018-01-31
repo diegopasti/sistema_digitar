@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from libs.backup.backup import BackupManager
-from libs.backup.pygit import check_update, update, install, checkout
+from libs.backup.pygit import check_update, update, install
 from libs.default.core import BaseController
 from modules.nucleo.models import Backup, RestrictedOperation
 from modules.user.models import User
@@ -209,9 +209,7 @@ class ConfigurationsController(BaseController):
 
     def update(self,request):
         self.start_process(request)
-        # check_index = checkout()
         updating = update()
-        # print('DEU CERTO')
         try:
             install_pack = install()
             response_dict = {}
