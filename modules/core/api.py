@@ -3,13 +3,13 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from libs.backup.backup import BackupManager
-from libs.backup.pygit import check_update, update,install
+from libs.backup.pygit import check_update, update, install
 from libs.default.core import BaseController
 from modules.nucleo.models import Backup, RestrictedOperation
 from modules.user.models import User
 from sistema_contabil import settings
-#from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-from selenium import webdriver
+# from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+# from selenium import webdriver
 
 class RestrictedOperationCotroller (BaseController):
     def load_operations (self, request):
@@ -210,7 +210,7 @@ class ConfigurationsController(BaseController):
     def update(self,request):
         self.start_process(request)
         updating = update()
-        #print('DEU CERTO')
+        print('deu certo')
         try:
             install_pack = install()
             response_dict = {}
