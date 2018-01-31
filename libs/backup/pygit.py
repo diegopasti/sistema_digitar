@@ -3,8 +3,8 @@ from dulwich.repo import Repo
 from dulwich.index import build_index_from_tree
 from dulwich.porcelain import tag_list
 from datetime import datetime,timedelta
-import shutil
 import time
+import sys
 import os
 
 LOCAL_REPO = os.getcwd()
@@ -16,11 +16,7 @@ MASTER = '.git\\refs\\remotes\\origin\\master'
 def check_update():
     data = {}
     repo = Repo('.')
-    try:
-        local_ref = repo.head().decode('utf-8')
-    except:
-        shutil.copy(MASTER, HEADS)
-        local_ref = repo.head().decode('utf-8')
+    local_ref = repo.head().decode('utf-8')
     print('Versão local: ', local_ref)
     remote_commit = porcelain.ls_remote(REMOTE_REPO)[b"HEAD"].decode('utf-8')
     print('\nVersão remota: ', remote_commit)
@@ -39,7 +35,7 @@ def check_update():
     data['local'] = local_ref
     data['remote'] = remote_commit
     data['last_update'] = last_update
-    # print(data)
+    #print(data)
 
     # tag_labels = tag_list(repo)
     # print(tag_labels)
@@ -104,25 +100,24 @@ def install():
 
 def update():
 
-    #try:
-        #porcelain.pull(LOCAL_REPO, REMOTE_REPO)
-        #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
-    #except:
-        #pass
+    try:
+        checkout()
+        porcelain.pull(LOCAL_REPO, REMOTE_REPO)
+        print('\nOPERAÇÃO REALIZADA COM SUCESSO...1')
+    except:
+        pass
         try:
-            shutil.copy(MASTER, HEADS)
-            os.remove(HEADS)
             checkout()
+            os.remove(HEADS)
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
-            # print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
+            print('\nOPERAÇÃO REALIZADA COM SUCESSO...2')
         except:
             print('Deu erro')
             pass
-        return
 
 
 if __name__ == '__main__':
-    import sys
+    
     arguments = sys.argv
     if "update" in arguments:
         check_update()
