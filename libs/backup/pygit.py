@@ -16,9 +16,9 @@ def check_update():
     data = {}
     repo = Repo('.')
     local_ref = repo.head().decode('utf-8')
-    # print('Versão local: ', local_ref)
+    print('Versão local: ', local_ref)
     remote_commit = porcelain.ls_remote(REMOTE_REPO)[b"HEAD"].decode('utf-8')
-    # print('\nVersão remota: ', remote_commit)
+    print('\nVersão remota: ', remote_commit)
 
     with porcelain.open_repo_closing(repo) as r:
         walker = r.get_walker(max_entries=1)
