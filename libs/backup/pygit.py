@@ -4,6 +4,7 @@ from dulwich.index import build_index_from_tree
 from dulwich.porcelain import tag_list
 from datetime import datetime,timedelta
 import time
+import sys
 import os
 
 LOCAL_REPO = os.getcwd()
@@ -103,6 +104,7 @@ def update():
         checkout()
         porcelain.pull(LOCAL_REPO, REMOTE_REPO)
         print('\nOPERAÇÃO REALIZADA COM SUCESSO...1')
+        sys.exit()
     except:
         pass
         try:
@@ -110,13 +112,14 @@ def update():
             os.remove(HEADS)
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
             print('\nOPERAÇÃO REALIZADA COM SUCESSO...2')
+            sys.exit()
         except:
             print('Deu erro')
             pass
 
 
 if __name__ == '__main__':
-    import sys
+    
     arguments = sys.argv
     if "update" in arguments:
         check_update()
