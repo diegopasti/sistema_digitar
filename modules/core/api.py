@@ -209,9 +209,9 @@ class ConfigurationsController(BaseController):
 
     def update(self,request):
         self.start_process(request)
-        check_index = checkout()
+        # check_index = checkout()
         updating = update()
-        #print('DEU CERTO')
+        # print('DEU CERTO')
         try:
             install_pack = install()
             response_dict = {}
