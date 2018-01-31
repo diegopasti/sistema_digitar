@@ -100,11 +100,11 @@ def install():
 
 def update():
 
-    try:
-        porcelain.pull(LOCAL_REPO, REMOTE_REPO)
+    # try:
+        # porcelain.pull(LOCAL_REPO, REMOTE_REPO)
         # print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
-    except:
-        pass
+    # except:
+        # pass
         try:
             os.remove(HEADS)
             checkout()
