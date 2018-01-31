@@ -14,7 +14,7 @@ MASTER = '.git\\refs\\remotes\\HEAD'
 
 def check_update():
     data = {}
-    checkout()
+    # checkout()
     repo = Repo('.')
     local_ref = repo.head().decode('utf-8')
     # print('Versão local: ', local_ref)
