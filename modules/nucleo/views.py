@@ -15,7 +15,7 @@ from modules.entidade.formularios import formulario_cadastro_entidade_completo
 from modules.nucleo.working_api import WorkingManager
 
 @login_required
-@method_decorator(permission_level_required(0, raise_exception=HttpResponseForbidden()))
+@permission_level_required(1, raise_exception=HttpResponseForbidden())
 def system_configurations(request):
     return render(request, "core/configurations/backup/configurations.html")
 

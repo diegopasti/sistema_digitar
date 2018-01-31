@@ -146,6 +146,7 @@ class Proventos(models.Model):
     def __str__(self):
         return self.nome+"     (R$"+str(self.valor)+")"
 
+
 class Honorary(models.Model):
     class Meta:
         db_table = 'honorary'
