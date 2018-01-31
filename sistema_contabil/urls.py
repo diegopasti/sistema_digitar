@@ -134,7 +134,7 @@ urlpatterns = [
 
     #url(r'^api/core/', include('modules.nucleo.urls')),
 
-    #url(r'^api/working/register/$', nucleo_views.working),
+    url(r'^api/working/register/$', nucleo_views.working),
     url(r'^system/configurations', core_views.system_configurations),
     url(r'configurations/backup$', ConfigurationsController().load_backups),
     url(r'^api/core/configurations/operations$', RestrictedOperationCotroller().load_operations),
