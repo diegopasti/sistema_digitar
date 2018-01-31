@@ -9,13 +9,17 @@ import os
 LOCAL_REPO = os.getcwd()
 REMOTE_REPO = 'https://github.com/diegopasti/sistema_digitar'
 HEADS = '.git\\refs\\heads\\master'
-MASTER = '.git\\refs\\remotes\\HEAD'
+MASTER = '.git\\refs\\remotes\\origin\\master'
 
 
 def check_update():
     data = {}
     repo = Repo('.')
-    local_ref = repo.head().decode('utf-8')
+    try:
+        local_ref = repo.head().decode('utf-8')
+    except:
+        shutil.copy(MASTER, HEADS)
+        local_ref = repo.head().decode('utf-8')
     print('Versão local: ', local_ref)
     remote_commit = porcelain.ls_remote(REMOTE_REPO)[b"HEAD"].decode('utf-8')
     print('\nVersão remota: ', remote_commit)
@@ -99,11 +103,11 @@ def install():
 
 def update():
 
-    # try:
-        # porcelain.pull(LOCAL_REPO, REMOTE_REPO)
-        # print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
-    # except:
-        # pass
+    try:
+        porcelain.pull(LOCAL_REPO, REMOTE_REPO)
+        print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
+    except:
+        pass
         try:
             os.remove(HEADS)
             checkout()
