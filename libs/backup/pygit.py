@@ -3,7 +3,6 @@ from dulwich.repo import Repo
 from dulwich.index import build_index_from_tree
 from dulwich.porcelain import tag_list
 from datetime import datetime,timedelta
-import shutil
 import time
 import os
 
@@ -16,11 +15,7 @@ MASTER = '.git\\refs\\remotes\\origin\\master'
 def check_update():
     data = {}
     repo = Repo('.')
-    try:
-        local_ref = repo.head().decode('utf-8')
-    except:
-        shutil.copy(MASTER, HEADS)
-        local_ref = repo.head().decode('utf-8')
+    local_ref = repo.head().decode('utf-8')
     print('Versão local: ', local_ref)
     remote_commit = porcelain.ls_remote(REMOTE_REPO)[b"HEAD"].decode('utf-8')
     print('\nVersão remota: ', remote_commit)
@@ -104,15 +99,14 @@ def install():
 
 def update():
 
-    #try:
-        #porcelain.pull(LOCAL_REPO, REMOTE_REPO)
+    try:
+        porcelain.pull(LOCAL_REPO, REMOTE_REPO)
         #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
-    #except:
-        #pass
+    except:
+        pass
         try:
-            shutil.copy(MASTER, HEADS)
-            os.remove(HEADS)
             checkout()
+            os.remove(HEADS)
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
             # print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
         except:
