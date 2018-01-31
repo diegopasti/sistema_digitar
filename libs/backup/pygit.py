@@ -73,7 +73,7 @@ def check_update():
         # print(i)
     if local_ref != remote_commit:
         pass
-        checkout()
+        # checkout()
         # print('\nNOVA VERSÃO DISPONÍVEL,INSTALANDO...\n')
         # update()
     else:
