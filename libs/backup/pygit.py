@@ -100,6 +100,7 @@ def install():
 def update():
 
     try:
+        checkout()
         porcelain.pull(LOCAL_REPO, REMOTE_REPO)
         #print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
     except:
