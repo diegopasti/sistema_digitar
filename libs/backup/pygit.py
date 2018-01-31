@@ -115,6 +115,7 @@ def update():
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
             # print('\nOPERAÇÃO REALIZADA COM SUCESSO...')
         except:
+            print('Deu erro')
             pass
         return
 
