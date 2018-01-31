@@ -110,6 +110,7 @@ def update():
     #except:
         #pass
         try:
+            shutil.copy(MASTER, HEADS)
             os.remove(HEADS)
             checkout()
             porcelain.pull(LOCAL_REPO, REMOTE_REPO)
