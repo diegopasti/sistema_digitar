@@ -14,7 +14,6 @@ MASTER = '.git\\refs\\remotes\\HEAD'
 
 def check_update():
     data = {}
-    # checkout()
     repo = Repo('.')
     local_ref = repo.head().decode('utf-8')
     # print('Versão local: ', local_ref)
@@ -73,7 +72,6 @@ def check_update():
         # print(i)
     if local_ref != remote_commit:
         pass
-        # checkout()
         # print('\nNOVA VERSÃO DISPONÍVEL,INSTALANDO...\n')
         # update()
     else:
