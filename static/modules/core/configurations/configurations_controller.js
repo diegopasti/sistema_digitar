@@ -299,9 +299,8 @@ application.controller('configurations_controller', function ($scope) {
       url: '/api/core/configurations/operations',
 
       success : function (data) {
-        alertt("deu")
         $scope.operations = data;
-        alert("OLHA O OPERATIONS:"+JSON.stringify($scope.operations))
+        //alert("OLHA O OPERATIONS:"+JSON.stringify($scope.operations))
         $scope.$apply()
 			},
 

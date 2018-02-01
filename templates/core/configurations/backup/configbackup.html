@@ -3,7 +3,11 @@
 {% load staticfiles %}
 {% block recursos_necessarios %}
 {% endblock %}
-
+<style>
+	.main_content{
+		color: red !important;
+	}
+</style>
 {% block conteudo %}
 <div id="angular_content" ng-cloak ng-app="modules.configurations" ng-init="loaded_backups=false;" style="margin-top: -50px;">
   <div id="configuration_controller" ng-controller="configurations_controller">
@@ -36,23 +40,6 @@
 										</div>
 									 {% endverbatim %}
 									</div>
-								</div>
-							</div>
-
-							<div class="box box-default">
-								<div class="box-heading">
-									<div class="box-header with-border">
-										<h5 class="box-title">Auditoria</h5>
-										<div class="pull-right">
-											<!--<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup()"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Criar Backup</a>
-											<a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Restaurar Backup</a>
-											<a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-trash-o" aria-hidden="true"></i> Baixar</a>-->
-										</div>
-									</div>
-								</div>
-
-								<div class="box-body">
-
 								</div>
 							</div>
 
@@ -199,7 +186,7 @@
 							<div class="box box-default">
 								<div class="box-heading">
 									<div class="box-header with-border">
-										<h5 class="box-title" > Últimas Operações</h5>
+										<h5 class="box-title">Auditoria</h5>
 									</div>
 								</div>
 							<div class="box-body">
@@ -291,11 +278,11 @@
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
-<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
-<script src="{% static 'modules/core/mask.js' %}"></script>
-<script src="{% static 'modules/core/configurations/configurations_controller.js' %}"></script>
-<script src="{% static 'modules/core/configurations/configurations.js' %}"></script>
+<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}" />
+<script src="{% static 'modules/core/controle_componentes.js' %}"/>
+<script src="{% static 'modules/core/mask.js' %}"/>
+<script src="{% static 'modules/core/configurations/configurations_controller.js' %}"/>
+<script src="{% static 'modules/core/configurations/configurations.js' %}"/>
 {% endcompress %}
 
 <script type="text/javascript">

@@ -275,10 +275,6 @@ tr.linha_selecionavel{
 }
 */
 
-.box-title{
-	padding-top: 4px;
-}
-
 .field{
 padding: 0px;
 }
@@ -302,4 +298,18 @@ padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.box-title{
+	padding-top: 4px;
+	color: #777;
+	font-size: 100% !important;
+	font-weight: 600 !important;
+}
+
+th {
+	font-size: 12px;
+	font-weight: bold;
+	background: #FFF; /*#9FB8FB; #EEEEEF; #85A3CC #EEE #8FB5EC; *#6FB2BE; #009ACD;*/
+	color: #666;
 }
