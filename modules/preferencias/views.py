@@ -5,9 +5,10 @@ from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponseForbidden
 from django.shortcuts import render, HttpResponse
 from django.template import RequestContext
+from django.utils.decorators import method_decorator
 
 from libs.default.decorators import permission_level_required
 from modules.preferencias.formularios import adicionar_salario_minimo
@@ -21,6 +22,7 @@ def controle_preferencias(request):
     return render(request, "preferencias/preferencias.html",{'formulario_salario':formulario_salario})
 
 @login_required
+@permission_level_required(1, raise_exception=HttpResponseForbidden())
 def adicionar_salario(request):
     if request.is_ajax():
         formulario = adicionar_salario_minimo(request.POST)
@@ -59,6 +61,7 @@ def validar_formulario(formulario):
                 return msg
 
 @login_required
+@permission_level_required(1, raise_exception=HttpResponseForbidden())
 def alterar_salario(request,id):
     if request.is_ajax():
         formulario = adicionar_salario_minimo(request.POST)
@@ -84,6 +87,7 @@ def alterar_salario(request,id):
         raise Http404
 
 @login_required
+@permission_level_required(1, raise_exception=HttpResponseForbidden())
 def excluir_salario(request,id):
     if request.is_ajax():
         salario = SalarioMinimo.objects.get(pk=int(id))

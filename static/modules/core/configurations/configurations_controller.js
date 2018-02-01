@@ -3,10 +3,22 @@
  */
 var application = angular.module('modules.configurations', ['angularUtils.directives.dirPagination','filters']);
 application.controller('configurations_controller', function ($scope) {
+  $scope.screen_height = window.innerHeight;
+	$scope.screen_width  = window.innerWidth;
+	$scope.screen_model = null;
+
+	$scope.sortType           = 'codigo';
+	$scope.sortReverse        = false;
 
 	$scope.backups = null;
 	$scope.loaded_backups = false;
 	$scope.creating_backup = false;
+
+	$scope.filter_by          = '0';
+	$scope.filter_by_index    = parseInt($scope.filter_by);
+	$scope.filter_by_options  = ['id','username','register'];
+	$scope.search             = '';
+	$scope.table_minimun_items = [1,2,3,4,5,6,7,8,9,10];
 
 	$scope.load = function () {
     $.ajax({
@@ -263,6 +275,9 @@ application.controller('configurations_controller', function ($scope) {
           opacity: .5,
           color: '#fff'}
       });
+
+      setTimeout(function(){ window.location = '/logout'; }, 3000);
+
     $.ajax({
       type: 'GET',
       url: "/api/core/configurations/version/update",
@@ -294,23 +309,62 @@ application.controller('configurations_controller', function ($scope) {
   $scope.operations = null;
 
   $scope.load_operations = function() {
+
     $.ajax({
       type: 'GET',
       url: '/api/core/configurations/operations',
 
       success : function (data) {
-        $scope.operations = data;
-        //alert("OLHA O OPERATIONS:"+JSON.stringify($scope.operations))
+        $scope.operations = JSON.parse(data).object;
+        $scope.loaded_operations = true
         $scope.$apply()
 			},
 
       failure: function () {
-        alert("num deu");
         notify('error','Erro!','Não foi possivel carregar operações')
 			}
     });
   }
 
+  $scope.reajustar_tela = function (){
+		$scope.screen_height = SCREEN_PARAMTERS['screen_height'];
+		$scope.screen_width  = SCREEN_PARAMTERS['screen_width'];
+		$scope.screen_model  = SCREEN_PARAMTERS['screen_model'];
+
+		$scope.table_maximun_items_per_page = SCREEN_PARAMTERS['table_maximun_items_per_page'];
+		$scope.table_minimun_items          = SCREEN_PARAMTERS['table_minimun_items'];
+
+		var extra_height = 0;
+		if(SCREEN_PARAMTERS['table_maximun_items_per_page'] <= 5){
+			extra_height = SCREEN_PARAMTERS['table_maximun_items_per_page']
+		}
+		else if(SCREEN_PARAMTERS['table_maximun_items_per_page'] <= 9){
+			extra_height = 6;
+		}
+		else{
+			extra_height = 7;
+		}
+
+		$scope.table_maximun_body_heigth = SCREEN_PARAMTERS['table_maximun_body_height']+extra_height;
+		$scope.$apply();
+	};
+
+	$scope.select_filter_by = function (index) {
+			$scope.filter_by_index = parseInt($scope.filter_by);
+			$scope.apply();
+	};
+
+	$scope.get_filter_column = function(){
+			var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
+			switch (filtrar_pesquisa_por) {
+				case 'username':
+						return {username: $scope.search};
+				case 'register':
+						return {object_name: $scope.search};
+				default:
+					return {id : $scope.search}
+			}
+	};
 });
 
 angular.module('filters', [])

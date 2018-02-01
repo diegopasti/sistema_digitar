@@ -406,12 +406,12 @@
             }
             $scope.verificar_salarios();
             $scope.carregar_salario_vigente();
-        }
+        };
 
         $scope.select_filter_by = function (index) {
             $scope.filter_by_index = parseInt($scope.filter_by);
 
-        }
+        };
 
         $scope.get_filter_column = function(){
             var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];

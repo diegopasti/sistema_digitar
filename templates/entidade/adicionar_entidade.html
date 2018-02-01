@@ -1154,41 +1154,46 @@ function substituir_valor_nulo(valor){
 							cargo_setor: cargo_setor,
 							email: email,
 					};
-
 					$scope.people.push(person);
 			};
 
 			$scope.addPerson = function(){
 
-				if (!($('#cargo_setor').val())){
-					error_notify('cargo_setor','Cargo não adicionado','Informe um Nome/Cargo')
+
+				if (!(($('#email').val()) && $('#numero_contato').val())){
+
+					notify('error','Contato não adicionado','Informe um Email/Numero')
+					return;
 				}
 
+				try{
 					$scope.cargo_setor = $scope.cargo_setor.toUpperCase();
-					var person = {
-							tipo_contato: $scope.tipo_contato,
-							numero_contato: $scope.numero_contato,
-							cargo_setor: $scope.cargo_setor,
-							email: $scope.email
-					};
+				}catch (err){
+					$scope.cargo_setor = '-'
+				}
+				var person = {
+					tipo_contato: $scope.tipo_contato,
+					numero_contato: $scope.numero_contato,
+					cargo_setor: $scope.cargo_setor,
+					email: $scope.email
+				};
+				var sugestao_email = $scope.email;
 
-					var sugestao_email = $scope.email;
+				$scope.people.push(person);
+				$('#contatos').val($('#contatos').val()+"+|"+$scope.tipo_contato+"|"+$scope.numero_contato+"|"+"undefined"+"|"+$scope.cargo_setor+"|"+$scope.email+"#");
+				$('#tipo_contato').val("");
+				$('#numero_contato').val("");
+				$('#cargo_setor').val("");
+				$('#email').val("");
 
-					$scope.people.push(person);
-					$('#contatos').val($('#contatos').val()+"+|"+$scope.tipo_contato+"|"+$scope.numero_contato+"|"+"undefined"+"|"+$scope.cargo_setor+"|"+$scope.email+"#");
-					$('#tipo_contato').val("");
-					$('#numero_contato').val("");
-					$('#cargo_setor').val("");
-					$('#email').val("");
+				$scope.tipo_contato = "";
+				$scope.numero_contato = "";
+				$scope.cargo_setor = "";
+				$scope.email = "";
 
-					$scope.tipo_contato = "";
-					$scope.numero_contato = "";
-					$scope.cargo_setor = "";
-					$scope.email = "";
-
-					var sugestao = document.getElementById("sugestao_email").innerHTML;
-					sugestao += '<option value="'+sugestao_email+'" />';
-					document.getElementById("sugestao_email").innerHTML = sugestao;
+				var sugestao = document.getElementById("sugestao_email").innerHTML;
+				sugestao += '<option value="'+sugestao_email+'" />';
+				document.getElementById("sugestao_email").innerHTML = sugestao;
 
 			};
 
@@ -1352,7 +1357,7 @@ function substituir_valor_nulo(valor){
 
 	//desabilitar_fieldset("fieldset_iss");
 
-	desabilitar_campo("tipo_vencimento");
+	//desabilitar_campo("tipo_vencimento");
 	desabilitar_campo("data_vencimento_iss");
 	desabilitar_campo("dia_vencimento_iss");
 	desabilitar_campo("taxa_iss");

@@ -110,7 +110,6 @@ class Contrato(models.Model):
 #    instance.totalizar_honorario()
 #    #instance.save()
 #    print("SALVEI O CONTRATO CALCULADO")
-
 #pre_save.connect(pre_save_contract, sender=Contrato)
 
 class Indicacao (models.Model):
@@ -145,6 +144,7 @@ class Proventos(models.Model):
 
     def __str__(self):
         return self.nome+"     (R$"+str(self.valor)+")"
+
 
 class Honorary(models.Model):
     class Meta:
