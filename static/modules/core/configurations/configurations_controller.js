@@ -275,6 +275,9 @@ application.controller('configurations_controller', function ($scope) {
           opacity: .5,
           color: '#fff'}
       });
+
+      setTimeout(function(){ window.location = '/logout'; }, 3000);
+
     $.ajax({
       type: 'GET',
       url: "/api/core/configurations/version/update",

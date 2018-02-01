@@ -210,7 +210,6 @@ class ConfigurationsController(BaseController):
     def update(self,request):
         self.start_process(request)
         updating = update()
-        print('deu certo')
         try:
             install_pack = install()
             response_dict = {}
