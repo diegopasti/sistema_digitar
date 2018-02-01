@@ -21,7 +21,6 @@ class RestrictedOperationCotroller (BaseController):
                 operation['username'] = user.get_full_name()
             except Exception as error:
                 print('SOU ERRO', error)
-        print(list['object'])
         return self.response(list)
         #print("Vindo aqui")
         '''response_dict = {}
