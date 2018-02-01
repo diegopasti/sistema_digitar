@@ -20,38 +20,44 @@
 								<div class="box-heading">
 									<div class="box-header with-border">
 										<h5 class="box-title">Informações do Sistema</h5>
-										<div class="pull-right">
-                      <a ng-show='version_informations.available_update==true' role="button" class="btn btn-sm btn-primary pull-right" id="bt_atualizar" ng-click="update();"> Atualizar</a>
-                      <a ng-show='version_informations.available_update==false' role="button" class="btn btn-sm btn-default pull-right" disabled> Atualizar</a>
-										</div>
 									</div>
 								</div>
 
 								<div class="box-body">
-									<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
-										{% verbatim %}
-										<div class="row">
-											<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
-												<div class="pull-left" style="left: 0px;">Versão Atual: {{ version_informations.local }} </div>
-												<div class="pull-left" style="left: 0px;">Última Atualização: {{ version_informations.last_update }} </div>
-												<div class="pull-left" style="left: 0px;">Arquivos Armazenados: {{ system_informations.total_files }} itens ({{ system_informations.folder_size }}) </div>
-												<!--<div class="pull-left" style=" left: 0px;">Total de Arquivos: {{ system_informations.total_files }} itens</div>-->
-											</div>
+									{% verbatim %}
+									<div class="row">
+										<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+											<p><b style="color: #777;">Versão do Sistema</b><br><!--{ version_informations.local }-->
+											Última Atualização: {{ version_informations.last_update }}</p>
 										</div>
-									 {% endverbatim %}
+
+										<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+											<a ng-show='version_informations.available_update==true' role="button" class="btn btn-sm btn-primary pull-right" id="bt_atualizar" ng-click="update();"> Atualizar Sistema</a>
+                      <a ng-show='version_informations.available_update==false' role="button" class="btn btn-sm btn-success pull-right" disabled> Sistema Atualizado</a>
+										</div>
 									</div>
+
+									<br>
+
+									<div class="row">
+										<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+											<p><b style="color: #777;">Cópias de segurança</b><br>
+											{{ system_informations.total_files }} cópias armazenadas ({{ system_informations.folder_size }})
+											</p>
+										</div>
+
+										<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+											<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-default pull-right" ng-click="create_backup_local()"> Gerar Cópia</a>
+										</div>
+									</div>
+								 {% endverbatim %}
 								</div>
 							</div>
 
 							<div class="box box-default">
 								<div class="box-heading">
 									<div class="box-header with-border">
-										<h5 class="box-title">Controle de Backup</h5>
-
-										<div class="pull-right">
-											<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="create_backup_local()"> Criar Backup</a>
-											<a href="#" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="restore_backups()"> Restaurar Backup</a>
-										</div>
+										<h5 class="box-title">Backups do Sistema</h5>
 									</div>
 								</div>
 
@@ -120,32 +126,13 @@
 																				<div class="left" style="left: 0px;">Arquivos armazenados: <span ng-show="loaded_backups == true">{{ backups_informations.total_files }} itens</span></div>
 																				<div class="left" style="left: 0px;">Espaço Utilizado: <span ng-show="loaded_backups == true">{{ backups_informations.used_space/1024| number: 2 }} Kb</span></div>
 																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
-																				<!--<div class="pull-left">Plano de Armazenamento: Básico</div>
-																				<div class="pull-left">Agendamento de Backups: Diário - 00:00</div>
-																				<div class="pull-left">Reciclagem automática: Ativada</div>
-																				<div class="pull-left">Limpeza manual de arquivos</div>-->
 																			</div>
 
 																			<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
-																				<!--<div class="pull-right" ><a href="{{ shared_informations.folder_link }}" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-default" > Gerenciar Armazenamento</a></div>-->
-																				<!--<a href="#" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#" ng-click="manager_dropbox()"> Gerenciar Armazenamento</a>-->
-																				<!--<a href="#" id='bt_manager_dropbox' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#" ng-click="manager_dropbox()"> Gerenciar Armazenamento</a>-->
-																				<!--<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }} Kb</div>
-																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
-																				<div class="pull-left">Plano de Armazenamento: Básico</div>
-																				<div class="pull-left">Agendamento de Backups: Diário - 00:00</div>
-																				<div class="pull-left">Reciclagem automática: Ativada</div>
-																				<div class="pull-left">Limpeza manual de arquivos</div>-->
+																				<div class="pull-right">
+																					<a href="#" id='bt_alterar' role="button" class="btn btn-sm btn-default {{ opcao_desabilitada }}" data-toggle="modal" ng-click="restore_backups()"> Restaurar Backup</a>
+																				</div>
 																			</div>
-
-																			<!--<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
-																				<div class="left" style="left: 0px;">Arquivos armazenados: {{ backups_informations.total_files }} itens</div>
-																				<div class="left" style="left: 0px;">Espaço Utilizado: {{ backups_informations.used_space }}</div>
-																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
-																				<div class="left" style="left: 0px;">Espaço Promocional: 500 Mb</div>
-																				<br>
-
-																			</div>-->
 																		</div>
 																	</div>
 																</td>
