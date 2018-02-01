@@ -162,7 +162,10 @@ class ConfigurationsController(BaseController):
         response_dict['result'] = True
         response_dict['message'] = ""
         response_dict['object'] = {}
-        response_dict['object']['total_files'] = file_count
+        try:
+            response_dict['object']['total_files'] = file_count
+        except:
+            response_dict['object']['total_files'] = 0
         response_dict['object']['folder_size'] = total_size + suffix
 
         return self.response(response_dict)

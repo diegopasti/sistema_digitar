@@ -72,7 +72,7 @@
 														<div ng-if="(backups|filter:filterIds()).length == 0" style="text-align: center;">
 															<p>
 																<div style=""><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
-																<div style="margin-left: 0px;">Atenção! Nenhum backup encontrado.<br><a style="cursor: pointer;font-weight: bold;" ng-click="create_backup()">Clique aqui para gerar um backup imediatamente.</a></div>
+																<div style="margin-left: 0px;">Atenção! Nenhum backup encontrado.<br><a style="cursor: pointer;font-weight: bold;" ng-click="create_backup_local()">Clique aqui para gerar um backup imediatamente.</a></div>
 																<br/>
 															</p>
 														</div>
@@ -241,7 +241,7 @@
 												<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
 												<select id='buscar_por' class='form-control' ng-model="filter_by" ng-change="select_filter_by()">
 													<option value="0">Id</option>
-													<option value="1">Username</option>
+													<option value="1">Usuário</option>
 													<option value="2" selected>Registro</option>
 												</select>
 											</div>
