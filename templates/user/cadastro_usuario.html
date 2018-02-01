@@ -111,12 +111,12 @@
 								---- {{ usuarios.length }}-->
 								<tr class="linha_cabecalho">
 									<th class='text-center' style="width: 10px;"  ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
-									<th class='text-center' style="width: 180px;" ng-click="sortType='username';sortReverse=!sortReverse">username</th>
 									<th class='text-center' style="width: 180px;" ng-click="sortType='first_name';sortReverse=!sortReverse">Nome Completo</th>
-									<th class='text-center' style="width: 180px;" ng-click="sortType='email';sortReverse=!sortReverse">email</th>
+									<th class='text-center' style="width: 180px;" ng-click="sortType='email';sortReverse=!sortReverse">Email</th>
+									<th class='text-center' style="width: 180px;" ng-click="sortType='username';sortReverse=!sortReverse">Nome de Usuário</th>
 									<th class='text-center' style="width: 100px;" ng-click="sortType='groups';sortReverse=!sortReverse">Grupo</th>
-									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">data de registro</th>
-									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">Ultimo Acesso</th>
+									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">Cadastrado em</th>
+									<th class='text-center' style="width: 90px;" ng-click="sortType='date_joined';sortReverse=!sortReverse">Último Acesso</th>
 									<th class='text-center' style="width: 5px;"  ng-click="sortType='is_active';sortReverse=!sortReverse">Status</th>
 								</tr>
 								</thead>
@@ -130,9 +130,9 @@
 
 								<tr ng-cloak ng-if='usuarios_carregados' class="angular-repeat linha_selecionavel {{ usuario.selecionado }}" ng-click="selecionar_linha(usuario);" pagination-id="paginate_usuarios" dir-paginate="usuario in usuarios | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
 									<td class='text-center' style="width: 10px;">{{ usuario.id }}</td>
-									<td class="col-cliente text-left"  style="width: 150px;">{{ usuario.username  | uppercase}}</td>
 									<td class='text-left' style="width: 180px;">{{ usuario.get_full_name | uppercase }}</td>
 									<td class='text-left' style="width: 180px;">{{ usuario.email }}</td>
+									<td class="col-cliente text-left"  style="width: 150px;">{{ usuario.username  | uppercase}}</td>
 									<td class='text-left' style="width: 100px;">
 										<span ng-if="usuario.groups[0]==1">ADMINISTRADOR</span>
 										<span ng-if="usuario.groups[0]==2">SUPERVISOR</span>

@@ -3,7 +3,11 @@
 {% load staticfiles %}
 {% block recursos_necessarios %}
 {% endblock %}
-
+<style>
+	.main_content{
+		color: red !important;
+	}
+</style>
 {% block conteudo %}
 <div id="angular_content" ng-cloak ng-app="modules.configurations" ng-init="loaded_backups=false;" style="margin-top: -50px;">
   <div id="configuration_controller" ng-controller="configurations_controller">
@@ -182,7 +186,7 @@
 							<div class="box box-default">
 								<div class="box-heading">
 									<div class="box-header with-border">
-										<h5 class="box-title" > Últimas Operações</h5>
+										<h5 class="box-title">Auditoria</h5>
 									</div>
 								</div>
 
@@ -292,11 +296,11 @@
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
-<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}"></script>
-<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
-<script src="{% static 'modules/core/mask.js' %}"></script>
-<script src="{% static 'modules/core/configurations/configurations_controller.js' %}"></script>
-<script src="{% static 'modules/core/configurations/configurations.js' %}"></script>
+<script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}" />
+<script src="{% static 'modules/core/controle_componentes.js' %}"/>
+<script src="{% static 'modules/core/mask.js' %}"/>
+<script src="{% static 'modules/core/configurations/configurations_controller.js' %}"/>
+<script src="{% static 'modules/core/configurations/configurations.js' %}"/>
 {% endcompress %}
 
 <script type="text/javascript">
