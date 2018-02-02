@@ -23,7 +23,7 @@
 									</div>
 								</div>
 
-								<div class="box-body">
+								<div class="box-body" style="padding-left:15px;padding-right:15px;">
 									{% verbatim %}
 									<div class="row">
 										<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
@@ -34,20 +34,6 @@
 										<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 											<a ng-show='version_informations.available_update==true' role="button" class="btn btn-sm btn-primary pull-right" id="bt_atualizar" ng-click="update();"> Atualizar Sistema</a>
                       <a ng-show='version_informations.available_update==false' role="button" class="btn btn-sm btn-success pull-right" disabled> Sistema Atualizado</a>
-										</div>
-									</div>
-
-									<br>
-
-									<div class="row">
-										<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-											<p><b style="color: #777;">Cópias de segurança</b><br>
-											{{ system_informations.total_files }} cópias armazenadas ({{ system_informations.folder_size }})
-											</p>
-										</div>
-
-										<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-											<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-default pull-right" ng-click="create_backup_local()"> Gerar Cópia</a>
 										</div>
 									</div>
 								 {% endverbatim %}
@@ -61,7 +47,7 @@
 									</div>
 								</div>
 
-								<div class="box-body">
+								<div class="box-body" style="padding-left:15px;padding-right:15px;padding-bottom:12px;">
 									<div class="dataTable_wrapper">
 										<div class='row'>
 											<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pull-left">
@@ -96,48 +82,40 @@
 												</style>
 
 												<div class="row">
+													<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+														<p><b style="color: #777;">Cópias de segurança</b><br>
+														{{ system_informations.total_files }} cópias armazenadas ({{ system_informations.folder_size }})
+														</p>
+													</div>
+
+													<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+														<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-default pull-right" ng-click="create_backup_local()"> Gerar Cópia</a>
+													</div>
+												</div>
+												<br>
+												<div class="row">
 													<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
-														<table class="table table-bordered table-striped">
-															<tr>
-																<th colspan="2" style="text-align: left; padding-left: 8px;">Armazenamento em Nuvem</th>
-															</tr>
+														<p>
+															<b style="color: #777;">Backup em Nuvem</b><br>
+															<table border="0" style="width:100%;">
+																<tr>
+																	<td>Total Armazenado: </td>
+																	<td style="width:100px;"><span ng-show="loaded_backups == true">{{ backups_informations.used_space/1024| number: 2 }} Kb</span></td>
+																	<td>Espaço Utilizado:</td>
+																	<td style="width:100px;"><span ng-show="loaded_backups == true" class='pull-right'>{{ backups_informations.used_percent_space| number: 2 }}%</span></span>
+</td>
+																</tr>
 
-															<tr>
-																<td>
-																	<style>
-																	.progress-bar {
-																		background-image: -webkit-gradient(linear, left top, right top, from(#04B431), to(#DF0101));
-																	}
-																	</style>
-																	<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12" style="padding-top: 10px;">
-																		<div class="pull-left" style="left: 0px;">Espaço utilizado</div>
-																		<div class="pull-right" style="right: 0px;">{{ backups_informations.used_percent_space| number: 2 }}%</div>
-																		<div class="progress progress_sm" style="width: 100%;">
-																			<div class="progress-bar bg-green pull-left" role="progressbar" data-transitiongoal="{{ backups_informations.used_percent_space }}" style="width: {{ backups_informations.used_percent_space }}%;" aria-valuenow="{{ backups_informations.used_percent_space }}"></div>
-																		</div>
-																	</div>
-
-																	<br>
-
-																	<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
-																		<div class="row" style="padding-top: 20px;">
-
-																			<div class="col-lg-7 col-md-6 col-sm-6 col-xs-12">
-																				<div class="left" style="left: 0px;">Arquivos armazenados: <span ng-show="loaded_backups == true">{{ backups_informations.total_files }} itens</span></div>
-																				<div class="left" style="left: 0px;">Espaço Utilizado: <span ng-show="loaded_backups == true">{{ backups_informations.used_space/1024| number: 2 }} Kb</span></div>
-																				<div class="left" style="left: 0px;">Espaço Contratado: 2 Gb</div>
-																			</div>
-
-																			<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
-																				<div class="pull-right">
-																					<a href="#" id='bt_alterar' role="button" class="btn btn-sm btn-default {{ opcao_desabilitada }}" data-toggle="modal" ng-click="restore_backups()"> Restaurar Backup</a>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</td>
-															</tr>
-														</table>
+																<tr>
+																	<td>Espaço Disponível: </td><td style="width:100px;">2 Gb</td>
+																	<td>Agendamento do Backup:</td>
+																	<td style="width:100px;"><span ng-show="loaded_backups == true" class='pull-right'>12h - 23h</span></td>
+																</tr>
+															</table>
+															<br>
+															<!--Arquivos armazenados: <span ng-show="loaded_backups == true">{ backups_informations.total_files }} itens</span><br>-->
+															<!--<button id='bt_alterar' role="button" class="btn btn-sm btn-default {{ opcao_desabilitada }}" disabled="disabled" ng-click="restore_backups()"> Restaurar Backup</button>-->
+														</p>
 													</div>
 
 													<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12" style="padding-bottom:0px;margin-bottom: -16px;">
@@ -155,8 +133,8 @@
 															</tr>
 
 															<tr class="list-unstyled" ng-show="loaded_backups == true" ng-repeat="item in backups">
-																<td><span class="pull-left" style="">{{ item.backup_file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{item.backup_size/1024| number:2}} Kb</span></span></td>
-																<td><span>{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span></td>
+																<td style="padding-top: 6px;"><span class="pull-left" style="">{{ item.backup_file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{item.backup_size/1024| number:2}} Kb</span></span></td>
+																<td style="padding-top: 6px;"><span>{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span></td>
 															</tr>
 														</table>
 													</div>
@@ -210,24 +188,18 @@
 															<span ng-if="operate.type=='ALT'">ALTERAÇÃO</span>
 															<span ng-if="operate.type=='DEL'">EXCLUSÃO</span>
 															<span ng-if="operate.type=='DES'">DESATIVAÇÃO</span>
-															<span ng-if="operate.type=='REA'">REATIVAR</span>
+															<span ng-if="operate.type=='REA'">REATIVAÇÃO</span>
 														<td class='text-left' style="width: 180px;">{{ operate.justify }}</td>
 														</td>
 
 													</tr>
 
 													<tr ng-if='loaded_operations'  ng-repeat="k in table_minimun_items.slice(operations.length,table_minimun_items.length)">
-														<td class='text-center' style="width:10px;">-</td>
+														<td class='text-center' style="width:10px;color:white;">.</td>
 														<td style="width:180px;"></td>
 														<td style="width:180px;"></td>
 														<td style="width:180px;"></td>
 														<td style="width:180px;"></td>
-													</tr>
-
-
-
-													<tr ng-if="operations.length == 0">
-														<td colspan="7" class='text-center'>Nenhum resultado Encontrado</td>
 													</tr>
 													</tbody>
 												</table>
@@ -240,13 +212,13 @@
 											<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
 												<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
 												<select id='buscar_por' class='form-control' ng-model="filter_by" ng-change="select_filter_by()">
-													<option value="0">Id</option>
-													<option value="1">Usuário</option>
-													<option value="2" selected>Registro</option>
+													<option value="0">Usuário</option>
+													<option value="1">Operação </option>
+													<option value="2" selected>Nome do Registro</option>
 												</select>
 											</div>
 
-											<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 31px;'>
+											<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 28px;'>
 												<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
 											</div>
 
@@ -284,6 +256,7 @@
 {% load compress %}
 {% compress js %}
 <script src="{% static 'bower_components/jquery-maskmoney/dist/jquery.maskMoney.min.js' %}" />
+<script src="{% static 'bower_components/chart.js/dist/Chart.min.js' %}" />
 <script src="{% static 'modules/core/controle_componentes.js' %}"/>
 <script src="{% static 'modules/core/mask.js' %}"/>
 <script src="{% static 'modules/core/configurations/configurations_controller.js' %}"/>
@@ -298,6 +271,36 @@ $(document).ready(function(){
 	angular.element(document.getElementById('configuration_controller')).scope().load_version_informations()
 	angular.element(document.getElementById('configuration_controller')).scope().load_system_informations()
 	angular.element(document.getElementById('configuration_controller')).scope().shared_folder()
+});
+
+data = {
+    datasets: [{
+      data: [0.5,90.5],
+      color: ['blue','red',],
+      backgroundColor: [
+                'rgba(255, 99, 132, 0.5)',
+                'rgba(255, 99, 132, 0.2)'],
+    }],
+
+    labels: ['Usado','Disponivel']
+};
+
+var ctx = document.getElementById("myPieChart");
+var myChart = new Chart(ctx, {
+	type: 'doughnut',
+	data: data,
+
+	options:{
+		responsiveAnimationDuration: 1000,
+		animation: {
+			duration: 2000,
+			easing:'linear',
+			animateRotate: true,
+		},
+		legend:{
+			display:false,
+		}
+	}
 });
 </script>
 {% endblock %}

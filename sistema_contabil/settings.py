@@ -258,7 +258,8 @@ BOWER_INSTALLED_APPS = (
     'labelauty',
     'multiple-select',
     'jquery.maskedinput',
-    'blockui'
+    'blockui',
+    'chartjs',
 
     #'bootstrap#3.3.7',#3.3.2
     #'font-awesome#4.7.0',#4.2

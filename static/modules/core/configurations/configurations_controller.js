@@ -7,16 +7,16 @@ application.controller('configurations_controller', function ($scope) {
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
 
-	$scope.sortType           = 'codigo';
+	$scope.sortType           = 'name_register';
 	$scope.sortReverse        = false;
 
 	$scope.backups = null;
 	$scope.loaded_backups = false;
 	$scope.creating_backup = false;
 
-	$scope.filter_by          = '0';
+	$scope.filter_by          = '2';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
-	$scope.filter_by_options  = ['id','username','register'];
+	$scope.filter_by_options  = ['user','operation','name_register'];
 	$scope.search             = '';
 	$scope.table_minimun_items = [1,2,3,4,5,6,7,8,9,10];
 
@@ -357,12 +357,12 @@ application.controller('configurations_controller', function ($scope) {
 	$scope.get_filter_column = function(){
 			var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
 			switch (filtrar_pesquisa_por) {
-				case 'username':
+				case 'user':
 						return {username: $scope.search};
-				case 'register':
-						return {object_name: $scope.search};
+				case 'operation':
+						return {type: $scope.search};
 				default:
-					return {id : $scope.search}
+					return {object_name: $scope.search};
 			}
 	};
 });
