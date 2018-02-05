@@ -120,11 +120,8 @@
 │  │  └── production.txt
 │  └── static
 │  │  └── bower
-│  ├──  media
 │  ├──  templates
-│  ├──  .bowerrc
 │  ├──  .gitignore
-│  ├──  bower.json
 │  ├──  manage.py
 │  └──  README.MD
 
