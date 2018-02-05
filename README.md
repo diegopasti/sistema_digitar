@@ -62,7 +62,7 @@
 
     Adicionar comandos de execução ao PyCharm.
   
-- Instalar dependências Python com através do arquivo requirements.txt do projeto.
+- Instalar dependências Python através do arquivo requirements.txt do projeto.
 
 - Instalar as dependencias de front-end é necessário ter o ```django-bower``` instalado.
     - A instalação do django-bower é feita através do pip e dos requirements do projeto.
@@ -85,7 +85,7 @@
     O Pylint estara analisando em tempo real o código fonte sugerindo possiveis melhorias e adequações a padrões de codificação internacional como o PEP8.
 
 - Configurar comandos para executar scripts no Pycharm.
-    - install REQUIREMENTS,bower install,makemigrations e migrate:
+    - install requirements,bower install,makemigrations e migrate:
        - No campo "Name" digite ```install_packages```
        - No campo "Script" digite o caminho para o arquivo ```manage.py```
        - No campo "Script parameters" digite ```install_packages```
