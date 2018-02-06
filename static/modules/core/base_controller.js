@@ -161,3 +161,50 @@ function reset_formulary(formulary_id){
 //	setTimeout(function(){$("#"+modal_id+" form input[type=text]").val('').focus()},100);
 //	//alert("ABRI O MODAL VOU PEGAR O FOCO NO PRIMEIRO CAMPO DE DIGITACAO")
 //})
+
+function create_backup(){
+	if (confirm('Este processo pode ser demorado, deseja prosseguir?')) {
+		//$.blockUI({ message: "<h1>Remote call in progress...</h1>" });
+		$.blockUI({
+			message: '<h1>Por favor aguarde...</h1><img src="http://127.0.0.1:8000/static/imagens/ajax-loader.gif" />',
+			css: {
+				border: 'none',
+				padding: '15px',
+				backgroundColor: '#000',
+				'-webkit-border-radius': '10px',
+				'-moz-border-radius': '10px',
+				opacity: .5,
+				color: '#fff'}
+		});
+
+		NProgress.start();
+		var start_request = Date.now();
+		$.ajax({
+			type: 'GET',
+			url: "/api/core/configurations/backup/local",
+
+			success: function (data) {
+				var response = JSON.parse(data);
+				var item = response.object;
+				if(response.result){
+					notify('success',"Operação Concluída","Cópia de segurança gerada com sucesso")
+				}
+				else{
+					notify('error',"Falha na operação","Cópia de segurança não pode ser gerada.")
+				}
+				register_action(start_request, status);
+				$.unblockUI();
+				NProgress.done();
+			},
+
+			failure: function () {
+				//$scope.loaded_backups = true;
+				register_action(start_request, status);
+				NProgress.done();
+			}
+		})
+	}
+	else{
+		return false;
+	}
+}
