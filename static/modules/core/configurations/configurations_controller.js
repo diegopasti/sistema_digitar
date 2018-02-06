@@ -2,7 +2,7 @@
  * Created by diego on 14/11/2017 - 14:42.
  */
 var application = angular.module('modules.configurations', ['angularUtils.directives.dirPagination','filters']);
-application.controller('configurations_controller', function ($scope) {
+application.controller('configurations_controller',['$scope','$filter', function($scope,$filter) {
   $scope.screen_height = window.innerHeight;
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
@@ -16,7 +16,7 @@ application.controller('configurations_controller', function ($scope) {
 
 	$scope.filter_by          = '2';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
-	$scope.filter_by_options  = ['user','operation','name_register'];
+	$scope.filter_by_options  = ['user','operation','name_register','date_operation'];
 	$scope.search             = '';
 	$scope.table_minimun_items = [1,2,3,4,5,6,7,8,9,10];
 
@@ -309,7 +309,6 @@ application.controller('configurations_controller', function ($scope) {
   $scope.operations = null;
 
   $scope.load_operations = function() {
-
     $.ajax({
       type: 'GET',
       url: '/api/core/configurations/operations',
@@ -347,25 +346,27 @@ application.controller('configurations_controller', function ($scope) {
 
 		$scope.table_maximun_body_heigth = SCREEN_PARAMTERS['table_maximun_body_height']+extra_height;
 		$scope.$apply();
-	};
+	}
 
 	$scope.select_filter_by = function (index) {
-			$scope.filter_by_index = parseInt($scope.filter_by);
-			$scope.apply();
+		$scope.filter_by_index = parseInt($scope.filter_by);
+		//$scope.apply();
 	};
 
 	$scope.get_filter_column = function(){
-			var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
-			switch (filtrar_pesquisa_por) {
-				case 'user':
-						return {username: $scope.search};
-				case 'operation':
-						return {type: $scope.search};
-				default:
-					return {object_name: $scope.search};
-			}
+		var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
+		switch (filtrar_pesquisa_por) {
+			case 'user':
+					return {username: $scope.search};
+			case 'operation':
+					return {type: $scope.search};
+			case 'date_operation':
+				return {date_operation: $scope.search};//$filter('date')(obj.OrderDate, 'MM/dd/yyyy') == $filter('date')($scope.search, 'MM/dd/yyyy')}; // $filter('date')($scope.search, 'MM/dd/yyyy')
+			default:
+				return {object_name: $scope.search};
+		}
 	};
-});
+}]);
 
 angular.module('filters', [])
 	.filter('Filesize', function () {

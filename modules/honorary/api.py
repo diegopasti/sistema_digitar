@@ -875,7 +875,6 @@ class HonoraryController(BaseController):
             discount_rows = discount_rows + 1
 
         offset = 0
-        print("VEJA O QUE TEM DE ITENS: ",documentos.count())
         if documentos.count() < 10:
             if contract_unit_value is not None:
                 offset = offset + 1
@@ -883,11 +882,9 @@ class HonoraryController(BaseController):
                 offset = offset + 1
             if contract_fidelity_discount_rate is not None:
                 offset = offset + 1
-            print("VEJA O OFFSET: ",offset)
             linhas_extras = linhas_extras[documentos.count()+offset:10]
 
         else:
-            print("NAO TEM LINHAS EXTRAS NO RELATORIO")
             linhas_extras = []
 
         parametros = {

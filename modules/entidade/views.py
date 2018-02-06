@@ -56,8 +56,7 @@ def buscar_fontes(request):
 @permission_level_required(3,'/error/access_denied')
 def cadastro_entidades(request):
     usuario_admin = False
-    dados = entidade.objects.filter(ativo=True).exclude(id=1).order_by('-id')
-    print('olha os dados: ',dados)
+    dados = entidade.objects.filter(ativo=True).exclude(id=1).exclude(ativo=False).order_by('-id')
     if (request.method == "POST"):
 
         """

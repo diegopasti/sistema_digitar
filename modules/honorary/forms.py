@@ -45,6 +45,9 @@ class FormHonoraryItem(forms.Form, BaseForm):
         )
     )
 
+    complement = forms.CharField(label="Complemento: ", max_length=100, required=False, error_messages=MENSAGENS_ERROS,
+                                  widget=forms.TextInput(attrs={'class': "form-control uppercase", 'id': 'complement', "ng-model": "complement"}))
+
     quantity = forms.DecimalField(
         label="Quantidade", max_digits=5, decimal_places=2, required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(

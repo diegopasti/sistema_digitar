@@ -81,6 +81,14 @@
 label {
     font-weight: normal !important;
 }
+
+input.no-border{
+	background-color: #FFF !important;
+	border: 0px solid #FFF !important;
+	border-bottom: 1px solid #DDD !important;
+	box-shadow:none !important;
+	cursor: default;
+}
 </style>
 {% endblock %}
 
@@ -122,17 +130,17 @@ label {
 						<thead>
 							<tr class="linha_cabecalho">
 								<th style="vertical-align: middle"></th>
-								<th style="vertical-align: middle;">CNPJ</th>
-								<th style="vertical-align: middle;">Razão Social</th>
-								<th style="vertical-align: middle;">Nome Fantasia</th>
-								<th style="vertical-align: middle;">Data Cadastro</th>
+								<th style="vertical-align: middle;text-align:center;">CNPJ</th>
+								<th style="vertical-align: middle;text-align:center;">Razão Social</th>
+								<th style="vertical-align: middle;text-align:center;">Nome Fantasia</th>
+								<th style="vertical-align: middle;text-align:center;">Data Cadastro</th>
 							</tr>
 						</thead>
 
 						<tbody>
 							{% for item in dados %} <!-- reversed -->
 							<tr class="alinhado_meio">
-								<!--<td style="cursor:pointer;text-align:center;">{ forloop.counter }}         class='clickable-row ' data-href='/entidade/visualizar/{ item.id }}'</td>-->
+								<!--<td style="cursor:pointer;text-align:center;">{ forloop.counter }} class='clickable-row ' data-href='/entidade/visualizar/{ item.id }}'</td>-->
 								<td style="cursor:pointer;text-align:center;">{{ item.id }}</td>
 								{% if item.cpf_cnpj|length == 11 %}
 								<td style="cursor:pointer">{{ item.cpf_cnpj|slice:":3" }}.{{ item.cpf_cnpj|slice:"3:6" }}.{{ item.cpf_cnpj|slice:"6:9" }}-{{ item.cpf_cnpj|slice:"9:" }}</td>
@@ -142,7 +150,7 @@ label {
 
 								<td align="left" style="cursor:pointer">{{ item.nome_razao }}</td>
 								<td align="left" style="cursor:pointer">{{ item.apelido_fantasia }}</td>
-								<td align="center" style="cursor:pointer">{{ item.data_cadastro|date:"d/m/Y" }}</td>
+								<td align="center" style="cursor:pointer;width:140px;">{{ item.data_cadastro|date:"d/m/Y" }} ÀS {{ item.data_cadastro|date:"h:m:s" }}</td>
 							</tr>
 							{% empty %}
     							<tr><td colspan="5" style='text-align:center;'><a href="/entidade/adicionar">Adicione uma nova Entidade.</a></td></tr>
@@ -176,7 +184,7 @@ label {
 
 		<div class="modal-dialog" style="width: 60%">
 			<div class="modal-content">
-				<form id="form_justify_action" autocomplete="off">
+				<form id="form_justify_action" autocomplete="off" onsubmit="desativar_usuario()">
 					{% csrf_token %}
 					<div class="modal-header" style="padding-top:2px;"><!-- style="height: 48px;"> -->
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top:10px;">×</button>
@@ -184,14 +192,6 @@ label {
 					</div>
 
 					<div class="modal-body">
-						<style>
-							.only_bottom_border{
-								background-color: #fff !important;
-								border-bottom: 1px solid #ccc !important;
-								box-shadow:none !important;
-								cursor: default;
-							}
-						</style>
 						<div style="margin-top: 0px;">
 							<div class="row">
 								<div class="col-lg-12">
@@ -205,19 +205,17 @@ label {
 							<div class="row">
 								<div class="col-lg-4 col-md-2">
 									<sub style='padding-left: 2px'><label>Operação:</label></sub>
-									<div id="action_type" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+									<input id="action_type" type="text" class="form-control uppercase no-border" readonly onfocus="this.blur();"/>
 								</div>
-
-
-								<div class="col-lg-4 col-md-3">
-									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
-									<div>{{ request.user.first_name }} {{ request.user.last_name }}</div>
-								</div>
-
 
 								<div class="col-lg-4 col-md-7">
 									<sub style='padding-left: 2px'><label>Registro:</label></sub>
-									<input id="action_object" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();">
+									<input id="action_object" type="text" class="form-control uppercase no-border" readonly onfocus="this.blur();">
+								</div>
+
+								<div class="col-lg-4 col-md-3">
+									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
+									<input id="action_user" type="text" value="{{ request.user.first_name }} {{ request.user.last_name }}" class="form-control uppercase no-border" readonly onfocus="this.blur();" />
 								</div>
 							</div>
 
@@ -236,7 +234,7 @@ label {
 
 					<div class="modal-footer">
 						<div class="form-group">
-							<button type='submit' id="bt_confirmar_desativacao" class="btn btn-danger pull-right">Enviar</button>
+							<button type='button' id="bt_confirmar_desativacao" class="btn btn-danger pull-right">Enviar</button>
 						</div>
 					</div>
 				</form>
@@ -445,15 +443,14 @@ $(".alert").fadeOut(4000);
 
 <script>
 $("#bt_desativar_cliente").click(function() {
-/*
+	/*
     var id_cliente = table.cell('.selected', 0).data();
- var documento_cliente = table.cell('.selected', 1).data();
+    var documento_cliente = table.cell('.selected', 1).data();
  */
 	var table = $('#datatable').DataTable();
 	var nome_cliente = table.cell('.selected', 2).data();
 		$('#action_type').val('Desativar')
 		$('#action_object').val(nome_cliente)
-		$('#action_user').val('Operador')
 });
 
 $("#bt_confirmar_desativacao").click(function() {
@@ -464,12 +461,18 @@ $("#bt_confirmar_desativacao").click(function() {
     data_paramters['id'] = parseInt(id_cliente);
 
     if (window.confirm('Tem certeza que deseja desativar esse cliente?')){
-			success_function = function (data) {
-				table.row('.selected').remove().draw(false);
-				//$("#modal_justificativa").modal().hide()
-				$("#modal_justificativa").removeClass("in");
-				$(".modal-backdrop").remove();
-				$("#modal_justificativa").hide();
+			success_function = function (result, message, data_object, status) {
+				if(result==true){
+					table.row('.selected').remove().draw(false);
+					//$("#modal_justificativa").removeClass("in");
+					//$(".modal-backdrop").remove();
+					//$("#modal_justificativa").hide();
+					$("#modal_justificativa").modal('hide');
+					document.getElementById("form_justify_action").reset();
+				}
+				else{
+					alert("Falha na operação! "+message);
+				}
 			};
 
 			fail_function =  function (data) {
@@ -479,7 +482,7 @@ $("#bt_confirmar_desativacao").click(function() {
 			validate_function =  function () {
 				return true
 			}
-			alert("Vindo aqui"+JSON.stringify(data_paramters))
+
 			request_api('desativar/',data_paramters,validate_function,success_function,fail_function)
     }
     else{

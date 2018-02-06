@@ -334,6 +334,7 @@ class HonoraryItem(models.Model):
     type_value = models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valores, error_messages=MENSAGENS_ERROS)
     honorary = models.ForeignKey(Honorary, default=1)
     item = models.ForeignKey(Proventos, default=1)
+    complement = models.TextField("Complemento:", max_length=100, null=True, blank=True, error_messages=MENSAGENS_ERROS)
     quantity = models.IntegerField("Quantidade",null=True,blank=True)
     unit_value = models.CharField("Valor Unitário", max_length=8, null=True, blank=True)
     total_value = models.CharField("Valor final do contrato", max_length=10, null=False, blank=False)

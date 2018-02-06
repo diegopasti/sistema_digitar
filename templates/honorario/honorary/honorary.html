@@ -164,7 +164,7 @@
 	</div>
 
 	<div id="modal_provents" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-		<div class="modal-dialog" style="width: 90%;margin-left: auto; margin-right: auto;">
+		<div class="modal-dialog" style="width: 98%;margin-left: auto; margin-right: auto;">
 			<form id="form_honorary_item" novalidate autocomplete="off" ng-submit="(selected_item==null) ? save_honorary_item() : update_honorary_item()" onsubmit="return false;">
 				{% csrf_token %}
 				<div class="modal-content">
@@ -195,14 +195,14 @@
 						</fieldset>
 						<div ng-if="registro_selecionado.is_closed==false" ng-class="{collapse: screen_model >= 1, in: screen_model > 4}" id="item_panel" style="margin-top:-10px;padding-bottom: 10px;">
 							<div class="row no-gutter fluid" stye="padding-left: 15px;">
-								<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+								<div class="col-lg-2 col-md-1 col-sm-6 col-xs-12">
 									<div class="form-group field" id="field_type_item">
 										<sub><label id="lb_type_item" for="type_item">{{ formulario_proventos.type_item.label }}</label></sub>
 										{{ formulario_proventos.type_item }}
 									</div>
 								</div>
 
-								<div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
+								<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 									<div class="form-group field" id="field_item">
 										<sub><label id="lb_item" for="item">{{ formulario_proventos.item_id.label }}*</label></sub>
 										{% verbatim %}
@@ -212,6 +212,13 @@
 											</option>
 										</select>
 										{% endverbatim %}
+									</div>
+								</div>
+
+								<div class="col-lg-1 col-md-3 col-sm-3 col-xs-12">
+									<div class="form-group field" id="field_complement">
+										<sub><label id="lb_complement" for="complement">{{ formulario_proventos.complement.label }}</label></sub>
+										{{ formulario_proventos.complement}}
 									</div>
 								</div>
 
@@ -556,7 +563,6 @@
 			</div>
 		</div>
 	</div>
-
 
 </div>
 {% endblock %}

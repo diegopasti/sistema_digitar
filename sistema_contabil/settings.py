@@ -331,7 +331,7 @@ SELENIUM_CHROMEDRIVER = project_properties.chromedriver_path
 SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True
 WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
-WORKING_SERVER = "http://192.168.1.120:8010"
+WORKING_SERVER = "http://192.168.1.115:8010"
 if SERVER_DIGITAR:
     from modules.nucleo.working_api import WorkingManager
     try:
