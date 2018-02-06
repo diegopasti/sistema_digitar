@@ -115,8 +115,7 @@ label {
 									 data-target="#myModal"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Documento</a>
 								<a href="#myModal" id='bt_alterar' role="button" class="btn btn-sm btn-default link_desabilitado"
 									 data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Alterar</a>
-								<a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_excluir"
-									 onclick="return confirm('Deseja mesmo excluir esse documento?')" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;">
+								<a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_excluir" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;">
 									<i class="fa fa-trash-o"aria-hidden="true"></i> Excluir</a>
 							</div>
 						</div>
@@ -278,36 +277,24 @@ label {
 
 					     }
 
-						$('#bt_excluir').click( function () {
-							alert("indo excluir")
+					});
+
+					$('#bt_excluir').click( function () {
+						if (confirm('Deseja mesmo excluir esse documento?')) {
 							$.ajax({
-								url: '/protocolo/documento/excluir/'+table.cell('.selected', 0).data(),
+								url: '/protocolo/documento/excluir/' + table.cell('.selected', 0).data(),
 								type: 'get', //this is the default though, you don't actually need to always mention it
-								success: function(data) {
-
-									/*if (data=="SUCESS"){
-										alert("Deu Certo Carai",data);
-									}
-
-									else{
-										alert("Erro na exclusão! ",data);
-									}
-									*/
-									table.row('.selected').remove().draw( false );
-									$('#bt_excluir').addClass('link_desabilitado');
-									$('#bt_alterar').addClass('link_desabilitado');
-								},
-								failure: function(data) {
-									alert('Erro! Falha na exclusão do registro');
-								}
-							});
-
-
-					        //alert("Vamos confirmar.. "+table.cell('.selected', 0).data());
-					        //$("#protocolo_id").val(table.cell('.selected', 0).data());
-					        //alert("Vamos confirmar.. "+table.cell('.selected', 0).data());
-					     } );
-
+								success: function (data) {
+								table.
+									row('.selected').remove().draw(false );
+								$('#bt_excluir').addClass('link_desabilitado');
+								$('#bt_alterar').addClass('link_desabilitado');
+							},
+							failure: function(data) {
+								alert('Erro! Falha na exclusão do registro');
+							}
+						});
+						 }
 					});
 
 					$('#datatable tbody').on( 'click', 'button', function () {
