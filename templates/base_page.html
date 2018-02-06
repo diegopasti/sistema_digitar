@@ -117,10 +117,12 @@ h5{color : #777;font-size: 130% !important;}
             </a>
             <ul class="dropdown-menu">
               <li class="user-header">
-                <i class="fa fa-user-o" aria-hidden="true"></i>
-								<p>Nivel de acesso: <b>{{ request.user.groups.values_list.0.1 }}</b></p>
-                <p>{{ request.user.get_full_name|title }}<small>{{  request.user.date_joined  }}</small></p>
+                <!-- <i class="fa fa-user-o" aria-hidden="true"></i> -->
+								<p style="font-size: 20px"><b>{{ request.user.get_full_name|title }}</b></p><p><small>Funcioário desde:<br> {{  request.user.date_joined  }}</small></p>
+								<p>Grupo de permissão: <b>{{ request.user.groups.values_list.0.1 | title }}</b></p>
+
               </li>
+							<!--
               <li class="user-body">
                 <div class="row">
                   <div class="col-xs-4 text-center">
@@ -133,13 +135,13 @@ h5{color : #777;font-size: 130% !important;}
                     <a href="#">Friends</a>
                   </div>
                 </div>
-              </li>
+              </li>-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="/profile" class="btn btn-default btn-flat">Profile</a>
+									<a href="/profile" class="btn btn-default btn-flat"><i class="fa fa-address-book " aria-hidden="true"></i> Perfil</a>
                 </div>
                 <div class="pull-right">
-                  <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="/logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out " aria-hidden="true"></i> Sair</a>
                 </div>
               </li>
             </ul>
@@ -191,8 +193,15 @@ h5{color : #777;font-size: 130% !important;}
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
+
+						{% if request.user.groups.values_list.0.0 <= 2%}
             <li><a href="/preferencias">Variáveis do Sistema</a></li>
             <li><a href="/system/configurations">Configurações</a></li>
+						{% else %}
+							<li><a class="disabled " style="cursor: no-drop" href="/preferencias">Variáveis do Sistema</a></li>
+							<li><a class="disabled" href="/system/configurations">Configurações</a></li>
+						{% endif %}
+
           </ul>
         </li>
       </ul>
