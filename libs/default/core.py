@@ -23,7 +23,7 @@ import sys
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
-    print("SERIALIZAR: ",obj, type(obj))
+    #print("SERIALIZAR: ",obj, type(obj))
     if isinstance(obj, date):
         return obj.isoformat()
     if isinstance(obj, datetime):
@@ -149,6 +149,7 @@ class BaseController(Notify):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    self.__create_session(request, user)
                     response_dict = self.notify.success(user, list_fields=['username'])
                 else:
                     response_dict = self.notify.error({'username': 'Usuário não autorizado.'})
@@ -270,7 +271,6 @@ class BaseController(Notify):
             pass
 
         response_dict = self.execute(object, object.save)
-        print("VEJA O QUE VIEO: ",response_dict)
         if response_dict['result']:
             self.report_operation(request, model)
         return self.response(response_dict)

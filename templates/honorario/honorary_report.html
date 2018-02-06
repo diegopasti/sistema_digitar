@@ -554,7 +554,11 @@
 						{% for item in documentos %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">{{ item.item.id }}</td>
-								<td style="width: 447px;padding-left: 4px;">{{ item.item.nome }}</td>
+								<td style="width: 447px;padding-left: 4px;">{{ item.item.nome }}
+								{% if item.complement != None %}
+									- {{ item.complement }}
+								{% endif %}
+								</td>
 
 								{% if item.unit_value != None and item.unit_value != '' %}
 									<td width='86px' style="text-align: right;">{{ item.unit_value }}</td>
@@ -862,7 +866,11 @@
 						{% for item in documentos %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">{{ item.item.id }}</td>
-								<td style="width: 447px;padding-left: 4px;">{{ item.item.nome }}</td>
+								<td style="width: 447px;padding-left: 4px;">{{ item.item.nome }}
+								{% if item.complement != None %}
+									- {{ item.complement }}
+								{% endif %}
+								</td>
 
 								{% if item.unit_value != None and item.unit_value != '' %}
 									<td width='86px' style="text-align: right;">{{ item.unit_value }}</td>

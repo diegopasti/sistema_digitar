@@ -21,7 +21,10 @@ def login_page(request):
 
 @login_required
 def logout_page(request):
-    user = request.user
+    #user = request.user
+    session = Session.objects.get(session_key=str(request.session.session_key))
+    session.is_expired = True
+    session.save()
     #if not user.close_session(request):
     #   print("Erro! Sessão de usuário não foi encerrada corretamente.")
     logout(request)

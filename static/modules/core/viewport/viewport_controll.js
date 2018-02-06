@@ -31,7 +31,6 @@ function get_session_paramters_freegeoip(){
     type: 'get',
     url: url,
     success: function(data) {
-    	//alert("FREEGEOIP: "+JSON.stringify(data))
     	SESSION_PARAMTERS['external_ip'] = data.ip;
 			SESSION_PARAMTERS['country_code'] = data.country_code.toUpperCase();
 			SESSION_PARAMTERS['country_name'] = data.country_name.toUpperCase();

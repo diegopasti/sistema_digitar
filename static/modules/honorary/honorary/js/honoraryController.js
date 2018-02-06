@@ -22,7 +22,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.save_provent = function() {
 		var data_paramters = create_data_paramters('form_adicionar_contrato');
 		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".");
-
 		success_function = function(result,message,object,status){
 			$scope.registros.splice(0, 0, object);
 			$scope.$apply();
@@ -411,6 +410,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 					data_paramters['unit_value'] = $('#unit_value').val().replace(".","").replace(",",".");
 					data_paramters['quantity'] =  $('#quantity').val().replace(".","").replace(",",".");
 					data_paramters['total_value'] = $('#total_value').val().replace(".","").replace(",",".");
+					data_paramters['complement'] = $("#complement").val().toUpperCase();
 					//setTimeout(function(){$("#item_id").val($scope.selected_option_provent.id.toString()).trigger('change');},5);
 
 					success_function = function(result,message,object,status){
@@ -423,6 +423,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 							$("#quantity").val('');
 							$("#unit_value").val('');
 							$("#total_value").val('');
+							$("#complement").val('');
 							$scope.selected_option_provent = null;
 						}
 						else{

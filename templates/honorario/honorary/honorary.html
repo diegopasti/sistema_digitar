@@ -347,7 +347,9 @@
 																<span ng-if="item.type_item=='D'">DESCONTO</span>
 																<span ng-if="item.type_item=='R'">PROVENTO</span>
 															</td>
-															<td class="left"	style="padding-left: 6px;">{{ item.item__nome }}</td>
+															<td class="left"	style="padding-left: 6px;">
+																{{ item.item__nome }}<span ng-if="item.complement!=null"> - {{ item.complement }}</span>
+															</td>
 
 															<td class="center"	style="padding-left: 6px; width: 125px;">{{ item.created_date | date:'dd/MM/yyyy' }} às {{ item.created_date | date:'HH:mm:ss' }}</td>
 															<td class="left"	style="padding-left: 6px;">{{ item.created_by__get_full_name }}</td>

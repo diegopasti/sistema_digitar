@@ -4,8 +4,6 @@
 var application = angular.module('modules.user', []);
 
 /*application.controller('reset_password_controller', function($scope) {
-
-
 });*/
 
 application.controller('change_password_controller', function($scope) {
@@ -132,11 +130,10 @@ application.controller('register_controller', function($scope) {
 application.controller('login_controller', function($scope) {
 
   $scope.login_autentication = function () {
-
   	SESSION_PARAMTERS['username'] = $scope.username;
   	SESSION_PARAMTERS['password'] = $scope.password;
 
-    var data_paramters = {};
+    var data_paramters = SESSION_PARAMTERS//{};
 		$.each($('#form_login').serializeArray(), function(i, field) {
 				data_paramters[field.name] = field.value;
 		});

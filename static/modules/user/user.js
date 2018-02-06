@@ -1,4 +1,4 @@
-
+verify_session_paramters();
 
 function validate_form_confirm_register(){
   return (email_is_valid("email"));
