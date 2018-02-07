@@ -675,9 +675,15 @@ def visualizar_protocolo(request, protocolo_id):
     pd = parametros_destinatario
     print("VEJA OS PARAMETROS DO DESTINATARIO: ",pd.nome)
     print("VEJA OS PARAMETROS DO cpf: ", pd.cpf_cnpj, type(pd.cpf_cnpj))
+    if parametros_destinatario.cpf_cnpj != '':
+        parametros_destinatario.cpf_cnpj = formatar_cpf_cnpj(parametros_destinatario.cpf_cnpj),
+
     print("VEJA OS PARAMETROS DO endereco: ", pd.endereco, type(pd.endereco))
     print("VEJA OS PARAMETROS DO complemento: ", pd.complemento,type(pd.complemento))
     print("VEJA OS PARAMETROS DO contatos: ", pd.contatos, type(pd.contatos))
+
+    if parametros_destinatario.contatos == ['']:
+        parametros_destinatario.contatos = []
 
     parametros = {'emissor_nome': parametros_emissor.nome,
         'emissor_cpf_cnpj': formatar_cpf_cnpj(parametros_emissor.cpf_cnpj),
@@ -685,7 +691,7 @@ def visualizar_protocolo(request, protocolo_id):
         'emissor_complemento': parametros_emissor.complemento,
         'emissor_contatos': parametros_emissor.contatos,
         'destinatario_nome': parametros_destinatario.nome,
-        'destinatario_cpf_cnpj': formatar_cpf_cnpj(parametros_destinatario.cpf_cnpj),
+        'destinatario_cpf_cnpj': parametros_destinatario.cpf_cnpj,
         'destinatario_endereco': parametros_destinatario.endereco,
         'destinatario_complemento': parametros_destinatario.complemento,
         'destinatario_contatos': parametros_destinatario.contatos,
