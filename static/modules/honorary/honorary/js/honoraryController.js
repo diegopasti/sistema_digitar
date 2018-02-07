@@ -447,7 +447,16 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 						}
 					}
 
-					validate_function = function () {return true;}
+					validate_function = function () {
+						var length_text = $scope.selected_option_provent.nome.length + data_paramters['complement'].length + 3;
+						if(length_text <= 60){
+							return true;
+						}
+						else{
+							error_notify('complement','Falha na Operação','Nome do item e complemento não podem exceder 65 caracteres ('+length_text+' informado).');
+							return false;
+						}
+					}
 					request_api("/api/honorary/item/save",data_paramters,validate_function,success_function,fail_function);
 				}
 				else{

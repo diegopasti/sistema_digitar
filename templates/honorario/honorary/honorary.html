@@ -204,7 +204,7 @@
 
 								<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 									<div class="form-group field" id="field_item">
-										<sub><label id="lb_item" for="item">{{ formulario_proventos.item_id.label }}*</label></sub>
+										<sub><label id="lb_item" for="item_id">{{ formulario_proventos.item_id.label }}*</label></sub>
 										{% verbatim %}
 										<select id="item_id" class="form-control">
 											<option ng-repeat="option in provents_options" value="{{option.id}}" ng-show="view_provents_per_type(option)" ng-click="select_provent_option(option)">
