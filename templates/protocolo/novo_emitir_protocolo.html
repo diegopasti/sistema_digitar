@@ -13,19 +13,131 @@
 <link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
 <link rel="stylesheet" href="{% static 'modules/protocol/protocolo.css' %}">
 {% endcompress %}
-
-{% endblock %}
-
-{% block breadcrumb_title %}Novo Protocolo{% endblock %}
-
-{% block breadcrumb_block %}
-<li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-<li><a href="/protocolo"> Protocolo</a></li>
-<li class="active">Novo Protocolo</li>
 {% endblock %}
 
 {% block conteudo %}
 <div id="controle_angular" ng-app="app" ng-controller="MeuController" ng-init='lista_clientes = [{"id": "1", "name": "1 - DIGITAR ASSESSORIA CONTABIL LTDA ME"}, {"id": "2", "name": "2 - DIEGO P\u00c3STI"}, {"id": "3", "name": "3 - CLINICA DO RITMO LTDA - EPP (FILIAL VIT\u00d3RIA)"}]'>
+
+    <div class="row" style="margin-top:-25px;">
+        <div class="col-lg-12">
+            <div class="box box-default" id="box_destinatario">
+                <div class="box-heading">
+                    <div class="box-header with-border">
+                        <h5 class="box-title">Destinatário</h5>
+                    </div>
+                </div>
+
+                <div class="panel-body"	>
+                    <div class="row">
+                      <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                        <div class="input-group">
+                          <select class='form-control uppercase' id="select_destinatarios" ng-model="destinatario" onchange="conferir_destinatario()" onkeyup="filter_cerquilha(event)"> <!--ng-options="item.name for item in lista_clientes"-->
+                            {% for item in destinatarios %}
+                            {% if item.nome_filial %}
+                                <option value='{{ item.id }}'>#{{ item.id }} - {{ item.nome_razao|upper }} - {{ item.nome_filial|upper }}</option>
+                            {% else %}
+                                <option value='{{ item.id }}'>#{{ item.id }} - {{ item.nome_razao|upper }}</option>
+                            {% endif %}
+                            {% endfor %}
+
+                            <!--<option ng-repeat="option in lista_clientes" value="{{option.id}}">{{option.name}}</option>-->
+                        </select>
+
+                          <span class="input-group-btn">
+                              <a role="button"  id="bt_open_painel_informacoes_complementares" style="height: 34px;margin-left: 0px;" onclick='verificar_dados_complementares();' class="btn btn-sm btn-default" title="Alterar informações Complementares"><i class="fa fa-bars fa-lg" style='margin-top:5px;' aria-hidden="true"></i></a>
+                          </span>
+                        </div>
+
+                      </div>
+
+                      <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 pull-right"> <!--col-md-offset-3-->
+                        <label id="label_destinatario" class="label_info right_align">
+                            <sub>*Selecione um cliente na lista ou digite um nome de identificação para emitir um
+                                <a style="cursor: help;" data-toggle="modal" data-target="#modal_help_protocolo_avulso">Protocolo Avulso.</a>
+                            </sub>
+                        </label>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box box-default" id="box_documentos">
+                <div class="box-heading">
+                    <div class="box-heading">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Documentos Entregues</h3>
+
+                            <div class="pull-right">
+                                <button type="button" id="bt_novo_documento" class="btn btn-sm btn-primary" data-toggle="modal" ng-click="novo_documento();" data-target="#modal_adicionar_documento" ng-disabled="documentos.length >= limite_documentos" >Novo Documento</button>
+                                <button type="button" id="bt_alterar_documento" class="btn btn-sm btn-default" ng-click="editar_documento()" data-toggle="modal" data-target="#modal_adicionar_documento" ng-disabled="linha_selecionada == null">Alterar</button>
+                                <button type="button" id="bt_apagar" name='excluir_item' value='-1' ng-click='excluir_documento()' class="btn btn-sm btn-default" ng-disabled="linha_selecionada == null">Apagar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <div class="table_wrapper">
+                        <table class="table table-condensed table-bordered table-hover bordas_padrao" id="tabela_documentos">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Documentos</th>
+                                    <th style="text-align:center;">Referência</th>
+                                    <th style="text-align:center;">Vencimento</th>
+                                    <th style="text-align:center;">Valor</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% verbatim %}
+                                <!--<tr ng-if="(documentos|filter:filterIds()).length == 0">
+                                    <td colspan="4" class="center_align">Nenhum documento adicionado!</td>
+                                </tr>-->
+
+                                <tr ng-repeat="documento in documentos" ng-click="selecionar_linha($index)" class="linha_selecionavel {{ documento.selecionado }}">
+                                    <td>{{ documento.documento }}
+                                        <span ng-if='documento.complemento'>
+                                         - {{ documento.complemento }}
+                                        </span>
+                                    </td>
+
+                                    <td class="center_align">{{ documento.referencia }}</td>
+                                    <td class="center_align">{{ documento.vencimento }}</td>
+                                    <td class="center_align"><span ng-if='documento.valor'>R$ </span>{{ documento.valor }}</td>
+                                </tr>
+
+                                <tr ng-repeat="k in minimal_quantity_rows.slice(documentos.length,minimal_quantity_rows.length)">
+                                  <td style="color:white">#</td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                </tr>
+
+                                {% endverbatim %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class='row'>
+                        <div class="col-md-4" style="margin-top: -15px;">
+                            <label id="label_documentos" class="label_info left_align"><sub>*Cada Protocolo deve conter no <b>minimo um</b> e no <b>máximo dez</b> documentos.</sub></label>
+                        </div>
+
+                        <div class="col-md-2 col-md-push-6">
+                            <button type="button" ng-disabled="(documentos.length == 0)" id="bt_gerar_protocolo" target=_blank class="btn btn-primary pull-right" name='gerar_protocolo'>Gerar Protocolo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="modal_adicionar_documento" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
         <div class="modal-dialog">
             <form id="form_adicionar_documento" autocomplete="off" ng-submit="esta_adicionando? adicionar_documento() : alterar_documento()">
@@ -207,121 +319,6 @@
 		</div>
 	</div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-default" id="box_destinatario">
-                <div class="box-heading">
-                    <div class="box-header with-border">
-                        <h5 class="box-title">Destinatário</h5>
-                    </div>
-                </div>
-
-                <div class="panel-body"	>
-                    <div class="row">
-                      <div class="col-md-5">
-                        <div class="input-group">
-                          <select class='form-control uppercase' id="select_destinatarios" ng-model="destinatario" onchange="conferir_destinatario()" onkeyup="filter_cerquilha(event)"> <!--ng-options="item.name for item in lista_clientes"-->
-                            {% for item in destinatarios %}
-                            {% if item.nome_filial %}
-                                <option value='{{ item.id }}'>#{{ item.id }} - {{ item.nome_razao|upper }} - {{ item.nome_filial|upper }}</option>
-                            {% else %}
-                                <option value='{{ item.id }}'>#{{ item.id }} - {{ item.nome_razao|upper }}</option>
-                            {% endif %}
-                            {% endfor %}
-
-                            <!--<option ng-repeat="option in lista_clientes" value="{{option.id}}">{{option.name}}</option>-->
-                        </select>
-
-                          <span class="input-group-btn">
-                              <a role="button"  id="bt_open_painel_informacoes_complementares" style="height: 34px;margin-left: 0px;" onclick='verificar_dados_complementares();' class="btn btn-sm btn-default" title="Alterar informações Complementares"><i class="fa fa-bars fa-lg" style='margin-top:5px;' aria-hidden="true"></i></a>
-                          </span>
-                        </div>
-
-                      </div>
-
-                      <div class="col-md-7 pull-right"> <!--col-md-offset-3-->
-                        <label id="label_destinatario" class="label_info right_align"><sub>*Selecione um cliente na lista ou digite um nome de identificação para emitir um <a class="label_help" data-toggle="modal" data-target="#modal_help_protocolo_avulso">Protocolo Avulso</a>.</sub></label>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <br>
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-default" id="box_documentos">
-
-                <div class="box-heading">
-                    <div class="box-heading">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Documentos Entregues</h3>
-
-                            <div class="pull-right">
-                                <button type="button" id="bt_novo_documento" class="btn btn-sm btn-primary" data-toggle="modal" ng-click="novo_documento();" data-target="#modal_adicionar_documento" ng-disabled="documentos.length >= limite_documentos" >Novo Documento</button>
-                                <button type="button" id="bt_alterar_documento" class="btn btn-sm btn-default" ng-click="editar_documento()" data-toggle="modal" data-target="#modal_adicionar_documento" ng-disabled="linha_selecionada == null">Alterar</button>
-                                <button type="button" id="bt_apagar" name='excluir_item' value='-1' ng-click='excluir_documento()' class="btn btn-sm btn-default" ng-disabled="linha_selecionada == null">Apagar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="box-body">
-
-                    <div class="table_wrapper">
-
-                        <table class="table table-condensed table-bordered table-hover bordas_padrao" id="tabela_documentos">
-
-                            <thead>
-                                <tr>
-                                    <th style="text-align:center;">Documentos</th>
-                                    <th style="text-align:center;">Referência</th>
-                                    <th style="text-align:center;">Vencimento</th>
-                                    <th style="text-align:center;">Valor</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {% verbatim %}
-                                <tr ng-if="(documentos|filter:filterIds()).length == 0">
-                                    <td colspan="4" class="center_align">Nenhum documento adicionado!</td>
-                                </tr>
-
-                                <tr ng-repeat="documento in documentos" ng-click="selecionar_linha($index)" class="linha_selecionavel {{ documento.selecionado }}">
-                                    <td>{{ documento.documento }}
-                                        <span ng-if='documento.complemento'>
-                                         - {{ documento.complemento }}
-                                        </span>
-                                    </td>
-
-                                    <td class="center_align">{{ documento.referencia }}</td>
-                                    <td class="center_align">{{ documento.vencimento }}</td>
-
-
-                                    <td class="center_align"><span ng-if='documento.valor'>R$ </span>{{ documento.valor }}</td>
-
-                                </tr>
-
-                                {% endverbatim %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class='row'>
-                        <div class="col-md-4" style="margin-top: -15px;">
-                            <label id="label_documentos" class="label_info left_align"><sub>*Cada Protocolo deve conter no <b>minimo um</b> e no <b>máximo dez</b> documentos.</sub></label>
-                        </div>
-
-                        <div class="col-md-2 col-md-push-6">
-                            <button type="button" ng-disabled="(documentos.length == 0)" id="bt_gerar_protocolo" target=_blank class="btn btn-primary pull-right" name='gerar_protocolo'>Gerar Protocolo</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 {% include "componentes/mensagem.html" with messages=messages %}
 {% endblock %}
@@ -348,6 +345,7 @@
         $scope.esta_adicionando = null;
         $scope.linha_selecionada = null;
 
+        $scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,0];
         $scope.limite_documentos = 10;
         $scope.opcao_desabilitada = "desabilitado";
 

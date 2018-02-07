@@ -622,21 +622,9 @@ def emitir_protocolo_identificado(request,operador):
 def visualizar_protocolo(request, protocolo_id):
     from django.template import Context  # loader,Context, Template
     path = os.path.join(BASE_DIR, "static/imagens/")
-
-    # if request.is_ajax():
-
     parametros_emissor = criar_parametro_entidade_para_protocolo(1)
     protocolo_selecionado = protocolo.objects.get(pk=protocolo_id)
-
     documentos = item_protocolo.objects.filter(protocolo_id=protocolo_id)
-    #print("VOU ACERTAR TODOS OS PROTOCOLOS.. ")
-    #for doc in item_protocolo.objects.all():
-    #    if doc.valor is None or doc.valor == "":
-    #        print("ID: ",doc.id," ESTA SEM VALOR.. VOU COLOCAR ZERO COMO PADRAO."
-    #        doc.valor = '0,00'
-    #        doc.save()
-
-    # contatos = contato.objects.filter(entidade=p.destinatario)
 
     if protocolo_selecionado.destinatario == None:
         parametros_destinatario = ParametroProtocolo()
@@ -673,14 +661,8 @@ def visualizar_protocolo(request, protocolo_id):
     linhas_extras = [1] * (10 - len(documentos))
 
     pd = parametros_destinatario
-    print("VEJA OS PARAMETROS DO DESTINATARIO: ",pd.nome)
-    print("VEJA OS PARAMETROS DO cpf: ", pd.cpf_cnpj, type(pd.cpf_cnpj))
     if parametros_destinatario.cpf_cnpj != '':
         parametros_destinatario.cpf_cnpj = formatar_cpf_cnpj(parametros_destinatario.cpf_cnpj),
-
-    print("VEJA OS PARAMETROS DO endereco: ", pd.endereco, type(pd.endereco))
-    print("VEJA OS PARAMETROS DO complemento: ", pd.complemento,type(pd.complemento))
-    print("VEJA OS PARAMETROS DO contatos: ", pd.contatos, type(pd.contatos))
 
     if parametros_destinatario.contatos == ['']:
         parametros_destinatario.contatos = []
