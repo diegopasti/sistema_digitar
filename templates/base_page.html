@@ -116,7 +116,7 @@ h5{color : #777;font-size: 130% !important;}
               <li class="footer"><a href="#">View all</a></li>
             </ul>
           </li>
-          <!--<li class="dropdown tasks-menu">
+          <li class="dropdown tasks-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-flag-o"></i>
               <span class="label label-danger">9</span>
@@ -145,7 +145,6 @@ h5{color : #777;font-size: 130% !important;}
               </li>
             </ul>
           </li>
-          -->
 
           <li class="dropdown user user-menu"  style="height:50px;margin-right:auto;">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"  style="height:100%;">
@@ -220,8 +219,13 @@ h5{color : #777;font-size: 130% !important;}
           </a>
           <ul class="treeview-menu">
 						<li><a href="/honorary">Controle de Honorário</a></li>
+            {% if request.user.groups.values_list.0.0 <= 2%}
             <li><a href="/contract">Contratos de Contratos</a></li>
 						<li><a href="/users">Controle de Usuários</a></li>
+            {% else %}
+            <li><a class="disabled" href="/contract">Contratos de Contratos</a></li>
+						<li><a class="disabled" href="/users">Controle de Usuários</a></li>
+            {% endif %}
           </ul>
         </li>
 
@@ -230,13 +234,12 @@ h5{color : #777;font-size: 130% !important;}
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
-
 						{% if request.user.groups.values_list.0.0 <= 2%}
             <li><a href="/preferencias">Variáveis do Sistema</a></li>
             <li><a href="/system/configurations">Configurações</a></li>
 						{% else %}
-							<li><a class="disabled " style="cursor: no-drop" href="/preferencias">Variáveis do Sistema</a></li>
-							<li><a class="disabled" href="/system/configurations">Configurações</a></li>
+            <li><a class="disabled " style="cursor: no-drop" href="/preferencias">Variáveis do Sistema</a></li>
+            <li><a class="disabled" href="/system/configurations">Configurações</a></li>
 						{% endif %}
 
           </ul>

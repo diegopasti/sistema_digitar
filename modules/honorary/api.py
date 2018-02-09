@@ -615,7 +615,7 @@ class HonoraryController(BaseController):
                 entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
                 for entity in entity_list:
                     self.create_update_honorary(request, entity, competence)
-        return BaseController().filter(request, Honorary, extra_fields=['honorary_itens'])
+        return BaseController().filter(request, Honorary, extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento'])
 
     @method_decorator(login_required)
     def generate_honoraries(self,request):
@@ -630,6 +630,7 @@ class HonoraryController(BaseController):
 
     @request_ajax_required
     @method_decorator(login_required)
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def close_current_competence(self, request):
         now = timezone.localtime(timezone.now())
         completed_competence = self.get_competence(datetime.datetime.now().month-1)
@@ -717,7 +718,6 @@ class HonoraryController(BaseController):
                     honorary.updated_by_name = request.user.get_full_name()
                     honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
                     if honorary_response['result']:
-                        print("VEJA O RESPONSE: ",honorary_response)
                         response_dict['message'] = 'Honorário salvo com sucesso!'
                     else:
                         response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
@@ -825,7 +825,7 @@ class HonoraryController(BaseController):
         return BaseController().filter(request, HonoraryItem,queryset=queryset, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
 
     @method_decorator(login_required)
-    def generate_document(self, request, honorary_id):
+    def generate_document(self, request, honorary_id, data_vencimento):
         path = os.path.join(BASE_DIR, "static/imagens/")
         date_hour_emission = datetime.datetime.now().strftime('%d/%m/%Y ÀS %H:%M:%S')
         company = entidade.objects.get(pk=1)
@@ -835,16 +835,8 @@ class HonoraryController(BaseController):
         client_contacts = contato.objects.filter(entidade=client)[:2]
         documentos = HonoraryItem.objects.filter(honorary=honorary)
         valor_liquido = honorary.total_honorary - honorary.total_repayment
-        if honorary.contract is not None:
-            vencimento = honorary.contract.dia_vencimento
-            data_atual = datetime.datetime.now().strftime('/%m/%Y')
-            if len(vencimento) == 1:
-                vencimento = "0"+str(vencimento)+data_atual
-            else:
-                vencimento = str(vencimento)+data_atual
-        else:
-             vencimento = " "
 
+        vencimento = data_vencimento[:2]+"/"+data_vencimento[2:4]+"/"+data_vencimento[4:]
         contract_unit_value = None
         contract_temporary_discount_rate = None
         contract_temporary_discount_value = None

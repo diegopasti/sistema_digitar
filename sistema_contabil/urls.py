@@ -108,7 +108,7 @@ urlpatterns = [
     url(r'^api/provents/disable$', ProventosController().disable_provent),
 
     url(r'^honorary/$', honorario_views.honorary_page),
-    url(r'^honorary/(?P<honorary_id>\d+)$', HonoraryController().generate_document),
+    url(r'^honorary/(?P<honorary_id>\d+)/(?P<data_vencimento>\d+)$', HonoraryController().generate_document),
     url(r'^api/honorary$', HonoraryController().filter),
     url(r'^api/honorary/object$', HonoraryController().get_object),
     url(r'^api/honorary/item$', HonoraryController().get_honorary_item),

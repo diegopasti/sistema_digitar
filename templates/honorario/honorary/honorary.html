@@ -2,6 +2,7 @@
 {% block Titulo %}<title>Digitar - Controle de Honorários</title>{% endblock %}
 {% load staticfiles %}
 {% block recursos_necessarios %}
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
 <style>
 	table td{
 		height: 26px;
@@ -40,22 +41,25 @@
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
 								<button id='bt_insert_provent' ng-if="screen_model > 3" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_provents" ng-disabled="registro_selecionado==null" ng-click="get_honorary_item()">Proventos e Descontos</button>
-								<button id='bt_honorary' role="button" ng-if="screen_model > 3" class="btn btn-sm btn-default" ng-disabled="registro_selecionado==null" style="margin-left: 5px;" ng-click="generate_honorary();">Gerar Honorário</button>
+								<button id='bt_honorary' role="button" ng-if="screen_model > 3" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_vencimento" ng-disabled="registro_selecionado==null" style="margin-left: 5px;" ng-click="carregar_vencimento();">Gerar Honorário</button>
 
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
 									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
-										<li ng-if='screen_model <= 3' ng-class="{disabled: registro_selecionado==null, cursor_pointer:registro_selecionado!=null }" ng-click="generate_honorary();"><a><i class="fa fa-print" aria-hidden="true"></i>
- Gerar Honorário</a></li>
+										<li ng-if='screen_model <= 3' ng-class="{disabled: registro_selecionado==null, cursor_pointer:registro_selecionado!=null }">
+											<a><i class="fa fa-print" aria-hidden="true" data-toggle="modal" data-target="#modal_vencimento"></i> Gerar Honorário</a></li>
 										<li ng-if='screen_model <= 3' ng-class="{disabled: registro_selecionado==null, cursor_pointer:registro_selecionado!=null}">
 											<a data-toggle="modal" data-target="#modal_provents" ng-click="get_honorary_item();">
 												<i class="fa fa-expand" aria-hidden="true"></i> Proventos e Descontos
 											</a>
 										</li>
 
+										{% if request.user.groups.values_list.0.0 <= 2%}
 										<li><a id="close_competence" ng-click="close_current_competences()" style="cursor: pointer;"><i class="fa fa-check" aria-hidden="true"></i>
  Encerrar Competência</a></li>
 										<li role="separator" class="divider"></li>
+										{% endif %}
+
 										<li><a ng-click="load_competences()" style="cursor: pointer;"><i class="fa fa-refresh" aria-hidden="true"></i>
  Atualizar Contratos</a></li>
 									</ul>
@@ -566,13 +570,54 @@
 		</div>
 	</div>
 
+	<div id="modal_vencimento" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 40%">
+			<div class="modal-content">
+				<form id="form_vencimento" autocomplete="off" ng-submit="disable();">
+					<div class="modal-header" style="padding-top:2px;">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top:10px;">×</button>
+						<h6 style="font-weight:bold;margin-top:14px;font-size:13px;">Confirmar Vencimento</h6>
+					</div>
+
+					<div class="modal-body" style="padding-top: 10px;padding-left: 25px;padding-right: 25px;padding-bottom: 10px;">
+						<style>
+							.only_bottom_border{
+								background-color: #fff !important;
+								border-bottom: 1px solid #ccc !important;
+								box-shadow:none !important;
+								cursor: default;
+							}
+						</style>
+						<div style="margin-top: 0px;">
+							<div class="row">
+								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+									<div class="form-group">
+										<label><sub>Data de Vencimento:</sub></label>
+										<input type="text" id="data_vencimento" class="form-control" />
+									</div>
+								</div>
+
+								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+									<div class="form-group">
+										<button type='button' class="btn btn-primary pull-right" style="margin-top: 24px;" ng-click="generate_honorary();">Gerar Documento</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
 {% block recursos_complementares %}
 {% load staticfiles %}
 {% load compress %}
 {% compress js %}
-<script src="{% static 'modules/core/controle_componentes.js' %}"/>
+<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery.maskedinput/dist/jquery.maskedinput.min.js' %}"></script>
+<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
 <script src="{% static 'modules/honorary/honorary/js/honoraryController.js' %}"/>
 <script src="{% static 'modules/honorary/honorary/js/honorary.js' %}"/>
 {% endcompress %}

@@ -7,7 +7,7 @@ from modules.honorary.forms import FormContrato, FormIndicacao, FormProventos, F
 
 
 @login_required
-@permission_level_required(2,'/error/access_denied')
+@permission_level_required(3,'/error/access_denied')
 def honorary_page(request):
     form_contrato = FormContrato()
     form_indicacao = FormIndicacao()

@@ -58,8 +58,7 @@ function configurar_campo_data(campo){
 		dayNamesMin: [ "D", "S", "T", "Q", "Q", "S", "S" ],
 		dateFormat: 'dd/mm/yy'
 		}).on('change', function() {
-			$(this).valid();  // triggers the validation test
-			// '$(this)' refers to '$("#datepicker")'
+			$(this).valid();
 	});
 	$("#"+campo).mask("99/99/9999");
 }

@@ -296,9 +296,47 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		$scope.opcao_desabilitada = "desabilitado";
 	}
 
-	$scope.generate_honorary = function(){
+	$scope.carregar_vencimento = function(){
+		var month_names = ['01', '02', '03','04', '05', '06', '07','08', '09', '10', '11', '12'];
 		if($scope.registro_selecionado != null){
-			window.open('/honorary/'+$scope.registro_selecionado.id);
+
+			//if($scope.registro_selecionado.contract__data_vencimento!=null){
+			//	$('#data_vencimento').val($scope.registro_selecionado.contract__data_vencimento.toString());
+			//}
+
+			if($scope.registro_selecionado.contract__dia_vencimento!=null){
+
+				date = new Date();
+				var new_date = month_names[date.getMonth()]+"/"+date.getFullYear();
+				if($scope.registro_selecionado.contract__dia_vencimento.length==1){
+					$('#data_vencimento').val('0'+$scope.registro_selecionado.contract__dia_vencimento.toString()+"/"+new_date);
+				}
+			}
+			else{
+				var currentDate = new Date();
+				var day = currentDate.getDate();
+				var month =  month_names[currentDate.getMonth()];
+				var year = currentDate.getFullYear();
+
+				if(day.toString().length==1){
+					day = "0"+day;
+				}
+				$('#data_vencimento').val(day+"/"+month+"/"+year);
+			}
+		}
+		else{
+			error_notify(null,'Falha na Operação','Selecione um honorário para gerar o documento.');
+		}
+	}
+
+	$scope.generate_honorary = function(){
+		var vencimento = $('#data_vencimento').val();
+		if($scope.registro_selecionado != null && vencimento!=""){
+			vencimento = vencimento.replace("/","").replace("/","")
+			window.open('/honorary/'+$scope.registro_selecionado.id+"/"+vencimento);
+		}
+		else{
+			error_notify('data_vencimento','Falha na Operação','Vencimento do honorário precisa ser informado.');
 		}
 	}
 

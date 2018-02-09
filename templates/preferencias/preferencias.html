@@ -7,62 +7,10 @@
 {% compress css %}
 <link href="{% static 'modules/preferences/salario_minimo.css' %}" rel="stylesheet"/>
 {% endcompress %}
-
-
-
-{% endblock %}
-
-{% block breadcrumb_title %}Preferências{% endblock %}
-
-{% block breadcrumb_block %}
-<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-<li class="active">Preferências</li>
 {% endblock %}
 
 {% block conteudo %}
-
-<div id="controle_angular" ng-app="app" ng-controller="MeuController">
-
-    <div id="modal_adicionar_salario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-        <div class="modal-dialog">
-        <form id="form_adicionar_servico" autocomplete="off" ng-submit="esta_adicionando? adicionar_salario() : alterar_salario()">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h5 class='titulo_modal' id="titulo_modal_adicionar_salario">Novo Salário Mínimo</h5>
-                </div>
-
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <div class="field_required">
-                                <label><sub>{{ formulario_salario.valor.label }}</sub></label>
-                            </div>
-                            {{ formulario_salario.valor }}
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="field_required">
-                                <label><sub>{{ formulario_salario.inicio_vigencia.label }}</sub></label>
-                            </div>
-                            {{ formulario_salario.inicio_vigencia }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <div class="row">
-                        <div class="col-md-3 col-md-push-9">
-                            <button type="submit" id="bt_submit_servico" ng-class="{'desabilitado': (salario_valor == '0,00')}" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_salario">Salvar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-         </form>
-        </div>
-    </div>
-
+<div id="controle_angular" ng-app="app" ng-controller="MeuController" style="margin-top:-30px;">
     <div class="row">
         <div class="col-lg-8 col-md-8 col-xs-12" style="padding-bottom: 30px;">
             <div id="box_salario"  class="box box-default">
@@ -236,8 +184,47 @@
             </div>
         </div>
     </div>
+
+  <div id="modal_adicionar_salario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+        <div class="modal-dialog">
+        <form id="form_adicionar_servico" autocomplete="off" ng-submit="esta_adicionando? adicionar_salario() : alterar_salario()">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h5 class='titulo_modal' id="titulo_modal_adicionar_salario">Novo Salário Mínimo</h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="field_required">
+                                <label><sub>{{ formulario_salario.valor.label }}</sub></label>
+                            </div>
+                            {{ formulario_salario.valor }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="field_required">
+                                <label><sub>{{ formulario_salario.inicio_vigencia.label }}</sub></label>
+                            </div>
+                            {{ formulario_salario.inicio_vigencia }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-3 col-md-push-9">
+                            <button type="submit" id="bt_submit_servico" ng-class="{'desabilitado': (salario_valor == '0,00')}" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_salario">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </form>
+        </div>
+    </div>
 </div>
-<br>
 {% endblock %}
 
 {% block recursos_complementares %}
