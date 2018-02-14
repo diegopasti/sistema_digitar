@@ -173,7 +173,7 @@ class FormContrato(forms.Form, BaseForm):
         )
     )
 
-    opcoes_tipos_honorario = (('FIXO', 'VALOR EM REAIS'), ('VARIAVEL', 'VALOR EM SALARIOS (%)'))
+    opcoes_tipos_honorario = (('FIXO', 'VALOR EM REAIS (R$)'), ('VARIAVEL', 'VALOR EM SM (%)'))
 
     tipo_honorario = forms.ChoiceField(
         label="Tipo do Honorário", choices=opcoes_tipos_honorario, initial='VARIAVEL',
@@ -322,7 +322,7 @@ class FormIndicacao(forms.Form):
     id_encerrador = forms.CharField("Id encerrador", max_length=50, null=True)'''
 
     indicacao = forms.ModelChoiceField(
-        queryset= entidade.objects.filter(ativo=True).exclude(id=1),label = "Indicar cliente",empty_label='Selecione um cliente...', error_messages = MENSAGENS_ERROS,
+        queryset= entidade.objects.filter(ativo=True).exclude(id=1),label = "Cliente indicado",empty_label='Selecione um cliente...', error_messages = MENSAGENS_ERROS,
         widget = forms.Select(
             attrs={'id': 'indicacao', 'class': "form-control", 'ng-model': 'indicacao'
             }
@@ -330,7 +330,7 @@ class FormIndicacao(forms.Form):
     )
 
     taxa_desconto_indicacao = forms.DecimalField(
-        label='Taxa desconto', error_messages= MENSAGENS_ERROS,
+        label='Taxa de desconto', error_messages= MENSAGENS_ERROS,
         widget = forms.TextInput(
             attrs={
                 'id':'taxa_desconto_indicacao', 'class': 'form-control', 'ng-model':'taxa_desconto_indicacao'

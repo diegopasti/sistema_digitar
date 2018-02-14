@@ -24,6 +24,24 @@
 .content-wrapper, .right-side {background-color:#ecf0f5;}
 .box-body{ font-size: 85%;}
 h5{color : #777;font-size: 130% !important;}
+
+
+.sidebar-collapse .treeview-menu li a{
+  padding-left: 4px !important;
+}
+
+.treeview-menu li a{
+  padding-left: 10px !important;
+}
+
+.treeview-menu li i {
+  font-size: 3px !important;
+  position: relative;
+  top: -3px;
+  width: 8px !important;
+  marging-right: 0px !important;
+  padding-right: 0px !important;
+}
 </style>
 </head>
 
@@ -191,57 +209,57 @@ h5{color : #777;font-size: 130% !important;}
     <section class="sidebar">
       <ul class="sidebar-menu">
         <li class="treeview">
-          <a href="/entidade"><i class="fa fa-users"></i> <span>Cadastros</span>
+          <a href="/entidade"><i class="fa fa-users"></i> <span>Módulo Cadastros</span>
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/entidade">Clientes</a></li>
-            <li><a href="/planos">Planos</a></li>
-            <li><a href="/preferencias/servicos">Serviços</a></li>
-						<li><a href="/provents">Proventos</a></li>
-            <li><a href="/preferencias/protocolo/documentos">Documentos</a></li>
+            <li><a href="/entidade"><i class="fa fa-circle-o"></i>Cadastro de Clientes</a></li>
+            <li><a href="/planos"><i class="fa fa-circle-o"></i>Planos de Honorários</a></li>
+            <li><a href="/preferencias/servicos"><i class="fa fa-circle-o"></i>Serviços de Honorários</a></li>
           </ul>
         </li>
 
         <li class="treeview">
-          <a href="#"><i class="fa fa-envelope-o"></i> <span>Protocolo</span>
+          <a href="#"><i class="fa fa-envelope-o"></i> <span>Módulo Protocolo</span>
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/protocolo">Controle de Protocolos</a></li>
-            <li><a href="/protocolo/emitir_protocolo">Emitir Protocolo</a></li>
+            <li><a href="/preferencias/protocolo/documentos"><i class="fa fa-circle-o"></i>Cadastro de Documentos</a></li>
+            <li><a href="/protocolo"><i class="fa fa-circle-o"></i>Controle de Protocolos</a></li>
+            <li><a href="/protocolo/emitir_protocolo"><i class="fa fa-circle-o"></i>Emitir Protocolo</a></li>
           </ul>
         </li>
 
         <li class="treeview">
-          <a href="#"><i class="fa fa-briefcase" aria-hidden="true"></i><span>Gerência</span>
+          <a href="#"><i class="fa fa-briefcase" aria-hidden="true"></i><span>Módulo Honorário</span>
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
-						<li><a href="/honorary">Controle de Honorário</a></li>
+						<li><a href="/honorary"><i class="fa fa-circle-o"></i>Controle de Honorário</a></li>
             {% if request.user.groups.values_list.0.0 <= 2%}
-            <li><a href="/contract">Contratos de Contratos</a></li>
-						<li><a href="/users">Controle de Usuários</a></li>
+            <li><a href="/contract"><i class="fa fa-circle-o"></i>Contratos de Contratos</a></li>
+            <li><a href="/provents"><i class="fa fa-circle-o"></i>Proventos</a></li>
             {% else %}
-            <li><a class="disabled" href="/contract">Contratos de Contratos</a></li>
-						<li><a class="disabled" href="/users">Controle de Usuários</a></li>
+            <li><a class="disabled" href="/contract"><i class="fa fa-circle-o"></i>Contratos de Contratos</a></li>
+            <li><a class="disabled" href="/provents"><i class="fa fa-circle-o"></i>Proventos</a></li>
             {% endif %}
           </ul>
         </li>
 
         <li class="treeview">
-          <a href="#"><i class="fa fa-wrench" aria-hidden="true"></i> <span>Preferências</span>
+          <a href="#"><i class="fa fa-wrench" aria-hidden="true"></i> <span>Configurações</span>
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
 						{% if request.user.groups.values_list.0.0 <= 2%}
-            <li><a href="/preferencias">Variáveis do Sistema</a></li>
-            <li><a href="/system/configurations">Configurações</a></li>
+            <li><a href="/preferencias"><i class="fa fa-circle-o"></i>Salário Mínimo</a></li>
+            <li><a href="/users"><i class="fa fa-circle-o"></i>Usuários</a></li>
+            <li><a href="/system/configurations"><i class="fa fa-circle-o"></i>Sistema</a></li>
 						{% else %}
-            <li><a class="disabled " style="cursor: no-drop" href="/preferencias">Variáveis do Sistema</a></li>
-            <li><a class="disabled" href="/system/configurations">Configurações</a></li>
+            <li><a class="disabled " style="cursor: no-drop" href="/preferencias"><i class="fa fa-circle-o"></i>Salário Mínimo</a></li>
+            <li><a class="disabled" href="/users"><i class="fa fa-circle-o"></i>Usuários</a></li>
+            <li><a class="disabled" href="/system/configurations"><i class="fa fa-circle-o"></i>Sistema</a></li>
 						{% endif %}
-
           </ul>
         </li>
       </ul>

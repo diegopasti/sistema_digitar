@@ -156,6 +156,10 @@ table th{
     overflow-x: auto;
     white-space: nowrap;
 	}
+
+.modal-header h5{
+	margin-top: -1px !important;
+}
 </style>
 {% endblock %}
 {% block conteudo %}
@@ -520,7 +524,7 @@ table th{
 							</div>
 
 							<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" style="padding-left: 5px; padding-bottom: 5px;">
-								<sub><label>{{ formulario_indicacao.taxa_desconto_indicacao.label }}</label></sub>
+								<sub><label>{{ formulario_indicacao.taxa_desconto_indicacao.label }} (%)</label></sub>
 								{{ formulario_indicacao.taxa_desconto_indicacao }}
 							</div>
 							{% verbatim %}
