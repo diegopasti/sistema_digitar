@@ -5,7 +5,6 @@
 		<meta charset="utf-8">
 			{% load staticfiles %}
 			<!-- <link rel="stylesheet" type="text/css" href="{% static 'styles/protocolo.css' %}"/>   -->
-
 		<style>
 			@page {
 				margin: 0.5cm;
@@ -409,11 +408,9 @@
 				width:1100px;
 			}
 		</style>
-		
 	</head>
-	
+
 	<body id="pagina">
-	
 		<table border=1 style="padding: 5px;">
 			<tr>
 				<td>
@@ -546,7 +543,7 @@
 								<td class="center">3</td>
 								<td style="width: 447px;padding-left: 4px;">DESCONTO FIDELIDADE</td>
 								<td class="center" style="width: 74px;"></td>
-								<td width='86px' style="text-align: right;" >{{ contract_fidelity_discount_rate }}%</td>
+								<td width='86px' style="text-align: center;" >{{ contract_fidelity_discount_rate }}%</td>
 								<td width='86px' style="text-align: right;">-{{ contract_fidelity_discount_value }}</td>
 							</tr>
 							{% endif %}

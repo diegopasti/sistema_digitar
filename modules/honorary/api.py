@@ -894,10 +894,10 @@ class HonoraryController(BaseController):
             'honorary': honorary,
 
             'contract_unit_value':contract_unit_value,
-            'contract_temporary_discount_rate':contract_temporary_discount_rate,
-            'contract_temporary_discount_value': contract_temporary_discount_value,
-            'contract_fidelity_discount_rate':contract_fidelity_discount_rate,
-            'contract_fidelity_discount_value':contract_fidelity_discount_value,
+            'contract_temporary_discount_rate':'%.2f'%(contract_temporary_discount_rate),
+            'contract_temporary_discount_value': '%.2f'%(contract_temporary_discount_value),
+            'contract_fidelity_discount_rate':'%.2f'%(contract_fidelity_discount_rate),
+            'contract_fidelity_discount_value':'%.2f'%(contract_fidelity_discount_value),
 
             'valor_liquido':valor_liquido,
             'vencimento':vencimento,
