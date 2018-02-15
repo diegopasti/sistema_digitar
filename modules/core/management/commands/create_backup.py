@@ -8,7 +8,6 @@ class Command(BaseCommand):
 
     def handle(self, **options):
 
-        #self.stdout.write('Hello World')
         backup_paramters = BackupManager().create_backup()
         try:
             backup = Backup.objects.get(backup_file_name=backup_paramters['file_name'])

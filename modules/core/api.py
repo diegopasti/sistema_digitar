@@ -86,10 +86,8 @@ class ConfigurationsController(BaseController):
         response_dict['object'] = backup_paramters
         if backup_paramters is True:
             pass
-            #print('RESTAURAÇÃO REALIZADA COM SUCESSO')
         else:
             pass
-            #print('ERRO',backup_paramters)
         return self.response(response_dict)
 
     def list_backups(self,request):
