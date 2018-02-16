@@ -11,7 +11,7 @@ from django.contrib.auth import login
 from django.db import IntegrityError
 from django.core import serializers
 
-from modules.nucleo.models import RestrictedOperation
+from modules.nucleo.models import RestrictedOperation,BaseOperation
 from django.contrib.auth.models import Permission, User, Group
 from django.contrib.auth import authenticate, login
 from modules.user.models import Session
@@ -262,17 +262,18 @@ class BaseController(Notify):
     @request_ajax_required
     def disable(self, request, model):
         object = model.objects.get(pk=int(request.POST['id']))
-
-        if getattr(object, 'ativo'):
-            object.ativo = False
-        elif getattr(object, 'is_active'):
-            object.is_active = False
-        else:
-            pass
+        #print('SOU OBJ: ',object)
+        #if getattr(object, 'ativo'):
+            #object.ativo = False
+        #elif getattr(object, 'is_active'):
+            #object.is_active = False
+        #else:
+            #pass
 
         response_dict = self.execute(object, object.save)
+        print(response_dict)
         if response_dict['result']:
-            self.report_operation(request, model)
+            self.report_base_operation(request, model)#report_operation(request, model)
         return self.response(response_dict)
 
     @request_ajax_required
@@ -281,13 +282,23 @@ class BaseController(Notify):
         object.is_active = True
         response_dict = self.execute(object, object.save)
         if response_dict['result']:
-            self.report_operation(request, model)
+            self.report_base_operation(request, model)#report_operation(request, model)
         return self.response(response_dict)
 
     def report_operation(self, request, model):
         operation = RestrictedOperation()
         operation.user = request.user
         operation.set_type(request.POST['action_type'])
+        operation.object_id = request.POST['id']
+        operation.object_name = request.POST['action_object']
+        operation.justify = request.POST['action_justify']
+        operation.table = model._meta.db_table
+        operation.save()
+        return
+
+    def report_base_operation(self, request, model):
+        operation = BaseOperation()
+        operation.user = request.user
         operation.object_id = request.POST['id']
         operation.object_name = request.POST['action_object']
         operation.justify = request.POST['action_justify']
