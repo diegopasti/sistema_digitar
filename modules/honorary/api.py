@@ -580,7 +580,7 @@ class ProventosController(BaseController):
     @method_decorator(login_required)
     #method_decorator(permission_required('user.can_add'))
     def filter_provents(self, request):
-        return BaseController().filter(request, Proventos, queryset=Proventos.objects.filter(is_active=True).order_by('-id'))
+        return BaseController().filter(request, Proventos, queryset=Proventos.objects.filter(is_active=True).order_by('id'))
 
     #login_required
     #user_passes_test(lambda u: u.permissions.can_insert_entity(), login_url='/error/access_denied', redirect_field_name=None)

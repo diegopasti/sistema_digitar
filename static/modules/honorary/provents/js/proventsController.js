@@ -178,46 +178,48 @@ app.controller('MeuController', ['$scope', function($scope) {
 			//alert("veja o index: "+registro.cliente_id+"-"+registro.cliente_nome);
 			//alert("veja se tem plano: "+registro.plano)
 
-			if ($scope.registro_selecionado != null){
-					//alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
-					if (registro.selecionado=='selected'){
-							//alert("O cara clicou na linha que ja tava selecionada");
-							$scope.desmarcar_linha_selecionada();
-							//registro.selecionado = "";
-							$scope.registro_selecionado = null;
-							//$scope.opcao_desabilitada = "desabilitado";
-							//alert("desmarquei entao deixa como se fosse adicionar")
-							$scope.esta_adicionando = true;
-					}
-
-					else{
-							$scope.desmarcar_linha_selecionada();
-							registro.selecionado = "selected";
-							$scope.registro_selecionado = registro;
-							$scope.opcao_desabilitada = "";
-
-							if(registro.plano == null){
+			if(registro.id != '1' && registro.id != '2' && registro.id != '3'){
+				if ($scope.registro_selecionado != null){
+						//alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
+						if (registro.selecionado=='selected'){
+								//alert("O cara clicou na linha que ja tava selecionada");
+								$scope.desmarcar_linha_selecionada();
+								//registro.selecionado = "";
+								$scope.registro_selecionado = null;
+								//$scope.opcao_desabilitada = "desabilitado";
+								//alert("desmarquei entao deixa como se fosse adicionar")
 								$scope.esta_adicionando = true;
-							}
-							else{
-								$scope.esta_adicionando = false;
-							}
-					}
-			}
+						}
 
-			else{
-					registro.selecionado = 'selected';
-					$scope.registro_selecionado = registro;
-					$scope.opcao_desabilitada = "";
+						else{
+								$scope.desmarcar_linha_selecionada();
+								registro.selecionado = "selected";
+								$scope.registro_selecionado = registro;
+								$scope.opcao_desabilitada = "";
 
-					if($scope.registro_selecionado.plano){
-						$scope.esta_adicionando = false;
-					}
-					else{
-						$scope.esta_adicionando = true;
-					}
+								if(registro.plano == null){
+									$scope.esta_adicionando = true;
+								}
+								else{
+									$scope.esta_adicionando = false;
+								}
+						}
+				}
+
+				else{
+						registro.selecionado = 'selected';
+						$scope.registro_selecionado = registro;
+						$scope.opcao_desabilitada = "";
+
+						if($scope.registro_selecionado.plano){
+							$scope.esta_adicionando = false;
+						}
+						else{
+							$scope.esta_adicionando = true;
+						}
+				}
+				//$scope.$apply();
 			}
-			//$scope.$apply();
 	}
 
 	$scope.desmarcar_linha_selecionada = function(){

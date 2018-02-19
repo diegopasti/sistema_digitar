@@ -39,7 +39,7 @@
 											<th ng-hide='screen_model <= 3' class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Tipo</th>
 											<th class='text-center' ng-click="sortType='cliente';sortReverse=!sortReverse">Provento</th>
 											<th class='text-center' style="width: 120px;" ng-click="sortType='cliente';sortReverse=!sortReverse">Tipo do Valor</th>
-											<th class='text-center' style="width: 120px;" ng-hide='screen0 || screen1 || screen2' ng-click="sortType='plano';sortReverse=!sortReverse" >Valor</th>
+											<th class='text-center' style="width: 120px;" ng-hide='screen0 || screen1 || screen2' ng-click="sortType='plano';sortReverse=!sortReverse" >Valor (R$)</th>
 										</tr>
 									</thead>
 
@@ -50,7 +50,20 @@
 											</td>
 										</tr>
 
-										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato);" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
+										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat" pagination-id="paginate_contratos" dir-paginate="contrato in contratos.slice(0,3) | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado" style="cursor: not-allowed;">
+											<td class='text-center' style="width: 40px;">{{ contrato.id }}</td>
+											<td ng-hide='screen_model <= 3' class='text-left' style="padding-left: 4px;width: 120px;">
+												<span ng-if="contrato.tipo=='P'">PROVENTO</span>
+												<span ng-if="contrato.tipo=='D'">DESCONTO</span>
+												<span ng-if="contrato.tipo=='R'">RESSARCIMENTO</span>
+											</td>
+											<td class="col-cliente" class="text-left">{{ contrato.nome }}</td>
+											<td></td>
+											<td></td>
+										</tr>
+
+										<tr ng-cloak ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato);" pagination-id="paginate_contratos" dir-paginate="contrato in contratos.slice(3) | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
+
 											<td class='text-center' style="width: 40px;">{{ contrato.id }}</td>
 											<td ng-hide='screen_model <= 3' class='text-left' style="padding-left: 4px;width: 120px;">
 												<span ng-if="contrato.tipo=='P'">PROVENTO</span>
@@ -64,7 +77,7 @@
 												<span ng-if="contrato.tipo_valor=='P'">PERCENTUAL</span>
 											</td>
 
-											<td ng-class="{'text-right': contrato.valor, 'text-center': !contrato.plano  }" style="width: 130px;">
+											<td class="text-right" style="width: 130px;">
 												<span ng-if="contrato.valor && contrato.tipo_valor=='R'">{{ contrato.valor | currency:"" }}</span>
 												<span ng-if="contrato.valor && contrato.tipo_valor=='P'">{{ contrato.valor }}%</span>
 												<span ng-if="!contrato.plano"></span>
