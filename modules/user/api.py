@@ -56,7 +56,7 @@ class UserController(BaseController):
         return self.response(response_dict)
 
     @request_ajax_required
-    @method_decorator(permission_level_required(3, raise_exception=HttpResponseForbidden()))
+    @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def salvar_registro(self, request):
         return self.signup(request,FormRegister)
 

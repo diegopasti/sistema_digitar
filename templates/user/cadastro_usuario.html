@@ -135,8 +135,12 @@
 									<td class="col-cliente text-left"  style="width: 150px;">{{ usuario.username  | uppercase}}</td>
 									<td class='text-left' style="width: 100px;">
 										<span ng-if="usuario.groups[0]==1">ADMINISTRADOR</span>
-										<span ng-if="usuario.groups[0]==2">SUPERVISOR</span>
-										<span ng-if="usuario.groups[0]==3">OPERADOR</span>
+										<span ng-if="usuario.groups[0]==2">GERENTE GERAL</span>
+										<span ng-if="usuario.groups[0]==3">COORDENADOR(A)</span>
+										<span ng-if="usuario.groups[0]==4">ANALISTA</span>
+										<span ng-if="usuario.groups[0]==5">AUXILIAR</span>
+										<span ng-if="usuario.groups[0]==6">ASSISTENTE</span>
+										<span ng-if="usuario.groups[0]==7">MOTOBOY</span>
 									</td>
 									<td class="text-center" style="width: 90px;">{{ usuario.date_joined|date:'d/M/y'}} ás {{ usuario.date_joined|date:'H:mm'}}</td>
 									<td class="text-center" style="width: 90px;">

@@ -11,7 +11,7 @@ from modules.user.validators import email_format_validator,email_dangerous_symbo
 
 
 opcoes_tipos_usuarios = (
-        ('A', 'ADMIN'),
+        ('A', 'ADMINISTRADOR'),
         ('D', 'DESENVOLVEDOR'),
         ('S', 'SUPORTE'),
         ('C', 'CONTRATANTE'),

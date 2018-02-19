@@ -21,9 +21,14 @@ class FormLogin(FormAbstractUsername, FormAbstractPassword,BaseForm):
 
 class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirmPassword,FormAbstractEmail,BaseForm):
     model = User
-    grupos = {(1, 'ADMINISTRADOR'),
-              (2, 'SUPERVISOR'),
-              (3, 'OPERADOR')}
+    grupos = [(1, '1 - ADMINISTRADOR'),
+              (2, '1 - GERENTE GERAL'),
+              (3, '2 - COORDENADOR(A)'),
+              (4, '3 - ANALISTA'),
+              (5, '3 - AUXILIAR'),
+              (6, '3 - ASSISTENTE'),
+              (7, '3 - MOTOBOY'),
+              ]
 
     """choices = ((1, 'Gerente'), (2, 'Administrador'), (3, 'Operador'), (4, 'Sem acesso'))
     level_permission = forms.ChoiceField(
@@ -65,7 +70,6 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
             }
         )
     )
-
 
     groups = forms.ChoiceField(
         label='Grupo',
