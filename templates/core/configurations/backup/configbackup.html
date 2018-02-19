@@ -55,7 +55,8 @@
 												{% verbatim %}
 												<div class="row">
 													<div class="col-lg-12 col-sm-12 col-sm-12 col-xs-12">
-														<div ng-if="(backups|filter:filterIds()).length == 0" style="text-align: center;">
+														<!--<div ng-if="(backups|filter:filterIds()).length == 0" style="text-align: center;">-->
+														<div ng-if="system_informations.total_files == 0" style="text-align: center;">
 															<p>
 																<div style=""><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
 																<div style="margin-left: 0px;">Atenção! Nenhum backup encontrado.<br><a style="cursor: pointer;font-weight: bold;" ng-click="create_backup_local()">Clique aqui para gerar um backup imediatamente.</a></div>
@@ -115,6 +116,7 @@
 															<br>
 															<!--Arquivos armazenados: <span ng-show="loaded_backups == true">{ backups_informations.total_files }} itens</span><br>-->
 															<!--<button id='bt_alterar' role="button" class="btn btn-sm btn-default {{ opcao_desabilitada }}" disabled="disabled" ng-click="restore_backups()"> Restaurar Backup</button>-->
+															<button id='bt_alterar' role="button" class="btn btn-sm btn-default {{ opcao_desabilitada }}" disabled="disabled" ng-click="restore_backups()"> Restaurar Backup</button>
 														</p>
 													</div>
 

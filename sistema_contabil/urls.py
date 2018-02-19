@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url, include
 
-from modules.core.api import ConfigurationsController, RestrictedOperationCotroller
+from modules.core.api import ConfigurationsController, RestrictedOperationController
 from modules.entidade.views import EntityController
 from modules.nucleo import views as nucleo_views
 from modules.core import views as core_views
@@ -137,7 +137,7 @@ urlpatterns = [
     url(r'^api/working/register/$', nucleo_views.working),
     url(r'^system/configurations', core_views.system_configurations),
     url(r'configurations/backup$', ConfigurationsController().load_backups),
-    url(r'^api/core/configurations/operations$', RestrictedOperationCotroller().load_operations),
+    url(r'^api/core/configurations/operations$', RestrictedOperationController().load_operations),
     url(r'configurations/backup/info$', ConfigurationsController().check_available_space),
     url(r'configurations/backup/system_info$', ConfigurationsController().check_available_system_space),
     url(r'configurations/backup/create$', ConfigurationsController().create_backup),

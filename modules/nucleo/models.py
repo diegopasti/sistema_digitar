@@ -15,6 +15,23 @@ class Backup(models.Model):
     backup_link = models.CharField("Endereço", null=False, blank=False, max_length=100, validators=[], error_messages=ERRORS_MESSAGES)
 
 
+class BaseOperation(models.Model):
+
+    class Meta:
+        db_table = 'core_base_operations'
+
+    opcoes_operacoes = (
+        ('ADD', 'ADIÇÃO'), ('ALT', 'ALTERAÇÃO'), ('DEL', 'EXCLUSÃO'), ('DES', 'DESATIVAÇÃO'),('REA','REATIVAR'))
+
+    user = models.ForeignKey(User, null=True)
+    type = models.CharField("Tipo:", max_length=3, null=False, choices=opcoes_operacoes, error_messages=ERRORS_MESSAGES)
+    table = models.CharField("Tabela:", max_length=50, null=False, error_messages=ERRORS_MESSAGES, default='')
+    object_id = models.IntegerField("Id do Registro",null=False)
+    object_name = models.CharField("Nome do Registro:", max_length=100, null=False, error_messages=ERRORS_MESSAGES, default='')
+    description = models.TextField("Descrição da Operação: ", null=True, blank=True)
+    date_operation = models.DateTimeField(auto_now_add=True)
+
+
 class RestrictedOperation(models.Model):
     class Meta:
         db_table = 'core_restricted_operations'

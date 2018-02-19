@@ -11,6 +11,7 @@ application.controller('configurations_controller',['$scope','$filter', function
 	$scope.sortReverse        = false;
 
 	$scope.backups = null;
+	$scope.system_informations = null;
 	$scope.loaded_backups = false;
 	$scope.creating_backup = false;
 
