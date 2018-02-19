@@ -12,13 +12,14 @@ $('#datatable').DataTable({
 	"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
 	"dom": '<"top">rt"<"rightcolumn"><"clear">p',
 	"bSort": true,
-	"ordering": true,
+	"ordering": false,
 	"bAutoWidth": false,
 	"aoColumns": [
 		{"sWidth": "20px"},
 		{"sWidth": "120px"},
 		{"sWidth": null},
 		{"sWidth": null},
+		{"sWidth": "110px"},
 		{"sWidth": "110px"}
 	],
 });

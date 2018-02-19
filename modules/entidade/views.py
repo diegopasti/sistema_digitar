@@ -56,7 +56,7 @@ def buscar_fontes(request):
 @permission_level_required(3,'/error/access_denied')
 def cadastro_entidades(request):
     usuario_admin = False
-    dados = entidade.objects.filter(ativo=True).exclude(id=1).exclude(ativo=False).order_by('-id')
+    dados = entidade.objects.exclude(id=1).exclude(ativo=False).order_by('nome_razao')
     if (request.method == "POST"):
 
         """
@@ -107,8 +107,6 @@ def cadastro_entidades(request):
     return render(request,"entidade/cadastro_entidades.html",{'dados': dados, 'form_desativar': form_desativar, 'erro': False})
 
 class EntityController (BaseController):
-
-
     @request_ajax_required
     @method_decorator(login_required)
     def desativar_cliente(self,request):
@@ -657,10 +655,8 @@ def visualizar_entidade(request,id):
             cliente.inscricao_junta_comercial = formulario.cleaned_data['inscricao_junta_comercial']
             try:
                 cliente.taxa_iss = Decimal(formulario.cleaned_data['taxa_iss'].replace('.','').replace(',','.'))
-                print("COLOQUEI O VALOR DECIMAL: ",cliente.taxa_iss)
             except:
                 cliente.taxa_iss = formulario.cleaned_data['taxa_iss']
-                print("COLOQUEI O DIRETO", cliente.taxa_iss)
 
             cliente.responsavel_cliente = formulario.cleaned_data['responsavel_cliente']
             cliente.supervisor_cliente = formulario.cleaned_data['supervisor_cliente']

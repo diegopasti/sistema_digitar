@@ -7,7 +7,6 @@ MENSAGENS_ERROS = {'required': 'Campo Obrigatório!',
                    'invalid': 'Formato Inválido!'
                    }
 
-
 class natureza_juridica(models.Model):
     codigo_natureza = models.CharField("Código:", max_length=5, null=False, unique=True, error_messages=MENSAGENS_ERROS)
     natureza_juridica = models.CharField("Natureza Jurídica:", max_length=100, null=False, unique=True, error_messages=MENSAGENS_ERROS)
@@ -55,7 +54,7 @@ class entidade(models.Model):
         ('O', 'OUTRO'),
     )
 
-    cpf_cnpj = models.CharField("Cnpj:", max_length=18, null=False, unique=True, error_messages=MENSAGENS_ERROS)
+    cpf_cnpj = models.CharField("Cnpj:", max_length=18, null=False, unique=False, error_messages=MENSAGENS_ERROS)
 
     nome_razao = models.CharField("Razão Social:", max_length=100, null=False, unique=False, error_messages=MENSAGENS_ERROS)
     apelido_fantasia = models.CharField("Nome Fantasia:", max_length=50, null=True, blank=True, unique=False, error_messages=MENSAGENS_ERROS)

@@ -105,19 +105,20 @@ input.no-border{
 						<div class="btn-group" role="group" aria-label="...">
 							<a href="/entidade/adicionar" role="button" class="btn btn-sm btn-primary pull-left"><i class="fa fa-plus fa-1x"></i> Adicionar Cliente</a>
 							<a href="#" role="button" id="bt_consultar_cliente" class="btn btn-sm btn-default pull-left desabilitado" style='margin-left: 5px;'><i class="fa fa-search fa-1x"></i> Visualizar</a>
+							{% if request.user.groups.values_list.0.0 <= 2%}
 							<div class="btn-group" role="group" style='margin-left: 5px;'>
 								<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle desabilitado" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
 								</button>
+
 								<ul class="dropdown-menu dropdown-menu-right">
 									<!--<li><a href="#">Action</a></li>
 									<li><a href="#">Another action</a></li>
 									<li><a href="#">Something else here</a></li>
 									<li role="separator" class="divider"></li>-->
-									<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a>
-
-									</li>
+									<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>
 								</ul>
 							</div>
+							{% endif %}
 						</div>
 					</div>
 				</div>
@@ -130,9 +131,10 @@ input.no-border{
 						<thead>
 							<tr class="linha_cabecalho">
 								<th style="vertical-align: middle"></th>
-								<th style="vertical-align: middle;text-align:center;">CNPJ</th>
+								<th style="vertical-align: middle;text-align:center;">CPF ou CNPJ</th>
 								<th style="vertical-align: middle;text-align:center;">Razão Social</th>
 								<th style="vertical-align: middle;text-align:center;">Nome Fantasia</th>
+								<th style="vertical-align: middle;text-align:center;">Filial ou Comp.</th>
 								<th style="vertical-align: middle;text-align:center;">Data Cadastro</th>
 							</tr>
 						</thead>
@@ -150,10 +152,11 @@ input.no-border{
 
 								<td align="left" style="cursor:pointer">{{ item.nome_razao }}</td>
 								<td align="left" style="cursor:pointer">{{ item.apelido_fantasia }}</td>
+								<td align="left" style="cursor:pointer">{{ item.nome_filial }}</td>
 								<td align="center" style="cursor:pointer;width:140px;">{{ item.data_cadastro|date:"d/m/Y" }} ÀS {{ item.data_cadastro|date:"h:m:s" }}</td>
 							</tr>
 							{% empty %}
-    							<tr><td colspan="5" style='text-align:center;'><a href="/entidade/adicionar">Adicione uma nova Entidade.</a></td></tr>
+    							<tr><td colspan="6" style='text-align:center;'><a href="/entidade/adicionar">Adicione uma nova Entidade.</a></td></tr>
 							{% endfor %}
 						</tbody>
 					</table>
@@ -286,7 +289,7 @@ input.no-border{
 	  </div>
   </div> -->
 
-{% include "componentes/mensagem.html" with messages=messages %}
+<!--{ include "componentes/mensagem.html" with messages=messages }-->
 {% endblock %}
 {% block recursos_complementares %}
 {% load staticfiles %}

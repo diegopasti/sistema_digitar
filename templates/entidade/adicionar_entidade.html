@@ -121,8 +121,15 @@ label {
 #abas_formulario > li.active > a{
     background-color: #fff !important;
     border: 0px;
+    background-color: #f1eff6 !important;
+    color: #696766;
+}
+
+#abas_formulario > li > a{
+    background-color: #fff !important;
+    border: 0px;
     /*background-color: #f1eff6 !important;*/
-    /*color: #696766;*/
+    color: #999; /*#696766;*/
 }
 
 legend {
@@ -132,6 +139,7 @@ legend {
     font-weight: bold;
     font-size:100%;
     text-align:left;
+    color: #777;
 }
 
 .field_required label:after {
@@ -139,6 +147,30 @@ legend {
     content: '*';
     display:inline;
 }
+</style>
+
+<style>
+	.tab-item i{
+		font-size: 24px;
+		width: 50px;
+	}
+
+	#abas_formulario li {
+		transition: all .1s ease-in-out;
+		width: 100px;
+	}
+
+	#abas_formulario li:hover {
+		transform: scale(1.05);
+	}
+
+	.tab-item{
+		height: 60px;
+	}
+
+	.tab-item a{
+		height: 60px !important;
+	}
 </style>
 {% endblock %}
 
@@ -150,14 +182,13 @@ legend {
 <li class="active">Novo Registro</li>
 { endblock %}-->
 {% block conteudo %}
-
-<form action="" method="post" autocomplete="off">
+<form id="formulario_cliente" action="" method="post" autocomplete="off">
 	{% csrf_token %}
 	<!-- ng-cloak  -->
 	<div id="controle_angular"
 			 ng-app="app"
 			 ng-controller="MeuController"
-			 style='margin-top: -30px;'
+			 style='margin-top: -55px;'
 
 			 ng-init="
             {% if meus_contatos %}
@@ -192,17 +223,44 @@ legend {
 	{% endif %}
 	">
 
+
+
 	<div class="box box-default" stlye='padding-top: 0px;'>
 
-		<div class="box-body"  style='padding:2px;'>
+		<div class="box-body" style='padding:2px;'>
 			<ul id='abas_formulario' class="nav nav-pills">
-				<li id='nav_cliente' class="active" style="width: 80px;"><a data-toggle="tab" href="#tab_cliente"><!--<i class="fa fa-user" aria-hidden="true"></i>--> Cliente</a></li>
-				<!--<li id='nav_contatos' style="width: 90px;"><a data-toggle="tab" href="#tab_contatos"><i class="fa fa-phone" aria-hidden="true"></i> Contatos</a></li>-->
-				<!--<li id='nav_cnae' style="width: 80px;"><a data-toggle="tab" href="#tab_cnae"><!--<i class="fa fa-user" aria-hidden="true"></i> Cnaes</a></li>-->
-				<li id='nav_controles' style="width: 90px;"><a data-toggle="tab" href="#tab_servicos"><!--<i class="fa fa-suitcase" aria-hidden="true"></i>--> Controles</a></li>
-				<li id='nav_administrativo' class='pull-right' style="width: 150px;">
-					<a data-toggle="tab" href="#tab_administrativo" style='margin-top:0px;'>
-						<i class="fa fa-lock" style='margin-top: -10px;'aria-hidden="true"></i> Administrativo
+				<li id='nav_cliente' class="active tab-item">
+					<a data-toggle="tab" href="#tab_cliente">
+					<i class="fa fa-user" aria-hidden="true"></i>Cliente</a>
+				</li>
+
+				<li id='nav_contatos' class="tab-item">
+					<a data-toggle="tab" href="#tab_contatos"><i class="fa fa-phone" aria-hidden="true"></i> Contatos</a>
+				</li>
+
+				<li id='nav_cnae' class="tab-item">
+					<a data-toggle="tab" href="#tab_cnae"><i class="fa fa-suitcase" aria-hidden="true"></i>Atividades</a>
+				</li>
+
+				<li id='nav_controles' class="tab-item">
+					<a data-toggle="tab" href="#tab_servicos"> <i class="fa fa-tasks" aria-hidden="true"></i>
+Controles</a>
+				</li>
+
+
+				<li id='nav_administrativo' class='tab-item'>
+					{% if request.user.groups.values_list.0.0 <= 2%}
+					<a data-toggle="tab" href="#tab_administrativo" style='width:110px;'>
+						<i class="fa fa-lock" style=''aria-hidden="true"></i>Administrativo
+					</a>
+					{% endif %}
+				</li>
+
+				<li id='nav_save' class='tab-item pull-right'>
+					<!--<button role='link' type="submit" class="pull-right"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>-->
+
+					<a data-toggle="tab" href="#" onclick="return verificar_dados_antes_salvar()">
+						<i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar
 					</a>
 				</li>
 			</ul>
@@ -213,19 +271,14 @@ legend {
 
 		<div class="panel-body" style='padding:0px;padding-left: 14px;padding-right: 14px;'>
 			<div class="row">
-
 				<div class="col-lg-12 col-md-12 col-xs-12">
-
 					<div class="tab-content" style="padding-top: 0px;padding-bottom:0px;padding-left: 0px;padding-right: 0px;">
-
 						<div id="tab_cliente" class="tab-pane fade in active">
-
 							<div class="box-body">
 								<fieldset>
-									<legend><i class="fa fa-user" aria-hidden="true"></i> Identificação</legend>
+									<legend><i class="fa fa-id-card-o" aria-hidden="true"></i> Identificação</legend>
 
 									<div class="row">
-
 										<div class="col-lg-2">
 											<div class="form-group field_required">
 												<sub><label id="lb_cpf_cnpj" for="cpf_cnpj">{{ formulario_entidade.cpf_cnpj.label|upper }}</label></sub>
@@ -247,15 +300,6 @@ legend {
 											</div>
 										</div>
 
-										<!--
-										<div class="col-lg-2">
-												<div class="form-group">
-														<sub><label id="lb_tipo_registro" for="tipo_registro">{ formulario.tipo_registro.label }}</label></sub>
-														{ formulario.tipo_registro }}
-												</div>
-										</div>
-										-->
-
 										<div class="col-lg-2">
 											<div class="form-group">
 												<sub><label id="lb_nascimento_fundacao" for="nascimento_fundacao">{{ formulario_entidade.nascimento_fundacao.label }}</label></sub>
@@ -267,18 +311,31 @@ legend {
 
 									<div class="row" style="margin-top: -10px;">
 
-										<div class="col-lg-8">
+										<div class="col-lg-2">
 											<div class="form-group">
-												<sub><label id="lb_natureza_juridica" for="natureza_juridica">{{ formulario_entidade.natureza_juridica.label }}</label></sub>
-
-												<!--<input id='natureza_juridica' class="form-control" list="naturezas_juridicas" name="natureza_juridica">-->
-												{{ formulario_entidade.natureza_juridica }}
-												<datalist id="naturezas_juridicas">
-
-												</datalist>
+												<sub><label id="lb_inscricao_municipal" for="inscricao_municipal">{{ formulario_entidade.inscricao_municipal.label }}</label></sub>
+												{{ formulario_entidade.inscricao_municipal }}
 											</div>
 										</div>
 
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_nome_filial" for="nome_filial">{{ formulario_entidade.nome_filial.label }}</label></sub>
+												{{ formulario_entidade.nome_filial }}
+											</div>
+										</div>
+
+										<div class="col-lg-8">
+											<div class="form-group">
+												<sub><label id="lb_natureza_juridica" for="natureza_juridica">{{ formulario_entidade.natureza_juridica.label }}</label></sub>
+												{{ formulario_entidade.natureza_juridica }}
+												<datalist id="naturezas_juridicas">
+												</datalist>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
 										<div class="col-lg-2">
 											<div class="form-group">
 												<sub><label id="lb_regime_apuracao" for="regime_apuracao">{{ formulario_entidade.regime_apuracao.label }}</label></sub>
@@ -292,16 +349,6 @@ legend {
 												{{ formulario_entidade.regime_desde }}
 											</div>
 										</div>
-									</div>
-
-									<div class="row">
-
-										<div class="col-lg-2">
-											<div class="form-group">
-												<sub><label id="lb_nome_filial" for="nome_filial">{{ formulario_entidade.nome_filial.label }}</label></sub>
-												{{ formulario_entidade.nome_filial }}
-											</div>
-										</div>
 
 										<div class="col-lg-2">
 											<div class="form-group">
@@ -309,15 +356,6 @@ legend {
 												{{ formulario_entidade.inscricao_estadual }}
 											</div>
 										</div>
-
-										<div class="col-lg-2">
-											<div class="form-group">
-												<sub><label id="lb_inscricao_municipal" for="inscricao_municipal">{{ formulario_entidade.inscricao_municipal.label }}</label></sub>
-												{{ formulario_entidade.inscricao_municipal }}
-											</div>
-										</div>
-
-
 
 										<div class="col-lg-2">
 											<div class="form-group" data-toggle="tooltip" data-placement="top" title="Inscrição da Junta Comercial, Cartório ou OAB.">
@@ -339,14 +377,11 @@ legend {
 												{{ formulario_entidade.inscricao_imovel_rural }}
 											</div>
 										</div>
-
 									</div>
 
 								</fieldset>
 
-
 								<fieldset>
-
 									<legend><i class="fa fa-map-marker" aria-hidden="true"></i> Localização</legend>
 
 									<div class="row">
@@ -365,7 +400,7 @@ legend {
 										</div>
 
 										<div class="col-lg-1">
-											<div class="form-group">
+											<div class="form-group field_required">
 												<sub><label id="lb_numero_endereco" for="numero_endereco">{{ formulario_entidade.numero_endereco.label }}</label></sub>
 												{{ formulario_entidade.numero_endereco }}
 											</div>
@@ -381,9 +416,8 @@ legend {
 									</div>
 
 									<div class="row">
-
 										<div class="col-lg-3">
-											<div class="form-group">
+											<div class="form-group field_required">
 												<sub><label id="lb_bairro" for="bairro">{{ formulario_entidade.bairro.label }}</label></sub>
 												{{ formulario_entidade.bairro }}
 											</div>
@@ -421,18 +455,18 @@ legend {
 
 
 								</fieldset>
+							</div>
+						</div>
 
+						<div id="tab_contatos" class="tab-pane fade">
+							<div class="box-body">
 								<fieldset id="field_contatos">
-
 									<legend><i class="fa fa-phone" aria-hidden="true"></i> Contatos</legend>
-
 									{{ formulario_entidade.contatos }}
 									{% verbatim %}
 
 									<div class="row">
-
 										<div class="col-md-3">
-
 											<div class="row">
 												<div class="col-lg-5">
 													<div class="form-group">
@@ -447,8 +481,8 @@ legend {
 												</div>
 
 												<div class="col-lg-7">
-													<div class="form-group">
-														<sub><label id="lb_tipo_contato" for="tipo_contato">Telefone:</label></sub>
+													<div class="form-group field_required">
+														<sub><label id="" for="tipo_contato">Telefone:</label></sub>
 														<input type="text" id="numero_contato" class="form-control" ng-model="numero_contato">
 													</div>
 												</div>
@@ -456,7 +490,7 @@ legend {
 
 											<div class="row">
 												<div class="col-lg-12">
-													<div class="form-group field_required">
+													<div class="form-group ">
 														<sub><label id="lb_cargo_setor" for="cargo_setor">Nome / Cargo / Setor:</label></sub>
 														<input type="text" id="cargo_setor" class="form-control uppercase" ng-model="cargo_setor">
 													</div>
@@ -511,11 +545,7 @@ legend {
 													</tbody>
 												</table>
 											</div>
-
 										</div>
-
-
-
 									</div>
 
 									<div class="row">
@@ -526,7 +556,11 @@ legend {
 
 									{% endverbatim %}
 								</fieldset>
+							</div>
+						</div>
 
+						<div id="tab_cnae" class="tab-pane fade">
+							<div class="box-body">
 								<fieldset id='fieldset_cnae'>
 
 									<legend>Atividades Econômicas</legend>
@@ -604,22 +638,10 @@ legend {
 									</div>
 
 								</fieldset>
-
 							</div>
-
 						</div>
-
-						<!--<div id="tab_contatos" class="tab-pane fade ">
-						</div>
-
-						<div id="tab_cnae" class="tab-pane fade">
-
-								<div class="box-body">
-								 </div>
-						</div>-->
 
 						<div id="tab_servicos" class="tab-pane fade">
-
 							<div class="box-body">
 
 								<fieldset id="fieldset_iss">
@@ -627,7 +649,7 @@ legend {
 									<div class="row">
 										<div class="col-lg-2">
 											<div class="form-group">
-												<sub><label id="lb_tipo_vencimento" for="tipo_vencimento">{{ formulario_entidade.tipo_vencimento.initial }} - {{ formulario_entidade.tipo_vencimento.label }}</label></sub>
+												<sub><label id="lb_tipo_vencimento" for="tipo_vencimento">{{ formulario_entidade.tipo_vencimento.label }}</label></sub>
 												{{ formulario_entidade.tipo_vencimento }}
 												<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 											</div>
@@ -810,69 +832,8 @@ legend {
 							</div>
 						</div>
 
+						{% if request.user.groups.values_list.0.0 <= 2%}
 						<div id="tab_administrativo" class="tab-pane fade">
-							<!--<div class="box-body">
-								<div class="row">
-									<div class='col-md-4'>
-										<div class="col-md-12">
-											<div class="box box-panel" style="margin-top: 18px;overflow: scroll;height: 180px;">
-												<table class="table table-condensed table-striped table-hover table-bordered">
-													<thead>
-														<tr>
-															<th style="text-align: center">#</th>
-															<th style="text-align: center">Indicação</th>
-															<th style="text-align: center">Cadastrado em</th>
-														</tr>
-													</thead>
-
-													<tbody>
-													{% verbatim %}
-													<tr ng-repeat="documento in documentos"> <!-- class="clickable"  ng-click="editar_documento($index)" --
-														<td class='left_align' style="width:30px;">{{$index}}</td>
-
-														<td class='left_align'>
-															{{ documento.documento }}
-															<span ng-if='documento.documento_senha!=""'>
-																 - SENHA: {{ documento.documento_senha }}
-															</span>
-
-															<span ng-if='documento.documento_senha==""'>
-															</span>
-														</td>
-
-														<td class='center_align' style="width:70px;">
-															{{ documento.documento_vencimento }}
-														</td>
-
-														<!--<td class='center_align'>
-																<span ng-if='documento.prazo_notificacao!=""'>
-																		{{ documento.prazo_notificacao }} DIAS
-																</span>
-
-																<span ng-if='documento.prazo_notificacao==""'>
-																		-
-																</span>
-														</td>
-
-														<td style="width: 30px; ">
-																<a ng-click="excluir_documento($index)" style="cursor:pointer; border-left: hidden; text-align: center;" >
-																		<i class="fa fa-trash-o" aria-hidden="true"></i>
-																</a>
-														</td>--
-													</tr>
-
-													<tr ng-repeat="k in size_list_documents.slice(documentos.length,size_list_documents.length)">
-														<td height="30" style="width:30px;"></td><td></td><td style="width:120px;"></td>
-													</tr>
-													{% endverbatim %}
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>-->
-
 							<div class="row">
 								<div class="col-md-4">
 									<div class="row">
@@ -950,17 +911,13 @@ legend {
 								</div>
 
 								<div class="col-md-8">
-
-
 									<fieldset>
 										<legend>Informações Complementares</legend>
-
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
 													<sub><label id="lb_observacoes" for="observacoes">Observações:</label></sub>
 													{{ formulario_entidade.observacoes }}
-													<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
 												</div>
 											</div>
 										</div>
@@ -968,23 +925,15 @@ legend {
 								</div>
 							</div>
 						</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	</div>
-
-	<div class="box box-default" style='padding-top: 0px;margin-top:-10px;'>
-		<div class="box-body"  style='padding:2px;'>
-			<button type="submit" class="btn btn-primary pull-right" onclick="return verificar_dados_antes_salvar()">Salvar</button>
-		</div>
-	</div>
-
-	</div>
 </form>
 
-{% include "componentes/mensagem.html" with messages=messages %}
+<!--{ include "componentes/mensagem.html" with messages=messages }-->
 {% endblock %}
 
 {% block recursos_complementares %}
@@ -1117,34 +1066,30 @@ function substituir_valor_nulo(valor){
 
 
 			$scope.salvar_entidade = function(dados){
-					//alert("acho que é isso"+dados);
+				//alert("acho que é isso"+dados);
 			}
 
 			$scope.adicionar_atividade = function(){
-					var cnae = {
-							atividade: $scope.atividade_descricao,
-							desde: $('#atividade_desde').val()
-					};
-					$scope.atividades.push(cnae);
-					$('#atividade_economica').val($('#atividade_economica').val()+"+|"+$scope.atividade_descricao+"|"+$('#atividade_desde').val()+"#");
-					$('#atividade_descricao').val("");
-					$('#atividade_desde').val("");
-
-					$scope.atividade_descricao = "";
-					$scope.atividade_desde = "";
-
+				var cnae = {
+					atividade: $scope.atividade_descricao,
+					desde: $('#atividade_desde').val()
+				};
+				$scope.atividades.push(cnae);
+				$('#atividade_economica').val($('#atividade_economica').val()+"+|"+$scope.atividade_descricao+"|"+$('#atividade_desde').val()+"#");
+				$('#atividade_descricao').val("");
+				$('#atividade_desde').val("");
+				$scope.atividade_descricao = "";
+				$scope.atividade_desde = "";
 			};
 
 			$scope.excluir_atividade = function(index){
 					$scope.atividades.splice(index, 1);
-
 					var registro_temporario = $('#atividade_economica').val();
 					var temp = new Array();
 					temp = registro_temporario.split("#")[index];
 					registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
 					//alert("Veja:"+registro_temporario);
 					$('#atividade_economica').val(registro_temporario);
-
 			};
 
 			$scope.add_contato = function(tipo,numero,nome_contato,cargo_setor,email) {
@@ -1158,12 +1103,9 @@ function substituir_valor_nulo(valor){
 			};
 
 			$scope.addPerson = function(){
-
-
-				if (!(($('#email').val()) && $('#numero_contato').val())){
-
-					notify('error','Contato não adicionado','Informe um Email/Numero')
-					return;
+				if ($('#numero_contato').val() == ''){
+					notify('error','Contato não adicionado','Informe o número do telefone')
+					return false;
 				}
 
 				try{
@@ -1231,8 +1173,6 @@ function substituir_valor_nulo(valor){
 	}]);
 
 </script>
-
-
 
 <script>
 	configurar_campo_data("nascimento_fundacao");
@@ -1408,7 +1348,7 @@ function substituir_valor_nulo(valor){
 
 </script>
 
-<script type="text/javascript">
+<script>
 $('#codigo_postal').blur(function(){
 	$.ajax({
 		url: '/consultar_cep/'+$('#codigo_postal').val(),
@@ -1452,116 +1392,128 @@ $('#codigo_postal').blur(function(){
         });
     </script>
 
-<script type="text/javascript">
-        $('#cpf_cnpj').blur(function(){
-						if($('#cpf_cnpj').val() != ""){
-							verificar_tipo_cliente();
-						}
-        });
+<script>
+$('#cpf_cnpj').blur(function(){
+	if($('#cpf_cnpj').val() != ""){
+		verificar_tipo_cliente();
+	}
+});
 
-        if($('#cpf_cnpj').val() != ""){
-            verificar_tipo_cliente();
-        }
+if($('#cpf_cnpj').val() != ""){
+  verificar_tipo_cliente();
+}
 
-        function verificar_dados_antes_salvar(){
-            if (valida_cpf_cnpj($('#cpf_cnpj').val()) == false){
-                //$('#cpf_cnpj').tooltip({title: "CPF Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
-                alert("CPF ou CNPJ Inválido!");
-                return false;
-            }
-        }
+function verificar_dados_antes_salvar(){
+  if (valida_cpf_cnpj($('#cpf_cnpj').val()) == false){
+    //$('#cpf_cnpj').tooltip({title: "CPF Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+    notify('error','Falha na operação','Informe um CPF ou CNPJ válido.')
+    return false;
+  }
 
-        function verificar_tipo_cliente(){
-            var texto = $('#cpf_cnpj').val();
+  if ($('#nome_razao').val() == ''){
+    notify('error','Falha na operação','Nome completo ou razão social é obrigatório.')
+    return false;
+  }
 
-            if (texto.length == 11){
-                configurar_formulario_pessoa_fisica();
-                if (valida_cpf($('#cpf_cnpj').val()) == false){
-                    //$('#cpf_cnpj').tooltip({title: "CPF Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
-                    alert("CPF Inválido!");
-                }
-            }
+  if ($('#endereco').val() == '' || $('#numero_endereco').val() == '' || $('#bairro').val() == '' || $('#municipio').val() == '' || $('#pais').val() == ''){
+    notify('error','Falha na operação','Endereço do cliente precisa ser informado.')
+    return false;
+  }
 
-            else{
-                configurar_formulario_pessoa_juridica();
-                if (valida_cnpj($('#cpf_cnpj').val()) == false){
-                    //$('#cpf_cnpj').tooltip({title: "CNPJ Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
-                    alert("CNPJ Inválido!");
-                }
-            }
-        }
+  if ($('#contatos').val() == ''){
+    notify('error','Falha na operação','Contato do cliente precisa ser informado.')
+    return false;
+  }
+  $("#formulario_cliente").submit();
+}
 
-        function configurar_formulario_pessoa_fisica(){
-            $("#lb_cpf_cnpj").text("CPF:");
-            $("#lb_nome_razao").text("Nome Completo:");
-            $("#lb_apelido_fantasia").text("Apelido:");
-            $("#lb_nascimento_fundacao").text("Nascimento:");
+function verificar_tipo_cliente(){
+  var texto = $('#cpf_cnpj').val();
+  if (texto.length == 11){
+    configurar_formulario_pessoa_fisica();
+    if (valida_cpf($('#cpf_cnpj').val()) == false){
+      //$('#cpf_cnpj').tooltip({title: "CPF Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+      alert("Documento Inválido!");
+    }
+  }
 
-            desabilitar_campo("natureza_juridica");
-            desabilitar_campo("regime_apuracao");
-            desabilitar_campo("regime_desde");
-            desabilitar_campo("nome_filial");
-            desabilitar_campo("inscricao_estadual");
-            desabilitar_campo("inscricao_municipal");
-            desabilitar_campo("inscricao_junta_comercial");
-            desabilitar_campo("inscricao_produtor_rural");
-            desabilitar_campo("inscricao_imovel_rural");
+  else{
+    configurar_formulario_pessoa_juridica();
+    if (valida_cnpj($('#cpf_cnpj').val()) == false){
+      //$('#cpf_cnpj').tooltip({title: "CNPJ Inválido!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+      alert("Documento Inválido!");
+    }
+  }
+}
 
-            desabilitar_campo("atividade_descricao");
-            desabilitar_campo("atividade_desde");
-            desabilitar_campo("bt_adicionar_atividade");
+function configurar_formulario_pessoa_fisica(){
+  $("#lb_cpf_cnpj").text("CPF:");
+  $("#lb_nome_razao").text("Nome Completo:");
+  $("#lb_apelido_fantasia").text("Apelido:");
+  $("#lb_nascimento_fundacao").text("Nascimento:");
+  $("#lb_nome_filial").text("Complemento:");
 
-            desabilitar('table_cnae');
+  desabilitar_campo("natureza_juridica");
+  desabilitar_campo("regime_apuracao");
+  desabilitar_campo("regime_desde");
+  //desabilitar_campo("nome_filial");
+  desabilitar_campo("inscricao_estadual");
+  //desabilitar_campo("inscricao_municipal");
+  desabilitar_campo("inscricao_junta_comercial");
+  desabilitar_campo("inscricao_produtor_rural");
+  desabilitar_campo("inscricao_imovel_rural");
+  desabilitar_campo("atividade_descricao");
+  desabilitar_campo("atividade_desde");
+  desabilitar_campo("bt_adicionar_atividade");
+  desabilitar('table_cnae');
+}
 
-        }
+function configurar_formulario_pessoa_juridica(){
+  $("#lb_cpf_cnpj").text("CNPJ:");
+  $("#lb_nome_razao").text("Razão Social:");
+  $("#lb_apelido_fantasia").text("Nome Fantasia:");
+  $("#lb_nascimento_fundacao").text("Fundação:");
+  $("#lb_nome_filial").text("Identificação de Filial:");
 
-        function configurar_formulario_pessoa_juridica(){
-            $("#lb_cpf_cnpj").text("CNPJ:");
-            $("#lb_nome_razao").text("Razão Social:");
-            $("#lb_apelido_fantasia").text("Nome Fantasia:");
-            $("#lb_nascimento_fundacao").text("Fundação:");
+  habilitar_campo("natureza_juridica");
+  habilitar_campo("regime_apuracao");
+  habilitar_campo("regime_desde");
+  habilitar_campo("nome_filial");
+  habilitar_campo("inscricao_estadual");
+  habilitar_campo("inscricao_municipal");
+  habilitar_campo("inscricao_junta_comercial");
+  habilitar_campo("inscricao_produtor_rural");
+  habilitar_campo("inscricao_imovel_rural");
 
-            habilitar_campo("natureza_juridica");
-            habilitar_campo("regime_apuracao");
-            habilitar_campo("regime_desde");
-            habilitar_campo("nome_filial");
-            habilitar_campo("inscricao_estadual");
-            habilitar_campo("inscricao_municipal");
-            habilitar_campo("inscricao_junta_comercial");
-            habilitar_campo("inscricao_produtor_rural");
-            habilitar_campo("inscricao_imovel_rural");
+  habilitar_campo("atividade_descricao");
+  habilitar_campo("atividade_desde");
+  habilitar_campo("bt_adicionar_atividade");
 
-            habilitar_campo("atividade_descricao");
-            habilitar_campo("atividade_desde");
-            habilitar_campo("bt_adicionar_atividade");
+  habilitar('table_cnae');
 
-            habilitar('table_cnae');
+  //habilitar_nav_page("#nav_controles",'#tab_servicos');
+  var inscricao_municipal = $('#inscricao_municipal').val();
+  if (inscricao_municipal != "" && inscricao_municipal != "ISENTO"){
+      configurar_inscricao_municipal();
+  }
+}
 
-            //habilitar_nav_page("#nav_controles",'#tab_servicos');
-            var inscricao_municipal = $('#inscricao_municipal').val();
-            if (inscricao_municipal != "" && inscricao_municipal != "ISENTO"){
-                configurar_inscricao_municipal();
-            }
-        }
+function configurar_inscricao_municipal(){
+  if($('#inscricao_municipal').val() == "" || $('#inscricao_municipal').val() == "ISENTO"){
+    $('#inscricao_municipal').val("ISENTO");
+    desabilitar_campo("tipo_vencimento");
+    desabilitar_campo("data_vencimento_iss");
+    desabilitar_campo("dia_vencimento_iss");
+    desabilitar_campo("taxa_iss");
+  }
 
-        function configurar_inscricao_municipal(){
-            if($('#inscricao_municipal').val() == "" || $('#inscricao_municipal').val() == "ISENTO"){
-                $('#inscricao_municipal').val("ISENTO");
-                desabilitar_campo("tipo_vencimento");
-                desabilitar_campo("data_vencimento_iss");
-                desabilitar_campo("dia_vencimento_iss");
-                desabilitar_campo("taxa_iss");
-            }
-
-            else{
-                $("#tipo_vencimento").val('fixo');
-                habilitar_campo("tipo_vencimento");
-                habilitar_campo("data_vencimento_iss");
-            }
-        }
-
-    </script>
-
+  else{
+    $("#tipo_vencimento").val('fixo');
+    habilitar_campo("tipo_vencimento");
+    habilitar_campo("data_vencimento_iss");
+  }
+}
+</script>
 
 <script>
         window.addEventListener('DOMContentLoaded', carregar_dados_complementares, false);

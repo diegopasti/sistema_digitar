@@ -294,6 +294,7 @@ class formulario_cadastro_entidade_completo(forms.Form):
                                     )
 
     opcoes_regime = (
+        ('', ''),
         ('SIMPLES_NACIONAL','SIMPLES NACIONAL'),
         ('LUCRO_PRESUMIDO','LUCRO PRESUMIDO'),
         ('LUCRO_REAL','LUCRO REAL'),
