@@ -149,10 +149,8 @@
     font-size:18px;
 }
 
-#span_button_title_salvar{
-    position: absolute;
-    top:8px;
-    left:60px;
+#bt_submit{
+    width: 120px;
 }
 
 
