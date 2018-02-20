@@ -100,8 +100,10 @@ class entidade(models.Model):
     endereco = models.ForeignKey(localizacao_simples, default=0)
 
     def __str__(self):
-        return self.nome_razao
-
+        if self.nome_filial is not None and self.nome_filial != "":
+            return self.nome_razao+" - "+self.nome_filial
+        else:
+            return self.nome_razao
 
 class contato(models.Model):
     opcoes_tipos_contatos = (

@@ -137,7 +137,10 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	$scope.adicionar_contrato = function() {
 		var data_paramters = $scope.get_data_from_form();
-		alert("Olha o data>"+JSON.stringify(data_paramters))
+		if ($("#desconto_temporario").val() == ""){
+			data_paramters['desconto_temporario'] = '0.0';
+		}
+		//alert("Olha o data>"+JSON.stringify(data_paramters))
 
 		function validate_function(){
 			return true
@@ -164,7 +167,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 			$scope.registro_selecionado.contrato.desconto_temporario = message.fields.desconto_temporario
 			*/
-			alert("deu True")
+			//alert("deu True")
 			$scope.registro_selecionado.contrato = data_object;
 			$scope.registro_selecionado.plano = $('#select_plano option:selected').text();
 			$scope.$apply()
@@ -186,6 +189,9 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	$scope.alterar_contrato = function() {
 		var data_paramters = $scope.get_data_from_form();
 		data_paramters['id'] = $scope.registro_selecionado.contrato.id;
+		if ($("#desconto_temporario").val() == ""){
+			data_paramters['desconto_temporario'] = '0.0';
+		}
 
 		function validate_function(){
 			if(data_paramters===null){return false}
@@ -602,7 +608,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		lista = lista.join(';')
 		$scope.registro_selecionado.contrato.servicos_contratados = lista
 		$scope.atualizar_servicos_contratados();
-		alert("VEJA OS SERVICOS: "+$scope.registro_selecionado.contrato.servicos_contratados+" - VALOR: ")
+		//alert("VEJA OS SERVICOS: "+$scope.registro_selecionado.contrato.servicos_contratados+" - VALOR: ")
 	}
 
 	$scope.atualizar_servicos_contratados = function (){

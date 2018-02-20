@@ -77,7 +77,6 @@ class ContractController(BaseController):
     @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def salvar_contrato(self, request):
         save_response = self.save(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
-        print("SALVEI: ",save_response)
         if save_response['result']:
             contrato = Contrato.objects.get(pk=int(save_response['object']['id']))
             contrato.servicos_contratados = contrato.plano.servicos
@@ -132,6 +131,11 @@ class ContractController(BaseController):
             response_cliente = {}
             response_cliente['cliente_id'] = item.id
             response_cliente['cliente_nome'] = item.nome_razao
+            if item.nome_filial is not None and item.nome_filial != "":
+                response_cliente['cliente_nome_filial'] = item.nome_filial
+            else:
+                response_cliente['cliente_nome_filial'] = None
+
             response_cliente['selecionado'] = False
             response_cliente['contrato'] = {}
 
@@ -384,7 +388,7 @@ class ContractController(BaseController):
             response_dict['result'] = True
             response_dict['object'] = lista_indicacoes
             response_dict['message'] = str(len(lista_indicacoes))+" indicações cadastradas."
-        print("VEJA O RESPONSE DICT: ",response_dict)
+        #print("VEJA O RESPONSE DICT: ",response_dict)
         return self.response(response_dict)
 
     @request_ajax_required

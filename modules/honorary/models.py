@@ -202,7 +202,7 @@ class Honorary(models.Model):
         return honorary
 
     def update_honorary(self, honorary, contract=None):
-        if not honorary.is_closed:
+        if honorary.status != "E":
             if contract is not None:
                 honorary = self.verify_contract_values(honorary, contract)
             honorary.verify_provents_values()
