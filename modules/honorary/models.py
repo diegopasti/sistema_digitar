@@ -170,7 +170,14 @@ class Honorary(models.Model):
     total_honorary = models.DecimalField("Honorário", max_digits=8, default=0, decimal_places=2, null=True, blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True)
-    is_closed = models.BooleanField("Situação do Honorário", default=False)
+
+    opcoes_tipos_provento = (('A', 'EM ABERTO'), ('C', 'CONFERIDO'), ('E', 'ENCERRADO'))
+    status = models.CharField("Situação do Honorário:", max_length=1, null=False, default='A', choices=opcoes_tipos_provento, error_messages=MENSAGENS_ERROS)
+
+    #status = models.BooleanField("Situação do Honorário", default=False)
+    conferred_date = models.DateTimeField("Honorário conferido em", null=True)
+    conferred_by = models.ForeignKey(User, related_name="conferido_por", null=True)
+
     closed_date = models.DateTimeField("Honorário encerrado em", null=True)
     closed_by = models.ForeignKey(User, related_name="finalizado_por", null=True)
     last_update = models.DateTimeField("Ultima atualização", auto_now=True)
@@ -179,6 +186,11 @@ class Honorary(models.Model):
     is_received = models.BooleanField("Honorário recebido", default=False)
     received_by = models.ForeignKey(User, related_name="recebido_por", null=True)
 
+    def have_contract(self):
+        if self.contract is not None:
+            return True
+        else:
+            return False
 
     def create_honorary(self, entity, competence, contract=None):
         honorary = Honorary()

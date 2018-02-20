@@ -80,16 +80,17 @@
 											<tr class="linha_cabecalho no-select">
 												<th class='text-center' style="width: 40px;" ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
 												<th class='text-center' style="width:60px;" ng-click="sortType='competence';sortReverse=!sortReverse">Comp.</th>
-												<th class='text-center' ng-click="sortType='cliente';sortReverse=!sortReverse">Cliente</th>
-												<th class='text-center' style="width: 100px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Valor Contrato</th>
-												<th class='text-center' style="width: 100px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Desc. Contrato</th>
-												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Proventos</th>
-												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Descontos</th>
-												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Ressarcimento</th>
+												<th class='text-center' ng-click="sortType='entity_name';sortReverse=!sortReverse">Cliente</th>
+												<th class='text-center' style="width: 100px;" ng-click="sortType='initial_value_contract';sortReverse=!sortReverse">Valor Contrato</th>
+												<th class='text-center' style="width: 100px;" style="cursos: not-allowed">Desc. Contrato</th>
+												<th class='text-center' style="width: 90px;" ng-click="sortType='total_debit';sortReverse=!sortReverse">Proventos</th>
+												<th class='text-center' style="width: 90px;" ng-click="sortType='total_credit';sortReverse=!sortReverse">Descontos</th>
+												<th class='text-center' style="width: 90px;" ng-click="sortType='total_repayment';sortReverse=!sortReverse">Ressarcim.</th>
+												<th class='text-center' style="width: 90px;" ng-click="sortType='total_honorary';sortReverse=!sortReverse">Honorário</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Ult. Alteração</th>
-												<th class="text-center" style="width: 120px;">Alterado por</th>
-												<th class='text-center' style="width: 100px;" ng-click="sortType='plano';sortReverse=!sortReverse" >Situação</th>
-												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Honorário</th>
+												<th class="text-center" style="width: 120px;" ng-click="sortType='updated_by_name';sortReverse=!sortReverse">Alterado por</th>
+												<th class='text-center' style="width: 100px;" ng-click="sortType='status';sortReverse=!sortReverse" >Situação</th>
+
 											</tr>
 										</thead>
 
@@ -108,14 +109,18 @@
 												<td class='text-right' style="width: 90px;">{{ registro.total_debit| currency:"" }}</td>
 												<td class='text-right' style="width: 90px;">{{ registro.total_credit| currency:"" }}</td>
 												<td class='text-right' style="width: 90px;">{{ registro.total_repayment| currency:"" }}</td>
-
-												<td class='text-center' style="width: 90px;" title="Atualizado {{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}">{{ registro.last_update| date: 'dd/MM/yyyy' }}</td>
-												<td class="text-left" style="width: 100px;">{{ registro.updated_by_name }}</td>
-												<td class='text-center' style="width: 100px;">
-													<span ng-show="registro.is_closed==false">EM CONFECÇÃO</span>
-													<span ng-show="registro.is_closed==true">ENCERRADO</span>
-												</td>
 												<td class='text-right' style="width: 90px;">{{ registro.total_honorary| currency:"" }}</td>
+												<td class='text-center' style="width: 90px;" title="Atualizado {{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}">{{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}</td>
+												<td class="text-left" style="width: 100px;">
+													<span ng-show="registro.updated_by_name!=null">{{ registro.updated_by_name }}</span>
+													<span ng-show="registro.updated_by_name==null">SISTEMA</span>
+												</td>
+												<td class='text-center' style="width: 100px;">
+													<span ng-show="registro.status=='A'" title="Honorário em confecção" style="color:#AAA;display:block;">-</span>
+													<span ng-show="registro.status=='C'" title="Honorário conferido" style="display:block;"><i class="fa fa-check" aria-hidden="true" style="color: #AAA;"></i></span>
+													<span ng-show="registro.status=='E'" title="Honorário encerrado" style="display:block;"><i class="fa fa-check" aria-hidden="true" style="color: #009933;"></i></span>
+												</td>
+
 											</tr>
 
 											<tr ng-cloak ng-if='registros_carregados' ng-repeat="k in table_minimun_items.slice(registros.length,table_minimun_items.length)">
@@ -135,13 +140,32 @@
 
 					<div class='row no-gutter' style="padding: 0px 10px 0px 10px;">
 						{% verbatim %}
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
-							<label id="label_competence" class='left {{ desabilitar }}'><sub>Mês de competência:</sub></label>
+						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
+							<label id="label_competence" class='left {{ desabilitar }}'><sub>Competência:</sub></label>
 							<select id='competence' class='form-control {{ desabilitar }}' onchange="select_competence()">
 							</select>
 						</div>
 
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
+						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
+							<label id="label_filtrar_contrato" class='left {{ desabilitar }}'><sub>Contrato:</sub></label>
+							<select id='filtrar_contrato' class='form-control' ng-model="filter_contract_by" ng-change="select_filter_contract_by()">
+								<option value="com_contrato" selected>COM CONTRATO</option>
+								<option value="sem_contrato">SEM CONTRATO</option>
+								<option value="todos">TODOS</option>
+							</select>
+						</div>
+
+						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
+							<label id="label_filtrar_feridos" class='left {{ desabilitar }}'><sub>Status:</sub></label>
+							<select id='filtrar_feridos' class='form-control' ng-model="filter_conferred">
+								<option value="A" selected>NÃO CONFERIDOS</option>
+								<option value="C">CONFERIDOS</option>
+								<option value="E">ENCERRADOS</option>
+								<option value="T">TODOS</option>
+							</select>
+						</div>
+
+						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
 							<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
 							<select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
 								<option value="0">CÓDIGO</option>
@@ -150,11 +174,11 @@
 							</select>
 						</div>
 
-						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 31px;'>
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 28px;'>
 							<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
 						</div>
 
-						<div class="col-lg-4 col-md-6 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="registros_carregados == true" >
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 mt-xs-0 pull-right" ng-if="registros_carregados == true" >
 							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
 								<dir-pagination-controls pagination-id="paginate_registros" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
 								</dir-pagination-controls>

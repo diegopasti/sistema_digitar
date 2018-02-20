@@ -4,11 +4,15 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
 
-	$scope.sortType           = 'codigo';
+	$scope.sortType           = 'entity_name';
 	$scope.sortReverse        = false;
 	$scope.filter_by          = '1';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","cliente", "competence"];
+
+	$scope.filter_contract_by = 'com_contrato';
+	$scope.filter_conferred = 'T';
+
 	$scope.search             = '';
 	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10];
 	$scope.opcao_desabilitada = "desabilitado";
@@ -76,8 +80,9 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
       url: "/api/honorary",
 
       success: function (data) {
-				data = data.replace("<html><head></head><body>{","{")
-				data = data.replace("}</body></html>","}")
+				data = data.replace("<html><head></head><body>{","{");
+				data = data.replace("}</body></html>","}");
+				//alert("VEJA OS DADOS: "+JSON.stringify(data));
 				$scope.registros = JSON.parse(data).object;
 				$scope.$apply();
         $scope.registros_carregados = true;
@@ -217,8 +222,8 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.select_filter_by = function (index) {
-			$scope.filter_by_index = parseInt($scope.filter_by);
-			$scope.apply();
+		$scope.filter_by_index = parseInt($scope.filter_by);
+		//$scope.apply();
 	}
 
 	$scope.get_filter_column = function(){
@@ -226,27 +231,176 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
 		$('#competence').prop('disabled', false);
 		if(competence=='TODOS'){
-			switch (filtrar_pesquisa_por) {
-				case 'codigo':
-					return {id: $scope.search};
-				case 'competence':
-					$("#competence").val('TODOS');
-					$('#competence').prop('disabled', true);
-					return {competence: $scope.search};
+			switch ($scope.filter_contract_by){
+				case 'com_contrato':
+					switch (filtrar_pesquisa_por) {
+						case 'codigo':
+							if($scope.filter_conferred == 'T'){
+								return {id: $scope.search, have_contract: true};
+							}
+							else{
+								return {id: $scope.search, have_contract: true, status:$scope.filter_conferred};
+							}
+
+						case 'competence':
+							$("#competence").val('TODOS');
+							$('#competence').prop('disabled', true);
+							if($scope.filter_conferred == 'T'){
+								return {competence: $scope.search, have_contract: true};
+							}
+							else{
+								return {competence: $scope.search, have_contract: true, status:$scope.filter_conferred};
+							}
+
+						default:
+							if($scope.filter_conferred == 'T'){
+								return {entity_name: $scope.search, have_contract: true};
+							}
+							else{
+								return {entity_name: $scope.search, have_contract: true, status:$scope.filter_conferred};
+							}
+					}
+				case 'sem_contrato':
+					switch (filtrar_pesquisa_por) {
+						case 'codigo':
+							if($scope.filter_conferred == 'T'){
+								return {competence: $scope.search, have_contract: false};
+							}
+							else{
+								return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
+							}
+						case 'competence':
+							$("#competence").val('TODOS');
+							$('#competence').prop('disabled', true);
+							if($scope.filter_conferred == 'T'){
+								return {competence: $scope.search, have_contract: false};
+							}
+							else{
+								return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
+							}
+						default:
+							if($scope.filter_conferred == 'T'){
+								return {entity_name: $scope.search, have_contract: false};
+							}
+							else{
+								return {entity_name: $scope.search, have_contract: false, status:$scope.filter_conferred};
+							}
+					}
 				default:
-					return {entity_name: $scope.search};
+					switch (filtrar_pesquisa_por) {
+						case 'codigo':
+							if($scope.filter_conferred == 'T'){
+								return {id: $scope.search};
+							}
+							else{
+								return {id: $scope.search, status:$scope.filter_conferred};
+							}
+
+						case 'competence':
+							$("#competence").val('TODOS');
+							$('#competence').prop('disabled', true);
+							if($scope.filter_conferred == 'T'){
+								return {competence: $scope.search};
+							}
+							else{
+								return {competence: $scope.search, status:$scope.filter_conferred};
+							}
+						default:
+							if($scope.filter_conferred == 'T'){
+								return {entity_name: $scope.search};
+							}
+							else{
+								return {entity_name: $scope.search, status:$scope.filter_conferred};
+							}
+					}
 			}
 		}
+
 		else{
-			switch (filtrar_pesquisa_por){
-				case 'codigo':
-					return {id: $scope.search, competence:competence};
-				case 'competence':
-					$("#competence").val('TODOS');
-					$('#competence').prop('disabled', true);
-					return {competence: $scope.search};
+			switch ($scope.filter_contract_by){
+				case 'com_contrato':
+					switch (filtrar_pesquisa_por){
+						case 'codigo':
+							if($scope.filter_conferred == 'T'){
+								return {id: $scope.search, competence:competence, have_contract: true};
+							}
+							else{
+								return {id: $scope.search, competence:competence, have_contract: true, status:$scope.filter_conferred};
+							}
+
+						case 'competence':
+							$("#competence").val('TODOS');
+							$('#competence').prop('disabled', true);
+							if($scope.filter_conferred == 'T'){
+								return {competence: $scope.search, have_contract: true };
+							}
+							else{
+								return {competence: $scope.search, have_contract: true, status:$scope.filter_conferred };
+							}
+						default:
+							if($scope.filter_conferred == 'T'){
+								return {entity_name: $scope.search, competence: competence, have_contract: true};
+							}
+							else{
+								return {entity_name: $scope.search, competence: competence, have_contract: true, status:$scope.filter_conferred };
+							}
+					}
+
+				case 'sem_contrato':
+					switch (filtrar_pesquisa_por){
+						case 'codigo':
+							if($scope.filter_conferred == 'T'){
+								return {id: $scope.search, competence:competence, have_contract: false};
+							}
+							else{
+								return {id: $scope.search, competence:competence, have_contract: false, status:$scope.filter_conferred};
+							}
+						case 'competence':
+							$("#competence").val('TODOS');
+							$('#competence').prop('disabled', true);
+							if($scope.filter_conferred == 'T'){
+								return {competence: $scope.search, have_contract: false};
+							}
+							else{
+								return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
+							}
+						default:
+							if($scope.filter_conferred == 'T'){
+								return {entity_name: $scope.search, competence:competence, have_contract: false};
+							}
+							else{
+								return {entity_name: $scope.search, competence:competence, have_contract: false, status:$scope.filter_conferred};
+							}
+					}
+
 				default:
-					return {entity_name: $scope.search, competence:competence};
+					switch (filtrar_pesquisa_por){
+						case 'codigo':
+							if($scope.filter_conferred == 'T'){
+								return {id: $scope.search, competence:competence};
+							}
+							else{
+								return {id: $scope.search, competence:competence, status:$scope.filter_conferred};
+							}
+
+						case 'competence':
+							$("#competence").val('TODOS');
+							$('#competence').prop('disabled', true);
+							if($scope.filter_conferred == 'T'){
+								return {competence: $scope.search};
+							}
+							else{
+								return {competence: $scope.search, status:$scope.filter_conferred};
+							}
+
+						default:
+							if($scope.filter_conferred == 'T'){
+								return {entity_name: $scope.search, competence:competence};
+							}
+							else{
+								return {entity_name: $scope.search, competence:competence, status:$scope.filter_conferred};
+							}
+					}
 			}
 		}
 		$scope.$apply();
@@ -347,8 +501,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		validate_function = function () {return true;}
 
 		success_function = function(result,message,object,status){
-
-
 			var itens = '';
 			var index = $scope.registros.indexOf($scope.registro_selecionado);
 			var backup_itens = $scope.registro_selecionado.honorary_itens;

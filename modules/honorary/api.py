@@ -615,7 +615,7 @@ class HonoraryController(BaseController):
                 entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
                 for entity in entity_list:
                     self.create_update_honorary(request, entity, competence)
-        return BaseController().filter(request, Honorary, extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento'])
+        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
 
     @method_decorator(login_required)
     def generate_honoraries(self,request):
