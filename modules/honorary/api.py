@@ -890,10 +890,17 @@ class HonoraryController(BaseController):
                 if honorary.contract.desconto_temporario_ativo is not None and honorary.contract.desconto_temporario_ativo > 0:
                     contract_temporary_discount_rate = honorary.contract.desconto_temporario_ativo
                     contract_temporary_discount_value = round(float(contract_unit_value) * (float(contract_temporary_discount_rate)/100.0), 2)
+                else:
+                    contract_temporary_discount_rate = 0.00
+                    contract_temporary_discount_value = 0.00
 
                 if honorary.contract.desconto_indicacoes is not None and honorary.contract.desconto_indicacoes > 0:
                     contract_fidelity_discount_rate = honorary.contract.desconto_indicacoes
                     contract_fidelity_discount_value = round(float(contract_unit_value) * (float(honorary.contract.desconto_indicacoes)/100.0), 2)
+                else:
+                    contract_fidelity_discount_rate = 0.00
+                    contract_fidelity_discount_value = 0.00
+
 
         linhas_extras = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -918,6 +925,11 @@ class HonoraryController(BaseController):
         else:
             linhas_extras = []
 
+        if client.endereco.complemento is not None:
+            complemento = client.endereco.complemento.title()
+        else:
+            complemento = ""
+
         parametros = {
             'emissor_nome': company.nome_razao, #parametros_emissor.nome,
             'emissor_cpf_cnpj': formatar_cpf_cnpj(company.cpf_cnpj), #parametros_emissor.nome,formatar_cpf_cnpj(parametros_emissor.cpf_cnpj),
@@ -927,7 +939,7 @@ class HonoraryController(BaseController):
             'destinatario_nome': client.nome_razao, #parametros_emissor.nome,parametros_destinatario.nome,
             'destinatario_cpf_cnpj': formatar_cpf_cnpj(client.cpf_cnpj), #parametros_emissor.nome,formatar_cpf_cnpj(parametros_destinatario.cpf_cnpj),
             'destinatario_endereco': client.endereco.get_endereco(), #parametros_emissor.nome,parametros_destinatario.endereco,
-            'destinatario_complemento': client.endereco.complemento.title(), #parametros_emissor.nome,parametros_destinatario.complemento,
+            'destinatario_complemento': complemento, #parametros_emissor.nome,parametros_destinatario.complemento,
             'destinatario_contatos': client_contacts, #parametros_emissor.nome,parametros_destinatario.contatos,
             'honorary': honorary,
 

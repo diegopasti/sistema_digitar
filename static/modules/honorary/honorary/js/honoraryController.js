@@ -547,7 +547,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.generate_honorary = function(){
-		var vencimento = $('#data_vencimento').val();
+		var vencimento = $('#data_vencimento').val().split(' - ')[0];
 		if($scope.registro_selecionado != null && vencimento!=""){
 			vencimento = vencimento.replace("/","").replace("/","")
 			window.open('/honorary/'+$scope.registro_selecionado.id+"/"+vencimento);
