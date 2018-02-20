@@ -337,12 +337,9 @@ if SERVER_DIGITAR:
     try:
         if "runserver" in sys.argv:
             WorkingManager().register_programming_backend()
-
         elif "test" in sys.argv:
             WorkingManager().register_test_backend()
-
         else:
             pass
-
     except:
         pass

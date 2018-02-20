@@ -162,6 +162,50 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
     })
 	}
 
+	$scope.change_honorary_status = function(registro){
+		var data_paramters = {};
+		$scope.registro_selecionado = registro;
+		if($scope.registro_selecionado.status!='E'){
+			data_paramters['honorary_id'] = parseInt($scope.registro_selecionado.id);
+			if($scope.registro_selecionado.status=='A'){
+				if(confirm("Deseja mesmo marcar esse honorário como Conferido?")){
+					success_function = function(result,message,object,status){
+						//success_notify("DEU CERTO",JSON.stringify(object))
+						if(result == true){
+							$scope.registros[$scope.registros.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
+							$scope.registro_selecionado = null;
+							$scope.$apply();
+						}
+
+						fail_function = function (result,message,data_object,status) {error_notify(null,'Falha na operação',message)}
+						validate_function = function () {return true;}
+						request_api("/api/honorary/item/confirm",data_paramters,validade_function,success_function,fail_function);
+					}
+				}
+			}
+			else{
+				if(confirm("Deseja mesmo finalizar esse honorário?")){
+					success_function = function(result,message,object,status){
+						//success_notify("DEU CERTO",JSON.stringify(object))
+						if(result == true){
+							$scope.registros[$scope.registros.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
+							$scope.registro_selecionado = null;
+							$scope.$apply();
+						}
+					}
+
+					fail_function = function (result,message,data_object,status) {error_notify(null,'Falha na operação',message)}
+					validate_function = function () {return true;}
+					request_api("/api/honorary/item/close",data_paramters,validade_function,success_function,fail_function);
+				}
+			}
+		}
+		else{
+			return error_notify(null,"Falha na operação","Honorário já foi finalizado!");
+		}
+	}
+
+
 	$scope.select_competence = function(){
 		$scope.get_filter_column();
 		$scope.$apply();
@@ -453,29 +497,48 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.carregar_vencimento = function(){
 		var month_names = ['01', '02', '03','04', '05', '06', '07','08', '09', '10', '11', '12'];
 		if($scope.registro_selecionado != null){
-
-			//if($scope.registro_selecionado.contract__data_vencimento!=null){
-			//	$('#data_vencimento').val($scope.registro_selecionado.contract__data_vencimento.toString());
-			//}
-
 			if($scope.registro_selecionado.contract__dia_vencimento!=null){
-
 				date = new Date();
-				var new_date = month_names[date.getMonth()]+"/"+date.getFullYear();
+				var day = '';
+
 				if($scope.registro_selecionado.contract__dia_vencimento.length==1){
-					$('#data_vencimento').val('0'+$scope.registro_selecionado.contract__dia_vencimento.toString()+"/"+new_date);
+					day = '0'+$scope.registro_selecionado.contract__dia_vencimento.toString();
 				}
+				else{
+					day = $scope.registro_selecionado.contract__dia_vencimento.toString();
+				}
+
+				var new_date = month_names[date.getMonth()+1]+"/"+date.getFullYear();
+				var iso_date = date.getFullYear()+"-"+month_names[date.getMonth()+1]+"-"+day;
+				var label_day = "";
+				switch(new Date(iso_date).getDay()){
+					case 0: label_day = "SEGUNDA"; break;
+					case 1: label_day = "TERÇA"; break;
+					case 2: label_day = "QUARTA"; break;
+					case 3: label_day = "QUINTA"; break;
+					case 4: label_day = "SEXTA"; break;
+					case 5:label_day = "SEXTA";day = parseInt(day)-1;break;
+					case 6: label_day = "SEGUNDA"; day = parseInt(day)+1;break;
+					default: break;
+				}
+
+				day = day.toString();
+				if(day.length==1){
+					day = '0'+day;
+				}
+				new_date = day+"/"+new_date+" - "+label_day;
+				$('#data_vencimento').val(new_date);
 			}
 			else{
-				var currentDate = new Date();
-				var day = currentDate.getDate();
-				var month =  month_names[currentDate.getMonth()];
-				var year = currentDate.getFullYear();
+				//var currentDate = new Date();
+				//var day = currentDate.getDate();
+				//var month =  month_names[currentDate.getMonth()];
+				//var year = currentDate.getFullYear();
 
-				if(day.toString().length==1){
-					day = "0"+day;
-				}
-				$('#data_vencimento').val(day+"/"+month+"/"+year);
+				//if(day.toString().length==1){
+				//	day = "0"+day;
+				//}
+				$('#data_vencimento').val('');
 			}
 		}
 		else{
@@ -572,7 +635,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.save_honorary_item = function(){
-		if($scope.registro_selecionado.is_closed==false){
+		if($scope.registro_selecionado.status!='E'){
 			$scope.max_honorary_itens = 0;
 			if($scope.registro_selecionado.contract != null){
 				$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
@@ -665,7 +728,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 	$scope.update_honorary_item = function(){
 		if($scope.selected_item!=null){
-			if($scope.registro_selecionado.is_closed==false){
+			if($scope.registro_selecionado.status!='E'){
 				var data_paramters = {}
 
 				if($scope.edited_item_option){
@@ -758,7 +821,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.delete_honorary_item = function(){
-		if($scope.registro_selecionado.is_closed==false){
+		if($scope.registro_selecionado.status!='E'){
 			if(confirm("Deseja mesmo excluir o item selecionado desse honorário?")){
 				var data_paramters = {'id':$scope.selected_item.id}
 

@@ -174,7 +174,7 @@ form label{
 		/*background-color:rgba(255, 255, 255, 0.0); !important;*/
 }
 
-tr.linha_selecionavel{
+.linha_selecionavel{
     cursor: pointer;
 }
 

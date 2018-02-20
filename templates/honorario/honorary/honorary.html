@@ -2,7 +2,10 @@
 {% block Titulo %}<title>Digitar - Controle de Honorários</title>{% endblock %}
 {% load staticfiles %}
 {% block recursos_necessarios %}
+{% load compress %}
+{% compress css %}
 <link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}">
+{% endcompress %}
 <style>
 	table td{
 		height: 26px;
@@ -27,6 +30,24 @@
     width: 100%;
     overflow-x: auto;
     white-space: nowrap;
+	}
+
+	.confirm_honorary{
+		transition: all .1s ease-in-out;
+		padding: 0px;
+		font-size:14px;
+		cursor: pointer;
+	}
+
+	.confirm_honorary span i{
+		position: relative;
+		top: -3px;
+		height: 16px;
+		width: 70px;
+	}
+
+	.confirm_honorary span i:hover {
+		transform: scale(1.3);
 	}
 </style>
 {% endblock %}
@@ -90,7 +111,6 @@
 												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Ult. Alteração</th>
 												<th class="text-center" style="width: 120px;" ng-click="sortType='updated_by_name';sortReverse=!sortReverse">Alterado por</th>
 												<th class='text-center' style="width: 100px;" ng-click="sortType='status';sortReverse=!sortReverse" >Situação</th>
-
 											</tr>
 										</thead>
 
@@ -100,25 +120,25 @@
 												<td colspan="12" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle' class="text-center"><br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><br><br>Aguarde.. Carregando...<br><br></td>
 											</tr>
 
-											<tr ng-cloak ng-if='registros_carregados' class="angular-repeat linha_selecionavel {{ registro.selecionado }}" dir-paginate="registro in resultado = (registros | filter: get_filter_column()) | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse" ng-click="selecionar_linha(registro);" pagination-id="paginate_registros">
-												<td class='text-center' style="width: 30px;">{{ registro.id }}</td>
-												<td class="text-center" style="width: 60px;">{{ registro.competence }}</td>
-												<td class='text-left'>{{ registro.entity_name }}</td>
-												<td class='text-right' style="width: 90px;">{{ registro.initial_value_contract| currency:"" }}</td>
-												<td class='text-center' style="width: 100px;" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount| currency:'' }}%">{{ ((registro.contract_discount/100)*registro.initial_value_contract)| currency:"" }}</td>
-												<td class='text-right' style="width: 90px;">{{ registro.total_debit| currency:"" }}</td>
-												<td class='text-right' style="width: 90px;">{{ registro.total_credit| currency:"" }}</td>
-												<td class='text-right' style="width: 90px;">{{ registro.total_repayment| currency:"" }}</td>
-												<td class='text-right' style="width: 90px;">{{ registro.total_honorary| currency:"" }}</td>
-												<td class='text-center' style="width: 90px;" title="Atualizado {{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}">{{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}</td>
-												<td class="text-left" style="width: 100px;">
+											<tr ng-cloak ng-if='registros_carregados' class="angular-repeat {{ registro.selecionado }}" dir-paginate="registro in resultado = (registros | filter: get_filter_column()) | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse" pagination-id="paginate_registros">
+												<td class='text-center linha_selecionavel' style="width: 30px;"  ng-click="selecionar_linha(registro);">{{ registro.id }}</td>
+												<td class="text-center linha_selecionavel" style="width: 60px;"  ng-click="selecionar_linha(registro);">{{ registro.competence }}</td>
+												<td class='text-left linha_selecionavel'  ng-click="selecionar_linha(registro);">{{ registro.entity_name }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;"  ng-click="selecionar_linha(registro);">{{ registro.initial_value_contract| currency:"" }}</td>
+												<td class='text-center linha_selecionavel' style="width: 100px;" ng-click="selecionar_linha(registro);" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount| currency:'' }}%">{{ ((registro.contract_discount/100)*registro.initial_value_contract)| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;"  ng-click="selecionar_linha(registro);">{{ registro.total_debit| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;"  ng-click="selecionar_linha(registro);">{{ registro.total_credit| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_repayment| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_honorary| currency:"" }}</td>
+												<td class='text-center linha_selecionavel' style="width: 90px;"  ng-click="selecionar_linha(registro);"title="Atualizado {{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}">{{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}</td>
+												<td class="text-left linha_selecionavel" style="width: 100px;"  ng-click="selecionar_linha(registro);">
 													<span ng-show="registro.updated_by_name!=null">{{ registro.updated_by_name }}</span>
 													<span ng-show="registro.updated_by_name==null">SISTEMA</span>
 												</td>
-												<td class='text-center' style="width: 100px;">
-													<span ng-show="registro.status=='A'" title="Honorário em confecção" style="color:#AAA;display:block;">-</span>
-													<span ng-show="registro.status=='C'" title="Honorário conferido" style="display:block;"><i class="fa fa-check" aria-hidden="true" style="color: #AAA;"></i></span>
-													<span ng-show="registro.status=='E'" title="Honorário encerrado" style="display:block;"><i class="fa fa-check" aria-hidden="true" style="color: #009933;"></i></span>
+												<td class='text-center confirm_honorary' style="width: 100px;" ng-click="change_honorary_status(registro)">
+													<span ng-show="registro.status=='A'" title="Clique aqui para confirmar." style="color:#AAA;">-</span>
+													<span ng-show="registro.status=='C'" title="Clique aqui para finalizar."><i class="fa fa-check" aria-hidden="true" style="color: #AAA;"></i></span>
+													<span ng-show="registro.status=='E'" title="Honorário encerrado" style="width:50px;"><i class="fa fa-check" aria-hidden="true" style="color: #009933;"></i></span>
 												</td>
 
 											</tr>
@@ -221,7 +241,7 @@
 								</a>
 							</div>
 						</fieldset>
-						<div ng-if="registro_selecionado.is_closed==false" ng-class="{collapse: screen_model >= 1, in: screen_model > 4}" id="item_panel" style="margin-top:-10px;padding-bottom: 10px;">
+						<div ng-if="registro_selecionado.status!='E'" ng-class="{collapse: screen_model >= 1, in: screen_model > 4}" id="item_panel" style="margin-top:-10px;padding-bottom: 10px;">
 							<div class="row no-gutter fluid" stye="padding-left: 15px;">
 								<div class="col-lg-2 col-md-1 col-sm-6 col-xs-12">
 									<div class="form-group field" id="field_type_item">
@@ -281,7 +301,7 @@
 							</div>
 						</div>
 
-						<div ng-if="registro_selecionado.is_closed==true">
+						<div ng-if="registro_selecionado.status!='E'">
 							{% verbatim %}
 							<div class="row">
 								<div class="col-lg-12" style="text-align:center">

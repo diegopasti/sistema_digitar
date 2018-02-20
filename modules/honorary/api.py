@@ -635,7 +635,7 @@ class HonoraryController(BaseController):
         now = timezone.localtime(timezone.now())
         completed_competence = self.get_competence(datetime.datetime.now().month-1)
         exist_competence = Honorary.objects.filter(competence=completed_competence)
-        closed_competences = Honorary.objects.filter(competence=completed_competence, is_closed=False).update(is_closed=True,closed_by=request.user, closed_date = now)
+        closed_competences = Honorary.objects.filter(competence=completed_competence, status='E').update(status='E',closed_by=request.user, closed_date = now)
         response_dict = {}
         if closed_competences != 0:
             response_dict['result'] = True
@@ -648,6 +648,44 @@ class HonoraryController(BaseController):
                 response_dict['message'] = "Nenhum honorário de "+completed_competence+" encontrado!"
             else:
                 response_dict['message'] = "Honorários de " + completed_competence + " já foram finalizado!"
+        return self.response(response_dict)
+
+    def confirm_honorary(self, request):
+        self.start_process(request)
+        try:
+            honorary = Honorary.objects.get(pk=int(request.POST['honorary_id']))
+        except:
+            honorary = None
+        if honorary is not None:
+            now = timezone.localtime(timezone.now())
+            honorary.status = "C"
+            Honorary.conferred_date = now
+            Honorary.conferred_by = request.user
+            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
+        else:
+            response_dict = {}
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! Honorário informado não existe."
+        return self.response(response_dict)
+
+    def close_honorary(self, request):
+        self.start_process(request)
+        try:
+            honorary = Honorary.objects.get(pk=int(request.POST['honorary_id']))
+        except:
+            honorary = None
+        if honorary is not None:
+            now = timezone.localtime(timezone.now())
+            honorary.status = "E"
+            Honorary.conferred_date = now
+            Honorary.conferred_by = request.user
+            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
+        else:
+            response_dict = {}
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! Honorário informado não existe."
         return self.response(response_dict)
 
     def get_competence(self, month_number):
