@@ -59,10 +59,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sites',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles','session_security',
-    'djangobower','compressor','dropbox','dbbackup',
+    'djangobower','compressor','dropbox','dbbackup','pinax.notifications',
     'sistema_contabil','modules','modules.core','modules.nucleo','modules.user','modules.entidade','modules.protocolo','modules.honorary','modules.servico','modules.preferencias'
 )
 

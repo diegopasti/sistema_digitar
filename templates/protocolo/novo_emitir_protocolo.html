@@ -27,10 +27,10 @@
                     </div>
                 </div>
 
-                <div class="panel-body"	>
+                <div class="panel-body">
                     <div class="row">
                       <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                        <div class="input-group">
+                        <div class="input-group" style="margin-left: -5px;">
                           <select class='form-control uppercase' id="select_destinatarios" ng-model="destinatario" onchange="conferir_destinatario()" onkeyup="filter_cerquilha(event)"> <!--ng-options="item.name for item in lista_clientes"-->
                             {% for item in destinatarios %}
                             {% if item.nome_filial %}

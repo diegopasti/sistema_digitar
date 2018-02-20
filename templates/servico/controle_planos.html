@@ -79,7 +79,7 @@
           <div class="box-body">
 
             {% verbatim %}
-            <div class="list-group" style="margin: 0px;">
+            <div class="list-group" style="padding: 10px;margin: 0px;">
               <button ng-repeat="plano in planos" ng-class="plano == registro_selecionado ? 'negrito' : '' " type="button" class="list-group-item" ng-click="selecionar_plano(plano,$index)" data-toggle="pill" href="#{{ plano.id }}" value="{{ plano.id }}">{{ plano.nome }}
               </button>
 
@@ -140,7 +140,7 @@
                     <div class="box_descricao">
 
                       <span ng-show="registro_selecionado">
-                        <p ng-hide="esta_editando" id='descricao'>{{ registro_selecionado.descricao | lowercase }}</p>
+                        <p ng-hide="esta_editando" id='descricao' style="margin: 5px;">{{ registro_selecionado.descricao | lowercase }}</p>
                         <textarea ng-show="esta_editando"  id='plano_descricao' class="form-control uppercase">{{ registro_selecionado.descricao | lowercase }}</textarea>
                       </span>
 
@@ -151,7 +151,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div id="box_titulo_servicos">
-                      <label class="negrito">Serviços Disponiveis</label>
+                      <label class="negrito">Serviços Disponíveis</label>
                     </div>
                   </div>
                 </div>
@@ -163,11 +163,10 @@
                         <table id="table_servicos" class="table" style="table-layout: fixed;">
                           <tr ng-repeat="servico in servicos" ng-switch on="$index % 2">
 
-                            <td ng-switch-when="0" title="{{ servico.descricao }}">
+                            <td ng-switch-when="0" title="{{ servico.descricao }}" style="padding-top: 6px;">
                               <span class="span_checkbox_servico pull-left">
                                 <input name="check_servicos" value="{{ servico.id }}" id="{{ 'checkbox_servico_'+servico.id }}"  class='labelauty-small' type="checkbox"/>
                               </span>
-
                               <span class="span_label_servico">
                                 <label id="{{ 'label_servico_'+servico.id }}" ng-click="selecionar_servico(registro_selecionado,$index,servico.id);">
                                   {{ servico.nome }}
@@ -175,7 +174,7 @@
                               </span>
                             </td>
 
-                            <td ng-switch-when="0" title="{{ servico.descricao }}">
+                            <td ng-switch-when="0" title="{{ servico.descricao }}" style="padding-top: 5px;">
                               <span ng-show="servicos[$index+1]">
                                 <span class="span_checkbox_servico pull-left">
                                   <input name="check_servicos"  value='{{ servicos[$index+1].id }}' id="{{ 'checkbox_servico_'+servicos[$index+1].id }}" class='labelauty-small' type="checkbox"/>
@@ -196,12 +195,12 @@
                     </div>
 
                     <div class="row">
-                      <div class="col-md-offset-10 col-md-2">
-                        <button class="form-control btn btn-sm btn-primary pull-right center_align" type="submit" id="bt_submit_plano">
+                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <button class="btn btn-sm btn-primary pull-right" type="submit" id="bt_submit">
                           <span id="span_button_icone_salvar">
                             <i class="fa fa-spinner fa-pulse"></i>
                           </span>
-                          <span id="span_button_title_salvar">Salvar</span>
+                          <span >Salvar</span>
                         </button>
 
                       </div>

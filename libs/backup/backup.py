@@ -73,6 +73,7 @@ class BackupManager:
         most_recent_backup = self.download(list_files.entries[-1].path_display)
         print(most_recent_backup)
         django.setup()
+        #call_command('flush', '--no-input')
         call_command('dbrestore', '-v','0', '-i', 'temp.dump.gz', '-z', '-q','--noinput')
         #self.clear_temp_file()
         backup_duration = datetime.datetime.now() - start_timing_backup
@@ -131,6 +132,12 @@ class BackupManager:
         f.write(res.content)
         f.close()
         return final_path
+
+    def download_last_file(self):
+        self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
+        list_files = self.dropbox.files_list_folder(DROPBOX_ROOT_PATH)
+        most_recent_backup = self.download(list_files.entries[-1].path_display)
+        return most_recent_backup
 
     def shared_folder(self):
         self.data = []
