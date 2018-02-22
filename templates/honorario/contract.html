@@ -205,29 +205,30 @@ table th{
 									<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
 									<thead>
 										<tr class="linha_cabecalho">
-											<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>
+											<th class='center' style="width: 40px;" ng-click="sortType = 'cliente_id'; sortReverse = !sortReverse"></th>
 
-											<th class='center' ng-click="sortType = 'cliente'; sortReverse = !sortReverse">Cliente</th>
+											<th class='center' ng-click="sortType = 'cliente_nome'; sortReverse = !sortReverse">Cliente</th>
 
-											<th class="center" ng-click="sortType = 'plano'; sortReverse = !sortReverse">Plano</th>
+											<th class="center" ng-click="sortType = 'contrato.plano__nome'; sortReverse = !sortReverse">Plano</th>
 
-											<th class='center' ng-click="sortType = 'inicio'; sortReverse = !sortReverse">Início</th>
+											<th class='center' ng-click="sortType = 'contrato.vigencia_inicio'; sortReverse = !sortReverse">Início</th>
 
-											<th class='center' ng-click="sortType = 'termino'; sortReverse = !sortReverse">Término</th>
+											<th class='center' ng-click="sortType = 'contrato.vigencia_fim'; sortReverse = !sortReverse">Término</th>
 
-											<th class='center' ng-click="sortType = 'valor_honorario'; sortReverse = !sortReverse">Honorário (R$)</th>
+											<th class='center' ng-click="sortType = 'contrato.valor_honorario'; sortReverse = !sortReverse">Honorário (R$)</th>
 
-											<th class='center' ng-click="sortType = 'descontos'; sortReverse = !sortReverse">Desc (%)</th>
+											<th class='center'>Desc (%)</th>
 
-											<th class='center' ng-click="sortType = 'total'; sortReverse = !sortReverse" >Total (R$)</th>
+											<th class='center' ng-click="sortType = 'contrato.valor_total'; sortReverse = !sortReverse" >Total (R$)</th>
 
-											<th class='center' ng-click="sortType = 'ultima_alteracao'; sortReverse = !sortReverse" >Ult. Alteração</th>
+											<th class='center' ng-click="sortType = 'contrato.ultima_alteracao'; sortReverse = !sortReverse" >Ult. Alteração</th>
 
-											<th class='center' ng-click="sortType = 'ativo'; sortReverse = !sortReverse" >Ativo</th>
+											<th class='center' ng-click="sortType = 'contrato.ativo'; sortReverse = !sortReverse" >Ativo</th>
 										</tr>
 									</thead>
 
 									<tbody style="font-size: 11px;">
+										ORDERNAR POR {{ sortType }}
 										<tr ng-if="(contratos|filter:filterIds()).length == 0">
 											<td colspan="10" class="center">Nenhum Cliente Cadastrado!</td>
 										</tr>
@@ -238,7 +239,7 @@ table th{
 											</td>
 										</tr>
 
-										<tr ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado">
+										<tr ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
 											<!--<tr ng-repeat='contrato in contratos' class="linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos">-->
 
 											<td class='center' style="width: 30px;">{{ contrato.cliente_id }}</td> <!-- {{ $index+1 }} -->
@@ -248,7 +249,7 @@ table th{
 												<!--<div class="responsive-text"  style="max-width: {{ col_cliente_size }}px">{{ contrato.cliente_nome }}</div> isso faz cortar as palavras mas temos um problema com alinhamento que nao fica perfeito dependendo de como a largura foi carregada inicialmente -->
 											</td>
 
-											<td ng-hide='screen0 || screen1' ng-class="{true:'left', false:'center'}[contrato.plano=='']">
+											<td ng-hide='screen0 || screen1' ng-class="{true:'left', false:'left'}[contrato.plano=='']">
 												<span ng-if="contrato.contrato!=null">{{ contrato.contrato.plano__nome }}</span>
 												<span ng-if="contrato.contrato==null"></span>
 											</td>
@@ -779,9 +780,7 @@ table th{
 	</div>
 
 </div>
-<br>
 {% endblock %}
-
 {% block recursos_complementares %}
 {% load staticfiles %}
 {% load compress %}

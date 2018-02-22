@@ -10,7 +10,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	$scope.screen2 = null;
 	$scope.screen1 = null;
 
-	$scope.sortType           = 'codigo';
+	$scope.sortType           = 'cliente_nome';
 	$scope.sortReverse        = false;
 	$scope.filter_by          = '1';
 	$scope.filter_by_index    = parseInt($scope.filter_by);
@@ -29,65 +29,25 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	$scope.dained_permission_indication = false;
 
 	$scope.reajustar_tela = function (){
-		$scope.screen_height = window.innerHeight
-		$scope.screen_width  = window.innerWidth
+		$scope.screen_height = SCREEN_PARAMTERS['screen_height'];
+		$scope.screen_width  = SCREEN_PARAMTERS['screen_width'];
+		$scope.screen_model  = SCREEN_PARAMTERS['screen_model'];
 
-		$scope.screen5 = false;  // Giant Screen:   1681 or more
-		$scope.screen4 = false;  // Larger Screen:  1025 ~ 1680 + 656
-		$scope.screen3 = false;  // Large Screen:    769 ~ 1024 + 304
-		$scope.screen2 = false;  // Medium Screen:   321 ~ 720 + 240
-		$scope.screen1 = false;  // Small Screen:    361 ~ 480 + 120
-		$scope.screen0 = false;  // Smaller Screen:    0 ~ 360
+		$scope.table_maximun_items_per_page = SCREEN_PARAMTERS['table_maximun_items_per_page']-1;
+		$scope.table_minimun_items          = SCREEN_PARAMTERS['table_minimun_items'];
 
-		//if ($scope.col_cliente_size){
-		//	$scope.col_cliente_size = $scope.col_cliente_size - 50; // PROBLEMA QUANDO 481,482,483,484px no 485 volta ao normal
-		//}
-		//else{
-		//	$scope.col_cliente_size = 100;
-		//}
-
-
-		// QUANDO A TELA TA NO MENOR TAMANHO (304px) A COLUNA CLIENTE TEM 185px. SE EU QUERO UM OFFSET NO FINAL
-		//alert("VEJA A COLUNA: "+$scope.col_cliente_size)
-
-		//alert("TEM ALGUMA COISA AQui: "+$scope.col_cliente_size)
-		// PROBLEMA QUANDO TO REFRESH NUMA TELA MAIOR DEPOIS DESCO PRA UMA MENOR
-		//if(!$scope.col_cliente_size){
-		//	$scope.col_cliente_size = $scope.screen_width - ($scope.screen_width*0,6788); // 120
-
-			// 304 -> 185 = 0,6058
-			// 360 -> 241 = 0,6694
-			// 480 -> 360 = 0,7500
-			// 720 -> 497 = 0,6902
-			// MEDIA 0,6788
-		//}
-
-		//alert("VEJA O TAMANHO (NA RESOLUCAO BAIXA COMECA COM 185px: "+ $scope.col_cliente_size)
-		//$scope.col_cliente_size = $('.col-cliente').width();
-
-		if ($scope.screen_width <= 360){
-			$scope.screen0 = true;
+		var extra_height = 0;
+		if(SCREEN_PARAMTERS['table_maximun_items_per_page'] <= 5){
+			extra_height = SCREEN_PARAMTERS['table_maximun_items_per_page']
 		}
-
-		else if ($scope.screen_width <= 480){
-			$scope.screen1 = true;
-			//$scope.col_cliente_size = $scope.col_cliente_size - 120;
-		}
-
-		else if ($scope.screen_width <= 720){
-			$scope.screen2 = true;
-			//$scope.col_cliente_size = $scope.col_cliente_size - 10;
-		}
-
-		else if ($scope.screen_width <= 1024){
-			$scope.screen3 = true;
-		}
-		else if ($scope.screen_width <= 1268){
-			$scope.screen4 = true;
+		else if(SCREEN_PARAMTERS['table_maximun_items_per_page'] <= 9){
+			extra_height = 6;
 		}
 		else{
-			$scope.screen5 = true;
+			extra_height = 7;
 		}
+
+		$scope.table_maximun_body_heigth = SCREEN_PARAMTERS['table_maximun_body_height']+extra_height;
 		$scope.$apply();
 	}
 

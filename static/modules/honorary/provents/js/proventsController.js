@@ -21,7 +21,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".");
 
 		success_function = function(result,message,object,status){
-			$scope.contratos.splice(0, 0, object);
+			$scope.contratos.push(object);
 			$scope.$apply();
 			check_response_message_form('#form_adicionar_contrato', message);
 			$("#modal_adicionar_contrato").modal('hide');

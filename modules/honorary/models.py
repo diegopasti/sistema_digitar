@@ -23,14 +23,14 @@ class Contrato(models.Model):
     vigencia_inicio = models.DateField(null=True)
     vigencia_fim    = models.DateField(null=True,blank=True)
 
-    taxa_honorario  = models.DecimalField("Honorário:", max_digits=5, decimal_places=2, null=True,blank=False)
-    valor_honorario = models.DecimalField("Valor:", max_digits=6, decimal_places=2, null=True,blank=False)
-    valor_total = models.DecimalField("Total:", max_digits=8, decimal_places=2, null=True, blank=False)
+    taxa_honorario  = models.DecimalField("Honorário:", max_digits=11, decimal_places=2, null=True,blank=False)
+    valor_honorario = models.DecimalField("Valor:", max_digits=11, decimal_places=2, null=True,blank=False)
+    valor_total = models.DecimalField("Total:", max_digits=11, decimal_places=2, null=True, blank=False)
     dia_vencimento  = models.CharField("Dia do Vencimento",null=False,default=5,max_length=2)
     data_vencimento = models.DateField("Data de Vencimento",null=True,blank=True)
 
-    desconto_temporario = models.DecimalField("Desconto Temporário:", max_digits=10,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
-    desconto_temporario_ativo  = models.DecimalField("Desconto Temporário Ativo:", max_digits=10,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
+    desconto_temporario = models.DecimalField("Desconto Temporário:", max_digits=11,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
+    desconto_temporario_ativo  = models.DecimalField("Desconto Temporário Ativo:", max_digits=11,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
     desconto_inicio = models.DateField(null=True,blank=True)
     desconto_fim    = models.DateField(null=True,blank=True)
 

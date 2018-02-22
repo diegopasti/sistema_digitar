@@ -237,10 +237,10 @@ h5{color : #777;font-size: 130% !important;}
           <ul class="treeview-menu">
 						<li><a href="/honorary"><i class="fa fa-circle-o"></i>Controle de Honorário</a></li>
             {% if request.user.groups.values_list.0.0 <= 2%}
-            <li><a href="/contract"><i class="fa fa-circle-o"></i>Contratos de Contratos</a></li>
+            <li><a href="/contract"><i class="fa fa-circle-o"></i>Controle de Contratos</a></li>
             <li><a href="/provents"><i class="fa fa-circle-o"></i>Descontos e Proventos</a></li>
             {% else %}
-            <li><a class="disabled" href="/contract"><i class="fa fa-circle-o"></i>Contratos de Contratos</a></li>
+            <li><a class="disabled" href="/contract"><i class="fa fa-circle-o"></i>Controle de Contratos</a></li>
             <li><a class="disabled" href="/provents"><i class="fa fa-circle-o"></i>Descontos e Proventos</a></li>
             {% endif %}
           </ul>

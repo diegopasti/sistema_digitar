@@ -53,7 +53,7 @@ def buscar_fontes(request):
     return render(request,"index.html")
 
 @login_required
-@permission_level_required(3,'/error/access_denied')
+#permission_level_required(3,'/error/access_denied')
 def cadastro_entidades(request):
     usuario_admin = False
     dados = entidade.objects.exclude(id=1).exclude(ativo=False).order_by('nome_razao')

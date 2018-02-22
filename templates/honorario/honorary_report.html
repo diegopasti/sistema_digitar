@@ -552,7 +552,7 @@
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">{{ item.item.id }}</td>
 								<td style="width: 447px;padding-left: 4px;">{{ item.item.nome }}
-								{% if item.complement != None %}
+								{% if item.complement != None and item.complement != '' %}
 									- {{ item.complement }}
 								{% endif %}
 								</td>
@@ -864,7 +864,7 @@
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">{{ item.item.id }}</td>
 								<td style="width: 447px;padding-left: 4px;">{{ item.item.nome }}
-								{% if item.complement != None %}
+								{% if item.complement != None and item.complement != '' %}
 									- {{ item.complement }}
 								{% endif %}
 								</td>

@@ -176,11 +176,10 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 							$scope.registro_selecionado = null;
 							$scope.$apply();
 						}
-
-						fail_function = function (result,message,data_object,status) {error_notify(null,'Falha na operação',message)}
-						validate_function = function () {return true;}
-						request_api("/api/honorary/item/confirm",data_paramters,validade_function,success_function,fail_function);
 					}
+					fail_function = function (result,message,data_object,status) {error_notify(null,'Falha na operação',message)}
+					validate_function = function () {return true;}
+					request_api("/api/honorary/item/confirm",data_paramters,validade_function,success_function,fail_function);
 				}
 			}
 			else{
