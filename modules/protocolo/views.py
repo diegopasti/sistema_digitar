@@ -162,7 +162,10 @@ def cadastro_protocolo(request, protocolo_id=None):
                     resultado = protocolo.objects.all()
                 
                 else:
-                    resultado = protocolo.objects.filter(destinatario_id=filtro_por_cliente)
+                    if filtro_por_cliente != 'TODOS':
+                        resultado = protocolo.objects.filter(destinatario_id=filtro_por_cliente)
+                    else:
+                        resultado = protocolo.objects.all()
                     
                 if filtro_por_status == 'CONFIRMADOS':
                     resultado = resultado.filter(situacao=1)
@@ -304,7 +307,7 @@ def gerar_relatorio_simples(request,resultado):
     if status == 'TODOS PROTOCOLOS':
         status = "GERAL"
     
-    if request.POST['filtrar_por_cliente'] != '':
+    if request.POST['filtrar_por_cliente'] != '' and request.POST['filtrar_por_cliente'] != 'TODOS':
         cliente = entidade.objects.get(pk=request.POST['filtrar_por_cliente']).nome_razao
         
         if request.POST['filtrar_por_status'] == 'ABERTOS':
@@ -337,7 +340,7 @@ def gerar_relatorio_simples(request,resultado):
         #    pass
             
     if request.POST['filtrar_ate'] != '':
-        descricao_periodo = descricao_periodo +u" até "+request.POST['filtrar_ate']
+        descricao_periodo = descricao_periodo +u" ATÉ "+request.POST['filtrar_ate']
     
     data = date.today() 
     hora = datetime.datetime.now().strftime("%H:%M")
@@ -353,7 +356,7 @@ def gerar_relatorio_simples(request,resultado):
         'protocolos':nova_lista,
         'counter': 0,
         'path_imagens':path,
-        'emitido_por':'MARCELO',
+        'emitido_por':request.user.get_full_name(),
         'descricao_destinatario':descricao_destinatario,
         'filtro_operacao':request.POST['filtrar_por_operacao'].capitalize(),
         'filtro_status':status,

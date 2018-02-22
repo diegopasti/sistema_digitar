@@ -8,9 +8,10 @@
 		<!-- <link rel="stylesheet" type="text/css" href="{% static 'styles/protocolo.css' %}"/>  -->
 		<style>
 			table {
+				-pdf-keep-in-frame-mode: overflow; /* shrink, truncate,overflow, error */
 				-pdf-keep-with-next: true;
-				-pdf-keep-in-frame-mode: shrink;
 			}
+
 			@font-face {
 				font-family: Helvetica, "Example Font";
 			}
@@ -180,7 +181,7 @@
 				padding-left: 2px; 
 				width:45px;
 			}
-			
+
 			td.documento{
 				text-align: left;
 				padding-left: 20px; 
@@ -188,14 +189,15 @@
 			}
 
 			.table_content td{
-				font-family: "Arial";
+        word-wrap: break-word;
+				font-family: Arial;
 				font-size: 14px;
 				height: 18px;
-				Courier
+        white-space: pre-wrap; /* this is for displaying whitespaces including Firefox */
 			}
 
 			.field_value {
-				padding-left: 4px;
+				padding-left: 0px;
 			}
 		</style>
 	</head>
@@ -232,19 +234,18 @@
 
 						<div id='filtro_periodo'>
 							{% if filtro_operacao != 'Emitidos' %}
-								<font size=3>{{ filtro_operacao }}</font><br>
+								<font size=3>{{ filtro_operacao }} em:</font><br>
 								{% if filtro_periodo != "" %}
 									<div class="field_value"><font size=3>{{ filtro_periodo }}</font></div>
 								{% else %}
-									<div class="field_value"><font size=3>EMITIDOS</font></div>
+									<div class="field_value"><font size=3>GERAL</font></div>
 								{% endif %}
 							{% else %}
-								<font size=3>Operação:</font><br>
+								<font size=3>Emitidos em:</font><br>
 								{% if filtro_periodo != "" %}
-
 									<div class="field_value"><font size=3>{{ filtro_periodo }}</font></div>
 								{% else %}
-									<div class="field_value"><font size=3>EMITIDOS</font></div>
+									<div class="field_value"><font size=3>GERAL</font></div>
 								{% endif %}
 							{% endif %}
 						</div>
@@ -258,12 +259,12 @@
 
 
 			<div class="table_content" style="margin-top: 80px;">
-				<table border="0.1" style="border-color: #eee;">
+				<table border="0.1" style="display:block;border-color: #eee;">
 					<tr style='border-color: #EEE;border-width:0.2px;line-height: 2px; height:24px;padding-top: 3px;'>
 						<th style='width: 40px;'>Nº</th>
 						<th style='width: 70px;'>CÓD</th>
 						<th><b>DESTINATÁRIO</b></th>
-						<th style='width: 130px;'><b>EMITIDO EM</b></th>
+						<th><b>EMITIDO EM</b></th>
 						{% if "em aberto" in descricao_destinatario %}
 						<th style='width: 130px;'><b>EMISSOR</b></th>
 						{% else %}
@@ -277,23 +278,27 @@
 						<td class="center"  style='width: 40px;'>{{ item.calculate_index }}</td><!-- {{ forloop.counter }}-->
 
 						{% if item.numeracao_destinatario == 'AVULSO' %}
-						<td class="center"  style='width: 70px;'></td>
+						<td class="center"  style='width: 70px;'>AVULSO</td>
 						{% else %}
 						<td class="center"  style='width: 70px;'>{{ item.numeracao_destinatario }}</td>
 						{% endif %}
 
 						{% if item.destinatario == None %}
-						<td class="left">{{ item.nome_avulso }}</td>
+						<!-- cabe 70 caracteres sem compactar o texto -->
+						<td class="left" style="padding-left: 4px;padding-right: -105px;">{{ item.nome_avulso }}</td>
 						{% else %}
-						<td class="left" style="padding-left: 4px;">{{ item.destinatario }}</td>
+						<td class="left" style="padding-left: 4px;padding-right: -105px;">{{ item.destinatario }}</td>
 						{% endif %}
 
-						<td class="center" style='width: 130px;'>{{ item.data_emissao|date:"d/m/Y" }}</td>
-
+						<td style='padding-left: 4px;padding-right: -40px;width:190px;'>{{ item.data_emissao|date:"d/m/Y" }} às {{ item.hora_emissao|date:"H:i:s" }}</td>
 						{% if "em aberto" in descricao_destinatario %}
-						<td class="center" style='width: 180px;'>{{ item.emitido_por }}</td>
+						<td style='width: 260px;padding-left: 4px;padding-right: -40px;'>{{ item.emitido_por }}</td>
 						{% else %}
-						<td class="center" style='width: 140px;'>{{ item.data_recebimento|date:"d/m/Y" }}</td>
+						{% if item.situacao %}
+						<td style='padding-left: 4px;padding-right: -40px;width:190px;'>{{ item.data_recebimento|date:"d/m/Y" }} às {{ item.hora_recebimento|date:"H:i:s" }}</td>
+						{% else %}
+						<td style='padding-left: 4px;padding-right: -40px;width:190px;'>EM ABERTO</td>
+						{% endif %}
 						{% endif %}
 					</tr>
 				{% endfor %}

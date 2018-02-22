@@ -72,7 +72,8 @@ th {
 }
 
 .report-title{
-	padding-top: 10px;
+	padding-top: 0px;
+	text-align: center;
 }
 
 .report-generate-details{
@@ -109,19 +110,28 @@ display: none;
 		<div class="box box-default " style="margin-top: -50px;">
 			<div class="box-heading">
 
-				<div class="box-header with-border center_align" style="padding: 10px 10px 20px 10px;">
-					<h5 class="box-title report-title">Relatório de Protocolos</h5>
+				<div class="box-header with-border center_align">
+					<table style="width: 100%;">
+						<tr>
+							<td>
+								<div class="report-company-logo">
+									<img src="{% static 'imagens/exemplo_logo.png' %}" alt="logo" height="35" width="120" />
+								</div>
+							</td>
 
-					<div class="report-company-logo">
-						<img src="{% static 'imagens/exemplo_logo.png' %}" alt="logo" height="35" width="120" />
-					</div>
-
-					<div class="pull-right">
-						<span class="report-generate-details"><sub>18/08/2017 às 02:16 <br>por Diego Pasti</sub></span>
-						<!--<a href="/protocolo/emitir_protocolo" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Protocolo</a>
-						<a href="#modal_relatorio" id='bt_relatorio' role="button" class="btn btn-sm btn-default" data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Gerar Relatório</a>
-						<a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_confirmar_entrega" data-toggle="modal" data-target="#myModal" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-check" aria-hidden="true"></i> Confirmar Recebimento</a>-->
-					</div>
+							<td style="text-align:center;"><h4 class="report-title">Relatório de Protocolos</h4></td>
+							<td>
+								<div class="pull-right" style="text-align: right;">
+									<span class="report-generate-details">{{ hora_emissao }}</span>
+									<br>
+									<span class="pull-right;">por {{ operador }}</span>
+									<!--<a href="/protocolo/emitir_protocolo" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Protocolo</a>
+									<a href="#modal_relatorio" id='bt_relatorio' role="button" class="btn btn-sm btn-default" data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Gerar Relatório</a>
+									<a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_confirmar_entrega" data-toggle="modal" data-target="#myModal" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-check" aria-hidden="true"></i> Confirmar Recebimento</a>-->
+								</div>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<!-- /.panel-heading -->
@@ -181,9 +191,10 @@ display: none;
 					}*/
 
 					table{
-					font-size: 12px;
+					font-size: 10px;
 					}
 				</style>
+				<br>
 
 				<div class="row no-gutter" style="margin-top: -10px;">
 					<div class="col-md-4 col-sm-12 col-xs-12 form-group">
@@ -283,18 +294,22 @@ display: none;
 						<td style="text-align: center;cursor:pointer;width: 100px;">{{ protocolo.numeracao_destinatario }}</td>
 						{% endif %}
 
+						{% if protocolo.numeracao_destinatario == 'AVULSO' %}
+						<td style="text-align: left;cursor:pointer;">{{ protocolo.destinatario.nome_avulso }}</td>
+						{% else %}
 						<td style="text-align: left;cursor:pointer;">{{ protocolo.destinatario.nome_razao }}</td>
-						<td style="width: 140px;text-align: center;cursor:pointer">{{ protocolo.data_emissao|date:"d/m/Y" }} - {{ protocolo.hora_emissao|date:"H:i:s" }}</td>
-						<td style="width: 140px;text-align: center;cursor:pointer">{{ protocolo.emitido_por|slice:':15' }}{% if protocolo.emitido_por|length > 15 %}..{% endif %}</td>
+						{% endif %}
+						<td style="width: 130px;text-align: center;cursor:pointer">{{ protocolo.data_emissao|date:"d/m/Y" }} - {{ protocolo.hora_emissao|date:"H:i:s" }}</td>
+						<td style="width: 180px;text-align: left;cursor:pointer">{{ protocolo.emitido_por|slice:':25' }}{% if protocolo.emitido_por|length > 25 %}..{% endif %}</td>
 
 						{% if protocolo.data_recebimento %}
-						<td style="width: 140px;text-align: center;cursor:pointer">{{ protocolo.data_recebimento|date:"d/m/Y" }} - {{ protocolo.hora_recebimento|date:"H:i:s" }}</td>
+						<td style="width: 130px;text-align: center;cursor:pointer">{{ protocolo.data_recebimento|date:"d/m/Y" }} - {{ protocolo.hora_recebimento|date:"H:i:s" }}</td>
 						{% else %}
-						<td style="width: 140px;text-align: center;cursor:pointer">{{ protocolo.calcular_dias_atraso }} DIAS EM ABERTO</td><!-- {{ protocolo.data_emissao|timesince }}-- {% now "d/m/Y" %} {{ now }}-->
+						<td style="width: 130px;text-align: center;cursor:pointer">{{ protocolo.calcular_dias_atraso }} DIAS EM ABERTO</td><!-- {{ protocolo.data_emissao|timesince }}-- {% now "d/m/Y" %} {{ now }}-->
 						{% endif %}
 
 						{% if protocolo.recebido_por %}
-							<td class='left_align'>{{ protocolo.recebido_por|slice:':14' }}{% if protocolo.recebido_por|length > 14 %}..{% endif %}</td>
+							<td class='left_align' style="width: 180px;">{{ protocolo.recebido_por|slice:':25' }}{% if protocolo.recebido_por|length > 25 %}..{% endif %}</td>
 							{% else %}
 							<td style="text-align: center;cursor:pointer">-</td>
 							{% endif %}

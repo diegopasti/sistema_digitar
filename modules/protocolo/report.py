@@ -201,6 +201,9 @@ def report_protocols_per_documents(request, form):
     }
     """
 
+    operador = request.user.get_full_name()
+    hora_emissao = datetime.datetime.now()
+
     parametros = {
         'protocols_list':resultado,
         'total_protocolos': total_protocolos,
@@ -212,6 +215,8 @@ def report_protocols_per_documents(request, form):
         'filtro_operacao':filtro_operacao,
         'filtro_ate':filtro_ate,
         'filtro_documento':filtro_documento,
+        'operador':operador.title(),
+        'hora_emissao':hora_emissao
     }
     context = parametros
     return render_to_response('protocolo/report/report_per_documents.html', context)
