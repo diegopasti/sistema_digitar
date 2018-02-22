@@ -99,20 +99,19 @@ def get_detalhes_protocolo(request,protocolo_id):
     if documentos.count() != 0:
         lista =[]
         for item in documentos:
-
-            if item.valor != "0,00":
+            if item.valor != "0,00" and item.valor != "0.00" and item.valor is not None and item.valor != "":
                 valor = "R$ "+item.valor.replace(".",",")
-
             else:
                 valor = ""
 
-
-            lista.append([item.documento,item.complemento,item.referencia,item.vencimento,valor])
+            if item.vencimento is not None and item.vencimento != '' and item.vencimento != "__/__/____":
+                vencimento = item.vencimento
+            else:
+                vencimento = ""
+            lista.append([item.documento,item.complemento,item.referencia,vencimento,valor])
             
         resultado['data'] = lista
         resultado['emitido_por'] = p.emitido_por
-        data = json.dumps(resultado)
-        
     else:
         print("Nenhum detalhe encontrado")
                 
@@ -147,9 +146,7 @@ def cadastro_protocolo(request, protocolo_id=None):
         form_relatorio = formulario_gerar_relatorio()
         
         if 'gerar_relatorio' in request.POST:
-
             form_relatorio = formulario_gerar_relatorio(request.POST)
-
             if form_relatorio.is_valid():
                 filtro_por_cliente = form_relatorio['filtrar_por_cliente'].value().upper()
                 filtro_por_status = form_relatorio['filtrar_por_status'].value().upper()
@@ -297,20 +294,15 @@ def split_subparts(objects, subpart_lenght):
 
 def gerar_relatorio_simples(request,resultado):
     from django_xhtml2pdf.utils import generate_pdf
-    from django.template import Context
     path = os.path.join(BASE_DIR, "static/imagens/")
-    
-    print(request.POST)
-    
+    #print(request.POST)
     resultado = list(resultado)
-    
     descricao_destinatario = ""
     descricao_periodo = ""
 
     status = request.POST['filtrar_por_status']
     if status == 'TODOS PROTOCOLOS':
         status = "GERAL"
-
     
     if request.POST['filtrar_por_cliente'] != '':
         cliente = entidade.objects.get(pk=request.POST['filtrar_por_cliente']).nome_razao
@@ -327,7 +319,6 @@ def gerar_relatorio_simples(request,resultado):
             descricao_destinatario = descricao_destinatario +u"Relatório de protocolos dos clientes"
         
     if request.POST['filtrar_desde'] != '':
-        
         if request.POST['filtrar_por_operacao'] == 'EMITIDOS':
             #descricao_periodo = descricao_periodo +"Emitidos desde "+request.POST['filtrar_desde']
             descricao_periodo = descricao_periodo + request.POST['filtrar_desde']
@@ -351,7 +342,7 @@ def gerar_relatorio_simples(request,resultado):
     data = date.today() 
     hora = datetime.datetime.now().strftime("%H:%M")
     
-    resultado = resultado*60
+    resultado = resultado
     novo_result = []
 
     nova_lista = split_subparts(resultado, 50)
@@ -645,13 +636,13 @@ def visualizar_protocolo(request, protocolo_id):
 
     pd = parametros_destinatario
     if parametros_destinatario.cpf_cnpj != '':
-        parametros_destinatario.cpf_cnpj = formatar_cpf_cnpj(parametros_destinatario.cpf_cnpj),
+        parametros_destinatario.cpf_cnpj = formatar_cpf_cnpj(parametros_destinatario.cpf_cnpj)
 
     if parametros_destinatario.contatos == ['']:
         parametros_destinatario.contatos = []
 
     parametros = {'emissor_nome': parametros_emissor.nome,
-        'emissor_cpf_cnpj': formatar_cpf_cnpj(parametros_emissor.cpf_cnpj),
+        'emissor_cpf_cnpj': parametros_emissor.cpf_cnpj,
         'emissor_endereco': parametros_emissor.endereco,
         'emissor_complemento': parametros_emissor.complemento,
         'emissor_contatos': parametros_emissor.contatos,

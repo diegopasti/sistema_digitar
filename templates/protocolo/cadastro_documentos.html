@@ -1,15 +1,9 @@
 {% extends 'base_page.html' %}
-
-{% block Titulo %}
-	<meta charset="utf-8">
-    <title>Digitar - Cadastro de Documentos</title>
-{% endblock %}
-
+{% block Titulo %}<meta charset="utf-8"><title>Digitar - Cadastro de Documentos</title>{% endblock %}
 {% load staticfiles %}
 {% block recursos_necessarios %}
 {% load compress %}
 {% compress css %}
-<!--<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}">-->
 <link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/DataTables-1.10.11/css/dataTables.bootstrap.min.css' %}"/>
 <link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/plugins/responsivo/Responsive-2.0.2/css/responsive.bootstrap.min.css' %}"/>
 <link rel="stylesheet" type="text/css" href="{% static 'custom/datatable/plugins/select/Select-1.1.2/css/select.bootstrap.min.css' %}"/>
@@ -196,7 +190,6 @@ label {
 <script src="{% static 'custom/datatable/DataTables-1.10.11/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'custom/datatable/DataTables-1.10.11/js/dataTables.bootstrap.min.js' %}"></script>
 <script src="{% static 'custom/datatable/plugins/select/Select-1.1.2/js/dataTables.select.min.js' %}"></script>
-<!--<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>-->
 <script src="{% static 'modules/core/mask.js' %}"></script>
 <script src="{% static 'modules/core/controle_botoes.js' %}"></script>
 <script src="{% static 'modules/protocol/protocolo.js' %}"></script>
