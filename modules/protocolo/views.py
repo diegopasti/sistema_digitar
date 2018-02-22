@@ -14,13 +14,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from django.http.response import HttpResponse, Http404, HttpResponseForbidden
 from django.shortcuts import render, redirect
-from django.template.context import RequestContext
-from django.utils.decorators import method_decorator
-
-from libs.default.decorators import permission_level_required
-from modules.entidade.models import entidade, contato, localizacao_simples  # , localizacao
+from django.http.response import HttpResponse, Http404, HttpResponseForbidden
+#from libs.default.decorators import permission_level_required
+from modules.entidade.models import entidade, contato, localizacao_simples
 
 from modules.entidade.views import verificar_erros_formulario
 from modules.protocolo.formularios import formulario_emitir_protocolo, formulario_confirmar_entrega, formulario_gerar_relatorio, formulario_adicionar_documento
@@ -28,11 +25,8 @@ from modules.protocolo.models import protocolo, item_protocolo, documento
 from modules.protocolo.report import report_protocols_per_documents
 from sistema_contabil.settings import BASE_DIR
 
-
-#from sistema_contabil.settings import BASE_DIR, STATIC_URL
-#from endereco.models import localizacao
 @login_required
-@permission_level_required(3, raise_exception=HttpResponseForbidden())
+#permission_level_required(3, raise_exception=HttpResponseForbidden())
 def cadastro_documentos(request):
     erro = False
     documentos = documento.objects.all()
@@ -40,9 +34,7 @@ def cadastro_documentos(request):
 
     if (request.method == "POST"):
         formulario = formulario_adicionar_documento(request.POST)
-
         if 'adicionar_documento' in request.POST:
-
             if formulario.is_valid():
                 doc = documento()
                 doc.nome = formulario['documento'].value().upper()
@@ -70,7 +62,7 @@ def cadastro_documentos(request):
     return render(request,"protocolo/cadastro_documentos.html",{'dados': documentos,'formulario':formulario,'erro':erro})
 
 @login_required
-@permission_level_required(3, raise_exception=HttpResponseForbidden())
+#permission_level_required(3, raise_exception=HttpResponseForbidden())
 def get_documento(request, id):
     doc = documento.objects.get(pk=id)
     if doc != None:
@@ -81,6 +73,7 @@ def get_documento(request, id):
 
     data = json.dumps(resultado)
     return HttpResponse(data, content_type='application/json')
+
 
 def excluir_documento(request, id):
     doc = documento.objects.get(pk=id)
@@ -95,18 +88,8 @@ def excluir_documento(request, id):
     return HttpResponse(data, content_type='application/json')
 
 
-
-
-
-
-
-
-
-
-    
-
 @login_required
-@permission_level_required(3, raise_exception=HttpResponseForbidden())
+#permission_level_required(3, raise_exception=HttpResponseForbidden())
 def get_detalhes_protocolo(request,protocolo_id):
     #if request.is_ajax():
     resultado = {}
@@ -155,7 +138,7 @@ def validar_temporalidade(data_primeira_operacao,hora_primeira_operacao,data_seg
 
 
 @login_required
-@permission_level_required(3, raise_exception=HttpResponseForbidden())
+#permission_level_required(3, raise_exception=HttpResponseForbidden())
 def cadastro_protocolo(request, protocolo_id=None):
     erro = False
     if (request.method == "POST"):
@@ -417,7 +400,7 @@ def formatar_valor_tamanho_fixo(valor):
 """
 
 @login_required
-@permission_level_required(3, raise_exception=HttpResponseForbidden())
+#permission_level_required(3, raise_exception=HttpResponseForbidden())
 def gerar_pdf(request,emissor, destinatario, protocolo):
     from django.template import Context# loader,Context, Template
     path = os.path.join(BASE_DIR, "static/imagens/")

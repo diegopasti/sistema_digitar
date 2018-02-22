@@ -1,14 +1,11 @@
-<meta charset="utf-8">
 {% if messages %}
+	<script>
 	{% for message in messages %}
-	<div class="alert alert danger fade in"
-		style="background-color: #555; border: 2px solid #FFF; z-index: 999999; position: fixed ;bottom: 20px; left: 30%; width: 600px; height: 70px;  border-radius: 60px; text-align: center; line-height: 35px;">
-		<a href="#" style="color: #FFF; line-height: 0.5; font-size: 16px;">{{ message }}</a>
-	</div>
-	<!--- .alert.alert-error -->
+		{% if erro %}
+			success_notify('Falha na operação','{{ message }}');
+		{% else %}
+				success_notify('Operação realizada com sucesso','{{ message }}');
+		{% endif %}
 	{% endfor %}
+	</script>
 {% endif %}
-
-<script type="text/javascript">
-
-</script>

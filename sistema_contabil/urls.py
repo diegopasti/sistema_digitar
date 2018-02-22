@@ -153,7 +153,7 @@ urlpatterns = [
     url(r'configurations/backup/backups$', ConfigurationsController().list_backups),
     #url(r'configurations/backup/manager$', ConfigurationsController().manager_dropbox),
 
-    url(r'^notifications/', include('pinax.notifications.urls', namespace='pinax_notifications')),
+    #url(r'^notifications/', include('pinax.notifications.urls', namespace='pinax_notifications')),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'users/',view_usuario.user_page),

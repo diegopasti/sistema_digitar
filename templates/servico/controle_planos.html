@@ -11,62 +11,44 @@
 {% endcompress %}
 {% endblock %}
 
-{% block breadcrumb_title %}Controle de Planos{% endblock %}
+<!--{ block breadcrumb_title %}Controle de Planos{ endblock %}
 
-{% block breadcrumb_block %}
+{ block breadcrumb_block %}
 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
 <li class="active">Planos</li>
-{% endblock %}
-
+{ endblock %}
+-->
 {% block conteudo %}
 <div id="controle_angular" ng-cloak ng-app="app" ng-controller="MeuController">
-
-  <div id="modal_adicionar_plano" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-    <div class="modal-dialog">
-      <form id="form_adicionar_plano" autocomplete="off" ng-submit="adicionar_plano()">
-        <div class="modal-content">
-
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h5 class='titulo_modal' id="titulo_modal_adicionar_plano">Novo Plano</h5>
+  <div id="painel_planos" style="margin-top:-55px;">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'London')">London</button>
+            <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+            <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
           </div>
 
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form_field field_required">
-                  <label><sub>{{ formulario_plano.plano.label }}</sub></label>
-                </div>
-                {{ formulario_plano.plano }}
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form_field">
-                  <label><sub>{{ formulario_plano.descricao.label }}</sub></label>
-                </div>
-                {{ formulario_plano.descricao }}
-              </div>
-            </div>
+          <div id="London" class="tabcontent">
+            <h3>London</h3>
+            <p>London is the capital city of England.</p>
           </div>
 
-          <div class="modal-footer">
-            <div class="row">
-              <div class="col-md-3 col-md-push-9">
-                <button type="submit" id="bt_submit_plano" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_plano">Salvar</button>
-              </div>
-            </div>
+          <div id="Paris" class="tabcontent">
+            <h3>Paris</h3>
+            <p>Paris is the capital of France.</p>
           </div>
-        </div>
-      </form>
+
+          <div id="Tokyo" class="tabcontent">
+            <h3>Tokyo</h3>
+            <p>Tokyo is the capital of Japan.</p>
+          </div>
+      </div>
     </div>
-  </div>
 
-  <div id="painel_planos">
     <div class="row">
       <div class="col-lg-3 col-md-3 col-xs-12">
-        <div id="box_planos" class="box box-primary">
+        <div id="box_planos" class="box box-default">
           <div class="box-heading">
             <div class="box-header with-border">
               <h5 class="box-title">Planos</h5>
@@ -91,7 +73,7 @@
       </div>
 
       <div class="col-lg-9 col-md-9 col-xs-12">
-        <div id="box_servicos" class="box box-primary">
+        <div id="box_servicos" class="box box-default">
           <div class="tab-content">
             <div class="box-heading">
               <div class="box-header with-border">
@@ -241,6 +223,47 @@
     </div>
   </div>
 
+  <div id="modal_adicionar_plano" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+      <form id="form_adicionar_plano" autocomplete="off" ng-submit="adicionar_plano()">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h5 class='titulo_modal' id="titulo_modal_adicionar_plano">Novo Plano</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form_field field_required">
+                  <label><sub>{{ formulario_plano.plano.label }}</sub></label>
+                </div>
+                {{ formulario_plano.plano }}
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form_field">
+                  <label><sub>{{ formulario_plano.descricao.label }}</sub></label>
+                </div>
+                {{ formulario_plano.descricao }}
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div class="row">
+              <div class="col-md-3 col-md-push-9">
+                <button type="submit" id="bt_submit_plano" class="btn btn-sm btn-primary form-control" data-toggle="modal" data-target="#modal_adicionar_plano">Salvar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

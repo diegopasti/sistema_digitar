@@ -106,9 +106,14 @@ class FormRegister(FormAbstractUsername,FormAbstractPassword,FormAbstractConfirm
 
 class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
     model = User
-    grupos = {(1,'ADMINISTRADOR'),
-              (2,'SUPERVISOR'),
-              (3,'OPERADOR')}
+    grupos = [(1, '1 - ADMINISTRADOR'),
+              (2, '1 - GERENTE GERAL'),
+              (3, '2 - COORDENADOR(A)'),
+              (4, '3 - ANALISTA'),
+              (5, '3 - AUXILIAR'),
+              (6, '3 - ASSISTENTE'),
+              (7, '3 - MOTOBOY'),
+              ]
 
 
     first_name = forms.CharField(
