@@ -164,20 +164,27 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 	$scope.change_honorary_status = function(registro){
 		var data_paramters = {};
-		$scope.registro_selecionado = registro;
-		if($scope.registro_selecionado.status!='E'){
-			data_paramters['honorary_id'] = parseInt($scope.registro_selecionado.id);
-			if($scope.registro_selecionado.status=='A'){
+		if ($scope.registro_selecionado != null){
+			$scope.desmarcar_linha_selecionada();
+		}
+
+		registro;
+		if(registro.status!='E'){
+			data_paramters['honorary_id'] = parseInt(registro.id);
+			if(registro.status=='A'){
 				if(confirm("Deseja mesmo marcar esse honorário como Conferido?")){
 					success_function = function(result,message,object,status){
 						//success_notify("DEU CERTO",JSON.stringify(object))
 						if(result == true){
-							$scope.registros[$scope.registros.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
-							$scope.registro_selecionado = null;
-							$scope.$apply();
+							$scope.registros[$scope.registros.findIndex(x => x.id==registro.id)] = object;
 						}
+						$scope.$apply();
 					}
-					fail_function = function (result,message,data_object,status) {error_notify(null,'Falha na operação',message)}
+					fail_function = function (result,message,data_object,status) {
+						error_notify(null,'Falha na operação',message);
+						$scope.registro_selecionado = null;
+						$scope.$apply();
+					}
 					validate_function = function () {return true;}
 					request_api("/api/honorary/item/confirm",data_paramters,validade_function,success_function,fail_function);
 				}
@@ -187,13 +194,15 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 					success_function = function(result,message,object,status){
 						//success_notify("DEU CERTO",JSON.stringify(object))
 						if(result == true){
-							$scope.registros[$scope.registros.findIndex(x => x.id==$scope.registro_selecionado.id)] = object;
-							$scope.registro_selecionado = null;
-							$scope.$apply();
+							$scope.registros[$scope.registros.findIndex(x => x.id==registro.id)] = object;
 						}
+						$scope.$apply();
 					}
 
-					fail_function = function (result,message,data_object,status) {error_notify(null,'Falha na operação',message)}
+					fail_function = function (result,message,data_object,status) {
+						error_notify(null,'Falha na operação',message);
+						$scope.$apply();
+					}
 					validate_function = function () {return true;}
 					request_api("/api/honorary/item/close",data_paramters,validade_function,success_function,fail_function);
 				}
@@ -203,7 +212,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 			return error_notify(null,"Falha na operação","Honorário já foi finalizado!");
 		}
 	}
-
 
 	$scope.select_competence = function(){
 		$scope.get_filter_column();
