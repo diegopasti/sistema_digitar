@@ -62,7 +62,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles','session_security',
+    'django.contrib.staticfiles','session_security','notifications',
     'djangobower','compressor','dropbox','dbbackup',
     'sistema_contabil','modules','modules.core','modules.nucleo','modules.user','modules.entidade','modules.protocolo','modules.honorary','modules.servico','modules.preferencias'
 )
@@ -77,6 +77,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'session_security.middleware.SessionSecurityMiddleware',
+
 
 
     #'django.middleware.cache.UpdateCacheMiddleware',
