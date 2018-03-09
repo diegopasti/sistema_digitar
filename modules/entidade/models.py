@@ -130,14 +130,14 @@ class Documento(models.Model):
     tipo = models.CharField("Tipo do Documento:", max_length=1, null=False, error_messages=MENSAGENS_ERROS)
     nome = models.CharField("Documento:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
     vencimento = models.DateField("Vencimento:", null=True, blank=True)
+    tipo_vencimento = models.CharField("Tipo do Vencimento:", max_length=8, null=False, error_messages=MENSAGENS_ERROS)
     senha = models.CharField("Senha:", max_length=100, null=True, blank=True, error_messages=MENSAGENS_ERROS)
     data_cadastro = models.DateTimeField(auto_now=True)
     ativo = models.BooleanField(default=True)
-    finalizado = models.BooleanField("Finalizado:", default=False)
     data_finalizado = models.DateTimeField(null=True)
 
-    criado_por = models.ForeignKey(User, related_name='criado_por', null=True)
-    finalizado_por = models.ForeignKey(entidade, related_name='finalizado_por', null=True)
+    criado_por = models.ForeignKey(User, related_name='documento_criado_por', null=True)
+    finalizado_por = models.ForeignKey(User, related_name='documento_finalizado_por', null=True)
 
     notificar_cliente = models.BooleanField("Notificar Cliente:", default=False)
     prazo_notificar = models.IntegerField("Prazo Notificação:", null=True, blank=True)

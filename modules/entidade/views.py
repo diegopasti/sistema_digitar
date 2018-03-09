@@ -24,7 +24,7 @@ from modules.entidade.utilitarios import remover_simbolos  # formatar_codificaca
 from modules.entidade.formularios import formulario_cadastro_entidade_completo, formulario_justificar_operacao
 
 
-#import os
+import os
 #from django.core.exceptions import ValidationError
 #from sistema_contabil import settings
 #from util.internet import consultar_codigo_postal
@@ -106,43 +106,37 @@ def cadastro_entidades(request):
 
     return render(request,"entidade/cadastro_entidades.html",{'dados': dados, 'form_desativar': form_desativar, 'erro': False})
 
-class EntityController (BaseController):
-    @request_ajax_required
-    @method_decorator(login_required)
-    def desativar_cliente(self,request):
-        return self.disable(request,entidade)
+    '''if request.is_ajax():
+        cliente = entidade.objects.get(pk=int(cliente))
+        operacao = RestrictedOperation()
+        operacao.tipo = "DES"
+        operacao.tabela = "ENTIDADE"
+        operacao.entidade = cliente
 
-        '''if request.is_ajax():
-            cliente = entidade.objects.get(pk=int(cliente))
-            operacao = RestrictedOperation()
-            operacao.tipo = "DES"
-            operacao.tabela = "ENTIDADE"
-            operacao.entidade = cliente
-    
-            if request.user.is_anonymous():
-                operacao.user = None
-            else:
-                operacao.user = request.user
-    
-            # POR ENQUANTO NAO PODEMOS UTILIZAR ACENTUAÇÃO NESSA DESCRICAO
-            operacao.descricao = "DESATIVACAO DO CLIENTE "+cliente.nome_razao+" ("+cliente.cpf_cnpj+") DO SISTEMA."
-            operacao.justificativa = list(request.GET)[0].upper()
-    
-            #print("Tentano excluir: ", operacao.descricao,operacao.justificativa)
-    
-            try:
-                operacao.save()
-                cliente.ativo = False
-                cliente.save()
-                data = json.dumps("sucesso")
-            except:
-                data = None
-    
-            return HttpResponse(data, content_type='application/json')
-    
+        if request.user.is_anonymous():
+            operacao.user = None
         else:
-            raise Http404
-            '''
+            operacao.user = request.user
+
+        # POR ENQUANTO NAO PODEMOS UTILIZAR ACENTUAÇÃO NESSA DESCRICAO
+        operacao.descricao = "DESATIVACAO DO CLIENTE "+cliente.nome_razao+" ("+cliente.cpf_cnpj+") DO SISTEMA."
+        operacao.justificativa = list(request.GET)[0].upper()
+
+        #print("Tentano excluir: ", operacao.descricao,operacao.justificativa)
+
+        try:
+            operacao.save()
+            cliente.ativo = False
+            cliente.save()
+            data = json.dumps("sucesso")
+        except:
+            data = None
+
+        return HttpResponse(data, content_type='application/json')
+
+    else:
+        raise Http404
+        '''
 
 """
 def adicionar_item_protocolo(request):
@@ -619,6 +613,19 @@ def visualizar_entidade(request,id):
     contatos_serializado = serializar_contatos(meus_contatos)
     atividades_serializadas = serializar_atividades(minhas_atividades)
     meus_documentos = Documento.objects.filter(entidade=cliente)
+    url = request.get_full_path()
+    print(url)
+    tab = os.path.basename(url)
+    print(tab)
+
+    if 'contatos' == tab:
+        tab_active = 'tab_contatos'
+    elif 'atividades' == tab:
+        tab_active = 'tab_cnae'
+    elif 'controles' == tab:
+        tab_active = 'tab_servicos'
+    else:
+        tab_active = 'tab_client'
 
     if (request.method == "POST"):
         from modules.entidade.models import localizacao_simples
@@ -751,29 +758,35 @@ def visualizar_entidade(request,id):
 
             documentos = formulario.cleaned_data['tabela_documentos']
 
+
             if documentos != "":
                 documentos = documentos.split("#")
+                print("VEJA O QUE CHEGOU: ")
                 for item in documentos:
                     dados = item.split("|")
+                    print(">>>",dados)
 
                     if "+" in dados[0]:
                         registro = Documento()
                         registro.tipo = dados[1]
                         registro.nome = dados[2]
-                        registro.senha = dados[4]
-                        if dados[5] == "SIM":
+                        registro.tipo_vencimento = dados[3]
+                        registro.senha = dados[5]
+                        if dados[6] == "SIM":
                             registro.notificar_cliente = True
                         else:
                             registro.notificar_cliente = False
-                        registro.prazo_notificar = dados[6]
+
+                        if dados[7] == "":
+                            registro.prazo_notificar = None
+                        else:
+                            registro.prazo_notificar = dados[7]
                         registro.criado_por = request.user
                         #registro.vencimento = dados
-
-
                         registro.entidade = cliente
 
                         try:
-                            registro.vencimento = datetime.datetime.strptime(dados[3], "%d/%m/%Y").date()
+                            registro.vencimento = datetime.datetime.strptime(dados[4], "%d/%m/%Y").date()
                         except:
                             registro.vencimento = None
 
@@ -881,13 +894,14 @@ def visualizar_entidade(request,id):
 
     return render(request,"entidade/adicionar_entidade.html",
                           {'dados': [],
-                          'formulario_entidade': formulario,
-                           'meus_contatos':meus_contatos,
-                           'minhas_atividades':minhas_atividades,
-                           'meus_documentos':meus_documentos,
-                          'naturezas_juridicas':informacoes_juridicas.natureza_juridica,
-                          'atividades_economicas':informacoes_tributarias.atividades_economicas,
-                          'erro': False},
+                            'formulario_entidade': formulario,
+                            'meus_contatos':meus_contatos,
+                            'minhas_atividades':minhas_atividades,
+                            'meus_documentos':meus_documentos,
+                            'naturezas_juridicas':informacoes_juridicas.natureza_juridica,
+                            'atividades_economicas':informacoes_tributarias.atividades_economicas,
+                            'tab_active':tab_active,
+                            'erro': False},
                           )
 
 @login_required
