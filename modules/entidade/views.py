@@ -768,9 +768,9 @@ def visualizar_entidade(request,id):
 
                     if "+" in dados[0]:
                         registro = Documento()
-                        registro.tipo = dados[1]
-                        registro.nome = dados[2]
-                        registro.tipo_vencimento = dados[3]
+                        registro.tipo = dados[1].upper()
+                        registro.nome = dados[2].upper()
+                        registro.tipo_vencimento = dados[3].upper()
                         registro.senha = dados[5]
                         if dados[6] == "SIM":
                             registro.notificar_cliente = True

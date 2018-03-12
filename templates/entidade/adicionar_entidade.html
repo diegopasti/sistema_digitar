@@ -1173,9 +1173,9 @@ function substituir_valor_nulo(valor){
 					var prazo_notificacao = $("#prazo_notificacao").val();
 
 					var documento = {
-						tipo_vencimento: tipo_vencimento,
-						tipo_documento: substituir_valor_nulo($scope.tipo_documento),
-						documento: substituir_valor_nulo($scope.documento),
+						tipo_vencimento: tipo_vencimento.toUpperCase(),
+						tipo_documento: substituir_valor_nulo($scope.tipo_documento).toUpperCase(),
+						documento: substituir_valor_nulo($scope.documento).toUpperCase(),
 						documento_vencimento: substituir_valor_nulo($("#documento_vencimento").val()),
 						documento_senha: substituir_valor_nulo($scope.documento_senha),
 						notificar_cliente: notificar_cliente,
