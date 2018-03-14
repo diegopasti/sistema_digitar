@@ -4,7 +4,7 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sistema_contabil.settings")
 django.setup()
 
-from notifications.signals import notify
+#from notifications.signals import notify
 from django.contrib.auth.models import User
 from django.test.utils import override_settings
 
@@ -16,7 +16,8 @@ print(user)
 
 @override_settings(SITE_ID=1)
 def notify_send():
-    notify.send(user, recipient=i, verb='TUDO FUNCIONANDO DE BOAS AQUI')
+    pass
+    #notify.send(user, recipient=i, verb='TUDO FUNCIONANDO DE BOAS AQUI')
 
 
 if __name__=='__main__':

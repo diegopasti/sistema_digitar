@@ -1894,7 +1894,9 @@ function verificar_dados_antes_salvar(){
     notify('error','Falha na operação','Contato do cliente precisa ser informado.')
     return false;
   }
+
   $("#formulario_cliente").submit();
+  success_notify('Operação realizada com sucesso','Documento salvo.')
 }
 
 function verificar_tipo_cliente(){
