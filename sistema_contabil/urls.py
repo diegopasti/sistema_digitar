@@ -159,7 +159,7 @@ urlpatterns = [
     url(r'configurations/backup/backups$', ConfigurationsController().list_backups),
     #url(r'configurations/backup/manager$', ConfigurationsController().manager_dropbox),
 
-    url(r'^inbox/notifications/', include('notifications.urls', namespace='notifications')),
+    #url(r'^inbox/notifications/', include('notifications.urls', namespace='notifications')),
 
     #'''POR HORA FICA AQUI DEPOIS ARRUMO'''
     url(r'users/',view_usuario.user_page),
