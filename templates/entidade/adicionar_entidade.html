@@ -93,7 +93,7 @@ li > a .{
 
 label {
     font-weight: normal !important;
-    margin-left: 10px;
+    margin-left: 0px;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -171,6 +171,16 @@ legend {
 	.tab-item a{
 		height: 60px !important;
 	}
+
+	.container{
+		padding-left: 0px;
+		padding-right: 0px;
+		padding-bottom: 0px;
+		margin-bottom: 0px;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+	}
 </style>
 {% endblock %}
 
@@ -216,8 +226,17 @@ legend {
 	documento_vencimento:'{{item.vencimento|date:"d/m/Y"|default_if_none:""}}',
 	notificar_cliente:'{{ item.notificar_cliente }}',
 	prazo_notificacao:'{{ item.prazo_notificar|default_if_none:"" }}',
-	documento_senha:'{{item.senha|default_if_none:""}}'
+	documento_senha:'{{item.senha|default_if_none:""}}',
+	ativo:'{{ item.ativo|default_if_none:"" }}',
+	finalizado_por:'{{ item.finalizado_por.get_full_name|default_if_none:"" }}',
+	{% if item.data_finalizado %}
+	data_finalizado :'{{ item.data_finalizado|default_if_none:""|date:"d/m/Y" }} ÀS {{ item.data_finalizado|default_if_none:""|date:"H:i:s" }}'
+	{% else %}
+	data_finalizado :''
+	{% endif %}
 	},
+
+
 	{% endfor %}
 	]
 	{% endif %}
@@ -229,20 +248,20 @@ legend {
 
 		<div class="box-body" style='padding:2px;'>
 			<ul id='abas_formulario' class="nav nav-pills">
-				<li id='nav_cliente' class="active tab-item">
+				<li id='nav_cliente' class="{% if tab_active == 'tab_client' %} active{% endif %} tab-item">
 					<a data-toggle="tab" href="#tab_cliente">
 					<i class="fa fa-user" aria-hidden="true"></i>Cliente</a>
 				</li>
 
-				<li id='nav_contatos' class="tab-item">
+				<li id='nav_contatos' class="{% if tab_active == 'tab_contatos' %} active{% endif %} tab-item">
 					<a data-toggle="tab" href="#tab_contatos"><i class="fa fa-phone" aria-hidden="true"></i> Contatos</a>
 				</li>
 
-				<li id='nav_cnae' class="tab-item">
+				<li id='nav_cnae' class="{% if tab_active == 'tab_cnae' %} active{% endif %} tab-item">
 					<a data-toggle="tab" href="#tab_cnae"><i class="fa fa-suitcase" aria-hidden="true"></i>Atividades</a>
 				</li>
 
-				<li id='nav_controles' class="tab-item">
+				<li id='nav_controles' class="{% if tab_active == 'tab_servicos' %} active{% endif %} tab-item">
 					<a data-toggle="tab" href="#tab_servicos"> <i class="fa fa-tasks" aria-hidden="true"></i>
 Controles</a>
 				</li>
@@ -272,8 +291,8 @@ Controles</a>
 		<div class="panel-body" style='padding:0px;padding-left: 14px;padding-right: 14px;'>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-xs-12">
-					<div class="tab-content" style="padding-top: 0px;padding-bottom:0px;padding-left: 0px;padding-right: 0px;">
-						<div id="tab_cliente" class="tab-pane fade in active">
+					<div class="tab-content" style="padding-top: 0px;padding-bottom: 0px;padding-left: 0px;padding-right: 0px;">
+						<div id="tab_cliente" class="tab-pane fade {% if tab_active == 'tab_client' %} in active{% endif %}">
 							<div class="box-body">
 								<fieldset>
 									<legend><i class="fa fa-id-card-o" aria-hidden="true"></i> Identificação</legend>
@@ -457,8 +476,7 @@ Controles</a>
 								</fieldset>
 							</div>
 						</div>
-
-						<div id="tab_contatos" class="tab-pane fade">
+						<div id="tab_contatos" class="tab-pane fade {% if tab_active == 'tab_contatos' %} in active{% endif %}">
 							<div class="box-body">
 								<fieldset id="field_contatos">
 									<legend><i class="fa fa-phone" aria-hidden="true"></i> Contatos</legend>
@@ -558,8 +576,7 @@ Controles</a>
 								</fieldset>
 							</div>
 						</div>
-
-						<div id="tab_cnae" class="tab-pane fade">
+						<div id="tab_cnae" class="tab-pane fade {% if tab_active == 'tab_cnae' %} in active{% endif %}">
 							<div class="box-body">
 								<fieldset id='fieldset_cnae'>
 
@@ -640,196 +657,350 @@ Controles</a>
 								</fieldset>
 							</div>
 						</div>
+						<div id="tab_servicos" class="tab-pane fade {% if tab_active == 'tab_servicos' %} in active{% endif %}">
 
-						<div id="tab_servicos" class="tab-pane fade">
-							<div class="box-body">
-
-								<fieldset id="fieldset_iss">
-									<legend>Vencimento de Impostos</legend>
-									<div class="row">
-										<div class="col-lg-2">
-											<div class="form-group">
-												<sub><label id="lb_tipo_vencimento" for="tipo_vencimento">{{ formulario_entidade.tipo_vencimento.label }}</label></sub>
-												{{ formulario_entidade.tipo_vencimento }}
-												<!--<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">-->
-											</div>
-										</div>
-
-										<div class="col-lg-2">
-											<div class="form-group">
-												<sub><label id="lb_data_vencimento_iss" for="data_vencimento_iss">{{ formulario_entidade.data_vencimento_iss.label }}</label></sub>
-												{{ formulario_entidade.data_vencimento_iss }}
-												<!--<input id="data_vencimento" type="text" class="form-control">-->
-											</div>
-										</div>
-
-										<div class="col-lg-2">
-											<div class="form-group">
-												<sub><label id="lb_dia_vencimento_iss" for="dia_vencimento_iss">{{ formulario_entidade.dia_vencimento_iss.label }}</label></sub>
-												{{ formulario_entidade.dia_vencimento_iss }}
-												<!--<input id="data_vencimento" type="text" class="form-control">-->
-											</div>
-										</div>
-
-										<div class="col-lg-2">
-											<div class="form-group">
-												<sub><label id="lb_taxa_iss" for="taxa_iss">{{ formulario_entidade.taxa_iss.label }}</label></sub>
-												{{ formulario_entidade.taxa_iss }}<!-- <input id="taxa_iss" type="text" class="form-control">-->
-											</div>
-										</div>
+							<div class="box-heading">
+								<div class="box-header">
+									<h5 class="box-title">Controle de Vencimentos</h5>
+									<div class="pull-right">
+										<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_documento"> Adicionar</a>
+									<a href="#" id='bt_close_document' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado == null" ng-click="finalizar_documento()" style="padding-right:6px;margin-left: 10px;"> Finalizar</a>
+									<a href="#" id='bt_delete_document' role="button" class="btn btn-sm btn-default" ng-disabled="registro_selecionado == null" ng-click="excluir_documento()" style="padding-right:6px;margin-left: 10px;"> Excluir</a>
 									</div>
-								</fieldset>
-
-								<fieldset>
-									<legend>Vencimento de Documentos</legend>
-
-									{{ formulario_entidade.tabela_documentos }}
-
-
-									<div class="row" style="padding-bottom: 5px;">
-
-										<div class="col-lg-3">
-											<div class="row">
-												<div class="col-lg-12">
-													<div class="form-group">
-														<sub><label>Tipo do Documento:</label></sub>
-														<select id="tipo_documento" class="form-control" onchange="definir_tipo_documento(this)" ng-model="tipo_documento">
-															<option value="ALVARÁ">ALVARÁ</option>
-															<option value="CERTIDÃO">CERTIDÃO</option>
-															<option value="CERITIFICADO">CERTIFICADO</option>
-															<option value="PROCURAÇÃO">PROCURAÇÃO</option>
-															<option value="OUTRO">OUTRO</option>
-														</select>
-													</div>
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-lg-12">
-													<div class="form-group">
-														<sub><label>Documento:</label></sub>
-														<input type="text" id="documento" class="form-control" ng-model="documento" list="opcoes_documentos" style="text-transform: uppercase;">
-														<datalist id="opcoes_documentos">
-
-														</datalist>
-													</div>
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-lg-12">
-													<div class="form-group">
-														<sub><label>Senha:</label></sub>
-														<input type="text" id="documento_senha" class="form-control" ng-model="documento_senha">
-													</div>
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-lg-12">
-													<div class="form-group">
-														<sub><label id='lb_documento_vencimento'>Vencimento:</label></sub>
-														<input type="text" id="documento_vencimento" class="form-control" ng-model="documento_vencimento">
-													</div>
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-lg-6">
-													<div class="form-group">
-														<sub><label>Notificar Cliente:</label></sub>
-
-														<select id="notificar_cliente" class="form-control" onchange="definir_notificacao_cliente(this)">
-															<option value="SIM" >SIM</option>
-															<option value="NAO" selected>NÃO</option>
-														</select>
-													</div>
-												</div>
-
-												<div class="col-lg-6">
-													<div class="form-group">
-														<sub><label>Prazo (Dias):</label></sub>
-														<input type="number" id="prazo_notificacao" class="form-control" onkeydown="filter_numbers(event)">
-													</div>
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-lg-12">
-													<div class="form-group">
-														<button type="button" id='bt_adicionar_documento' class="btn btn-sm btn-default pull-right" style='margin-top: 8px;' ng-click="adicionar_documento($index)">Adicionar</button>
-													</div>
-												</div>
-											</div>
-
-										</div>
-
-										<div class="col-lg-9">
-
-											<div class="row">
-												<div class="col-md-12">
-													<div class="box box-panel" style="margin-top: 18px;">
-														<table class="table table-condensed table-striped table-hover table-bordered">
-
-															<thead>
-															<tr>
-																<th style="text-align: center">Tipo</th>
-																<th style="text-align: center">Documento</th>
-																<th style="text-align: center">Vencimento</th>
-																<th style="text-align: center">Notificar</th>
-																<th></th>
-															</tr>
-															</thead>
-
-															<tbody>
-															{% verbatim %}
-															<tr ng-repeat="documento in documentos"> <!-- class="clickable"  ng-click="editar_documento($index)" -->
-																<td class='left_align' style="width:100px;">{{ documento.tipo_documento }}</td>
-
-																<td class='left_align'>
-																	{{ documento.documento }}
-																	<span ng-if='documento.documento_senha!=""'>
-																		- SENHA: {{ documento.documento_senha }}
-																	</span>
-
-																	<span ng-if='documento.documento_senha==""'>
-
-																	</span>
-																</td>
-
-
-																<td class='center_align' style="width:100px;">{{ documento.documento_vencimento }}</td>
-
-																<td class='center_align'>
-																	<span ng-if='documento.prazo_notificacao!=""'>
-																		{{ documento.prazo_notificacao }} DIAS
-																	</span>
-
-																	<span ng-if='documento.prazo_notificacao==""'>
-																		-
-																	</span>
-																</td>
-
-																<td style="width: 30px; ">
-																	<a ng-click="excluir_documento($index)" style="cursor:pointer; border-left: hidden; text-align: center;" >
-																		<i class="fa fa-trash-o" aria-hidden="true"></i>
-																	</a>
-																</td>
-															</tr>
-
-															<tr ng-repeat="k in size_list_documents.slice(documentos.length,size_list_documents.length)">
-																<td height="30"></td><td></td><td></td><td></td><td></td>
-															</tr>
-															{% endverbatim %}
-															</tbody>
-														</table>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</fieldset>
+								</div>
 							</div>
+							<div class="box-body">
+								{{ formulario_entidade.tabela_documentos }}
+								<div class="row" style="padding-bottom: 5px;">
+
+									<!--<div class="col-lg-3">
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="form-group">
+													<sub><label>Tipo do Documento:</label></sub>
+													<select id="tipo_documento" class="form-control" onchange="definir_tipo_documento(this)" ng-model="tipo_documento">
+														<option value="ALVARÁ">ALVARÁ</option>
+														<option value="CERTIDÃO">CERTIDÃO</option>
+														<option value="CERITIFICADO">CERTIFICADO</option>
+														<option value="PROCURAÇÃO">PROCURAÇÃO</option>
+														<option value="OUTRO">OUTRO</option>
+													</select>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="form-group">
+													<sub><label>Documento:</label></sub>
+													<input type="text" id="documento" class="form-control" ng-model="documento" list="opcoes_documentos" style="text-transform: uppercase;">
+													<datalist id="opcoes_documentos">
+
+													</datalist>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="form-group">
+													<sub><label>Senha:</label></sub>
+													<input type="text" id="documento_senha" class="form-control" ng-model="documento_senha">
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="form-group">
+													<sub><label id='lb_documento_vencimento'>Vencimento:</label></sub>
+													<input type="text" id="documento_vencimento" class="form-control" ng-model="documento_vencimento">
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-lg-6">
+												<div class="form-group">
+													<sub><label>Notificar Cliente:</label></sub>
+
+													<select id="notificar_cliente" class="form-control" onchange="definir_notificacao_cliente(this)">
+														<option value="SIM" >SIM</option>
+														<option value="NAO" selected>NÃO</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="col-lg-6">
+												<div class="form-group">
+													<sub><label>Prazo (Dias):</label></sub>
+													<input type="number" id="prazo_notificacao" class="form-control" onkeydown="filter_numbers(event)">
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="form-group">
+													<button type="button" id='bt_adicionar_documento' class="btn btn-sm btn-default pull-right" style='margin-top: 8px;' ng-click="adicionar_documento($index)">Adicionar</button>
+												</div>
+											</div>
+										</div>
+
+									</div>-->
+
+									<div class="col-lg-12">
+
+										<div class="row">
+											<div class="col-md-12">
+												<div class="box box-panel container" style="margin-top: 3px;">
+													<table class="table table-condensed table-striped table-hover table-bordered">
+														<thead>
+														<tr>
+															<th style="text-align: center">Tipo</th>
+															<th style="text-align: center">Documento</th>
+															<th style="text-align: center">Vencimento</th>
+															<th style="text-align: center" title="Prazo para informar automáticamente o cliente">Informar Cliente</th>
+															<th style="text-align: center">Finalizado por</th>
+															<th style="text-align: center">Data Finalização</th>
+														</tr>
+														</thead>
+
+														<tbody>
+														{% verbatim %}
+														<!--<tr class="linha_selecionavel {{ documento.selecionado }}" ng-repeat="documento in documentos" "> <!-- class="clickable"  ng-click="editar_documento($index)" -->
+														<tr ng-cloak class="linha_selecionavel angular-repeat {{ documento.selecionado }}" ng-click="selecionar_linha(documento)" dir-paginate="documento in documentos |itemsPerPage: 10 track by $index" pagination-id="paginate_registros">
+															<td class='left_align' style="width:100px;">{{ documento.tipo_documento }}</td>
+
+															<td class='left_align'>
+																{{ documento.documento }}
+																<span ng-if='documento.documento_senha!=""'>
+																	- SENHA: {{ documento.documento_senha }}
+																</span>
+
+																<span ng-if='documento.documento_senha==""'>
+
+																</span>
+															</td>
+
+
+															<td class='center_align' style="width:100px;">{{ documento.documento_vencimento }}</td>
+
+															<td class='center_align' style="width:110px;">
+
+																<span ng-if='documento.prazo_notificacao=="" || documento.prazo_notificacao=="0"' title="Não informar automáticamente.">
+																	-
+																</span>
+
+																<span ng-if='documento.prazo_notificacao!="" && documento.prazo_notificacao!="0"' title="Enviar email automático com {{ documento.prazo_notificacao }} dias de antescedencia.">
+																	{{ documento.prazo_notificacao }} DIAS
+																</span>
+
+															</td>
+
+															<td class='center_align' style="width:160px;">{{ documento.finalizado_por }}</td>
+
+															<td class='center_align' style="width:150px;">{{ documento.data_finalizado }}</td>
+
+															<!--<td style="width: 30px; ">
+																<a ng-click="excluir_documento($index)" style="cursor:pointer; border-left: hidden; text-align: center;" >
+																	<i class="fa fa-trash-o" aria-hidden="true"></i>
+																</a>
+															</td>-->
+														</tr>
+
+														<tr ng-repeat="k in size_list_documents.slice(documentos.length,size_list_documents.length)">
+															<td height="30"></td><td></td><td></td><td></td><td></td><td></td>
+														</tr>
+														{% endverbatim %}
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+
+										<div class='row no-gutter' style="padding: 50px 10px 0px 10px;">
+											{% verbatim %}
+											<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
+												<label id="label_competence" class='left {{ desabilitar }}'><sub>Competência:</sub></label>
+												<select id='competence' class='form-control {{ desabilitar }}' onchange="select_competence()">
+												</select>
+											</div>
+
+											<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
+												<label id="label_filtrar_contrato" class='left {{ desabilitar }}'><sub>Contrato:</sub></label>
+												<select id='filtrar_contrato' class='form-control' ng-model="filter_contract_by" ng-change="select_filter_contract_by()">
+													<option value="com_contrato" selected>COM CONTRATO</option>
+													<option value="sem_contrato">SEM CONTRATO</option>
+													<option value="todos">TODOS</option>
+												</select>
+											</div>
+
+											<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
+												<label id="label_filtrar_feridos" class='left {{ desabilitar }}'><sub>Status:</sub></label>
+												<select id='filtrar_feridos' class='form-control' ng-model="filter_conferred">
+													<option value="A" selected>NÃO CONFERIDOS</option>
+													<option value="C">CONFERIDOS</option>
+													<option value="E">ENCERRADOS</option>
+													<option value="T">TODOS</option>
+												</select>
+											</div>
+
+											<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
+												<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
+												<select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
+													<option value="0">CÓDIGO</option>
+													<option value="1" selected>CLIENTE</option>
+													<option value="2">COMPETÊNCIA</option>
+												</select>
+											</div>
+
+											<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 28px;'>
+												<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
+											</div>
+
+											<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 mt-xs-0 pull-right">
+												<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
+													<dir-pagination-controls pagination-id="paginate_registros" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
+													</dir-pagination-controls>
+												</span>
+											</div>
+											{% endverbatim %}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div id="modal_documento" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+									<div class="modal-dialog">
+										<!--  style="width: 90%"> -->
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+												<h4 style="margin-top: 1px" id="myModalLabel">Documentos</h4>
+											</div>
+											<div class="modal-body" style="padding: 15px;">
+												<form action="" method="post">
+												{% csrf_token %}
+													<div class="row">
+														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+															<div>
+																<sub><label>Tipo do Documento: </label></sub>
+																<select id="tipo_documento" class="form-control" onchange="definir_tipo_documento(this)" ng-model="tipo_documento">
+																	<option value="ALVARÁ">ALVARÁ</option>
+																	<option value="CERTIDÃO">CERTIDÃO</option>
+																	<option value="CERTIFICADO">CERTIFICADO</option>
+																	<option value="PROCURAÇÃO">PROCURAÇÃO</option>
+																	<option value="IMPOSTOS">IMPOSTOS</option>
+																	<option value="OUTRO">OUTRO</option>
+																</select>
+															</div>
+														</div>
+													</div>
+
+													<div class="row">
+														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+															<div>
+																<sub><label>Documento: </label></sub>
+																<input type="text" id="documento" class="form-control" ng-model="documento" list="opcoes_documentos" style="text-transform: uppercase;">
+																<datalist id="opcoes_documentos">
+
+																</datalist>
+															</div>
+														</div>
+													</div>
+
+													<div class="row">
+														<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+															<div>
+																<sub><label id="documento_complemento">Complemento: </label></sub>
+																<input type="text" id="documento_senha" class="form-control" ng-model="documento_senha">
+															</div>
+														</div>
+
+														<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+															<div class="form-group">
+																<sub><label>Tipo de vencimento: </label></sub>
+
+																<select id="tipo_vencimento_novo" class="form-control" onchange="definir_tipo_vencimento(this)">
+																	<option value="ANUAL" selected>ANUAL</option>
+																	<option value="MENSAL">MENSAL</option>
+																</select>
+															</div>
+														</div>
+													</div>
+
+													<div class="row">
+														<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+															<div class="form-group">
+																<sub><label id='lb_documento_vencimento'>Vencimento: </label></sub>
+																<input type="text" id="documento_vencimento" class="form-control" ng-model="documento_vencimento">
+															</div>
+														</div>
+
+														<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+															<div class="form-group">
+																<sub><label>Notificar Cliente: </label></sub>
+
+																<select id="notificar_cliente" class="form-control" onchange="definir_notificacao_cliente(this)">
+																	<option value="SIM">SIM</option>
+																	<option value="NAO" selected>NÃO</option>
+																</select>
+															</div>
+														</div>
+
+														<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+															<div class="form-group">
+																<sub><label>Prazo (Dias): </label></sub>
+																<input type="number" id="prazo_notificacao" class="form-control" onkeydown="filter_numbers(event)">
+															</div>
+														</div>
+													</div>
+
+													<div class="row">
+														<div class="col-lg-3 col-lg-push-9">
+															<button type="button" id='bt_adicionar_documento' class="btn btn-sm btn-default pull-right" style='margin-top: 8px;' ng-click="adicionar_documento($index)">Adicionar</button>
+															<!--<button type="submit" id="bt_submit_documento" class="btn btn-primary form-control" style="position: relative; margin-top: 20px"></button>-->
+															<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							<!--<div class="row">
+								<div class="col-lg-2">
+									<div class="form-group">
+										<sub><label id="lb_tipo_vencimento" for="tipo_vencimento">{{ formulario_entidade.tipo_vencimento.label }}</label></sub>
+										{{ formulario_entidade.tipo_vencimento }}
+										<!-<input id="check_tipo_vencimento" data-toggle="toggle" data-width="120" data-on="Variável" data-off="Fixo" type="checkbox">->
+									</div>
+								</div>
+
+								<div class="col-lg-2">
+									<div class="form-group">
+										<sub><label id="lb_data_vencimento_iss" for="data_vencimento_iss">{{ formulario_entidade.data_vencimento_iss.label }}</label></sub>
+										{{ formulario_entidade.data_vencimento_iss }}
+										<!-<input id="data_vencimento" type="text" class="form-control">->
+									</div>
+								</div>
+
+								<div class="col-lg-2">
+									<div class="form-group">
+										<sub><label id="lb_dia_vencimento_iss" for="dia_vencimento_iss">{{ formulario_entidade.dia_vencimento_iss.label }}</label></sub>
+										{{ formulario_entidade.dia_vencimento_iss }}
+										<!-<input id="data_vencimento" type="text" class="form-control">->
+									</div>
+								</div>
+
+								<div class="col-lg-2">
+									<div class="form-group">
+										<sub><label id="lb_taxa_iss" for="taxa_iss">{{ formulario_entidade.taxa_iss.label }}</label></sub>
+										{{ formulario_entidade.taxa_iss }}<!- <input id="taxa_iss" type="text" class="form-control">->
+									</div>
+								</div>
+							</div>-->
 						</div>
 
 						{% if request.user.groups.values_list.0.0 <= 2%}
@@ -958,7 +1129,7 @@ function substituir_valor_nulo(valor){
 
 <script>
 	//Declarando o módulo da aplicação
-	var app = angular.module('app', []);
+	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 	//Declarando o construtor do MeuController
 	app.controller('MeuController', ['$scope', function($scope) {
 			$scope.people = [];
@@ -969,6 +1140,9 @@ function substituir_valor_nulo(valor){
 			$scope.size_list_indications = [1,2,3,4]
 			$scope.salario_vigente = null;
 			//$scope.valor_honorario = 0;
+
+			$scope.registro_selecionado = null;
+
 			/*{tipo_contato:'Jon', numero_contato: 30, cargo_setor: 'Developer'},
 					{tipo_contato:'Mike', numero_contato: 37, cargo_setor: 'Manager'},
 					{tipo_contato:'Allen', numero_contato: 50, cargo_setor: 'CEO'}
@@ -993,16 +1167,22 @@ function substituir_valor_nulo(valor){
 			}
 
 			$scope.adicionar_documento = function(){
+				var tipo_vencimento = $('#tipo_vencimento_novo').val();
+				if($("#documento").val() != "" && $("#documento_vencimento").val() != "" && $("#tipo_documento").val() != ""){
 					var notificar_cliente = $("#notificar_cliente").val();
 					var prazo_notificacao = $("#prazo_notificacao").val();
 
 					var documento = {
-							tipo_documento: substituir_valor_nulo($scope.tipo_documento),
-							documento: substituir_valor_nulo($scope.documento),
-							documento_vencimento: substituir_valor_nulo($("#documento_vencimento").val()),
-							documento_senha: substituir_valor_nulo($scope.documento_senha),
-							notificar_cliente: notificar_cliente,
-							prazo_notificacao: prazo_notificacao
+						tipo_vencimento: tipo_vencimento.toUpperCase(),
+						tipo_documento: substituir_valor_nulo($scope.tipo_documento).toUpperCase(),
+						documento: substituir_valor_nulo($scope.documento).toUpperCase(),
+						documento_vencimento: substituir_valor_nulo($("#documento_vencimento").val()),
+						documento_senha: substituir_valor_nulo($scope.documento_senha),
+						notificar_cliente: notificar_cliente,
+						prazo_notificacao: prazo_notificacao,
+						ativo: true,
+						finalizado_por: null,
+						data_finalizado: null
 					};
 
 					$scope.documentos.push(documento);
@@ -1011,6 +1191,7 @@ function substituir_valor_nulo(valor){
 							$('#tabela_documentos').val()+"+|"+
 							documento.tipo_documento+"|"+
 							documento.documento+"|"+
+							documento.tipo_vencimento+"|"+
 							documento.documento_vencimento+"|"+
 							documento.documento_senha+"|"+
 							documento.notificar_cliente+"|"+
@@ -1033,8 +1214,35 @@ function substituir_valor_nulo(valor){
 					$scope.documento_senha = "";
 					$scope.notificar_cliente = "NAO";
 					$scope.prazo_notificacao = "";
-
+					$("#modal_documento").modal('hide');
+				}
+				else{
+					alert("VAI PREENCHER O VENCIMENTO E O DOCUMENTO JOVEM");
+				}
 			};
+
+			$scope.finalizar_documento = function(){
+				var data_paramters = {}
+				data_paramters['document_id'] = 1;
+				success_function = function(result,message,object,status){
+					alert('DEU CERTO')
+					//$scope.registros.splice(0, 0, object);
+					//$scope.$apply();
+					//check_response_message_form('#form_adicionar_contrato', message);
+					//$("#modal_adicionar_contrato").modal('hide');
+					//reset_formulary('form_adicionar_contrato');
+				}
+
+				fail_function = function (result,message,data_object,status) {
+					alert('DEU ERRO')
+				}
+
+				validate_function = function () {
+				 return confirm('Deseja mesmo encerrar?');
+				}
+				request_api("/api/entity/document/close",data_paramters,validate_function,success_function,fail_function);
+
+				}
 
 			$scope.editar_documento = function(index){
 					$('#tipo_documento').val($scope.documentos[index].tipo_documento);
@@ -1045,23 +1253,30 @@ function substituir_valor_nulo(valor){
 					$scope.excluir_documento(index);
 			}
 
-			$scope.excluir_documento = function(index){
-					$scope.documentos.splice(index, 1);
-
-					var registro_temporario = $('#tabela_documentos').val();
-					var temp = new Array();
-					temp = registro_temporario.split("#")[index];
+			$scope.excluir_documento = function(){
+			if ($scope.registro_selecionado != null){
+				var index = $scope.documentos.indexOf($scope.registro_selecionado);
+				//var index = $scope.registro_selecionado.id;
 
 
-					if (temp.indexOf("+") !=-1) {
-							registro_temporario = registro_temporario.replace(temp+"#","");
+				if (confirm('Deseja mesmo excluir?') == true){
+						$scope.documentos.splice(index, 1);
+						var registro_temporario = $('#tabela_documentos').val();
+						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
+						var temp = new Array();
+						temp = registro_temporario.split("#")[index];
+
+						if (temp.indexOf("+") !=-1) {
+								registro_temporario = registro_temporario.replace(temp+"#","");
+						}
+
+						else{
+								registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
+						}
+						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
+						$('#tabela_documentos').val(registro_temporario);
+						}
 					}
-
-					else{
-							registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
-					}
-
-					$('#tabela_documentos').val(registro_temporario);
 			};
 
 
@@ -1170,6 +1385,244 @@ function substituir_valor_nulo(valor){
 			return $scope.valor_base;
 		};
 
+		$scope.reajustar_tela = function (){
+		$scope.screen_height = SCREEN_PARAMTERS['screen_height'];
+		$scope.screen_width  = SCREEN_PARAMTERS['screen_width'];
+		$scope.screen_model  = SCREEN_PARAMTERS['screen_model'];
+
+		$scope.table_maximun_items_per_page = SCREEN_PARAMTERS['table_maximun_items_per_page'];
+		$scope.table_minimun_items          = SCREEN_PARAMTERS['table_minimun_items'];
+
+		var extra_height = 0;
+		if(SCREEN_PARAMTERS['table_maximun_items_per_page'] <= 5){
+			extra_height = SCREEN_PARAMTERS['table_maximun_items_per_page']
+		}
+		else if(SCREEN_PARAMTERS['table_maximun_items_per_page'] <= 9){
+			extra_height = 6;
+		}
+		else{
+			extra_height = 7;
+		}
+
+		$scope.table_maximun_body_heigth = SCREEN_PARAMTERS['table_maximun_body_height']+extra_height;
+		$scope.$apply();
+	}
+
+
+		$scope.selecionar_linha = function(registro) {
+			if ($scope.registro_selecionado != null){
+				//alert("tinha uma linha selecionada, entao tem que desmarcar a anterior pra marcar a nova");
+				if (registro.selecionado=='selected'){
+					//alert("O cara clicou na linha que ja tava selecionada");
+					$scope.desmarcar_linha_selecionada();
+					//registro.selecionado = "";
+					//$scope.registro_selecionado = null;
+					//$scope.opcao_desabilitada = "desabilitado";
+				}
+
+				else{
+					//alert("O usuario tinha um registro selecionado mas selecionou novo registro: "+registro.id+"-"+registro.nome);
+					$scope.desmarcar_linha_selecionada();
+					registro.selecionado = "selected";
+					$scope.registro_selecionado = registro;
+					$scope.opcao_desabilitada = "";
+				}
+			}
+
+			else{
+				//alert("nao tinha nada marcado, vou marcar"+$scope.registro_selecionado);
+				registro.selecionado = 'selected';
+				$scope.registro_selecionado = registro;
+				$scope.opcao_desabilitada = "";
+			}
+		}
+
+		$scope.desmarcar_linha_selecionada = function(){
+				$scope.registro_selecionado.selecionado = "";
+				$scope.registro_selecionado = null;
+				$scope.opcao_desabilitada = "desabilitado";
+		}
+
+		$scope.get_filter_column = function(){
+			var competence = $("#competence").val();
+			var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
+			$('#competence').prop('disabled', false);
+			if(competence=='TODOS'){
+				switch ($scope.filter_contract_by){
+					case 'com_contrato':
+						switch (filtrar_pesquisa_por) {
+							case 'codigo':
+								if($scope.filter_conferred == 'T'){
+									return {id: $scope.search, have_contract: true};
+								}
+								else{
+									return {id: $scope.search, have_contract: true, status:$scope.filter_conferred};
+								}
+
+							case 'competence':
+								$("#competence").val('TODOS');
+								$('#competence').prop('disabled', true);
+								if($scope.filter_conferred == 'T'){
+									return {competence: $scope.search, have_contract: true};
+								}
+								else{
+									return {competence: $scope.search, have_contract: true, status:$scope.filter_conferred};
+								}
+
+							default:
+								if($scope.filter_conferred == 'T'){
+									return {entity_name: $scope.search, have_contract: true};
+								}
+								else{
+									return {entity_name: $scope.search, have_contract: true, status:$scope.filter_conferred};
+								}
+						}
+					case 'sem_contrato':
+						switch (filtrar_pesquisa_por) {
+							case 'codigo':
+								if($scope.filter_conferred == 'T'){
+									return {competence: $scope.search, have_contract: false};
+								}
+								else{
+									return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
+								}
+							case 'competence':
+								$("#competence").val('TODOS');
+								$('#competence').prop('disabled', true);
+								if($scope.filter_conferred == 'T'){
+									return {competence: $scope.search, have_contract: false};
+								}
+								else{
+									return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
+								}
+							default:
+								if($scope.filter_conferred == 'T'){
+									return {entity_name: $scope.search, have_contract: false};
+								}
+								else{
+									return {entity_name: $scope.search, have_contract: false, status:$scope.filter_conferred};
+								}
+						}
+					default:
+						switch (filtrar_pesquisa_por) {
+							case 'codigo':
+								if($scope.filter_conferred == 'T'){
+									return {id: $scope.search};
+								}
+								else{
+									return {id: $scope.search, status:$scope.filter_conferred};
+								}
+
+							case 'competence':
+								$("#competence").val('TODOS');
+								$('#competence').prop('disabled', true);
+								if($scope.filter_conferred == 'T'){
+									return {competence: $scope.search};
+								}
+								else{
+									return {competence: $scope.search, status:$scope.filter_conferred};
+								}
+							default:
+								if($scope.filter_conferred == 'T'){
+									return {entity_name: $scope.search};
+								}
+								else{
+									return {entity_name: $scope.search, status:$scope.filter_conferred};
+								}
+						}
+				}
+			}
+
+			else{
+				switch ($scope.filter_contract_by){
+					case 'com_contrato':
+						switch (filtrar_pesquisa_por){
+							case 'codigo':
+								if($scope.filter_conferred == 'T'){
+									return {id: $scope.search, competence:competence, have_contract: true};
+								}
+								else{
+									return {id: $scope.search, competence:competence, have_contract: true, status:$scope.filter_conferred};
+								}
+
+							case 'competence':
+								$("#competence").val('TODOS');
+								$('#competence').prop('disabled', true);
+								if($scope.filter_conferred == 'T'){
+									return {competence: $scope.search, have_contract: true };
+								}
+								else{
+									return {competence: $scope.search, have_contract: true, status:$scope.filter_conferred };
+								}
+							default:
+								if($scope.filter_conferred == 'T'){
+									return {entity_name: $scope.search, competence: competence, have_contract: true};
+								}
+								else{
+									return {entity_name: $scope.search, competence: competence, have_contract: true, status:$scope.filter_conferred };
+								}
+						}
+
+					case 'sem_contrato':
+						switch (filtrar_pesquisa_por){
+							case 'codigo':
+								if($scope.filter_conferred == 'T'){
+									return {id: $scope.search, competence:competence, have_contract: false};
+								}
+								else{
+									return {id: $scope.search, competence:competence, have_contract: false, status:$scope.filter_conferred};
+								}
+							case 'competence':
+								$("#competence").val('TODOS');
+								$('#competence').prop('disabled', true);
+								if($scope.filter_conferred == 'T'){
+									return {competence: $scope.search, have_contract: false};
+								}
+								else{
+									return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
+								}
+							default:
+								if($scope.filter_conferred == 'T'){
+									return {entity_name: $scope.search, competence:competence, have_contract: false};
+								}
+								else{
+									return {entity_name: $scope.search, competence:competence, have_contract: false, status:$scope.filter_conferred};
+								}
+						}
+
+					default:
+						switch (filtrar_pesquisa_por){
+							case 'codigo':
+								if($scope.filter_conferred == 'T'){
+									return {id: $scope.search, competence:competence};
+								}
+								else{
+									return {id: $scope.search, competence:competence, status:$scope.filter_conferred};
+								}
+
+							case 'competence':
+								$("#competence").val('TODOS');
+								$('#competence').prop('disabled', true);
+								if($scope.filter_conferred == 'T'){
+									return {competence: $scope.search};
+								}
+								else{
+									return {competence: $scope.search, status:$scope.filter_conferred};
+								}
+
+							default:
+								if($scope.filter_conferred == 'T'){
+									return {entity_name: $scope.search, competence:competence};
+								}
+								else{
+									return {entity_name: $scope.search, competence:competence, status:$scope.filter_conferred};
+								}
+						}
+				}
+			}
+			$scope.$apply();
+		}
+
 	}]);
 
 </script>
@@ -1179,7 +1632,7 @@ function substituir_valor_nulo(valor){
 	configurar_campo_data("regime_desde");
 	configurar_campo_data("atividade_desde");
 	configurar_campo_data("data_vencimento_iss");
-	configurar_campo_data("documento_vencimento");
+	$("#documento_vencimento").mask("99/99/9999");
 	configurar_campo_data("contrato_inicio");
 	configurar_campo_data("contrato_fim");
 </script>
@@ -1207,6 +1660,14 @@ function substituir_valor_nulo(valor){
 
 		});
 	});
+
+
+	//$(function () {
+		//alert('TO FUNCIONANDO')
+		//var hash = window.location.hash;
+		//alert(hash)
+		//hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+	//});
 
 	function calcular_honorario(){
 		var desconto = $("#desconto_temporario").val();
@@ -1552,6 +2013,7 @@ function configurar_inscricao_municipal(){
         var opcoes_certidoes = ["CERTIDÃO NEGATIVA FEDERAL","CERTIDÃO NEGATIVA ESTADUAL","CERTIDÃO NEGATIVA MUNICIPAL","CERTIDÃO NEGATIVA TRABALHISTA","CERTIDÃO JUNTA COMERCIAL","CERTIDÃO DE FALÊNCIA E RECUPERAÇÃO JUDICIAL"];
         var opcoes_certificado = ["CERTIFICADO DIGITAL"];
         var opcoes_procuracao = ["PROCURAÇÃO ELETRÔNICA"];
+        var opcoes_impostos = ["ISS"];
         var outras_opcoes = [];
 
         $('#documento').val("");
@@ -1564,12 +2026,14 @@ function configurar_inscricao_municipal(){
                 desabilitar_campo("documento_senha");
                 $('#documento_senha').val("");
                 break;
+
             case "CERTIDÃO":
                 //alert("Certidao");
                 trocar_opcoes_datalist("opcoes_documentos",opcoes_certidoes);
                 desabilitar_campo("documento_senha");
                 $('#documento_senha').val("");
                 break;
+
             case "CERITIFICADO":
                 //alert("Certificado Digital");
                 trocar_opcoes_datalist("opcoes_documentos",opcoes_certificado);
@@ -1580,6 +2044,13 @@ function configurar_inscricao_municipal(){
                 //alert("Certificado Digital");
                 trocar_opcoes_datalist("opcoes_documentos",opcoes_procuracao);
                 habilitar_campo("documento_senha");
+                break;
+
+						case "IMPOSTOS":
+								trocar_opcoes_datalist("opcoes_documentos",opcoes_impostos);
+                habilitar_campo("documento_senha");
+                $("#documento_complemento").text("Taxa (%)");
+                //habilitar_campo("taxa_iss");
                 break;
 
             case "OUTRO":
@@ -1614,6 +2085,25 @@ function configurar_inscricao_municipal(){
         else{
             desabilitar_campo("prazo_notificacao");
         }
+    }
+    </script>
+
+<script>
+    function definir_tipo_vencimento(campo) {
+			var opcao = $('#tipo_vencimento_novo').val();
+			if(opcao=='MENSAL'){
+				//habilitar_campo("dia_vencimento_iss");
+				//habilitar_campo("taxa_iss");
+				//desabilitar_campo("data_vencimento_iss");
+				$("#documento_vencimento").unmask();
+			}
+			else{
+				//configurar_campo_data("documento_vencimento");
+				$("#documento_vencimento").mask("99/99/9999");
+				//habilitar_campo("data_vencimento_iss");
+				//desabilitar_campo("taxa_iss");
+				//desabilitar_campo("dia_vencimento_iss");
+			}
     }
     </script>
 

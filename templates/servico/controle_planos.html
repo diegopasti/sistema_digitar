@@ -199,7 +199,7 @@
               <span ng-show="registro_selecionado">
                 <label id="box_info_cadastro">
                   <sub>
-                    Criador por {{ registro_selecionado.cadastrado_por | capitalize }}
+                    Criado por {{ registro_selecionado.cadastrado_por | capitalize }}
                     em {{ registro_selecionado.data_cadastro | date :  "dd/MM/yyyy" }}
                     às {{ registro_selecionado.hora_cadastro | date :  "HH:mm:ss" }}
                   </sub>
@@ -207,7 +207,7 @@
 
                 <label id="box_info_alteracao" class="pull-right">
                   <sub>
-                    Alterado ultima vez por {{ registro_selecionado.alterado_por | capitalize }}
+                    Alterado última vez por {{ registro_selecionado.alterado_por | capitalize }}
                     em {{ registro_selecionado.data_ultima_alteracao | date :  "dd/MM/yyyy" }}
                     às {{ registro_selecionado.hora_ultima_alteracao | date :  "HH:mm:ss" }}
                   </sub>

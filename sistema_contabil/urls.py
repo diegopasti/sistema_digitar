@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.conf.urls import url, include
 
 from modules.core.api import ConfigurationsController, RestrictedOperationController, NotificationsController
-from modules.entidade.views import EntityController
+from modules.entidade.api import EntityController
 from modules.nucleo import views as nucleo_views
 from modules.core import views as core_views
 from modules.entidade import views as entidade_views
@@ -70,9 +70,15 @@ urlpatterns = [
     url(r'^entidade/adicionar/$', entidade_views.adicionar_entidade),
     url(r'^entidade/desativar/$', EntityController().desativar_cliente),
     url(r'^entidade/visualizar/(?P<id>\d+)/$', entidade_views.visualizar_entidade),
+    url(r'^entidade/visualizar/(?P<id>\d+)/contatos$', entidade_views.visualizar_entidade),
+    url(r'^entidade/visualizar/(?P<id>\d+)/controles$', entidade_views.visualizar_entidade),
+    url(r'^entidade/visualizar/(?P<id>\d+)/atividades$', entidade_views.visualizar_entidade),
+
+
     url(r'^adicionar_entidade/$', entidade_views.adicionar_entidade),
     url(r'^consultar_entidade/(?P<entidade_id>\d+)/$',entidade_views.consultar_entidade),
     url(r'^api/entidade/lista_clientes/$', entidade_views.novo_buscar_lista_clientes),
+    url(r'^api/entity/document/close$', EntityController().close_document),
 
 
     url(r'^preferencias/servicos/$', servico_views.cadastro_servico),

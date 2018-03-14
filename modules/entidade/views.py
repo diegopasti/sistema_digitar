@@ -320,6 +320,19 @@ def visualizar_entidade(request,id):
     contatos_serializado = serializar_contatos(meus_contatos)
     atividades_serializadas = serializar_atividades(minhas_atividades)
     meus_documentos = Documento.objects.filter(entidade=cliente)
+    url = request.get_full_path()
+    print(url)
+    tab = os.path.basename(url)
+    print(tab)
+
+    if 'contatos' == tab:
+        tab_active = 'tab_contatos'
+    elif 'atividades' == tab:
+        tab_active = 'tab_cnae'
+    elif 'controles' == tab:
+        tab_active = 'tab_servicos'
+    else:
+        tab_active = 'tab_client'
 
     if (request.method == "POST"):
         from modules.entidade.models import localizacao_simples
@@ -454,31 +467,32 @@ def visualizar_entidade(request,id):
 
             if documentos != "":
                 documentos = documentos.split("#")
+                print("VEJA O QUE CHEGOU: ")
                 for item in documentos:
                     dados = item.split("|")
+                    print(">>>",dados)
 
                     if "+" in dados[0]:
                         registro = Documento()
-                        registro.tipo = dados[1]
-                        registro.nome = dados[2]
-                        registro.senha = dados[4]
-                        if dados[5] == "SIM":
+                        registro.tipo = dados[1].upper()
+                        registro.nome = dados[2].upper()
+                        registro.tipo_vencimento = dados[3].upper()
+                        registro.senha = dados[5]
+                        if dados[6] == "SIM":
                             registro.notificar_cliente = True
                         else:
                             registro.notificar_cliente = False
-                        print("VEJA O QUE VEIO DE PRAZO DE NOTIFICAR: ",dados[6])
-                        if dados[6] != '':
-                            registro.prazo_notificar = dados[6]
-                        else:
+
+                        if dados[7] == "":
                             registro.prazo_notificar = None
+                        else:
+                            registro.prazo_notificar = dados[7]
                         registro.criado_por = request.user
                         #registro.vencimento = dados
-
-
                         registro.entidade = cliente
 
                         try:
-                            registro.vencimento = datetime.datetime.strptime(dados[3], "%d/%m/%Y").date()
+                            registro.vencimento = datetime.datetime.strptime(dados[4], "%d/%m/%Y").date()
                         except:
                             registro.vencimento = None
 
@@ -586,13 +600,14 @@ def visualizar_entidade(request,id):
 
     return render(request,"entidade/adicionar_entidade.html",
                           {'dados': [],
-                          'formulario_entidade': formulario,
-                           'meus_contatos':meus_contatos,
-                           'minhas_atividades':minhas_atividades,
-                           'meus_documentos':meus_documentos,
-                          'naturezas_juridicas':informacoes_juridicas.natureza_juridica,
-                          'atividades_economicas':informacoes_tributarias.atividades_economicas,
-                          'erro': False},
+                            'formulario_entidade': formulario,
+                            'meus_contatos':meus_contatos,
+                            'minhas_atividades':minhas_atividades,
+                            'meus_documentos':meus_documentos,
+                            'naturezas_juridicas':informacoes_juridicas.natureza_juridica,
+                            'atividades_economicas':informacoes_tributarias.atividades_economicas,
+                            'tab_active':tab_active,
+                            'erro': False},
                           )
 
 @login_required
