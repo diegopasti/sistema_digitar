@@ -1,15 +1,17 @@
 import os
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Case, When
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from libs.backup.backup import BackupManager
 from libs.backup.pygit import check_update, update, install
 from libs.default.core import BaseController
-from modules.nucleo.models import Backup, RestrictedOperation, BaseOperation
+from modules.nucleo.models import Backup, RestrictedOperation, BaseOperation, Notification
 from modules.user.models import User
 from sistema_contabil import settings
 # from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 # from selenium import webdriver
+from django.db import models
 
 
 class BaseOperationController(BaseController):
@@ -40,6 +42,7 @@ class RestrictedOperationController(BaseController):
                 operation_dict = {}
                 operation_dict['user']
         return'''
+
 
 class ConfigurationsController(BaseController):
 
@@ -264,6 +267,69 @@ class ConfigurationsController(BaseController):
         x = BaseController().filter(request, model=Backup)
         #print("VEJA O QUE TENHO QUE ENVIAR: ",x)
         return BaseController().filter(request, model=Backup, limit=1)
+
+
+class NotificationsController(BaseController):
+
+    def confirm_notification(self, request):
+        from django.utils.timezone import now, localtime
+        self.start_process(request)
+        user_id = str(request.user.id)
+        notification = Notification.objects.get(id=int(request.POST['notification_id']))
+        response_dict = {}
+
+        if notification is not None:
+            notification.last_view_by = request.user
+            notification.last_view_date = localtime(now())
+            if notification.related_users_readed is not None:
+                notification.related_users_readed = notification.related_users_readed + ";" + user_id
+            else:
+                notification.related_users_readed = str(user_id)
+            response_dict = self.execute(notification,notification.save,extra_fields=['related_entity__nome_razao','last_view_by__get_full_name','was_readed'])
+            if response_dict['object']['related_users_readed'] is not None:
+                #print("DESTINATARIO: ",request.user.id,' - ',item['related_users_readed'].split(";"))
+                if str(request.user.id) in response_dict['object']['related_users_readed'].split(";"):
+                    response_dict['object']['was_readed'] = True
+                else:
+                    response_dict['object']['was_readed'] = False
+            else:
+                response_dict['object']['was_readed'] = False
+
+        else:
+            response_dict['result'] = False
+            response_dict['object'] = None
+            response_dict['message'] = "Erro! Notificação não existe."
+
+        #print("VEJA O QUE ROLOU: ",response_dict)
+        return self.response(response_dict)
+
+    def get_notifications(self, request):
+        self.start_process(request)
+        user_id = str(request.user.id)
+        #query = Notification.objects.filter(related_users__icontains=user_id).annotate(was_readed=Case(When(related_users_readed__icontains=user_id, then=None),default=1.0*F('tot_clicks')/F('tot_impressions'),output_field=models.BooleanField())).order_by('-pk')
+        response_dict = BaseController().filter(request,queryset=Notification.objects.filter(related_users__icontains=user_id).order_by('-pk'), model=Notification, extra_fields=['related_entity__nome_razao','last_view_by__get_full_name','was_readed'], is_response=False)
+        for item in response_dict['object']:
+            if item['related_users_readed'] is not None:
+                #print("DESTINATARIO: ",request.user.id,' - ',item['related_users_readed'].split(";"))
+                if str(request.user.id) in item['related_users_readed'].split(";"):
+                    item['was_readed'] = True
+                else:
+                    item['was_readed'] = False
+            else:
+                item['was_readed'] = False
+        return self.response(response_dict)
+
+    def get_notifications_competences(self, request):
+        self.start_process(request)
+        competences = list(Notification.objects.all().values_list('competence').distinct())
+        result = []
+        for item in competences:
+            result.insert(0,item[0])
+        response_dict = {}
+        response_dict['object'] = result
+        response_dict['message'] = "Periodo de notificações em aberto carregadas com sucesso."
+        response_dict['result'] = True
+        return self.response(response_dict)
 
 class AbstractAPI:
 

@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url, include
 
-from modules.core.api import ConfigurationsController, RestrictedOperationController
+from modules.core.api import ConfigurationsController, RestrictedOperationController, NotificationsController
 from modules.entidade.views import EntityController
 from modules.nucleo import views as nucleo_views
 from modules.core import views as core_views
@@ -136,6 +136,13 @@ urlpatterns = [
     url(r'^api/preferencias/salario_vigente/$', preferencias_views.get_salario_vigente),
 
     #url(r'^api/core/', include('modules.nucleo.urls')),
+
+    url(r'^notifications/$', core_views.notifications_center),
+    url(r'^api/notifications/$', NotificationsController().get_notifications),
+    url(r'^api/notification/confirm$', NotificationsController().confirm_notification),
+    url(r'^api/notifications/month_list$', NotificationsController().get_notifications_competences),
+
+
 
     url(r'^api/working/register/$', nucleo_views.working),
     url(r'^system/configurations', core_views.system_configurations),

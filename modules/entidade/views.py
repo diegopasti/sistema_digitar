@@ -1,8 +1,6 @@
 # -*- encoding: utf-8 -*-
-
 import datetime
 import json
-
 from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -13,22 +11,13 @@ from django.http.response import Http404, HttpResponseRedirect
 from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
-
 from libs.default.core import BaseController
 from libs.default.decorators import request_ajax_required, permission_level_required
 from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco
 from modules.entidade.models import entidade, contato
 from modules.entidade.service import consultar_codigo_postal_viacep  # consultar_codigo_postal_default
 from modules.entidade.utilitarios import remover_simbolos  # formatar_codificacao,
-
 from modules.entidade.formularios import formulario_cadastro_entidade_completo, formulario_justificar_operacao
-
-
-#import os
-#from django.core.exceptions import ValidationError
-#from sistema_contabil import settings
-#from util.internet import consultar_codigo_postal
-#from util.email import ControleEmail
 
 
 def verificar_cadastro_empresa():
@@ -144,47 +133,6 @@ class EntityController (BaseController):
             raise Http404
             '''
 
-"""
-def adicionar_item_protocolo(request):
-    
-    print("cheguei no ajax carai!")
-    if request.is_ajax():
-        formulario_itens     = formulario_adicionar_item_protocolo(request.POST, request.FILES)
-        
-        if 'adicionar_item' in request.POST:
-            if formulario_itens.is_valid():
-                documento  = formulario_itens['documento'].value()
-                referencia = formulario_itens['referencia'].value()
-                vencimento = formulario_itens['vencimento'].value()
-                valor      = formulario_itens['valor'].value()
-                
-                item            = item_protocolo()
-                item.documento  = documento
-                item.referencia = referencia
-                item.vencimento = vencimento
-                item.valor      = valor
-            
-                formulario_itens  = formulario_adicionar_item_protocolo()
-                #itens_temporarios = [documento,referencia,vencimento,valor]
-                                
-                formulario_itens.temporarios.append(item)
-                #formulario_itens.temporarios.append(itens_temporarios)
-                
-                messages.add_message(request, messages.SUCCESS, "Item adicionado com sucesso")
-                
-            else:
-                msg = verificar_erros_formulario(formulario_itens)
-                #print msg
-                messages.add_message(request, messages.SUCCESS, msg)
-        
-    else:
-        
-    data = json.dumps(resultado)
-        return HttpResponse(data, content_type='application/json')
-    
-    else:
-        raise Http404
-"""
 @login_required
 def novo_buscar_lista_clientes(request):
     #if request.is_ajax():
@@ -204,7 +152,6 @@ def novo_buscar_lista_clientes(request):
     return HttpResponse(data, content_type='application/json')
     #else:
     #    raise Http404
-
 
 def buscar_entidades(request):
     resultado = entidade.objects.all()
@@ -299,252 +246,6 @@ def link_callback(uri, rel):
             )
     return path
 """    
-
-"""def emitir_protocolo(request,numero_item):
-    numero_item = int(numero_item)
-    erro = False
-    destinatarios = entidade.objects.all()  
-    
-    if (request.method == "POST"):
-        
-        formulario_protocolo = formulario_emitir_protocolo(request.POST)
-            
-        #print("O que que tem nos temporarios: ",formulario_protocolo.temporarios)
-        
-        if 'adicionar_item' in request.POST:
-            
-            if formulario_protocolo.is_valid(): 
-                item            = item_protocolo()
-                item.documento  = formulario_protocolo['documento'].value().upper()
-                item.complemento= formulario_protocolo['complemento'].value().upper()
-                item.referencia = formulario_protocolo['referencia'].value()
-                item.vencimento = formulario_protocolo['vencimento'].value()
-                
-                valor = formulario_protocolo['valor'].value()
-                
-                if valor != "":
-                    valor = valor.replace(".","")
-                    valor = valor.replace(",",".")
-                    item.valor      = Decimal(valor)
-                
-                formulario_protocolo.temporarios.append(item)
-                
-                cliente = formulario_protocolo['entidade_destinatario'].value().upper()
-                temp = formulario_protocolo.temporarios
-                
-                formulario_protocolo  = formulario_emitir_protocolo({'entidade_destinatario':cliente})
-                formulario_protocolo.temporarios = temp
-                
-                #messages.add_message(request, messages.SUCCESS, "Item adicionado com sucesso")
-            
-            else:
-                msg = verificar_erros_formulario(formulario_protocolo)
-                messages.add_message(request, messages.SUCCESS, msg)
-                erro = True
-            
-            
-        elif 'gerar_protocolo' in request.POST:
-            
-            formulario_protocolo = formulario_emitir_protocolo(request.POST)
-            #print("O que que tem nos temporarios: ",formulario_protocolo.temporarios)
-                        
-            formulario_protocolo.temporarios = formulario_protocolo.temporarios
-            
-            for item in formulario_protocolo.temporarios:                
-                print("Olha o iten: ",item)
-                
-            
-            nome_cliente = formulario_protocolo['entidade_destinatario'].value().upper()
-            id_cliente = int(nome_cliente[:nome_cliente.index("-")])
-            
-            cliente = entidade.objects.get(pk=id_cliente)
-            cliente.cpf_cnpj = formatar_cpfcnpj(cliente.cpf_cnpj)
-            
-            empresa = entidade.objects.get(pk=1)
-            empresa.cpf_cnpj = formatar_cpfcnpj(empresa.cpf_cnpj)
-            
-            ""
-            endereco_cliente = "RUA TESTE.. TO ACERTANDO AS COISAS NO NOVO MODULO DE ENDERECO"#construir_endereco(localizacao.objects.get(entidade_id=cliente.id))
-            endereco_emissor = "RUA TESTE.. TO ACERTANDO AS COISAS NO NOVO MODULO DE ENDERECO"#construir_endereco(localizacao.objects.get(entidade_id=empresa.id))
-            
-            
-            pagina = "protocolo.html"
-            parametros = {'emissor':empresa,
-                          'destinatario':cliente,
-                          'endereco_destinatario':endereco_cliente,
-                          'endereco_emissor':endereco_emissor,
-                           'documentos':formulario_protocolo.temporarios,
-                          'formulario_protocolo':formulario_protocolo,
-                           'erro':erro}
-            
-            
-            from django.template import loader,Context#, Template
-            from xhtml2pdf import pisa
-           
-            
-            pagina = loader.get_template('novo_protocolo.html')
-            
-            c = Context(parametros)#{'message': 'Your message'})
-            html = pagina.render(request,c)
-            
-            from django_xhtml2pdf.utils import generate_pdf
-            resp = HttpResponse(content_type='application/pdf')
-            result = generate_pdf('novo_protocolo.html', file_object=resp,context=c)
-            return result
-            
-            
-            resp = HttpResponse(content_type='application/pdf')
-            result = generate_pdf(html)#, file_object=resp)
-            
-            #print("Olha o result:", result)
-            
-            pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
-            if not pdf.err:
-                return HttpResponse(result.getvalue(), content_type='application/pdf')
-            
-            return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
-            #return result.getvalue()
-        
-            
-            ""
-            return render(request,"protocolo.html",{
-                                        'emissor':empresa,
-                                        'destinatario':cliente,
-                                        'endereco_destinatario':endereco_cliente,
-                                        'endereco_emissor':endereco_emissor,
-                                        'documentos':formulario_protocolo.temporarios,
-                                        'formulario_protocolo':formulario_protocolo,
-                                        'erro':erro},
-                                      
-                                      )
-            ""
-            
-        elif 'excluir_item' in request.POST:
-            #print("Axo que eh um POST pra apagar")
-            formulario_protocolo = formulario_emitir_protocolo(request.POST)
-            print formulario_protocolo["excluir_item"]
-            formulario_protocolo.temporarios.remove(formulario_protocolo.temporarios[int(formulario_protocolo["excluir_item"].value())])
-            
-            
-        
-            
-    else:
-        formulario_protocolo = formulario_emitir_protocolo()
-        formulario_protocolo.limpar_temporarios()
-        ""
-        if "excluir" in request.path:
-            formulario_protocolo = formulario_emitir_protocolo(request.GET)
-            print("olha os temporarios: ",formulario_protocolo.temporarios)
-            
-            
-            temp = formulario_protocolo.temporarios
-            cliente = formulario_protocolo.destinatario_temporario
-                
-            formulario_protocolo  = formulario_emitir_protocolo({'entidade_destinatario':cliente})
-            formulario_protocolo.destinatario_temporario = cliente
-            formulario_protocolo.temporarios = temp
-            
-            
-            print("olha o destinatario: ",formulario_protocolo['entidade_destinatario'].value().upper())
-            formulario_protocolo.temporarios.remove(formulario_protocolo.temporarios[numero_item])
-            print("olha os temporarios depois: ",formulario_protocolo.temporarios)
-            
-            return render(request,"emitir_protocolo.html",{'destinatarios':destinatarios ,'dados':formulario_protocolo.temporarios,'formulario_protocolo':formulario_protocolo,'erro':erro})
-            
-            
-        else:
-            
-        ""
-                    
-    return render(request,"emitir_protocolo.html",{'destinatarios':destinatarios ,'dados':formulario_protocolo.temporarios,'formulario_protocolo':formulario_protocolo,'erro':erro})
-    
-    ""
-    if (request.method == "POST"):
-        
-        formulario_protocolo = formulario_emitir_protocolo(request.POST, request.FILES)
-        
-        print("olha antes o que tem na data: ",formulario_protocolo.data_emissao)
-        
-        formulario_itens     = formulario_adicionar_item_protocolo(request.POST, request.FILES)
-        
-        if 'adicionar_item' in request.POST:
-            
-            if formulario_itens.is_valid():
-                documento  = formulario_itens['documento'].value().upper()
-                referencia = formulario_itens['referencia'].value()
-                vencimento = formulario_itens['vencimento'].value()
-                valor      = formulario_itens['valor'].value()
-                complemento      = formulario_itens['complemento'].value().upper()
-                
-                item            = item_protocolo()
-                item.documento  = formulario_itens['documento'].value().upper()
-                item.complemento= formulario_itens['complemento'].value().upper()
-                item.referencia = formulario_itens['referencia'].value()
-                item.vencimento = formulario_itens['vencimento'].value()
-                item.valor      = formulario_itens['valor'].value()
-                
-                formulario_itens  = formulario_adicionar_item_protocolo()
-                
-                print("olha o que tem na data: ",formulario_protocolo.data_emissao)
-                #itens_temporarios = [documento,referencia,vencimento,valor]
-                                
-                print("Ve o que tem nos temporarios antes de validar_registro: ",formulario_itens.temporarios)
-                formulario_itens.temporarios.append(item)
-                                
-                #messages.add_message(request, messages.SUCCESS, "Item adicionado com sucesso")
-                
-            else:
-                msg = verificar_erros_formulario(formulario_itens)
-                messages.add_message(request, messages.SUCCESS, msg)
-                erro = True
-        
-        elif 'gerar_protocolo' in request.POST:
-            
-            if formulario_protocolo.is_valid():
-                
-                if formulario_itens.temporarios != []:
-                    
-                    novo_protocolo = protocolo()
-                    novo_protocolo.emissor = entidade.objects.get(pk=26)
-                    novo_protocolo.destinatario = entidade.objects.get(pk=formulario_protocolo['entidade_destinatario'].value())
-                    
-                    novo_protocolo.save()
-                    
-                    for item in formulario_itens.temporarios:
-                        print item.documento,",",item.referencia,",",item.vencimento,",",item.valor
-                        item.protocolo = novo_protocolo
-
-                        try:
-                            item.save()
-                        except Exception as erro:
-                            print("Deu pau..",erro.message_dict
-                                                    
-                    
-                    print("deu Certo sera?!"
-                    messages.add_message(request, messages.SUCCESS, "Gerando protocolo")
-                else:
-                    messages.add_message(request, messages.SUCCESS, "Informe os documentos a ser enviado")
-                
-            else:
-                msg = verificar_erros_formulario(formulario_protocolo)
-                messages.add_message(request, messages.SUCCESS, msg)
-        
-    elif (request.method == "GET"):
-        formulario_emitir_protocolo.temporarios = []
-        formulario_protocolo = formulario_emitir_protocolo()
-        formulario_itens     = formulario_adicionar_item_protocolo()
-        formulario_itens.temporarios = []   
-        print("Tem alguma coisa pra mostrar: ",formulario_itens.temporarios)
-        
-        
-        
-    elif request.is_ajax():
-        formulario_itens.temporarios.remove(formulario_itens.temporarios[numero_item])
-        print("apaguei, ve o que sobrou: ",formulario_itens.temporarios)
-        
-    
-    return render(request,"emitir_protocolo.html",{'dados':formulario_itens.temporarios,'formulario_protocolo':formulario_protocolo,'formulario_itens':formulario_itens,'erro':erro})
-    """
 
 def validar_objeto(registro):
     print("Campo: ",registro)
@@ -765,7 +466,11 @@ def visualizar_entidade(request,id):
                             registro.notificar_cliente = True
                         else:
                             registro.notificar_cliente = False
-                        registro.prazo_notificar = dados[6]
+                        print("VEJA O QUE VEIO DE PRAZO DE NOTIFICAR: ",dados[6])
+                        if dados[6] != '':
+                            registro.prazo_notificar = dados[6]
+                        else:
+                            registro.prazo_notificar = None
                         registro.criado_por = request.user
                         #registro.vencimento = dados
 

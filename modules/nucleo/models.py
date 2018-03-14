@@ -1,11 +1,59 @@
 # -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
 
+from modules.entidade.models import entidade
 from modules.nucleo.config import ERRORS_MESSAGES, BaseConfiguration
 from django.db import models
 
 
 from modules.user.models import User
+
+
+class Notification(models.Model):
+
+    class Meta:
+        db_table = 'core_notifications'
+        unique_together = ("module", "group", "tag", "message", "related_model", "related_object", "related_users")
+
+    module = models.CharField("Módulo:", max_length=50, null=True, error_messages=ERRORS_MESSAGES)
+    group  = models.CharField("Grupo:", max_length=50, null=True, error_messages=ERRORS_MESSAGES)
+    tag    = models.CharField("Tag:", max_length=50, null=True, error_messages=ERRORS_MESSAGES)
+    type   = models.CharField("Tipo:", max_length=50, null=True, error_messages=ERRORS_MESSAGES)
+    title  = models.CharField("Titulo:", max_length=100, null=True, error_messages=ERRORS_MESSAGES)
+    message = models.CharField("Mensagem:", max_length=500, null=True, error_messages=ERRORS_MESSAGES)
+    related_entity = models.ForeignKey(entidade, null=True)
+    related_model  = models.CharField("Modelo relacionado:", max_length=50, null=True, error_messages=ERRORS_MESSAGES)
+    related_object = models.CharField("Objeto relacionado:", max_length=50, null=True, error_messages=ERRORS_MESSAGES)
+    related_users = models.CharField("Lista de Destinatários:", max_length=50, null=True, error_messages=ERRORS_MESSAGES)
+    related_users_readed = models.CharField("Usuários que conferiram:", max_length=50, null=True, error_messages=ERRORS_MESSAGES)
+    related_user_names = models.CharField("Nome dos Destinatários:", max_length=500, null=True, error_messages=ERRORS_MESSAGES)
+
+    last_view_date = models.DateTimeField(null=True)
+    last_view_by = models.ForeignKey(User, null=True, related_name="last_view_by")
+
+    competence = models.CharField("Mês de Competencia:", null=False, max_length=8,default='JAN/2018')
+    created_date = models.DateTimeField(auto_now_add=True, null=False)
+    status = models.BooleanField("Status da Notificação", default=False)
+
+    def get_related_user_names(self):
+        self.related_user_names = ''
+        for user_id in self.related_users.split(';'):
+            user = User.objects.get(pk=int(user_id))
+            self.related_user_names = self.related_user_names+user.get_full_name()+";"
+
+        self.related_user_names = self.related_user_names[:-1]
+
+    def show_details(self):
+        print('module:', self.module)
+        print('group:', self.group)
+        print('tag:', self.tag)
+        print('type:', self.type)
+        print('title:', self.title)
+        print('message:', self.message)
+        print('related_model:', self.related_model)
+        print('related_object:', self.related_object)
+        print('related_users:', self.related_users)
+        print('created_date:', self.created_date)
 
 
 class Backup(models.Model):

@@ -932,16 +932,16 @@ class HonoraryController(BaseController):
                 if honorary.contract.desconto_temporario_ativo is not None and honorary.contract.desconto_temporario_ativo > 0:
                     contract_temporary_discount_rate = honorary.contract.desconto_temporario_ativo
                     contract_temporary_discount_value = round(float(contract_unit_value) * (float(contract_temporary_discount_rate)/100.0), 2)
-                else:
-                    contract_temporary_discount_rate = 0.00
-                    contract_temporary_discount_value = 0.00
+                #else:
+                #    contract_temporary_discount_rate = 0.00
+                #    contract_temporary_discount_value = 0.00
 
                 if honorary.contract.desconto_indicacoes is not None and honorary.contract.desconto_indicacoes > 0:
                     contract_fidelity_discount_rate = honorary.contract.desconto_indicacoes
                     contract_fidelity_discount_value = round(float(contract_unit_value) * (float(honorary.contract.desconto_indicacoes)/100.0), 2)
-                else:
-                    contract_fidelity_discount_rate = 0.00
-                    contract_fidelity_discount_value = 0.00
+                #else:
+                #    contract_fidelity_discount_rate = 0.00
+                #    contract_fidelity_discount_value = 0.00
 
 
         linhas_extras = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -972,6 +972,30 @@ class HonoraryController(BaseController):
         else:
             complemento = ""
 
+        try:
+            contract_temporary_discount_rate  = '%.2f'%(contract_temporary_discount_value)
+        except:
+            #contract_temporary_discount_rate = '0.00'
+            pass
+
+        try:
+            contract_temporary_discount_value = '%.2f'%(contract_temporary_discount_value)
+        except:
+            #contract_temporary_discount_value = '0,00'
+            pass
+
+        try:
+            contract_fidelity_discount_rate   = '%.2f'%(contract_fidelity_discount_rate)
+        except:
+            #contract_fidelity_discount_rate = "0.00"
+            pass
+
+        try:
+            contract_fidelity_discount_value  = '%.2f'%(contract_fidelity_discount_value)
+        except:
+            #contract_fidelity_discount_value = '0.00'
+            pass
+
         parametros = {
             'emissor_nome': company.nome_razao, #parametros_emissor.nome,
             'emissor_cpf_cnpj': formatar_cpf_cnpj(company.cpf_cnpj), #parametros_emissor.nome,formatar_cpf_cnpj(parametros_emissor.cpf_cnpj),
@@ -986,10 +1010,10 @@ class HonoraryController(BaseController):
             'honorary': honorary,
 
             'contract_unit_value':contract_unit_value,
-            'contract_temporary_discount_rate':'%.2f'%(contract_temporary_discount_rate),
-            'contract_temporary_discount_value': '%.2f'%(contract_temporary_discount_value),
-            'contract_fidelity_discount_rate':'%.2f'%(contract_fidelity_discount_rate),
-            'contract_fidelity_discount_value':'%.2f'%(contract_fidelity_discount_value),
+            'contract_temporary_discount_rate':contract_temporary_discount_rate,
+            'contract_temporary_discount_value': contract_temporary_discount_value,
+            'contract_fidelity_discount_rate':contract_fidelity_discount_rate,
+            'contract_fidelity_discount_value':contract_fidelity_discount_value,
 
             'valor_liquido':valor_liquido,
             'vencimento':vencimento,

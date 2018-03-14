@@ -554,7 +554,14 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.generate_honorary = function(){
-		var vencimento = $('#data_vencimento').val().split(' - ')[0];
+		var vencimento = '';
+		if($('#data_vencimento').val().indexOf(" - ") !== -1){
+			vencimento = $('#data_vencimento').val().split(' - ')[0];
+		}
+		else{
+			vencimento = $('#data_vencimento').val();
+		}
+
 		if($scope.registro_selecionado != null && vencimento!=""){
 			vencimento = vencimento.replace("/","").replace("/","")
 			window.open('/honorary/'+$scope.registro_selecionado.id+"/"+vencimento);

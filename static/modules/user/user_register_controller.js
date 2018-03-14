@@ -24,7 +24,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		data_paramters['username'] = data_paramters['username'].toLowerCase();
 
 		success_function = function(result,message,object,status){
-			notify_success_message(['Novo Usuário adicionado com Sucesso']);
+			//notify_success_message(['Novo Usuário adicionado com Sucesso']);
 			$scope.usuarios.splice(0,0,{});
 			$scope.usuarios[0] = object;
 			$scope.usuarios[0]['get_full_name'] = object['first_name']+ ' ' + object['last_name'];
@@ -59,7 +59,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		success_function = function(result,message,object,status){
       if(result){
 				var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
-				notify_success_message(["Usuário atualizado com sucesso"])
+				//notify_success_message(["Usuário atualizado com sucesso"])
 				$scope.usuarios[posicao] = object;
 				$scope.usuarios[posicao]['get_full_name'] = object['first_name']+ ' ' + object['last_name'];
 				$scope.registro_selecionado = null;
@@ -76,9 +76,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
     };
 
     validade_function = function () {
-
     	return (validade_variable_size(data_paramters['first_name'],3) && validade_variable_size(data_paramters['last_name'],3))
-
     };
     request_api("/api/user/update/",data_paramters,validade_function,success_function,fail_function);
 	};
@@ -146,7 +144,7 @@ app.controller('Cadastro_usuario', ['$scope', function($scope) {
 		success_function = function(result,message,object,status){
 			var posicao = $scope.usuarios.findIndex(x => x.id==$scope.registro_selecionado.id)
 			$scope.registro_selecionado = null;
-			notify_success_message(["Usuário atualizado com sucesso"])
+			//notify_success_message(["Usuário atualizado com sucesso"])
 			$scope.usuarios[posicao]['is_active'] = object['is_active'];
 			$scope.usuarios[posicao]['selecionado'] = '';
 			$scope.esta_adicionando = true;
