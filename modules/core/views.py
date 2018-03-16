@@ -4,7 +4,6 @@ from django.shortcuts import render
 from libs.default.decorators import permission_level_required
 from modules.nucleo.working_api import WorkingApi, WorkingManager
 from django.http.response import Http404
-
 #from modules.entity.permissions import EntityPermissions
 #from modules.user.models import User, Permissions
 
@@ -19,7 +18,7 @@ def notifications_center(request):
     from modules.core.services import NotificationsControl
     NotificationsControl().generate_notifications()
     #EntityNotifications().check_documents_expiring()
-    return render(request,"core/notifications/notifications_center.html")
+    return render(request,"core/notifications/notifications_center.html",{'request_user':'DIEGO PASTI'})
 
 
 @login_required

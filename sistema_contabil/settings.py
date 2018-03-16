@@ -64,7 +64,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles','session_security',
     'djangobower','compressor','dropbox','dbbackup',
-    'sistema_contabil','modules','modules.core','modules.nucleo','modules.user','modules.entidade','modules.protocolo','modules.honorary','modules.servico','modules.preferencias'
+    'sistema_contabil','modules','modules.core','modules.nucleo',
+    'modules.user','modules.entidade','modules.protocolo',
+    'modules.honorary','modules.servico','modules.preferencias'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -333,7 +335,7 @@ SELENIUM_CHROMEDRIVER = project_properties.chromedriver_path
 SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True
 WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
-WORKING_SERVER = "http://192.168.1.101:8010"
+WORKING_SERVER = "http://192.168.1.102:8010"
 if SERVER_DIGITAR:
     from modules.nucleo.working_api import WorkingManager
     try:

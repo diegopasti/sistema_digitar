@@ -1,16 +1,13 @@
 # -*- encoding: utf-8 -*-
-import datetime
-import json
+import datetime, json, os
 from decimal import Decimal
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from django.http.response import Http404, HttpResponseRedirect
-from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
+from django.http.response import Http404,HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
+from django.shortcuts import render
 from libs.default.core import BaseController
 from libs.default.decorators import request_ajax_required, permission_level_required
 from modules.entidade.models import Municipio, Bairro, Logradouro, informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco
