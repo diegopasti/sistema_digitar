@@ -1,0 +1,680 @@
+{% extends 'base_page.html' %}
+{% block Titulo %}<title>Digitar - Controle de Honorários</title>{% endblock %}
+{% load staticfiles %}
+{% block recursos_necessarios %}
+<style>
+	table td{
+		height: 26px;
+		padding: 0px !important;
+		padding-top: 7px !important;
+		padding-left: 4px !important;
+		padding-right: 4px !important;
+	}
+
+	table th{
+		font-size: 12px;
+		font-weight: bold;
+		background: #FFF; /*#9FB8FB; #EEEEEF; #85A3CC #EEE #8FB5EC; *#6FB2BE; #009ACD;*/
+		color: #666;
+	}
+
+	.container {
+		padding-left: 0px;
+		padding-right: 0px;
+		padding-bottom: 0px;
+		margin-bottom: 0px;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+	}
+
+	.confirm_honorary{
+		transition: all .1s ease-in-out;
+		padding: 0px;
+		font-size:14px;
+		cursor: pointer;
+	}
+
+	.confirm_honorary span i{
+		position: relative;
+		top: -4px;
+		height: 18px;
+		width: 52px;
+	}
+
+	.confirm_honorary span i:hover {
+		transform: scale(1.3);
+	}
+
+
+	.notification a{
+		margin-top: -8px;
+	}
+
+	.notification .created_date{
+		font-size: 90%;
+		color: #aaa;
+	}
+
+	.readed{
+		color: #1f7a1f;
+		font-size: 14px;
+		opacity: 0.7;
+	}
+
+	.non-readed{
+		color: #ccc;
+		font-size: 14px;
+	}
+
+	.invisible-data{
+		visibility: hidden;
+		opacity: 0;
+	}
+
+	.visible-data {
+	  visibility: visible;
+	  opacity: 1;
+	  transition: opacity 1s linear;
+	}
+
+	.hidden-loading {
+	  visibility: hidden;
+	  opacity: 0;
+	  transition: visibility 0s 1s, opacity 1s linear;
+	}
+
+	.created_notification{
+		color: #AAA;
+		font-size: 10px;
+	}
+</style>
+{% endblock %}
+{% block conteudo %}
+<div id="controle_angular" ng-app="app" ng-controller="MeuController" ng-init="registros_carregados=false;logged_user='{{ request.user.id }}';">
+	<div class="row" style="margin-top: -55px;">
+		<div class="col-lg-12 col-md-12 col-xs-12">
+			<div class="box box-default" style="">
+				<div class="box-heading">
+					<div class="box-header with-border">
+						<h5 class="box-title">Central de Notificações</h5>
+						<div class="pull-right" style="padding-bottom: 0px;margin-bottom: 0px;height:34px;">
+							<div class="form-group" title='Selecione o período das notificações que deseja visualizar.' style='width: 110px;float: left;' >
+								<select id='competence' class='form-control {{ desabilitar }}' onchange="select_competence()">
+								</select>
+							</div>
+
+							<div class="form-group" title='Selecione o status das notificações deseja visualizar.' style='width: 240px;float: right;margin-left: 10px;' >
+								<!--<label id="label_filtrar_contrato" class='left {{ desabilitar }}'><sub>Status:</sub></label>-->
+								<select id='filtrar_contrato' class='form-control' ng-model="filter_contract_by" ng-change="select_filter_contract_by()">
+									<option value="nao_lidas">NOTIFICAÇÕES NÃO LIDAS</option>
+									<option value="lidas">NOTIFICAÇÕES LIDAS</option>
+									<option value="todas">TODAS NOTIFICAÇÕES</option>
+								</select>
+							</div>
+
+							<div class="form-group" title='Selecione o tipo das notificações que deseja visualizar.' style='margin-left: 10px;float:right;'>
+								<select id='notifications_type' ng-model="notifications_type " class='form-control'>
+									<option value="ENTITY">NOTIFICAÇÕES DE ENTIDADES</option>
+									<option value="PROTOCOL">NOTIFICAÇÕES DO PROTOCOLO</option>
+									<option value="HONORARY">NOTIFICAÇÕES DO HONORÁRIO</option>
+									<option value="TASK">NOTIFICAÇÕES DE TAREFAS</option>
+									<option value="SYSTEM">NOTIFICAÇÕES DO SISTEMA</option>
+									<option value="TODOS" selected>TODOS OS MÓDULOS</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-body" style="padding-top: 15px;margin-bottom: 0px;">
+					{% verbatim %}
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="container">
+								<table class="table table-condensed table-striped table-hover" id="table_contratos" style="width: 100%;">
+									<thead>
+										<tr class="linha_cabecalho no-select">
+											<th class='text-left' ng-click="sortType='message';sortReverse=!sortReverse" style="padding-left: 8px;">Notificações</th>
+											<th class="text-center" style="width: 120px;" ng-click="sortType='updated_by_name';sortReverse=!sortReverse">Data Notificação</th>
+											<th class='text-center' style="width: 140px;cursor: not-allowed">Destinatários</th>
+											<th class='text-center' style="width: 120px;cursor: not-allowed">Situação</th>
+										</tr>
+									</thead>
+
+									<tbody style="font-size: 11px;border-bottom: 1px solid #ddd;">
+										<tr id="divCarregando" ng-if="registros_carregados == false"><!-- style='height:{{ table_maximun_body_heigth }}px;'>-->
+											<td colspan="12" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle' class="text-center"><br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><br><br>Aguarde.. Carregando...<br><br></td>
+										</tr>
+
+										<tr id='views_list_{{ registro.id }}' class="{{ registro.selecionado }}" dir-paginate="registro in $parent.result = (registros | filter: get_filter_column() | orderBy:sortType:sortReverse) | itemsPerPage:table_maximun_items_per_page" pagination-id="paginate_registros"  ng-if='registros_carregados' ng-cloak>
+											<td class='text-left linha_selecionavel'  ng-click="selecionar_linha(registro);">
+												<span style="margin-top: -4px;height:24px;color: #666;">
+													<span  style="height: 16px;width:16px;font-size:15px;color:#aaa;padding: 2px;">
+														<i ng-if="registro.module=='ENTITY'" class="fa fa-id-card-o" aria-hidden="true" title='Notificação do módulo Entidade'></i>
+														<i ng-if="registro.module=='HONORARY'" class="fa fa-briefcase" aria-hidden="true"  title='Notificação do módulo Honorário'></i>
+													</span>
+	                        {{ registro.message|uppercase }}
+												</span>
+											</td>
+											<td class="text-left linha_selecionavel" style="width: 100px;font-size: 11px;color: #999;" ng-click="selecionar_linha(registro);">
+												<span ng-show="registro.created_date!=null">{{ registro.created_date| date: 'dd/MM/yyyy' }} às {{ registro.created_date| date: 'HH:mm:ss' }}</span>
+												<span ng-show="registro.created_date==null"></span>
+											</td>
+											<td class='linha_selecionavel' style="width:100px;display: table-cell;text-align:center;padding: 0px;" ng-click="selecionar_linha(registro);">
+												<span ng-repeat="user in registro.related_users.split(';')" ng-init="get_user_related_name(registro, user)">
+													<i class="fa fa-user" id='{{ registro.id }}_{{ user }}' ng-class="registro.related_users_readed.indexOf(user) != -1 && registro.related_users_readed != null? 'readed' : 'non-readed'" aria-hidden="true"></i>
+												</span>
+											</td>
+											<td class='text-center confirm_honorary' style="width: 100px;padding: 0px;" ng-click="confirm_notification(registro, logged_user)">
+												<span ng-show="registro.was_readed == false" title="Clique aqui para confirmar notificação.">
+													<i class="fa fa-check" aria-hidden="true" style="color: #AAA;"></i>
+												</span>
+
+												<span ng-show="registro.was_readed == true" title="Você já confirmou essa notificação.">
+													<i class="fa fa-check" aria-hidden="true" style="color: #009933;"></i>
+												</span>
+											</td>
+										</tr>
+
+										<tr ng-cloak ng-if='registros_carregados' ng-repeat="k in table_minimun_items.slice(registros.length,table_minimun_items.length)">
+											<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+										</tr>
+
+										<tr ng-cloak ng-if="result.length==0 && registros_carregados == true">
+											<td colspan="12" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle' class="text-center"><br>
+												<i class="fa fa-exclamation-circle fa-3x fa-fw" aria-hidden="true"></i>
+												<br><br>Nenhum resultado encontrado<br><br>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div ng-if="search != '' && result.length > 0" style="text-align:right;padding:0px;font-size:11px;overflow:visible;background:blue;height: 0px;margin-top: -15px;padding-right:10px;color: #888;">Registros encontrados: {{ result.length }}/{{ registros.length }}</div>
+						</div>
+					</div>
+
+					<div class='row no-gutter' style="padding: 0px 10px 0px 10px;">
+						<!--
+
+						-->
+
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" style='margin-top:6px;'>
+							<label id="label_buscar_por" class='left {{ desabilitar }}'><sub>Buscar por:</sub></label>
+							<select id='buscar_por' class='form-control {{ desabilitar }}' ng-model="filter_by" ng-change="select_filter_by()">
+								<option value="0" selected>MENSAGEM</option>
+							</select>
+						</div>
+
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style='margin-top: 28px;'>
+							<input type="text" id="search" ng-model='search' class="form-control {{ desabilitar }}" placeholder="Consultar..">
+						</div>
+
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 pull-right" ng-if="registros_carregados == true" >
+							<span class="pull-right" style="height: 64px;padding-top: 10px;"><!-- style="margin-top:-54px;margin-bottom: -30px;margin-right: 0px;">-->
+								<dir-pagination-controls pagination-id="paginate_registros" max-size="5" auto-hide="false" boundary-links="true" direction-links="true">
+								</dir-pagination-controls>
+							</span>
+
+						</div>
+					</div>
+					{% endverbatim %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="modal_provents" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 98%;margin-left: auto; margin-right: auto;">
+			<form id="form_honorary_item" novalidate autocomplete="off" ng-submit="(selected_item==null) ? save_honorary_item() : update_honorary_item()" onsubmit="return false;">
+				{% csrf_token %}
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h5 id="titulo_modal_provents" class='modal_title' style="font-weight: bold">Proventos e Descontos</h5>
+					</div>
+
+					<div class="modal-body" style="padding: 30px;padding-top: 15px;padding-bottom: 5px;">
+						<style>
+						.legend_background {
+							background: red; /* For browsers that do not support gradients */
+							background: -webkit-linear-gradient(left, white, #fafafb); /* For Safari 5.1 to 6.0 */
+							background: -o-linear-gradient(right, white, #fafafb); /* For Opera 11.1 to 12.0 */
+							background: -moz-linear-gradient(right,white, #fafafb); /* For Firefox 3.6 to 15 */
+							background: linear-gradient(to right, white, #fafafb); /* Standard syntax */
+						}
+						</style>
+
+						<fieldset style="margin-left:0px;" ng-if="screen_model <= 4">
+							<div class="row">
+								<a id='legend_identification' class="legend_background" data-toggle="collapse" data-target="#item_panel">
+									<legend class='legend_background' style="font-size:12px; font-weight: bold;display: block;cursor: pointer;padding-left: 12px;">
+										Adicionar<i class="fa fa-plus pull-right" style="margin-top: 2px;margin-right: 4px;font-size: 12px;" aria-hidden="true"></i>
+									</legend>
+								</a>
+							</div>
+						</fieldset>
+						<div ng-if="registro_selecionado.status!='E'" ng-class="{collapse: screen_model >= 1, in: screen_model > 4}" id="item_panel" style="margin-top:-10px;padding-bottom: 10px;">
+							<div class="row no-gutter fluid" stye="padding-left: 15px;">
+								<div class="col-lg-2 col-md-1 col-sm-6 col-xs-12">
+									<div class="form-group field" id="field_type_item">
+										<sub><label id="lb_type_item" for="type_item">{{ formulario_proventos.type_item.label }}</label></sub>
+										{{ formulario_proventos.type_item }}
+									</div>
+								</div>
+
+								<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="form-group field" id="field_item">
+										<sub><label id="lb_item" for="item_id">{{ formulario_proventos.item_id.label }}*</label></sub>
+										{% verbatim %}
+										<select id="item_id" class="form-control">
+											<option ng-repeat="option in provents_options" value="{{option.id}}" ng-show="view_provents_per_type(option)" ng-click="select_provent_option(option)">
+												{{ option.nome }}
+											</option>
+										</select>
+										{% endverbatim %}
+									</div>
+								</div>
+
+								<div class="col-lg-1 col-md-3 col-sm-3 col-xs-12">
+									<div class="form-group field" id="field_complement">
+										<sub><label id="lb_complement" for="complement">{{ formulario_proventos.complement.label }}</label></sub>
+										{{ formulario_proventos.complement}}
+									</div>
+								</div>
+
+								<div class="col-lg-1 col-md-3 col-sm-3 col-xs-12">
+									<div class="form-group field" id="field_unit_value">
+										<sub><label id="lb_unit_value" for="unit_value">{{ formulario_proventos.unit_value.label }}</label> </sub>
+										{{ formulario_proventos.unit_value}}
+									</div>
+								</div>
+
+								<div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
+									<div class="form-group field" id="field_quantity">
+										<sub><label id="lb_quantity" for="quantity">{{ formulario_proventos.quantity.label }}</label> </sub>
+										{{ formulario_proventos.quantity }}
+									</div>
+								</div>
+
+								<div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
+									<div class="form-group field" id="field_total_value">
+										<sub><label id="lb_total_value" for="total_value">{{ formulario_proventos.total_value.label }}</label></sub>
+										{{ formulario_proventos.total_value }}
+									</div>
+								</div>
+
+								<div class="col-lg-push-1 col-lg-2 col-md-push-1 col-md-1 col-sm-3 col-xs-12">
+									<div class="form-group field pull-right" id="field_save" style="margin-top:20px;">
+										<button type="submit" id="bt_submit_contrato" class="btn btn-sm btn-primary" style="width:90px;" title="Salvar novo item ao honorário."><i class="fa fa-floppy-o" aria-hidden="true"></i>
+ Salvar</button>
+										<button type="button" id="bt_delete_item" ng-disabled='selected_item == null' ng-click="delete_honorary_item()" title="Excluir item do honorário." class="btn btn-sm btn-danger" style="width:80px;"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir </button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div ng-if="registro_selecionado.status=='E'">
+							{% verbatim %}
+							<div class="row">
+								<div class="col-lg-12" style="text-align:center">
+										<p>
+											<i class="fa fa-info-circle" aria-hidden="true"></i>
+											Honorário encerrado por {{ registro_selecionado.updated_by_name }} no dia
+											{{ registro_selecionado.closed_date | date:'dd/MM/yyyy' }} às
+											{{ registro_selecionado.closed_date | date:'HH:mm:ss' }}
+										</p>
+										<br>
+								</div>
+							</div>
+							{% endverbatim %}
+						</div>
+
+						<div class="row no-gutter fluid">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								{% verbatim %}
+								<div class="dataTable_wrapper" style="margin-left: 0px;margin-right:0px;margin-bottom:0px;padding-bottom: 0px;">
+									<div class='row' style="padding-bottom: 0px;margin-bottom:0px;">
+										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+											<div class="container">
+												<table class="table table-condensed  table-striped table-bordered table-hover" id="datatable">
+													<thead>
+														<tr class="">
+															<th class="center" style="30px;">Nº</th>
+
+															<th class='center'>Tipo</th>
+
+															<th class="center">Item</th>
+
+															<th class="center">Data de Criação</th>
+
+															<th class="center">Cadastrado por</th>
+
+															<th class="center">Ultima alteração</th>
+
+															<th class="center">Alterado por</th>
+
+															<th class="center">Unit/Base</th>
+
+															<th class='center'>Quant/Taxa</th>
+
+															<th class='center'>Valor Total</th>
+														</tr>
+													</thead>
+
+													<style>
+														#datatable td{
+															padding: 0px;
+															padding-top: 4px;
+															height: 26px;
+														}
+													</style>
+
+													<tbody>
+														<tr ng-if="registro_selecionado.honorary_itens == '' && typeof(registro_selecionado.honorary_itens)=='string'">
+															<td colspan="9" style='height: 260px; background: #FFFAFA; opacity: 0.5;vertical-align: middle;' class="text-center">
+																Aguarde.. Carregando...<br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+															</td>
+														</tr>
+
+														<tr ng-if="registro_selecionado.contract!=null" style="font-size: 10px;">
+															<td class='center' style="width: 30px;">1</td>
+															<td class="left" colspan="6" style="padding-left: 6px;">HONORÁRIOS CONTÁBEIS CONF. CONTRATO - {{ registro_selecionado.competence }}</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.initial_value_contract | currency:"" }}</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">1,00</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.initial_value_contract | currency:"" }}</td>
+														</tr>
+
+														<tr ng-if="registro_selecionado.temporary_discount>0" style="font-size: 10px;">
+															<td class='center' style="width: 30px;">2</td>
+															<td class="left" colspan="6" style="padding-left: 6px;">DESCONTO TEMPORÁRIO CONF. CONTRATO</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.initial_value_contract | currency:"" }}</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.temporary_discount | currency:"" }}%</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;color: #800000">- {{ registro_selecionado.initial_value_contract*(registro_selecionado.temporary_discount/100) | currency:"" }}</td>
+														</tr>
+
+														<tr ng-if="registro_selecionado.fidelity_discount>0" style="font-size: 10px;">
+															<td class='center' style="width: 30px;">3</td>
+															<td class="left" colspan="6" style="padding-left: 6px;">DESCONTO FIDELIDADE CONF. CONTRATO</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.initial_value_contract | currency:"" }}</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">{{ registro_selecionado.fidelity_discount | currency:"" }}%</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;color: #800000">- {{ registro_selecionado.initial_value_contract*(registro_selecionado.fidelity_discount/100) | currency:"" }}</td>
+														</tr>
+
+														<tr ng-if="registro_selecionado.honorary_itens.length > 0" class="angular-repeat linha_selecionavel {{ item.selected }}" ng-repeat='item in registro_selecionado.honorary_itens' ng-click="selecionar_item(item)" style="font-size: 10px;">
+															<td class='center' style="width: 30px;">{{ item.item }}</td>
+															<td class="left" style="padding-left: 6px; width: 70px;">
+																<span ng-if="item.type_item=='P'">PROVENTO</span>
+																<span ng-if="item.type_item=='D'">DESCONTO</span>
+																<span ng-if="item.type_item=='R'">PROVENTO</span>
+															</td>
+															<td class="left"	style="padding-left: 6px;">
+																{{ item.item__nome }}<span ng-if="item.complement!=null && item.complement!='' "> - {{ item.complement }}</span>
+															</td>
+
+															<td class="center"	style="padding-left: 6px; width: 125px;">{{ item.created_date | date:'dd/MM/yyyy' }} às {{ item.created_date | date:'HH:mm:ss' }}</td>
+															<td class="left"	style="padding-left: 6px;">{{ item.created_by__get_full_name }}</td>
+															<td class="center"	style="padding-left: 6px;width: 125px;">{{ item.last_update | date:'dd/MM/yyyy' }} às {{ item.last_update | date:'HH:mm:ss' }}</td>
+															<td class="left"	style="padding-left: 6px;">{{ item.updated_by__get_full_name }}</td>
+
+															<td class="right"	style="padding-left: 6px; width: 90px;">
+																<span ng-if="item.unit_value != '0.00' && item.unit_value != '' && item.unit_value != null">{{ item.unit_value | currency:"" }}</span>
+															</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">
+																<span ng-if="item.type_value=='R'">{{ item.quantity | currency:""}}</span>
+																<span ng-if="item.unit_value != '0.00' && item.unit_value != '' && item.unit_value != null && item.type_value=='P'">{{ item.quantity | currency:""}} %</span>
+															</td>
+															<td class="right"	style="padding-left: 6px; width: 90px;">
+																<span ng-if="item.type_item=='P' || item.type_item=='R' ">{{ item.total_value| currency:"" }}</span>
+																<span ng-if="item.type_item=='D'" style="color: #800000">- {{ item.total_value| currency:"" }}</span>
+															</td>
+														</tr>
+
+														<tr ng-repeat="k in minimal_quantity_rows.slice(registro_selecionado.honorary_itens.length,minimal_quantity_rows.length-max_honorary_itens)">
+															<td style="width: 30px;"></td>
+															<td style="width:70px;"></td>
+															<td></td>
+															<td style="width:125px;"></td>
+															<td style="width:90px;"></td>
+															<td style="width:125px;"></td>
+															<td style="width:90px;"></td>
+															<td style="width:90px;"></td>
+															<td style="width:90px;"></td>
+															<td style="width:90px;"></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+
+									<style>
+										.custom_panel{
+											margin-top: 5px;
+										}
+
+										.custom-box-default{
+											padding-top: 2px;
+											padding-bottom: 2px;
+											padding-left: 12px;
+											padding-right: 12px;
+											border-radius: 3px;
+											border-top: 0px solid #ddd;
+											border-left: 0px solid #ddd;
+											border-right: 0px solid #ddd;
+											color: #888;
+											border-bottom: 2px solid #ddd;
+										}
+
+										.custom-box-primary{
+											padding-top: 2px;
+											padding-bottom: 2px;
+											padding-left: 12px;
+											padding-right: 12px;
+											border-radius: 3px;
+											border-top: 0px solid #ddd;
+											border-left: 0px solid #ddd;
+											border-right: 0px solid #ddd;
+											color: #888;
+											border-bottom: 2px solid #3C8dbc !important;
+										}
+
+										.custom-box-danger{
+											padding-top: 2px;
+											padding-bottom: 2px;
+											padding-left: 12px;
+											padding-right: 12px;
+											border-radius: 3px;
+											border-top: 0px solid #ddd;
+											border-left: 0px solid #ddd;
+											border-right: 0px solid #ddd;
+											color: #888;
+											border-bottom: 2px solid #800000 !important;
+										}
+									</style>
+
+									<br ng-if="screen_model <= 4">
+
+									<div class='row status' style="padding-left: 10px;padding-right: 10px;">
+										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+											<div class="custom_panel custom-box-default">
+												<h6>Proventos:
+													<span class="pull-right" ng-if="registro_selecionado.contract != null">{{ registro_selecionado.total_debit--registro_selecionado.initial_value_contract | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.contract == null">{{ registro_selecionado.total_debit | currency:"R$ "}}</span>
+												</h6>
+											</div>
+										</div>
+
+										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+											<div class="custom_panel custom-box-default">
+												<h6>Descontos:
+													<span class="pull-right" ng-if="registro_selecionado.temporary_discount>0">- {{ registro_selecionado.total_credit--(registro_selecionado.initial_value_contract*(registro_selecionado.temporary_discount/100)) | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.temporary_discount==0">- {{ registro_selecionado.total_credit | currency:"R$ "}}</span>
+												</h6>
+											</div>
+										</div>
+
+										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+											<div class="custom_panel custom-box-default">
+												<h6>Ressarcimentos: <span class="pull-right">{{ registro_selecionado.total_repayment | currency:"R$ "}}</span></h6>
+											</div>
+										</div>
+
+										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+											<div ng-if='registro_selecionado.total_debit_credit==0' class="custom_panel custom-box-default">
+												<h6 style="font-weight: bold;color: #555;">Total:
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+												</h6>
+											</div>
+											<div ng-if='registro_selecionado.total_debit_credit > 0' class="custom_panel custom-box-primary">
+												<h6 style="font-weight: bold; color:#3C8dbc;">Total:
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+												</h6>
+
+											</div>
+											<div ng-if='registro_selecionado.total_debit_credit < 0' class="custom_panel custom-box-danger">
+												<h6 style="font-weight: bold;color: #800000;">Total:
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
+												</h6>
+											</div>
+										</div>
+									</div>
+									<br>
+								</div>
+								{% endverbatim %}
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="modal_justify_action" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 60%">
+			<div class="modal-content">
+				<form id="form_justify_action" autocomplete="off" ng-submit="disable();">
+					<div class="modal-header" style="padding-top:2px;"><!-- style="height: 48px;"> -->
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top:10px;">×</button>
+						<h4 id="myModalLabel">Desativar Provento</h4>
+					</div>
+
+					<div class="modal-body">
+						<style>
+							.only_bottom_border{
+								background-color: #fff !important;
+								border-bottom: 1px solid #ccc !important;
+								box-shadow:none !important;
+								cursor: default;
+							}
+						</style>
+						<div style="margin-top: 0px;">
+							<div class="row">
+								<div class="col-lg-12">
+									<p id="action_info" style="padding: 10px; padding-bottom: 4px;">
+										Por questões de segurança e integridade das informações esse registro não pode ser excluido definitivamente, apenas
+										desativado para que não esteja disponiveis em operações futuras. Justificativa obrigatória para prosseguir.
+									</p>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-4 col-md-2">
+									<sub style='padding-left: 2px'><label>Operação:</label></sub>
+									<input id="action_type" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+								</div>
+
+
+								<div class="col-lg-4 col-md-3">
+									<sub style='padding-left: 2px'><label>Usuário:</label></sub>
+									<input id="action_user" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();" />
+								</div>
+
+
+								<div class="col-lg-4 col-md-7">
+									<sub style='padding-left: 2px'><label>Registro:</label></sub>
+									<input id="action_object" type="text" class="form-control uppercase only_bottom_border" readonly onfocus="this.blur();">
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="form-group field" id="field_action_justify">
+										<sub>
+											<label>Justificativa:</label>
+										</sub>
+										<textarea id="action_justify" rows="5" class="form-control uppercase"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="form-group">
+							<button type='submit' id="bt_confirmar_desativacao" class="btn btn-danger pull-right">Desativar</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div id="modal_vencimento" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 40%">
+			<div class="modal-content">
+				<form id="form_vencimento" autocomplete="off" ng-submit="disable();">
+					<div class="modal-header" style="padding-top:2px;">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top:10px;">×</button>
+						<h6 style="font-weight:bold;margin-top:14px;font-size:13px;">Confirmar Vencimento</h6>
+					</div>
+
+					<div class="modal-body" style="padding-top: 10px;padding-left: 25px;padding-right: 25px;padding-bottom: 10px;">
+						<style>
+							.only_bottom_border{
+								background-color: #fff !important;
+								border-bottom: 1px solid #ccc !important;
+								box-shadow:none !important;
+								cursor: default;
+							}
+						</style>
+						<div style="margin-top: 0px;">
+							<div class="row">
+								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+									<div class="form-group">
+										<label><sub>Data de Vencimento:</sub></label>
+										<input type="text" id="data_vencimento" class="form-control" />
+									</div>
+								</div>
+
+								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+									<div class="form-group">
+										<button type='button' class="btn btn-primary pull-right" style="margin-top: 24px;" ng-click="generate_honorary();">Gerar Documento</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block recursos_complementares %}
+{% load staticfiles %}
+{% load compress %}
+{% compress js %}
+<!--<script src="{ static 'bower_components/jquery.maskedinput/dist/jquery.maskedinput.min.js' %}"></script>-->
+<script src="{% static 'modules/core/controle_componentes.js' %}"></script>
+<script src="{% static 'modules/core/notifications/js/notificationsController.js' %}"/>
+<script src="{% static 'modules/core/notifications/js/notifications.js' %}"/>
+{% endcompress %}
+{% endblock %}

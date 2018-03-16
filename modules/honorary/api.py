@@ -62,7 +62,6 @@ def response_format(result,message,object,list_fields):
     return response_dict
 
 
-
 def company_was_indicated(company):
     indications = Indicacao.objects.filter(indicacao=company)
     if len(indications) > 0:
