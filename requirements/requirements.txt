@@ -18,7 +18,6 @@ django-xhtml2pdf==0.0.3
 dropbox
 django-dbbackup
 django-session-security
-django-notifications-hq
 
 
 rcssmin==1.0.6 --install-option="--without-c-extensions"

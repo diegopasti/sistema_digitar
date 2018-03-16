@@ -774,12 +774,17 @@ Controles</a>
 
 															<td class='left_align'>
 																{{ documento.documento }}
-																<span ng-if='documento.documento_senha!=""'>
+
+																<span ng-if='documento.tipo_documento=="IMPOSTOS"'>
+																	- TAXA: {{ documento.documento_senha }}
+																</span>
+
+																<span ng-if='documento.documento_senha!="" && documento.tipo_documento!="IMPOSTOS"'>
 																	- SENHA: {{ documento.documento_senha }}
 																</span>
 
 																<span ng-if='documento.documento_senha==""'>
-
+																	- COMPLEMENTO
 																</span>
 															</td>
 
@@ -1221,28 +1226,6 @@ function substituir_valor_nulo(valor){
 				}
 			};
 
-			$scope.finalizar_documento = function(){
-				var data_paramters = {}
-				data_paramters['document_id'] = 1;
-				success_function = function(result,message,object,status){
-					alert('DEU CERTO')
-					//$scope.registros.splice(0, 0, object);
-					//$scope.$apply();
-					//check_response_message_form('#form_adicionar_contrato', message);
-					//$("#modal_adicionar_contrato").modal('hide');
-					//reset_formulary('form_adicionar_contrato');
-				}
-
-				fail_function = function (result,message,data_object,status) {
-					alert('DEU ERRO')
-				}
-
-				validate_function = function () {
-				 return confirm('Deseja mesmo encerrar?');
-				}
-				request_api("/api/entity/document/close",data_paramters,validate_function,success_function,fail_function);
-
-				}
 
 			$scope.editar_documento = function(index){
 					$('#tipo_documento').val($scope.documentos[index].tipo_documento);
@@ -1253,13 +1236,39 @@ function substituir_valor_nulo(valor){
 					$scope.excluir_documento(index);
 			}
 
+			$scope.finalizar_documento = function(){
+				if ($scope.registro_selecionado != null){
+					var index = $scope.documentos.indexOf($scope.registro_selecionado);
+					//var index = $scope.registro_selecionado.id;
+
+
+					if (confirm('Deseja mesmo finalizar o documento?') == true){
+						//$scope.documentos.splice(index, 1);
+						var registro_temporario = $('#tabela_documentos').val();
+						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
+						var temp = new Array();
+						temp = registro_temporario.split("#")[index];
+
+						if (temp.indexOf("+") !=-1) {
+							registro_temporario = registro_temporario.replace("+"+temp+"#","@"+temp+"#");
+						}
+
+						else{
+								registro_temporario = registro_temporario.replace(temp+"#","*"+temp+"#");
+						}
+						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
+						$('#tabela_documentos').val(registro_temporario);
+					}
+				}
+			};
+
 			$scope.excluir_documento = function(){
-			if ($scope.registro_selecionado != null){
-				var index = $scope.documentos.indexOf($scope.registro_selecionado);
-				//var index = $scope.registro_selecionado.id;
+				if ($scope.registro_selecionado != null){
+					var index = $scope.documentos.indexOf($scope.registro_selecionado);
+					//var index = $scope.registro_selecionado.id;
 
 
-				if (confirm('Deseja mesmo excluir?') == true){
+					if (confirm('Deseja mesmo excluir?') == true){
 						$scope.documentos.splice(index, 1);
 						var registro_temporario = $('#tabela_documentos').val();
 						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
@@ -1275,8 +1284,8 @@ function substituir_valor_nulo(valor){
 						}
 						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
 						$('#tabela_documentos').val(registro_temporario);
-						}
 					}
+				}
 			};
 
 
@@ -1885,7 +1894,9 @@ function verificar_dados_antes_salvar(){
     notify('error','Falha na operação','Contato do cliente precisa ser informado.')
     return false;
   }
+
   $("#formulario_cliente").submit();
+  success_notify('Operação realizada com sucesso','Documento salvo.')
 }
 
 function verificar_tipo_cliente(){

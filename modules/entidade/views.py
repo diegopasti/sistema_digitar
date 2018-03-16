@@ -472,31 +472,39 @@ def visualizar_entidade(request,id):
                     dados = item.split("|")
                     print(">>>",dados)
 
-                    if "+" in dados[0]:
-                        registro = Documento()
-                        registro.tipo = dados[1].upper()
-                        registro.nome = dados[2].upper()
-                        registro.tipo_vencimento = dados[3].upper()
-                        registro.senha = dados[5]
-                        if dados[6] == "SIM":
-                            registro.notificar_cliente = True
-                        else:
-                            registro.notificar_cliente = False
+                    if "+" in dados[0] or "@" in dados[0]:
+                        if "@" in dados[0]:
+                            from django.utils.timezone import now, localtime
+                            registro.ativo = False
+                            registro.data_finalizado = localtime(now())
+                            registro.finalizado_por = request.user
+                            registro.save()
 
-                        if dados[7] == "":
-                            registro.prazo_notificar = None
-                        else:
-                            registro.prazo_notificar = dados[7]
-                        registro.criado_por = request.user
-                        #registro.vencimento = dados
-                        registro.entidade = cliente
+                        elif "+" in dados[0]:
+                            registro = Documento()
+                            registro.tipo = dados[1].upper()
+                            registro.nome = dados[2].upper()
+                            registro.tipo_vencimento = dados[3].upper()
+                            registro.senha = dados[5]
+                            if dados[6] == "SIM":
+                                registro.notificar_cliente = True
+                            else:
+                                registro.notificar_cliente = False
 
-                        try:
-                            registro.vencimento = datetime.datetime.strptime(dados[4], "%d/%m/%Y").date()
-                        except:
-                            registro.vencimento = None
+                            if dados[7] == "":
+                                registro.prazo_notificar = None
+                            else:
+                                registro.prazo_notificar = dados[7]
+                            registro.criado_por = request.user
+                            #registro.vencimento = dados
+                            registro.entidade = cliente
 
-                        registro.save()
+                            try:
+                                registro.vencimento = datetime.datetime.strptime(dados[4], "%d/%m/%Y").date()
+                            except:
+                                registro.vencimento = None
+
+                            registro.save()
 
                     elif "-" in dados[0]:
 
@@ -507,6 +515,21 @@ def visualizar_entidade(request,id):
                         except:
                             # print("Erro! Não foi possivel excluir o contato %s, tente novamente."%(str(excluir_id)))
                             msg = "Erro! Não foi possivel excluir o documento, tente novamente."
+
+                    elif "*" in dados[0]:
+                        try:
+                            registro = Documento.objects.get(pk=int(dados[0][1:]))
+                        except:
+                            registro = None
+
+                        if registro is not None:
+                            from django.utils.timezone import now, localtime
+                            registro.ativo = False
+                            registro.data_finalizado = localtime(now())
+                            registro.finalizado_por = request.user
+                            registro.save()
+                        pass
+
 
                     else:
                         # nenhuma alteracao no item da tabela.
