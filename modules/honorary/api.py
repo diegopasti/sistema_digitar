@@ -1,14 +1,11 @@
 # -*- encoding: utf-8 -*-
 from decimal import Decimal
-
 import os
-
 from modules.honorary.models import Contrato, Indicacao, Proventos, Honorary, HonoraryItem
 from modules.honorary.forms import FormContrato, FormProventos, FormHonoraryItem
 from django.contrib.auth.decorators import login_required, permission_required
 from libs.default.decorators import request_ajax_required, permission_level_required
 from django.utils.decorators import method_decorator
-
 from modules.protocolo.views import formatar_cpf_cnpj
 from modules.servico.models import Plano, Servico
 from django.http import HttpResponse, Http404, HttpResponseForbidden
@@ -20,7 +17,6 @@ from django.core.cache import cache
 from django.utils import timezone
 import datetime
 import json
-
 from sistema_contabil.settings import BASE_DIR
 
 
