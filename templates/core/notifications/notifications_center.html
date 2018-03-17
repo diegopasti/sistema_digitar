@@ -132,7 +132,7 @@
 					<div class="row">
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div class="container">
-								<table class="table table-condensed table-striped table-hover" id="table_contratos" style="width: 100%;">
+								<table class="table table-condensed table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
 									<thead>
 										<tr class="linha_cabecalho no-select">
 											<th class='text-left' ng-click="sortType='message';sortReverse=!sortReverse" style="padding-left: 8px;">Notificações</th>
@@ -148,16 +148,17 @@
 										</tr>
 
 										<tr id='views_list_{{ registro.id }}' class="{{ registro.selecionado }}" dir-paginate="registro in $parent.result = (registros | filter: get_filter_column() | orderBy:sortType:sortReverse) | itemsPerPage:table_maximun_items_per_page" pagination-id="paginate_registros"  ng-if='registros_carregados' ng-cloak>
-											<td class='text-left linha_selecionavel'  ng-click="selecionar_linha(registro);">
-												<span style="margin-top: -4px;height:24px;color: #666;">
-													<span  style="height: 16px;width:16px;font-size:15px;color:#aaa;padding: 2px;">
+											<td class='text-left linha_selecionavel' ng-click="selecionar_linha(registro);">
+												<span style="position:relative; top:-3px;;height:24px;color: #666;">
+													<span style="height: 15px;width:16px;font-size:15px;color:#aaa;padding: 2px;padding-top:0px;margin-top: -4px;">
 														<i ng-if="registro.module=='ENTITY'" class="fa fa-id-card-o" aria-hidden="true" title='Notificação do módulo Entidade'></i>
-														<i ng-if="registro.module=='HONORARY'" class="fa fa-briefcase" aria-hidden="true"  title='Notificação do módulo Honorário'></i>
+														<i ng-if="registro.module=='HONORARY'" class="fa fa-briefcase" aria-hidden="true" title='Notificação do módulo Honorário'></i>
+														<i ng-if="registro.module=='PROTOCOL'" class="fa fa-envelope-o" aria-hidden="true" title='Notificação do módulo Protocolo'></i>
 													</span>
 	                        {{ registro.message|uppercase }}
 												</span>
 											</td>
-											<td class="text-left linha_selecionavel" style="width: 100px;font-size: 11px;color: #999;" ng-click="selecionar_linha(registro);">
+											<td class="text-left linha_selecionavel confirm_honorary" style="width: 100px;font-size: 11px;color: #999;" ng-click="selecionar_linha(registro);">
 												<span ng-show="registro.created_date!=null">{{ registro.created_date| date: 'dd/MM/yyyy' }} às {{ registro.created_date| date: 'HH:mm:ss' }}</span>
 												<span ng-show="registro.created_date==null"></span>
 											</td>

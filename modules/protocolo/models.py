@@ -6,6 +6,7 @@ Created on 1 de abr de 2016
 '''
 import datetime
 
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 """
@@ -75,7 +76,7 @@ class documento(models.Model):
 
 
 class protocolo(models.Model):
-    emissor      = models.ForeignKey(entidade,related_name='entidade_emissora')
+    emissor      = models.ForeignKey(User,related_name='entidade_emissora')
     emitido_por  = models.CharField("Emitido por:",max_length=100,null=True,error_messages=MENSAGENS_ERROS)
     destinatario = models.ForeignKey(entidade,null=True,related_name='entidade_destinatario')
     data_emissao = models.DateField(auto_now_add=True)

@@ -405,7 +405,14 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 	$scope.selecionar_linha = function(registro) {
-		window.open('/entidade/visualizar/'+registro.related_entity+'/#tab_servicos','_blank');
+		if(registro.module=='ENTITY'){
+			window.open('/entidade/visualizar/'+registro.related_entity+'/#tab_servicos','_blank');
+		}
+
+		if(registro.module=='PROTOCOL'){
+			window.open('/protocolo/visualizar/'+registro.related_object+'/','_blank');
+		}
+
 		/*if ($scope.registro_selecionado != null){
 			if (registro.selecionado=='selected'){
 				$scope.desmarcar_linha_selecionada();
