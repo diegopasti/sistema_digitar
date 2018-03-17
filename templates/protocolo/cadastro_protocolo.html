@@ -545,8 +545,9 @@ $('#datatable'+' tbody').on('click', 'tr', function () {
        //alert("Quero procurar os detalhes de: "+table.cell('.selected', 0).data());
 			 var protocolo_id = table.cell('.selected', 0).data();
 			 protocolo_id = protocolo_id.replace(/\./g, '');
+
        $.ajax({
-          url: 'get_detalhes_protocolo/'+protocolo_id,
+          url: '/protocolo/get_detalhes_protocolo/'+protocolo_id,
             type: 'get', //this is the default though, you don't actually need to always mention it
             success: function(data) {
               //alert(data['data']);
@@ -906,8 +907,24 @@ function selecionar_filtro_cliente(){
 	var selecionar_protocolo = '{{ selecionar_protocolo.destinatario.nome_razao }}';
 
 	$('#search').val(selecionar_protocolo);
-	$('#search').keyup()
-	table.columns(0).search('^{{ selecionar_protocolo.id }}$', true, false).draw();
+
+	var e = jQuery.Event("keyup");
+
+	// e.which is used to set the keycode
+	e.which = 38; // it is up
+	e.which = 40; // it is down
+	$("#search").trigger(e);
+
+	//var e = $.Event("keypress",{which:13});
+	//	$('#search').trigger(e);
+
+	//setTimeout(function(){
+	//	var e = $.Event("keypress",{which:13});
+	//	$('#search').trigger(e);
+	//	$('#search').keyup()
+	//	table.columns(0).search('^{{ selecionar_protocolo.id }}$', true, false).draw();
+	//	alert("FOI?");
+	//	},1000)
 
 	{% endif %}
 </script>

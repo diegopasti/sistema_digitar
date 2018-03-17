@@ -132,13 +132,13 @@
 					<div class="row">
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div class="container">
-								<table class="table table-condensed table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
+								<table class="table table-condensed table-striped table-hover" id="table_contratos" style="width: 100%;">
 									<thead>
 										<tr class="linha_cabecalho no-select">
 											<th class='text-left' ng-click="sortType='message';sortReverse=!sortReverse" style="padding-left: 8px;">Notificações</th>
 											<th class="text-center" style="width: 120px;" ng-click="sortType='updated_by_name';sortReverse=!sortReverse">Data Notificação</th>
 											<th class='text-center' style="width: 140px;cursor: not-allowed">Destinatários</th>
-											<th class='text-center' style="width: 120px;cursor: not-allowed">Situação</th>
+											<th class='text-center' style="width: 80px;cursor: not-allowed">Situação</th>
 										</tr>
 									</thead>
 
@@ -167,7 +167,7 @@
 													<i class="fa fa-user" id='{{ registro.id }}_{{ user }}' ng-class="registro.related_users_readed.indexOf(user) != -1 && registro.related_users_readed != null? 'readed' : 'non-readed'" aria-hidden="true"></i>
 												</span>
 											</td>
-											<td class='text-center confirm_honorary' style="width: 100px;padding: 0px;" ng-click="confirm_notification(registro, logged_user)">
+											<td class='text-center confirm_honorary' style="width: 80px;padding: 0px;" ng-click="confirm_notification(registro, logged_user)">
 												<span ng-show="registro.was_readed == false" title="Clique aqui para confirmar notificação.">
 													<i class="fa fa-check" aria-hidden="true" style="color: #AAA;"></i>
 												</span>
