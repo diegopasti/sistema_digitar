@@ -288,7 +288,7 @@ table th{
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 90px;" >
 												<span ng-if="contrato.contrato!=null">
-													<span ng-if="contrato.contrato.ativo ==false" style="color: #cccccc; font-weight: bold;"><i class="fa fa-check" aria-hidden="true"></i>
+													<span ng-if="contrato.contrato.ativo==false" style="color: #cccccc; font-weight: bold;"><i class="fa fa-check" aria-hidden="true"></i>
 </span>
 													<span ng-if="contrato.contrato.ativo==true" style="color: #006600; font-weight: bold;"><i class="fa fa-check" aria-hidden="true"></i>
 </span>
@@ -681,13 +681,7 @@ table th{
 											}
 										</style>
 
-										<tbody>
-											{% verbatim %}
-												<tr class="angular-repeat linha_selecionavel" ng-repeat='registro in servicos_contratados'>
-													<!--<td class='center' style="width: 30px;">{{ $index+1 }}</td>-->
-													<td class="left"	style="padding-left: 10px;" title="{{ registro.descricao }}">{{ registro.nome }}</td>
-													<td class="center" style="width: 30px; padding-left: 15px; padding-top: 4px">
-														<style>
+										<style>
 															.switch {
 																position: relative;
 																display: table;
@@ -744,10 +738,15 @@ table th{
 																border-radius: 50%;
 															}
 														</style>
+										<tbody>
+											{% verbatim %}
+												<tr class="angular-repeat linha_selecionavel" ng-repeat='registro in servicos_contratados'>
+													<!--<td class='center' style="width: 30px;">{{ $index+1 }}</td>-->
+													<td class="left"	style="padding-left: 10px;" title="{{ registro.descricao }}">{{ registro.nome }}</td>
+													<td class="center" style="width: 30px; padding-left: 15px; padding-top: 4px">
+
 														<label class="switch" style="padding-bottom: 20px">
-
 															<input type="checkbox" ng-checked='registro.ativo != true' ng-click="ativar_desativar_servico(registro)" >
-
 															<span class="slider round" ></span>
 														</label>
 													</td>

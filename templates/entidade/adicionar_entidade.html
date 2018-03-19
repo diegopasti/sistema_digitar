@@ -754,6 +754,7 @@ Controles</a>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="box box-panel container" style="margin-top: 3px;">
+													<input type="hidden" id="ru" value="{{ request.user.get_full_name }}">
 													<table class="table table-condensed table-striped table-hover table-bordered">
 														<thead>
 														<tr>
@@ -776,7 +777,7 @@ Controles</a>
 																{{ documento.documento }}
 
 																<span ng-if='documento.tipo_documento=="IMPOSTOS"'>
-																	- TAXA: {{ documento.documento_senha }}
+																	- TAXA: {{ documento.documento_senha }}%
 																</span>
 
 																<span ng-if='documento.documento_senha!="" && documento.tipo_documento!="IMPOSTOS"'>
@@ -784,7 +785,7 @@ Controles</a>
 																</span>
 
 																<span ng-if='documento.documento_senha==""'>
-																	- COMPLEMENTO
+
 																</span>
 															</td>
 
@@ -1236,28 +1237,57 @@ function substituir_valor_nulo(valor){
 					$scope.excluir_documento(index);
 			}
 
+			Date.prototype.format = function(format) {
+				// set default format if function argument not provided
+				format = format || 'YYYY-MM-DD hh:mm:ss';
+
+				var zeropad = function(number, length) {
+								number = number.toString();
+								length = length || 2;
+								while(number.length < length)
+										number = '0' + number;
+								return number;
+						},
+						// here you can define your formats
+						formats = {
+								YYYY: this.getFullYear(),
+								MM: zeropad(this.getMonth() + 1),
+								DD: zeropad(this.getDate()),
+								hh: zeropad(this.getHours()),
+								mm: zeropad(this.getMinutes()),
+								ss: zeropad(this.getSeconds())
+						},
+						pattern = '(' + Object.keys(formats).join(')|(') + ')';
+
+				return format.replace(new RegExp(pattern, 'g'), function(match) {
+						return formats[match];
+				});
+			};
+
+
 			$scope.finalizar_documento = function(){
 				if ($scope.registro_selecionado != null){
 					var index = $scope.documentos.indexOf($scope.registro_selecionado);
-					//var index = $scope.registro_selecionado.id;
-
+					var now = new Date();
+					var date_hour = now.format("DD/MM/YYYY"+" ÀS "+"hh:mm:ss");
+					var ru = $("#ru").val();
 
 					if (confirm('Deseja mesmo finalizar o documento?') == true){
-						//$scope.documentos.splice(index, 1);
-						var registro_temporario = $('#tabela_documentos').val();
-						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
+					  var registro_temporario = $('#tabela_documentos').val();
 						var temp = new Array();
 						temp = registro_temporario.split("#")[index];
 
 						if (temp.indexOf("+") !=-1) {
-							registro_temporario = registro_temporario.replace("+"+temp+"#","@"+temp+"#");
+							registro_temporario = registro_temporario.replace("+","@");
 						}
 
 						else{
 								registro_temporario = registro_temporario.replace(temp+"#","*"+temp+"#");
 						}
-						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
 						$('#tabela_documentos').val(registro_temporario);
+						$scope.registro_selecionado.data_finalizado = date_hour;
+						$scope.registro_selecionado.finalizado_por = ru;
+						$scope.$apply();
 					}
 				}
 			};
@@ -1271,7 +1301,7 @@ function substituir_valor_nulo(valor){
 					if (confirm('Deseja mesmo excluir?') == true){
 						$scope.documentos.splice(index, 1);
 						var registro_temporario = $('#tabela_documentos').val();
-						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
+						//alert("VEJA O REGISTRO ANTES:"+registro_temporario);
 						var temp = new Array();
 						temp = registro_temporario.split("#")[index];
 
