@@ -1,7 +1,6 @@
 function init(){
 	angular.element(document.getElementById('controle_angular')).scope().load_objects();
 	angular.element(document.getElementById('controle_angular')).scope().load_notifications_months();
-
 	//angular.element(document.getElementById('controle_angular')).scope().load_provents();
 	//configurar_formulario_padrao()
 }

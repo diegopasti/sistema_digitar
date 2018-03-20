@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app"><!--   id="controle_angular"  -->
 <head>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,256 +41,292 @@ h5{color : #777;font-size: 130% !important;}
   width: 8px !important;
   marging-right: 0px !important;
   padding-right: 0px !important;
+
+.readed{
+  color: #1f7a1f;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.non-readed{
+  color: #ccc;
+  font-size: 14px;
+}
+
+.confirm_button {
+  transition: all .1s ease-in-out;
+  position: relative;
+  top: -4px;
+  height: 18px;
+  width: 52px;
+}
+
+.confirm_button:hover {
+  transform: scale(1.3);
 }
 </style>
 </head>
 
 <div class="clearfix"></div>
-<body class="reduction_font hold-transition skin-blue sidebar-mini sidebar-collapse">
-<div class="wrapper">
-  <header class="main-header">
-    <a href="/" class="logo">
-      <span class="logo-mini"><img data-src="{% static 'imagens/logo.png' %}" alt="" height="35" width="30"/></span>
-      <span class="logo-lg"><b>Digitar</b></span>
-    </a>
-    <nav class="navbar navbar-static-top" role="navigation">
-      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-        <span class="sr-only">Toggle navigation</span>
+<body class="reduction_font hold-transition skin-blue sidebar-mini sidebar-collapse" ng-init="ru='{{ request.user.id }}';">
+  <div class="wrapper">
+    <header id='header_menu_controller' class="main-header" ng-controller="app.core.header_menu_controller">
+      <a href="/" class="logo">
+        <span class="logo-mini"><img data-src="{% static 'imagens/logo.png' %}" alt="" height="35" width="30"/></span>
+        <span class="logo-lg"><b>Digitar</b></span>
       </a>
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!--
-          <li class="dropdown messages-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-envelope-o"></i>
-              <span class="label label-success">4</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="header">You have 4 messages</li>
-              <li>
-                <ul class="menu">
-                  <li>
-                    <a href="#">
-                      <div class="pull-left">Marcelo</div>
-                      <h4>Support Team<small><i class="fa fa-clock-o"></i> 5 mins</small></h4>
-                      <p>Why not buy a new awesome theme?</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="footer"><a href="#">See All Messages</a></li>
-            </ul>
-          </li>
-          -->
+      <nav class="navbar navbar-static-top" role="navigation">
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
 
-          <li class="dropdown backup">
-            <a class="dropdown-toggle" data-toggle="dropdown" style="cursor:pointer;" title="Gerar cópia de segurança" onclick="create_backup();">
-              <i class="fa fa-floppy-o" aria-hidden="true"></i>
-              <!--<span class="label label-danger">9</span>-->
-            </a>
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
             <!--
-            <ul class="dropdown-menu">
-              <li class="header">You have 9 tasks</li>
-              <li>
-                <ul class="menu">
-                  <li>
-                    <a href="#">
-                      <h3>
-                        Design some buttons
-                        <small class="pull-right">20%</small>
-                      </h3>
-                      <div class="progress xs">
-                        <div class="progress-bar progress-bar-aqua" style="width:20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                          <span class="sr-only">20% Complete</span>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="footer">
-                <a href="#">View all tasks</a>
-              </li>
-            </ul>
+            <li class="dropdown messages-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope-o"></i>
+                <span class="label label-success">4</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="header">You have 4 messages</li>
+                <li>
+                  <ul class="menu">
+                    <li>
+                      <a href="#">
+                        <div class="pull-left">Marcelo</div>
+                        <h4>Support Team<small><i class="fa fa-clock-o"></i> 5 mins</small></h4>
+                        <p>Why not buy a new awesome theme?</p>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="footer"><a href="#">See All Messages</a></li>
+              </ul>
+            </li>
             -->
-          </li>
 
-          <li class="dropdown notifications-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Notificações">
-              <i class="fa fa-bell-o"></i>
-              <span class="label label-warning">10</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="header">You have 10 notifications</li>
-              <li>
-                <ul class="menu">
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="footer"><a href="/notifications/">Visualizar todas</a></li>
-            </ul>
-          </li>
-          <!--<li class="dropdown tasks-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-flag-o"></i>
-              <span class="label label-danger">9</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="header">You have 9 tasks</li>
-              <li>
-                <ul class="menu">
-                  <li>
-                    <a href="#">
-                      <h3>
-                        Design some buttons
-                        <small class="pull-right">20%</small>
-                      </h3>
-                      <div class="progress xs">
-                        <div class="progress-bar progress-bar-aqua" style="width:20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                          <span class="sr-only">20% Complete</span>
+            <li class="dropdown backup">
+              <a class="dropdown-toggle" data-toggle="dropdown" style="cursor:pointer;" title="Gerar cópia de segurança" onclick="create_backup();">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                <!--<span class="label label-danger">9</span>-->
+              </a>
+              <!--
+              <ul class="dropdown-menu">
+                <li class="header">You have 9 tasks</li>
+                <li>
+                  <ul class="menu">
+                    <li>
+                      <a href="#">
+                        <h3>
+                          Design some buttons
+                          <small class="pull-right">20%</small>
+                        </h3>
+                        <div class="progress xs">
+                          <div class="progress-bar progress-bar-aqua" style="width:20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                            <span class="sr-only">20% Complete</span>
+                          </div>
                         </div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="footer">
-                <a href="#">View all tasks</a>
-              </li>
-            </ul>
-          </li>-->
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="footer">
+                  <a href="#">View all tasks</a>
+                </li>
+              </ul>
+              -->
+            </li>
 
-          <li class="dropdown user user-menu"  style="height:50px;margin-right:auto;">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"  style="height:100%;">
-              <i class="fa fa-user-o" aria-hidden="true"></i>
-              <span class="hidden-xs">{{ request.user.first_name|title }}</span>
+            <li class="dropdown notifications-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Notificações não confirmadas">
+                <i class="fa fa-bell-o"></i>
+                <span ng-cloak class="label label-warning">{% verbatim %}{{ non_readed_notifications }}{% endverbatim %}</span>
+              </a>
+              <ul class="dropdown-menu" style="width: 500px;">
+                <li class="header">Últimas Notificações</li>
+                <li>
+                  <ul class="menu">
+                    {% csrf_token %}
+                    {% verbatim %}
+                    <li ng-repeat="item in notifications">
+                      <a href="#" class='confirm_honorary' ng-class="{'non-readed': was_readed == true}" title='{{ item.message }}' style="height:48px;{{ item.was_readed==true ? 'opacity:0.6;background: #ddd;' : 'opacity:1.0;' }};" ng-click="selecionar_linha(item);">
+                        <div style="float: left;padding:0px;padding-top: 4px;">
+                          <i ng-if="item.module=='ENTITY'" class="fa fa-id-card-o" style='color: #808080;' aria-hidden="true" title='Notificação do módulo Entidade'></i>
+                          <i ng-if="item.module=='HONORARY'" class="fa fa-briefcase" style='color: #808080;' aria-hidden="true" title='Notificação do módulo Honorário'></i>
+                          <i ng-if="item.module=='PROTOCOL'" class="fa fa-envelope-o" style='color: #808080;' aria-hidden="true" title='Notificação do módulo Protocolo'></i>
+                        </div>
+
+                        <div style="float:left;padding: 0px;padding-left: 8px;">
+                          <p style="font-size: 11px;width: 430px;overflow: hidden;text-overflow: ellipsis">{{ item.message }}<br>
+                            <small>{{ item.created_date| date: 'dd/MM/yyyy' }} às {{ item.created_date| date: 'HH:mm:ss' }}</small>
+                          </p>
+                        </div>
+                      </a>
+                    </li>
+                    {% endverbatim %}
+                  </ul>
+                </li>
+                <li class="footer"><a href="/notifications/">Visualizar todas</a></li>
+              </ul>
+            </li>
+            <!--<li class="dropdown tasks-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-flag-o"></i>
+                <span class="label label-danger">9</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="header">You have 9 tasks</li>
+                <li>
+                  <ul class="menu">
+                    <li>
+                      <a href="#">
+                        <h3>
+                          Design some buttons
+                          <small class="pull-right">20%</small>
+                        </h3>
+                        <div class="progress xs">
+                          <div class="progress-bar progress-bar-aqua" style="width:20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                            <span class="sr-only">20% Complete</span>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="footer">
+                  <a href="#">View all tasks</a>
+                </li>
+              </ul>
+            </li>-->
+
+            <li class="dropdown user user-menu"  style="height:50px;margin-right:auto;">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"  style="height:100%;">
+                <i class="fa fa-user-o" aria-hidden="true"></i>
+                <span class="hidden-xs">{{ request.user.first_name|title }}</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="user-header">
+                  <!-- <i class="fa fa-user-o" aria-hidden="true"></i> -->
+                  <p style="font-size: 20px"><b>{{ request.user.get_full_name|title }}</b></p><p><small>Funcionário desde:<br> {{  request.user.date_joined  }}</small></p>
+                  <p>Grupo de permissão: <b>{{ request.user.groups.values_list.0.1 | title }}</b></p>
+
+                </li>
+
+                <li class="user-body">
+                  <div class="row">
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Followers</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Sales</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Friends</a>
+                    </div>
+                  </div>
+                </li>
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="/profile" class="btn btn-default btn-flat"><i class="fa fa-address-book " aria-hidden="true"></i> Perfil</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="/logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out " aria-hidden="true"></i> Sair</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <div class="clearfix"></div>
+    <aside class="main-sidebar">
+      <section class="sidebar">
+        <ul class="sidebar-menu">
+          <li class="treeview">
+            <a href="/entidade"><i class="fa fa-id-card-o"></i> <span>Módulo Cadastros</span>
+              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
             </a>
-            <ul class="dropdown-menu">
-              <li class="user-header">
-                <!-- <i class="fa fa-user-o" aria-hidden="true"></i> -->
-								<p style="font-size: 20px"><b>{{ request.user.get_full_name|title }}</b></p><p><small>Funcioário desde:<br> {{  request.user.date_joined  }}</small></p>
-								<p>Grupo de permissão: <b>{{ request.user.groups.values_list.0.1 | title }}</b></p>
+            <ul class="treeview-menu">
+              <li><a href="/entidade"><i class="fa fa-circle-o"></i>Cadastro de Clientes</a></li>
+              <li><a href="/planos"><i class="fa fa-circle-o"></i>Planos de Honorários</a></li>
+              <li><a href="/preferencias/servicos"><i class="fa fa-circle-o"></i>Serviços de Honorários</a></li>
+            </ul>
+          </li>
 
-              </li>
+          <li class="treeview">
+            <a href="#"><i class="fa fa-envelope-o"></i> <span>Módulo Protocolo</span>
+              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+            </a>
+            <ul class="treeview-menu">
+              <li><a href="/preferencias/protocolo/documentos"><i class="fa fa-circle-o"></i>Cadastro de Documentos</a></li>
+              <li><a href="/protocolo"><i class="fa fa-circle-o"></i>Controle de Protocolos</a></li>
+              <li><a href="/protocolo/emitir_protocolo"><i class="fa fa-circle-o"></i>Emitir Protocolo</a></li>
+            </ul>
+          </li>
 
-              <li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Friends</a>
-                  </div>
-                </div>
-              </li>
-              <li class="user-footer">
-                <div class="pull-left">
-									<a href="/profile" class="btn btn-default btn-flat"><i class="fa fa-address-book " aria-hidden="true"></i> Perfil</a>
-                </div>
-                <div class="pull-right">
-                  <a href="/logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out " aria-hidden="true"></i> Sair</a>
-                </div>
-              </li>
+          <li class="treeview">
+            <a href="#"><i class="fa fa-briefcase" aria-hidden="true"></i><span>Módulo Honorário</span>
+              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+            </a>
+            <ul class="treeview-menu">
+              <li><a href="/honorary"><i class="fa fa-circle-o"></i>Controle de Honorário</a></li>
+              {% if request.user.groups.values_list.0.0 <= 2%}
+              <li><a href="/contract"><i class="fa fa-circle-o"></i>Controle de Contratos</a></li>
+              <li><a href="/provents"><i class="fa fa-circle-o"></i>Descontos e Proventos</a></li>
+              {% else %}
+              <li><a class="disabled" href="/contract"><i class="fa fa-circle-o"></i>Controle de Contratos</a></li>
+              <li><a class="disabled" href="/provents"><i class="fa fa-circle-o"></i>Descontos e Proventos</a></li>
+              {% endif %}
+            </ul>
+          </li>
+
+          <li class="treeview">
+            <a href="#"><i class="fa fa-wrench" aria-hidden="true"></i> <span>Configurações</span>
+              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+            </a>
+            <ul class="treeview-menu">
+              {% if request.user.groups.values_list.0.0 <= 2%}
+              <li><a href="/preferencias"><i class="fa fa-circle-o"></i>Salário Mínimo</a></li>
+              <li><a href="/users"><i class="fa fa-circle-o"></i>Usuários</a></li>
+              <li><a href="/system/configurations"><i class="fa fa-circle-o"></i>Sistema</a></li>
+              {% else %}
+              <li><a class="disabled " style="cursor: no-drop" href="/preferencias"><i class="fa fa-circle-o"></i>Salário Mínimo</a></li>
+              <li><a class="disabled" href="/users"><i class="fa fa-circle-o"></i>Usuários</a></li>
+              <li><a class="disabled" href="/system/configurations"><i class="fa fa-circle-o"></i>Sistema</a></li>
+              {% endif %}
             </ul>
           </li>
         </ul>
-      </div>
-    </nav>
-  </header>
-  <div class="clearfix"></div>
-  <aside class="main-sidebar">
-    <section class="sidebar">
-      <ul class="sidebar-menu">
-        <li class="treeview">
-          <a href="/entidade"><i class="fa fa-id-card-o"></i> <span>Módulo Cadastros</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="/entidade"><i class="fa fa-circle-o"></i>Cadastro de Clientes</a></li>
-            <li><a href="/planos"><i class="fa fa-circle-o"></i>Planos de Honorários</a></li>
-            <li><a href="/preferencias/servicos"><i class="fa fa-circle-o"></i>Serviços de Honorários</a></li>
-          </ul>
-        </li>
+      </section>
+    </aside>
 
-        <li class="treeview">
-          <a href="#"><i class="fa fa-envelope-o"></i> <span>Módulo Protocolo</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="/preferencias/protocolo/documentos"><i class="fa fa-circle-o"></i>Cadastro de Documentos</a></li>
-            <li><a href="/protocolo"><i class="fa fa-circle-o"></i>Controle de Protocolos</a></li>
-            <li><a href="/protocolo/emitir_protocolo"><i class="fa fa-circle-o"></i>Emitir Protocolo</a></li>
-          </ul>
-        </li>
-
-        <li class="treeview">
-          <a href="#"><i class="fa fa-briefcase" aria-hidden="true"></i><span>Módulo Honorário</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-						<li><a href="/honorary"><i class="fa fa-circle-o"></i>Controle de Honorário</a></li>
-            {% if request.user.groups.values_list.0.0 <= 2%}
-            <li><a href="/contract"><i class="fa fa-circle-o"></i>Controle de Contratos</a></li>
-            <li><a href="/provents"><i class="fa fa-circle-o"></i>Descontos e Proventos</a></li>
-            {% else %}
-            <li><a class="disabled" href="/contract"><i class="fa fa-circle-o"></i>Controle de Contratos</a></li>
-            <li><a class="disabled" href="/provents"><i class="fa fa-circle-o"></i>Descontos e Proventos</a></li>
-            {% endif %}
-          </ul>
-        </li>
-
-        <li class="treeview">
-          <a href="#"><i class="fa fa-wrench" aria-hidden="true"></i> <span>Configurações</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-						{% if request.user.groups.values_list.0.0 <= 2%}
-            <li><a href="/preferencias"><i class="fa fa-circle-o"></i>Salário Mínimo</a></li>
-            <li><a href="/users"><i class="fa fa-circle-o"></i>Usuários</a></li>
-            <li><a href="/system/configurations"><i class="fa fa-circle-o"></i>Sistema</a></li>
-						{% else %}
-            <li><a class="disabled " style="cursor: no-drop" href="/preferencias"><i class="fa fa-circle-o"></i>Salário Mínimo</a></li>
-            <li><a class="disabled" href="/users"><i class="fa fa-circle-o"></i>Usuários</a></li>
-            <li><a class="disabled" href="/system/configurations"><i class="fa fa-circle-o"></i>Sistema</a></li>
-						{% endif %}
-          </ul>
-        </li>
-      </ul>
-    </section>
-  </aside>
-
-  <div class="clearfix"></div>
-  <div class="content-wrapper">
-    <section class="content-header">
-      <h1 style="padding-bottom:10px;">{% block breadcrumb_title %}{% endblock %}</h1>
-
-      <ol class="breadcrumb">{% block breadcrumb_block %}{% endblock %}</ol>
-    </section>
-
-    <section class="content" style="margin-top:30px;">
-    {% block conteudo %}
-
-	  {% endblock %}
-    </section>
-  </div>
-
-  <footer id="footer_session_action" style="position:fixed;right:0px;margin-right:auto;font-size:10px;background:#eee;border:1px solid #ddd;border-top-left-radius:10px;border-top-right-radius:0px;bottom:0px;height:25px;padding:0px;padding-top:6px;padding-right:10px;padding-left:15px;">
-    <div class="pull-right">
-      <p><label id="session_action_info"></label></p>
-    </div>
     <div class="clearfix"></div>
-  </footer>
-</div>
-<div class="clearfix"></div>
+    <div class="content-wrapper">
+      <section class="content-header">
+        <!--<h1 style="padding-bottom:10px;">{ block breadcrumb_title }{ endblock %}</h1>
 
-{% include 'core/session_security/dialog.html' %}
+        <ol class="breadcrumb">{ block breadcrumb_block %}{ endblock %}</ol>-->
+      </section>
+
+      <section class="content" style="margin-top:30px;">
+      {% block conteudo %}
+
+      {% endblock %}
+      </section>
+    </div>
+
+    <footer id="footer_session_action" style="position:fixed;right:0px;margin-right:auto;font-size:10px;background:#eee;border:1px solid #ddd;border-top-left-radius:10px;border-top-right-radius:0px;bottom:0px;height:25px;padding:0px;padding-top:6px;padding-right:10px;padding-left:15px;">
+      <div class="pull-right">
+        <p><label id="session_action_info"></label></p>
+      </div>
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div class="clearfix"></div>
+  {% include 'core/session_security/dialog.html' %}
 </body>
 {% load staticfiles %}
 {% load compress %}
@@ -310,6 +346,7 @@ h5{color : #777;font-size: 130% !important;}
 <script src="{% static 'modules/core/session_security/script.js' %}" />
 <script src="{% static 'modules/core/base_controller.js' %}"/>
 <script src="{% static 'modules/core/controle_componentes.js' %}"/>
+<script src="{% static 'modules/core/app.js' %}"/>
 {% endcompress %}
 {% load session_security_tags %}
 {% load i18n l10n %}
@@ -328,7 +365,10 @@ var sessionSecurity = new yourlabs.SessionSecurity({
 
 {% endblock %}
 <script>
+
 document.addEventListener("DOMContentLoaded", function(){
+  angular.element(document.getElementById('header_menu_controller')).scope().load_notifications();
+  angular.element(document.getElementById('header_menu_controller')).scope().get_notifications_status();
   try{
     verify_screen_paramters();
     init();

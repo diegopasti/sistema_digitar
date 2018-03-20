@@ -145,6 +145,8 @@ urlpatterns = [
 
     url(r'^notifications/$', core_views.notifications_center),
     url(r'^api/notifications/$', NotificationsController().get_notifications),
+    url(r'^api/notifications/latest$', NotificationsController().get_notifications),
+    url(r'^api/notifications/status$', NotificationsController().get_notifications_status),
     url(r'^api/notification/confirm$', NotificationsController().confirm_notification),
     url(r'^api/notifications/month_list$', NotificationsController().get_notifications_competences),
 

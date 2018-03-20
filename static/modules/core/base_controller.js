@@ -104,6 +104,7 @@ function notify_response_message(response_message){
     notify('error',"Falha na operação",response_message[key])
 	}
 }
+
 function notify_success_message(response_message){
 	for (var key in response_message) {
     notify('success',"Operação Concluída",response_message[key])
@@ -130,7 +131,6 @@ function check_required_fields(form_id){
 	});
 	return form_is_valid
 }
-
 
 function set_wrong_field(id, erro_value){
   $("#field_"+id).addClass('bad')

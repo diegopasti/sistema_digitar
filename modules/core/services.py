@@ -43,15 +43,17 @@ class ProtocolNotifications:
                 notification.related_model = 'modules.protocolo.models.protocolo'
                 notification.related_object = item.id
                 notification.competence = competence
+                notification.related_users = "1;2"
+                if item.emissor_id != 1:
+                    notification.related_users = notification.related_users+";"+str(item.emissor_id)
 
-                notification.related_users = "1;2;"+str(item.emissor_id)
                 notification.related_entity = item.destinatario
                 notification.get_related_user_names()
                 notification.title = "PROTOCOLO EM ABERTO POR MAIS TEMPO QUE O PERMITIDO"
                 if item.destinatario is not None:
-                    notification.message = "Protocolo "+item.numeracao_destinatario+" do(a) cliente " + item.destinatario.nome_razao + " aberto há "+str(opened_days)+" dias."
+                    notification.message = "Protocolo "+item.numeracao_destinatario+" do(a) cliente " + title_especial(item.destinatario.nome_razao) + " aberto há "+str(opened_days)+" dias."
                 else:
-                    notification.message = "Protocolo avulso do(a) cliente "+item.nome_avulso+" aberto há "+str(opened_days)+" dias."
+                    notification.message = "Protocolo avulso do(a) cliente "+title_especial(item.nome_avulso)+" aberto há "+str(opened_days)+" dias."
 
                 try:
                     notification.save()
@@ -78,7 +80,6 @@ def corrigir_operador_emissor_protocolo():
                 item.emissor = edited_user
                 item.save()
                 #print("TROQUEI")
-
 
 
 class ContractNotifications:
@@ -118,7 +119,7 @@ class ContractNotifications:
         notification.related_entity = contract.cliente
         notification.get_related_user_names()
         notification.title = "VIGÊNCIA DE CONTRATO ENCERRANDO"
-        notification.message = "Contrato do(a) cliente " + contract.cliente.nome_razao + " " + message
+        notification.message = "Contrato do(a) cliente " + title_especial(contract.cliente.nome_razao) + " " + message
 
         try:
             notification.save()
@@ -139,7 +140,7 @@ class ContractNotifications:
         notification.related_entity = contract.cliente
         notification.get_related_user_names()
         notification.title = "VIGÊNCIA DO DESCONTO TEMPORÁRIO DO CONTRATO ENCERRANDO"
-        notification.message = "Desconto Temporário do contrato do(a) cliente " + contract.cliente.nome_razao + " " + message
+        notification.message = "Desconto Temporário do contrato do(a) cliente " + title_especial(contract.cliente.nome_razao) + " " + message
 
         try:
             notification.save()

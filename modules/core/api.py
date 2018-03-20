@@ -18,7 +18,7 @@ class BaseOperationController(BaseController):
     def load_operations (self, request):
         self.start_process(request)
         list = BaseController().filter(request, BaseOperation, extra_fields=['username'], is_response=False)
-        print(list)
+        #print(list)
 
 
 class RestrictedOperationController(BaseController):
@@ -279,13 +279,19 @@ class NotificationsController(BaseController):
         response_dict = {}
 
         if notification is not None:
-            notification.last_view_by = request.user
-            notification.last_view_date = localtime(now())
             if notification.related_users_readed is not None:
-                notification.related_users_readed = notification.related_users_readed + ";" + user_id
+                if str(user_id) in notification.related_users_readed:
+                    response_dict = self.object(request ,Notification, notification.id, extra_fields=['related_entity__nome_razao','last_view_by__get_full_name','was_readed'], is_response=False)
+                else:
+                    notification.related_users_readed = notification.related_users_readed + ";" + user_id
             else:
                 notification.related_users_readed = str(user_id)
-            response_dict = self.execute(notification,notification.save,extra_fields=['related_entity__nome_razao','last_view_by__get_full_name','was_readed'])
+
+            if response_dict == {}:
+                notification.last_view_by = request.user
+                notification.last_view_date = localtime(now())
+                response_dict = self.execute(notification,notification.save,extra_fields=['related_entity__nome_razao','last_view_by__get_full_name','was_readed'])
+
             if response_dict['object']['related_users_readed'] is not None:
                 #print("DESTINATARIO: ",request.user.id,' - ',item['related_users_readed'].split(";"))
                 if str(request.user.id) in response_dict['object']['related_users_readed'].split(";"):
@@ -299,25 +305,45 @@ class NotificationsController(BaseController):
             response_dict['result'] = False
             response_dict['object'] = None
             response_dict['message'] = "Erro! Notificação não existe."
-
-        #print("VEJA O QUE ROLOU: ",response_dict)
         return self.response(response_dict)
+
 
     def get_notifications(self, request):
         self.start_process(request)
         user_id = str(request.user.id)
-        #query = Notification.objects.filter(related_users__icontains=user_id).annotate(was_readed=Case(When(related_users_readed__icontains=user_id, then=None),default=1.0*F('tot_clicks')/F('tot_impressions'),output_field=models.BooleanField())).order_by('-pk')
-        response_dict = BaseController().filter(request,queryset=Notification.objects.filter(related_users__icontains=user_id).order_by('-pk'), model=Notification, extra_fields=['related_entity__nome_razao','last_view_by__get_full_name','was_readed'], is_response=False)
+        request_path = request.get_full_path()
+
+        if 'latest' in request_path:
+            response_dict = BaseController().filter(request, queryset=Notification.objects.filter(related_users__icontains=user_id).order_by('-pk')[:10], model=Notification,extra_fields=['related_entity__nome_razao', 'last_view_by__get_full_name', 'was_readed'], is_response=False)
+        else:
+            response_dict = BaseController().filter(request,queryset=Notification.objects.filter(related_users__icontains=user_id).order_by('-pk'), model=Notification, extra_fields=['related_entity__nome_razao','last_view_by__get_full_name','was_readed'], is_response=False)
+
         for item in response_dict['object']:
             if item['related_users_readed'] is not None:
-                #print("DESTINATARIO: ",request.user.id,' - ',item['related_users_readed'].split(";"))
                 if str(request.user.id) in item['related_users_readed'].split(";"):
                     item['was_readed'] = True
                 else:
                     item['was_readed'] = False
             else:
                 item['was_readed'] = False
+
         return self.response(response_dict)
+
+    def get_notifications_status(self, request):
+        self.start_process(request)
+        user_id = str(request.user.id)
+        total_notifications = Notification.objects.filter(related_users__icontains=user_id).count()
+        total_readed_notifications = Notification.objects.filter(related_users__icontains=user_id).filter(related_users_readed__icontains=user_id).count()
+        total_non_readed_notifications = total_notifications - total_readed_notifications
+        response_dict = {}
+        response_dict['result'] = True
+        response_dict['object'] = {'total_notifications':total_notifications,'readed_notifications':total_readed_notifications,'non_readed_notifications':total_non_readed_notifications}
+        if total_non_readed_notifications == 0:
+            response_dict['message'] = "Nenhuma notificação não confirmada no momento."
+        else:
+            response_dict['message'] = str(total_non_readed_notifications) + " notificações não confirmadas."
+        return self.response(response_dict)
+
 
     def get_notifications_competences(self, request):
         self.start_process(request)

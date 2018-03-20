@@ -1,8 +1,6 @@
-var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
-
 	$scope.screen_height = window.innerHeight;
-	$scope.screen_width  = window.innerWidth;
+	$scope.screen_width = window.innerWidth;
 	$scope.screen_model = null;
 
 	$scope.sortType           = 'entity_name';
@@ -24,11 +22,8 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.provents_options = [];
 	$scope.max_honorary_itens = 0;
 	$scope.screen_model = null;
-
-
 	$scope.selected_competence = true;
 	$scope.competence = 'TODOS';
-
 
 	$scope.save_provent = function() {
 		var data_paramters = create_data_paramters('form_adicionar_contrato');
@@ -204,6 +199,9 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 				//success_notify("DEU CERTO",JSON.stringify(object))
 				if(result == true){
 					$scope.registros[$scope.registros.findIndex(x => x.id==registro.id)] = object;
+					var path_name = window.location.pathname;
+					angular.element(document.getElementById('header_menu_controller')).scope().set_status_notification(object);
+					angular.element(document.getElementById('header_menu_controller')).scope().non_readed_notifications = angular.element(document.getElementById('header_menu_controller')).scope().non_readed_notifications -1;
 				}
 				$scope.$apply();
 			}
@@ -216,9 +214,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 			request_api("/api/notification/confirm",data_paramters,validate_function,success_function,fail_function);
 		}
 	}
-
-
-
 
 
 	$scope.open_object = function(){
@@ -287,7 +282,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	}
 
 
-
 	$scope.select_competence = function(){
 		$scope.get_filter_column();
 		$scope.selected_competence = true;
@@ -315,7 +309,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		 return validate_justify();
 		}
 		request_api("/api/provents/disable",data_paramters,validate_function,success_function,fail_function);
-		validate_justify
 	}
 
 	$scope.confirm_disable = function(){
@@ -411,6 +404,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 		if(registro.module=='PROTOCOL'){
 			window.open('/protocolo/visualizar/'+registro.related_object+'/','_blank');
+			window.open('/protocolo/'+registro.related_object+'/','_blank');
 		}
 
 		/*if ($scope.registro_selecionado != null){
