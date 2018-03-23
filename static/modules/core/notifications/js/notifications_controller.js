@@ -215,7 +215,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		}
 	}
 
-
 	$scope.open_object = function(){
 		reset_formulary('form_adicionar_contrato');
 		for (var key in $scope.registro_selecionado) {
@@ -281,7 +280,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
     })
 	}
 
-
 	$scope.select_competence = function(){
 		$scope.get_filter_column();
 		$scope.selected_competence = true;
@@ -342,9 +340,8 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		$scope.$apply();
 	}
 
-	$scope.select_filter_by = function (index) {
+	$scope.select_filter_by = function (index){
 		$scope.filter_by_index = parseInt($scope.filter_by);
-		//$scope.apply();
 	}
 
 	$scope.get_filter_column = function(){

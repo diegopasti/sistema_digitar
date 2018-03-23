@@ -1142,14 +1142,11 @@ function substituir_valor_nulo(valor){
 			//$scope.valor_honorario = 0;
 
 			$scope.registro_selecionado = null;
-
 			/*{tipo_contato:'Jon', numero_contato: 30, cargo_setor: 'Developer'},
 					{tipo_contato:'Mike', numero_contato: 37, cargo_setor: 'Manager'},
 					{tipo_contato:'Allen', numero_contato: 50, cargo_setor: 'CEO'}
 					];
 			*/
-
-
 
 			$scope.get_salario_vigente = function(){
 				$.ajax({
@@ -1448,184 +1445,54 @@ function substituir_valor_nulo(valor){
 		}
 
 		$scope.get_filter_column = function(){
-			var competence = $("#competence").val();
-			var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
-			$('#competence').prop('disabled', false);
-			if(competence=='TODOS'){
-				switch ($scope.filter_contract_by){
-					case 'com_contrato':
-						switch (filtrar_pesquisa_por) {
-							case 'codigo':
-								if($scope.filter_conferred == 'T'){
-									return {id: $scope.search, have_contract: true};
-								}
-								else{
-									return {id: $scope.search, have_contract: true, status:$scope.filter_conferred};
-								}
+		var competence = $("#competence").val();
+		//$scope.notifications_type = $("#notifications_type").val();
+		var filtrar_pesquisa_por = $scope.filter_by_options[$scope.filter_by_index];
 
-							case 'competence':
-								$("#competence").val('TODOS');
-								$('#competence').prop('disabled', true);
-								if($scope.filter_conferred == 'T'){
-									return {competence: $scope.search, have_contract: true};
-								}
-								else{
-									return {competence: $scope.search, have_contract: true, status:$scope.filter_conferred};
-								}
-
-							default:
-								if($scope.filter_conferred == 'T'){
-									return {entity_name: $scope.search, have_contract: true};
-								}
-								else{
-									return {entity_name: $scope.search, have_contract: true, status:$scope.filter_conferred};
-								}
-						}
-					case 'sem_contrato':
-						switch (filtrar_pesquisa_por) {
-							case 'codigo':
-								if($scope.filter_conferred == 'T'){
-									return {competence: $scope.search, have_contract: false};
-								}
-								else{
-									return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
-								}
-							case 'competence':
-								$("#competence").val('TODOS');
-								$('#competence').prop('disabled', true);
-								if($scope.filter_conferred == 'T'){
-									return {competence: $scope.search, have_contract: false};
-								}
-								else{
-									return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
-								}
-							default:
-								if($scope.filter_conferred == 'T'){
-									return {entity_name: $scope.search, have_contract: false};
-								}
-								else{
-									return {entity_name: $scope.search, have_contract: false, status:$scope.filter_conferred};
-								}
-						}
-					default:
-						switch (filtrar_pesquisa_por) {
-							case 'codigo':
-								if($scope.filter_conferred == 'T'){
-									return {id: $scope.search};
-								}
-								else{
-									return {id: $scope.search, status:$scope.filter_conferred};
-								}
-
-							case 'competence':
-								$("#competence").val('TODOS');
-								$('#competence').prop('disabled', true);
-								if($scope.filter_conferred == 'T'){
-									return {competence: $scope.search};
-								}
-								else{
-									return {competence: $scope.search, status:$scope.filter_conferred};
-								}
-							default:
-								if($scope.filter_conferred == 'T'){
-									return {entity_name: $scope.search};
-								}
-								else{
-									return {entity_name: $scope.search, status:$scope.filter_conferred};
-								}
-						}
-				}
-			}
-
-			else{
-				switch ($scope.filter_contract_by){
-					case 'com_contrato':
-						switch (filtrar_pesquisa_por){
-							case 'codigo':
-								if($scope.filter_conferred == 'T'){
-									return {id: $scope.search, competence:competence, have_contract: true};
-								}
-								else{
-									return {id: $scope.search, competence:competence, have_contract: true, status:$scope.filter_conferred};
-								}
-
-							case 'competence':
-								$("#competence").val('TODOS');
-								$('#competence').prop('disabled', true);
-								if($scope.filter_conferred == 'T'){
-									return {competence: $scope.search, have_contract: true };
-								}
-								else{
-									return {competence: $scope.search, have_contract: true, status:$scope.filter_conferred };
-								}
-							default:
-								if($scope.filter_conferred == 'T'){
-									return {entity_name: $scope.search, competence: competence, have_contract: true};
-								}
-								else{
-									return {entity_name: $scope.search, competence: competence, have_contract: true, status:$scope.filter_conferred };
-								}
-						}
-
-					case 'sem_contrato':
-						switch (filtrar_pesquisa_por){
-							case 'codigo':
-								if($scope.filter_conferred == 'T'){
-									return {id: $scope.search, competence:competence, have_contract: false};
-								}
-								else{
-									return {id: $scope.search, competence:competence, have_contract: false, status:$scope.filter_conferred};
-								}
-							case 'competence':
-								$("#competence").val('TODOS');
-								$('#competence').prop('disabled', true);
-								if($scope.filter_conferred == 'T'){
-									return {competence: $scope.search, have_contract: false};
-								}
-								else{
-									return {competence: $scope.search, have_contract: false, status:$scope.filter_conferred};
-								}
-							default:
-								if($scope.filter_conferred == 'T'){
-									return {entity_name: $scope.search, competence:competence, have_contract: false};
-								}
-								else{
-									return {entity_name: $scope.search, competence:competence, have_contract: false, status:$scope.filter_conferred};
-								}
-						}
-
-					default:
-						switch (filtrar_pesquisa_por){
-							case 'codigo':
-								if($scope.filter_conferred == 'T'){
-									return {id: $scope.search, competence:competence};
-								}
-								else{
-									return {id: $scope.search, competence:competence, status:$scope.filter_conferred};
-								}
-
-							case 'competence':
-								$("#competence").val('TODOS');
-								$('#competence').prop('disabled', true);
-								if($scope.filter_conferred == 'T'){
-									return {competence: $scope.search};
-								}
-								else{
-									return {competence: $scope.search, status:$scope.filter_conferred};
-								}
-
-							default:
-								if($scope.filter_conferred == 'T'){
-									return {entity_name: $scope.search, competence:competence};
-								}
-								else{
-									return {entity_name: $scope.search, competence:competence, status:$scope.filter_conferred};
-								}
-						}
-				}
-			}
-			$scope.$apply();
+		var notification_status = null;
+		if ($scope.filter_contract_by == 'nao_lidas'){
+			notification_status = false;
 		}
+		else if($scope.filter_contract_by == 'lidas'){
+			notification_status = true;
+		}
+		else{
+			notification_status = null;
+		}
+
+		var response_filter = {message: $scope.search};
+		if(competence!='TODOS'){
+			response_filter['competence'] = competence;
+		}
+
+		if ($scope.notifications_type  != "TODOS"){
+			response_filter['module'] = $scope.notifications_type;
+		}
+
+		if (notification_status != null){
+			response_filter['was_readed'] = notification_status;
+		}
+		return response_filter;
+		/*$('#competence').prop('disabled', false);
+		if(competence=='TODOS'){
+			if (notification_status != null){
+				return {message: $scope.search,  was_readed: notification_status};
+			}
+			else{
+				return {message: $scope.search};
+			}
+		}
+
+		else{
+			if (notification_status != null){
+				return {message: $scope.search, competence:competence, was_readed: notification_status};
+			}
+			else{
+				return {message: $scope.search, competence:competence};
+			}
+		}*/
+		//$scope.$apply();
+	}
 
 	}]);
 
