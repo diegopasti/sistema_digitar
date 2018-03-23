@@ -464,44 +464,42 @@ def visualizar_entidade(request,id):
 
             if documentos != "":
                 documentos = documentos.split("#")
-                print("VEJA O QUE CHEGOU: ")
+                #print("VEJA O QUE CHEGOU: ")
                 for item in documentos:
                     dados = item.split("|")
-                    print(">>>",dados)
+                    #print(">>>",dados)
 
                     if "+" in dados[0] or "@" in dados[0]:
+                        registro = Documento()
+                        registro.tipo = dados[1].upper()
+                        registro.nome = dados[2].upper()
+                        registro.tipo_vencimento = dados[3].upper()
+                        registro.senha = dados[5]
+                        if dados[6] == "SIM":
+                            registro.notificar_cliente = True
+                        else:
+                            registro.notificar_cliente = False
+
+                        if dados[7] == "":
+                            registro.prazo_notificar = None
+                        else:
+                            registro.prazo_notificar = dados[7]
+                        registro.criado_por = request.user
+                        #registro.vencimento = dados
+                        registro.entidade = cliente
+
                         if "@" in dados[0]:
                             from django.utils.timezone import now, localtime
                             registro.ativo = False
                             registro.data_finalizado = localtime(now())
                             registro.finalizado_por = request.user
-                            registro.save()
 
-                        elif "+" in dados[0]:
-                            registro = Documento()
-                            registro.tipo = dados[1].upper()
-                            registro.nome = dados[2].upper()
-                            registro.tipo_vencimento = dados[3].upper()
-                            registro.senha = dados[5]
-                            if dados[6] == "SIM":
-                                registro.notificar_cliente = True
-                            else:
-                                registro.notificar_cliente = False
+                        try:
+                            registro.vencimento = datetime.datetime.strptime(dados[4], "%d/%m/%Y").date()
+                        except:
+                            registro.vencimento = None
 
-                            if dados[7] == "":
-                                registro.prazo_notificar = None
-                            else:
-                                registro.prazo_notificar = dados[7]
-                            registro.criado_por = request.user
-                            #registro.vencimento = dados
-                            registro.entidade = cliente
-
-                            try:
-                                registro.vencimento = datetime.datetime.strptime(dados[4], "%d/%m/%Y").date()
-                            except:
-                                registro.vencimento = None
-
-                            registro.save()
+                        registro.save()
 
                     elif "-" in dados[0]:
 

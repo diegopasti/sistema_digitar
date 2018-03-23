@@ -78,28 +78,34 @@ class ContractController(BaseController):
             contrato.totalizar_honorario()
             contrato.save()
 
-            honoraries = Honorary.objects.filter(contract=contrato)
-            if honoraries.count() > 0:
-                for honorary in honoraries:
-                    honorary = Honorary().update_honorary(honorary, contract=contrato)
-                    honorary.updated_by = request.user
-                    honorary.updated_by_name = request.user.get_full_name()
-                    honorary.save()
-            else:
-                cliente = contrato.cliente
-                if cliente.ativo:
+            if self.contrato_vigente(contrato):
+                honoraries = Honorary.objects.filter(contract=contrato)
+                if honoraries.count() > 0:
+                    for honorary in honoraries:
+                        honorary = Honorary().update_honorary(honorary, contract=contrato)
+                        honorary.updated_by = request.user
+                        honorary.updated_by_name = request.user.get_full_name()
+                        honorary.save()
+                else:
+                    cliente = contrato.cliente
                     for item in range(4):
                         competence = HonoraryController().get_competence(datetime.datetime.now().month + item)
                         if contrato.vigencia_fim is not None:
                             if len(contrato.dia_vencimento) == 1:
                                 vigencia_ativa = self.verificar_competencia_vigente("0"+contrato.dia_vencimento+'/'+competence, contrato.vigencia_fim)
+                                # print('SOU VIGENCIA' ,vigencia_ativa)
                             else:
                                 vigencia_ativa = self.verificar_competencia_vigente(contrato.dia_vencimento + '/' + competence, contrato.vigencia_fim)
+                                # print('SOU VIGENCIA', vigencia_ativa)
                         else:
                             vigencia_ativa = True
 
                         if vigencia_ativa:
                             honorary = HonoraryController().create_update_honorary(request, contrato.cliente, competence)
+
+            else:
+                contrato.ativo = False
+                contrato.save()
 
             return self.response(super().object(request, Contrato, contrato.id, extra_fields=['plano__nome']))
         else:
@@ -133,7 +139,7 @@ class ContractController(BaseController):
         """
 
     def verificar_competencia_vigente(self, data_competencia, data_contrato):
-        #data_contrato = datetime.datetime.strptime(data_contrato, '%d/%m/%Y')
+        # data_contrato = datetime.datetime.strptime(data_contrato, '%d/%m/%Y')
         data_competencia = data_competencia.split("/")
         data_contrato = data_contrato
         month_list_name = {'JAN':'01', 'FEV':'02', 'MAR':'03', 'ABR':'04', 'MAI':'05', 'JUN':'06', 'JUL':'07', 'AGO':'08', 'SET':'09', 'OUT':'10', 'NOV':'11', 'DEZ':'12'}
@@ -143,14 +149,30 @@ class ContractController(BaseController):
 
 
         data_competencia = datetime.datetime.strptime(data_competencia, '%d/%m/%Y').date()
-        print("CONTRATO: ",data_contrato)
-        print("COMPETENCIA: ", data_competencia)
+        # print("CONTRATO: ",data_contrato)
+        # print("COMPETENCIA: ", data_competencia)
         if data_competencia <= data_contrato:
-            print("CONTRATO VAI TA ATIVO NESSA COMPETENCIA")
+            # print("CONTRATO VAI TA ATIVO NESSA COMPETENCIA")
             return True
         else:
-            print("CONTRATO NAO VAI TA ATIVO NESSA COMPETENCIA")
+            # print("CONTRATO NAO VAI TA ATIVO NESSA COMPETENCIA")
             return False
+
+    def contrato_vigente(self, contrato):
+        today = datetime.datetime.now().strftime('%Y/%m/%d')
+        # print(today)
+        if contrato.vigencia_fim is not None:
+            fim_contrato = datetime.datetime.strftime(contrato.vigencia_fim, '%Y/%m/%d')
+            # print(fim_contrato)
+            if fim_contrato > today:
+                #print("CONTRATO VAI TA ATIVO")
+                return True
+            elif fim_contrato < today:
+                #print("CONTRATO NAO VAI TA ATIVO")
+                return False
+        else:
+            return True
+
 
     @request_ajax_required
     @method_decorator(login_required)
