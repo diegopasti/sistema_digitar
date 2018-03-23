@@ -10,13 +10,11 @@
 {% endblock %}
 
 {% block conteudo %}
-<div id="controle_angular" ng-app="app" ng-controller="MeuController" style="margin-top:-30px;">
+<div id="controle_angular" ng-controller="MeuController" style="margin-top:-20px;">
     <div class="row">
         <div class="col-lg-8 col-md-8 col-xs-12" style="padding-bottom: 30px;">
             <div id="box_salario"  class="box box-default">
-
                 <div class="box-heading">
-
                     <div class="box-header with-border">
                         <h5 class="box-title">Cadastro de Salários</h5>
 
@@ -240,7 +238,7 @@
 
 <script>
     //Declarando o módulo da aplicação
-    var app = angular.module('app', ['angularUtils.directives.dirPagination']);
+    //var app = angular.module('app', ['angularUtils.directives.dirPagination']);
     app.controller('MeuController', ['$scope', function($scope) {
 
         $scope.sortType     = 'inicio_vigencia'; // set the default sort type

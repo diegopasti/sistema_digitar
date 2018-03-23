@@ -1,4 +1,3 @@
-var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 app.controller('MeuController', ['$scope', function($scope) {
 	$scope.screen_height = window.innerHeight;
 	$scope.screen_width  = window.innerWidth;

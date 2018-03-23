@@ -85,10 +85,10 @@ label {
 {% endblock %}
 
 {% block conteudo %}
-<div id="controle_angular" ng-app="app" ng-controller="MeuController">
+<div id="controle_angular" ng-controller="MeuController">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
-            <div class="box box-default" style="margin-top: -55px;">
+            <div class="box box-default" style="margin-top: -45px;">
                 <div class="box-heading">
                     <div class="box-header with-border">
                         <h5 class="box-title">Serviços</h5>
@@ -265,10 +265,6 @@ label {
 
 <script>
     document.getElementById("modal_servico").value = "CADE CADE?";
-    //Declarando o módulo da aplicação
-    var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-    //Declarando o construtor do MeuController
-
     /*App.controller('MeuController', function($scope, $http) {
     $http.get('/api/servico')
        .then(function(res){

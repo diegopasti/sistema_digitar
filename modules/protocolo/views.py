@@ -717,7 +717,7 @@ def salvar_protocolo(request):
             parametros_destinatario.endereco = dados['complemento_endereco'].upper()
 
         novo_protocolo = protocolo()
-        novo_protocolo.emissor = parametros_emissor.entidade
+        novo_protocolo.emissor = request.user
         novo_protocolo.emitido_por = request.user.get_full_name()
         novo_protocolo.destinatario = parametros_destinatario.entidade
 

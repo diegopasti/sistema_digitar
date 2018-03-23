@@ -195,10 +195,8 @@ legend {
 <form id="formulario_cliente" action="" method="post" autocomplete="off">
 	{% csrf_token %}
 	<!-- ng-cloak  -->
-	<div id="controle_angular"
-			 ng-app="app"
-			 ng-controller="MeuController"
-			 style='margin-top: -55px;'
+	<div id="controle_angular" ng-controller="MeuController"
+			 style='margin-top: -45px;'
 
 			 ng-init="
             {% if meus_contatos %}
@@ -242,9 +240,7 @@ legend {
 	{% endif %}
 	">
 
-
-
-	<div class="box box-default" stlye='padding-top: 0px;'>
+	<div class="box box-default">
 
 		<div class="box-body" style='padding:2px;'>
 			<ul id='abas_formulario' class="nav nav-pills">
@@ -287,7 +283,6 @@ Controles</a>
 	</div>
 
 	<div class="panel panel-default" style="margin-top:-14px;">
-
 		<div class="panel-body" style='padding:0px;padding-left: 14px;padding-right: 14px;'>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-xs-12">
@@ -1134,7 +1129,7 @@ function substituir_valor_nulo(valor){
 
 <script>
 	//Declarando o módulo da aplicação
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
+	//var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 	//Declarando o construtor do MeuController
 	app.controller('MeuController', ['$scope', function($scope) {
 			$scope.people = [];

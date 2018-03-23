@@ -4,13 +4,22 @@
 {% endblock %}
 
 {% block recursos_necessarios %}
-{% endblock %}
-
-{% block breadcrumb_block %}
-<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+<style>
+#inner {
+  display: table;
+  margin: 0 auto;
+  margin-top: 80px;
+}
+</style>
 {% endblock %}
 
 {% block conteudo %}
+{% load staticfiles %}
+<div id="outer" style="width:100%">
+  <div id="inner">
+	  <!--<img data-src="% static 'imagens/exemplo_logo.png' %}" />-->
+  </div>
+</div>
 {% endblock %}
 
 {% block recursos_complementares %}
