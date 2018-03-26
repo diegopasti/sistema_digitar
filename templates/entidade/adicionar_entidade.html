@@ -1787,6 +1787,11 @@ function verificar_dados_antes_salvar(){
     return false;
   }
 
+  if ($('#responsavel_cliente').val() == $('#supervisor_cliente').val()){
+	notify('error','Falha na operação','co-responsável não pode ser o mesmo que responsável.')
+	return false;
+  }
+
   $("#formulario_cliente").submit();
   success_notify('Operação realizada com sucesso','Documento salvo.')
 }

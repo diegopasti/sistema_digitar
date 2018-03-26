@@ -262,15 +262,13 @@ class BaseController(Notify):
     @request_ajax_required
     def disable(self, request, model):
         object = model.objects.get(pk=int(request.POST['id']))
-        #print('SOU OBJ: ',object)
-        #if getattr(object, 'ativo'):
-            #object.ativo = False
-        #elif getattr(object, 'is_active'):
-            #object.is_active = False
-        #else:
-            #pass
+        if getattr(object, 'is_active'):
+            object.is_active = False
+        else:
+            pass
 
         response_dict = self.execute(object, object.save)
+        print('SOU RESPONSE ',response_dict)
         print(response_dict)
         if response_dict['result']:
             self.report_base_operation(request, model)#report_operation(request, model)

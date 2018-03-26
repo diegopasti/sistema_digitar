@@ -1,8 +1,8 @@
 /**
  * Created by diego on 14/11/2017 - 14:42.
  */
-var application = angular.module('modules.configurations', ['angularUtils.directives.dirPagination','filters']);
-application.controller('configurations_controller',['$scope','$filter', function($scope,$filter) {
+//var application = angular.module('modules.configurations', ['angularUtils.directives.dirPagination','filters']);
+app.controller('configurations_controller',['$scope','$filter', function($scope,$filter) {
   $scope.screen_height = window.innerHeight;
 	$scope.screen_width  = window.innerWidth;
 	$scope.screen_model = null;
