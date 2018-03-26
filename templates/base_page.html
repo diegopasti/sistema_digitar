@@ -359,6 +359,12 @@ var sessionSecurity = new yourlabs.SessionSecurity({
   expireAfter: {{ request|expire_after|unlocalize }},
   confirmFormDiscard: "{% trans 'You have unsaved changes in a form of this page.' %}"
 });
+
+/* Sets focus on the first element of the form */
+$(".modal").on('shown.bs.modal', function () {
+    $(this).find("input:visible:first").focus();
+});
+
 </script>
 {% endlocalize %}
 {% block recursos_complementares %}

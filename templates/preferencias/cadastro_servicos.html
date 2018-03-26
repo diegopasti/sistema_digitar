@@ -303,6 +303,11 @@ label {
             });
         }
 
+        /* Sets focus on the first element of the form */
+        $(".modal").on('shown.bs.modal', function () {
+            $(this).find("input:visible:first").focus();
+        });
+
         $scope.adicionar_servico = function() {
             var servico = $('#modal_servico').val().toUpperCase();
             var descricao = $('#modal_descricao').val().toUpperCase();
