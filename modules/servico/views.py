@@ -41,6 +41,8 @@ def adicionar_plano(request):
         plano = Plano()
         plano.nome = request.POST["plano"].upper()
         plano.descricao = request.POST["descricao"].upper()
+        plano.cadastrado_por = request.user
+        plano.alterado_por = request.user
         response_dict = executar_operacao(plano, "save")
         if response_dict['message'] != True:
             response_dict['message'] = serializar_plano(response_dict['message'])
@@ -91,7 +93,7 @@ def serializar_plano(plano):
         texto['servicos'] = []
 
     if plano.cadastrado_por_id != 0:
-        texto['cadastrado_por'] = plano.cadastrado_por
+        texto['cadastrado_por'] = plano.cadastrado_por.get_full_name()
     else:
         texto['cadastrado_por'] = "ADMINISTRADOR"
 
@@ -99,7 +101,7 @@ def serializar_plano(plano):
     texto['hora_ultima_alteracao'] = str(plano.ultima_alteracao.strftime("%H:%M:%S"))
 
     if plano.cadastrado_por_id != 0:
-        texto['alterado_por'] = plano.alterado_por
+        texto['alterado_por'] = plano.alterado_por.get_full_name()
     else:
         texto['alterado_por'] = 'ADMINISTRADOR'
 

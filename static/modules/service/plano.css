@@ -89,10 +89,9 @@
 }
 
 #box_titulo_descricao {
-    text-align: left;
-    padding-top: 10px;
-    padding-left: 10px;
-
+	text-align: left;
+	padding-top: 0px;
+	padding-left: 0px;
 }
 
 .table>tbody>tr>td {
