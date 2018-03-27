@@ -263,6 +263,8 @@ class BaseController(Notify):
     def disable(self, request, model):
         object = model.objects.get(pk=int(request.POST['id']))
         try:
+            if getattr(object, 'ativo'):
+                object.ativo = False
             if getattr(object, 'is_active'):
                 object.is_active = False
             else:
@@ -272,9 +274,9 @@ class BaseController(Notify):
 
         response_dict = self.execute(object, object.save)
         print('SOU RESPONSE ',response_dict)
-        print(response_dict)
         if response_dict['result']:
             self.report_base_operation(request, model)#report_operation(request, model)
+            self.report_operation(request, model)
         return self.response(response_dict)
 
     @request_ajax_required
@@ -284,6 +286,7 @@ class BaseController(Notify):
         response_dict = self.execute(object, object.save)
         if response_dict['result']:
             self.report_base_operation(request, model)#report_operation(request, model)
+            self.report_operation(request, model)
         return self.response(response_dict)
 
     def report_operation(self, request, model):

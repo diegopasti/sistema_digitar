@@ -81,6 +81,7 @@ class BaseOperation(models.Model):
 
 
 class RestrictedOperation(models.Model):
+
     class Meta:
         db_table = 'core_restricted_operations'
 

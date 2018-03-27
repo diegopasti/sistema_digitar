@@ -30,7 +30,7 @@ def check_update():
                 continue
 
     stamp = datetime.utcfromtimestamp(entry.commit.commit_time)
-    delta = timedelta(hours=2)
+    delta = timedelta(hours=3)
     last_update = (stamp - delta).strftime('%d/%m/%Y'+' ás '+'%H:%M:%S')
     data['local'] = local_ref
     data['remote'] = remote_commit

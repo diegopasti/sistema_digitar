@@ -8,6 +8,8 @@ from modules.entidade.models import Documento, entidade
 
 class EntityController(BaseController):
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def close_document(self, request):
         self.start_process(request)
         try:
@@ -31,4 +33,5 @@ class EntityController(BaseController):
     @request_ajax_required
     @method_decorator(login_required)
     def desativar_cliente(self, request):
+        print('SOU REQUEST DA API',request)
         return self.disable(request, entidade)
