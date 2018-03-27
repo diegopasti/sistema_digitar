@@ -1751,6 +1751,7 @@ $('#codigo_postal').blur(function(){
             $('#valor_honorario').maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
             $("#desconto_inicio").mask("99/99/9999");
             $("#desconto_fim").mask("99/99/9999");
+            $('#cpf_cnpj').focus()
         });
     </script>
 
@@ -1785,6 +1786,11 @@ function verificar_dados_antes_salvar(){
   if ($('#contatos').val() == ''){
     notify('error','Falha na operação','Contato do cliente precisa ser informado.')
     return false;
+  }
+
+  if ($('#responsavel_cliente').val() == $('#supervisor_cliente').val()){
+	notify('error','Falha na operação','co-responsável não pode ser o mesmo que responsável.')
+	return false;
   }
 
   $("#formulario_cliente").submit();

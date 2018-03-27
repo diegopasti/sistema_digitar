@@ -630,6 +630,20 @@ def visualizar_entidade(request,id):
 
 @login_required
 def adicionar_entidade(request):
+    url = request.get_full_path()
+    print(url)
+    tab = os.path.basename(url)
+    print(tab)
+
+    if 'contatos' == tab:
+        tab_active = 'tab_contatos'
+    elif 'atividades' == tab:
+        tab_active = 'tab_cnae'
+    elif 'controles' == tab:
+        tab_active = 'tab_servicos'
+    else:
+        tab_active = 'tab_client'
+
     if (request.method == "POST"):
         print("VEJA O QUE VEIO: ",request.POST)
         formulario = formulario_cadastro_entidade_completo(request.POST, request.FILES)
@@ -704,7 +718,7 @@ def adicionar_entidade(request):
         #formulario_contrato = FormularioContrato()
 
     return render(request,"entidade/adicionar_entidade.html",
-                              {'dados': [], 'formulario_entidade': formulario,'naturezas_juridicas':informacoes_juridicas.natureza_juridica,'atividades_economicas':informacoes_tributarias.atividades_economicas, 'erro': False},
+                              {'dados': [], 'formulario_entidade': formulario, 'naturezas_juridicas':informacoes_juridicas.natureza_juridica, 'atividades_economicas':informacoes_tributarias.atividades_economicas, 'tab_active': tab_active, 'erro': False},
                               )
 
 def load_objects_from_form(formulario,cliente,endereco,contatos,cnaes):

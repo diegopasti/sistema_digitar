@@ -655,6 +655,7 @@ class ProventosController(BaseController):
 
     @method_decorator(login_required)
     def disable_provent(self, request):
+        print('SOU REQUEST ',request)
         return BaseController().disable(request, Proventos)
 
 
