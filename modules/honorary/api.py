@@ -173,7 +173,6 @@ class ContractController(BaseController):
         else:
             return True
 
-
     @request_ajax_required
     @method_decorator(login_required)
     @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
@@ -324,6 +323,36 @@ class ContractController(BaseController):
         return self.response(response_dict)
         """
 
+    def configurar_reembolso_caixa(self, request):
+        self.start_process(request)
+        try:
+            contrato = Contrato.objects.get(pk=int(request.POST['contrato_id']))
+        except:
+            contrato = None
+
+        if contrato is not None:
+            contrato.reembolso_arquivo_caixa = not contrato.reembolso_arquivo_caixa
+            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome'])
+
+        else:
+            response_dict = {'result':False,'message':'Erro! Contrato inexistente.'}
+        return self.response(response_dict)
+
+    def configurar_reembolso_caixa_quantidade(self, request):
+        self.start_process(request)
+        try:
+            contrato = Contrato.objects.get(pk=int(request.POST['contrato_id']))
+        except:
+            contrato = None
+
+        if contrato is not None:
+            contrato.arquivos_caixa = int(request.POST['quantidade'])
+            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome'])
+
+        else:
+            response_dict = {'result':False,'message':'Erro! Contrato inexistente.'}
+        return self.response(response_dict)
+
     @request_ajax_required
     @method_decorator(login_required)
     @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
@@ -370,7 +399,7 @@ class ContractController(BaseController):
             contract_selected = contract_selected[0]
             contract_selected.totalizar_honorario()
             contract_selected.save()
-            response_dict = self.notify.success(contract_selected)
+            response_dict = self.notify.success(contract_selected, extra_fields=['plano__nome'])
         return self.response(response_dict)
 
     @request_ajax_required
@@ -507,7 +536,7 @@ class ContractController(BaseController):
     @method_decorator(login_required)
     @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def alterar_indicacao(self,request):
-        from django.utils.timezone import now, localtime
+        #from django.utils.timezone import now, localtime
         client_id = int(request.POST['cliente_id'])
         indicated_company = request.POST['empresa']
         indicated_name = request.POST['empresa_nome']
@@ -516,7 +545,7 @@ class ContractController(BaseController):
 
         if (indicacao_bd.indicacao.nome_razao == indicated_name and indicacao_bd.taxa_desconto != taxa_desconto):
             indicacao_bd.taxa_desconto = taxa_desconto
-            indicacao_bd.ultima_alteracao = localtime(now())
+            indicacao_bd.ultima_alteracao = datetime.datetime.now() #localtime(now())
             try:
                 indicacao_bd.save()
                 response_dict = self.notify.success(indicacao_bd, extra_fields=['indication_name'])
@@ -529,13 +558,13 @@ class ContractController(BaseController):
                 #Indicacao.objects.filter(indicacao=indicated_company).update(taxa_desconto=taxa_desconto,ultima_alteracao = localtime(now()))
                 contrato = Contrato.objects.get(cliente_id=client_id)
                 contrato.totalizar_honorario()
-                contrato.ultima_alteracao = localtime(now())
+                contrato.ultima_alteracao = datetime.datetime.now()#localtime(now())
                 contrato.save()
 
                 honoraries = Honorary.objects.filter(contract=contrato, )
                 for honorary in honoraries:
                     honorary = Honorary().update_honorary(honorary, contract=contrato)
-                    honorary.last_update = localtime(now())
+                    honorary.last_update = datetime.datetime.now() #localtime(now())
                     honorary.updated_by = request.user
                     honorary.updated_by_name = request.user.get_full_name()
                     honorary.save()
@@ -557,7 +586,7 @@ class ContractController(BaseController):
 
         indicacao = Indicacao.objects.get(indicacao_id=indicated_company_id)
         indicacao.indicacao_ativa = status
-        indicacao.ultima_alteracao = localtime(now())#timezone.localtime(timezone.now())
+        indicacao.ultima_alteracao = datetime.datetime.now() #localtime(now())#timezone.localtime(timezone.now())
         indicacao.alterado_por = request.user
 
         try:
@@ -715,10 +744,11 @@ class HonoraryController(BaseController):
         except:
             honorary = None
         if honorary is not None:
-            now = timezone.localtime(timezone.now())
+            now = datetime.datetime.now() #timezone.localtime(timezone.now())
             honorary.status = "C"
             Honorary.conferred_date = now
             Honorary.conferred_by = request.user
+            honorary.updated_by_name = request.user.get_full_name()
             response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
         else:
             response_dict = {}
@@ -734,10 +764,39 @@ class HonoraryController(BaseController):
         except:
             honorary = None
         if honorary is not None:
-            now = timezone.localtime(timezone.now())
+            now = datetime.datetime.now() #timezone.localtime(timezone.now())
+            variacao = honorary.total_honorary - int(str(honorary.total_honorary).split('.')[0])
+            if variacao != 0:
+                honorary_item = HonoraryItem()
+                honorary_item.type_value = 'R'
+                honorary_item.honorary = honorary
+
+                if variacao > 0.5:
+                    honorary_item.type_item = 'P'
+                    provento = Proventos.objects.get(pk=5)
+                    honorary_item.quantity = str(1-variacao)
+                    honorary_item.total_value = str(Decimal(1-variacao) * Decimal(provento.valor))
+                else:
+                    honorary_item.type_item = 'D'
+                    provento = Proventos.objects.get(pk=6)
+                    honorary_item.quantity = str(variacao)
+                    honorary_item.total_value = str(Decimal(variacao) * Decimal(provento.valor))
+
+                honorary_item.item = provento
+                honorary_item.unit_value = provento.valor
+
+                honorary_item.created_by_id = 1
+                honorary_item.updated_by_id = 1
+                honorary_item.save()
+                honorary.update_honorary(honorary, honorary.contract)
+
             honorary.status = "E"
-            Honorary.conferred_date = now
-            Honorary.conferred_by = request.user
+            honorary.conferred_date = now
+            honorary.closed_date = now
+            honorary.closed_by = request.user
+            honorary.conferred_by = request.user
+            honorary.updated_by_name = request.user.get_full_name()
+
             response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
         else:
             response_dict = {}
@@ -775,9 +834,11 @@ class HonoraryController(BaseController):
             honorary = Honorary().create_honorary(entity, competence, contract=contract)
             honorary.created_by = request.user
             honorary.updated_by = request.user
+            honorary.updated_by_name = request.user.get_full_name()
         else:
             honorary = Honorary().update_honorary(honoraries[0], contract=contract)
             honorary.updated_by = request.user
+            honorary.updated_by_name = request.user.get_full_name()
 
         honorary.save()
         return honorary

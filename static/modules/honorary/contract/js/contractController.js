@@ -524,6 +524,43 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		});
 	}
 
+	$scope.configurar_reembolso_caixa = function(registro){
+		var data = {contrato_id : registro.contrato.id}
+		function validate_function () {return true}
+		function success_function(result,message,data_object,status) {
+			//alert("VEJA O RESULTADO "+JSON.stringify(data_object))
+			if (result == true){
+				$scope.registro_selecionado.contrato.reembolso_arquivo_caixa = !$scope.registro_selecionado.contrato.reembolso_arquivo_caixa;
+				$scope.$apply();
+			}
+		}
+		function fail_function(result,message,data_object,status) {alert("Erro! Falha na alteração dos Serviços.")}
+		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
+		request_api("/api/contract/configurar_reembolso_caixa/",data,validate_function,success_function,fail_function)
+	}
+
+	$scope.configurar_reembolso_caixa_quantidade = function(){
+		//alert("VEJA: "+$scope.registro_selecionado.contrato.arquivos_caixa);
+		var data = {'contrato_id' : $scope.registro_selecionado.contrato.id, 'quantidade':$scope.registro_selecionado.contrato.arquivos_caixa}
+		function validate_function () {return true}
+		function success_function(result,message,data_object,status) {
+			//alert("VEJA O RESULTADO "+JSON.stringify(data_object))
+			if (result == true){
+				//$scope.registro_selecionado.contrato.reembolso_arquivo_caixa = !$scope.registro_selecionado.contrato.reembolso_arquivo_caixa;
+				success_notify('Operação realizada com sucesso!','')
+				$scope.$apply();
+			}
+		}
+		function fail_function(result,message,data_object,status) {alert("Erro! Falha na alteração dos Serviços.")}
+		//request_api(url,data_paramters,validator_functions,success_function,fail_function){
+		request_api("/api/contract/configurar_reembolso_caixa_quantidade/",data,validate_function,success_function,fail_function)
+	}
+
+	$scope.editar_quantidade_arquivo = function(){
+		$scope.editando_arquivo_caixa=!$scope.editando_arquivo_caixa;
+	}
+
+
 	$scope.ativar_desativar_servico = function(registro){
 		if(registro.ativo){
 			if($scope.registro_selecionado.contrato.servicos_contratados.search(";"+registro.id.toString()+";") != -1){

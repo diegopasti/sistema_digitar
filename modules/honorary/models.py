@@ -34,6 +34,9 @@ class Contrato(models.Model):
     desconto_inicio = models.DateField(null=True,blank=True)
     desconto_fim    = models.DateField(null=True,blank=True)
 
+    reembolso_arquivo_caixa = models.BooleanField(default=False)
+    arquivos_caixa = models.IntegerField(default=0)
+
     desconto_indicacoes = models.DecimalField("Desconto por Indicações:", max_digits=7, decimal_places=2, default=0, null=True,blank=True)
     servicos_contratados = models.CharField("Serviços:",null=True,blank=True,max_length=100)
     cadastrado_por = models.ForeignKey(User,  related_name = "cadastrado_por",default=1)
@@ -199,6 +202,7 @@ class Honorary(models.Model):
         honorary.competence = competence
         if contract is not None:
             honorary = self.verify_contract_values(honorary, contract)
+            honorary.verify_provents_values()
         return honorary
 
     def update_honorary(self, honorary, contract=None):
@@ -220,7 +224,6 @@ class Honorary(models.Model):
             self.total_honorary = 0
         else:
             self.total_honorary = self.final_value_contract
-
         for item in provent_list:
             self.number_debit_credit = self.number_debit_credit + 1
             new_value = Decimal(item.total_value)
@@ -246,6 +249,23 @@ class Honorary(models.Model):
             honorary.contract_discount = honorary.temporary_discount + decimal.Decimal(honorary.fidelity_discount)
             honorary.final_value_contract = Decimal(honorary.initial_value_contract)*(1 - (honorary.contract_discount / 100))
             honorary.total_honorary = honorary.final_value_contract
+            honorary.save()
+
+            if honorary.contract.reembolso_arquivo_caixa:
+                verificar_reembolso_ja_lançado = HonoraryItem.objects.filter(honorary=honorary,item_id=4)
+                if verificar_reembolso_ja_lançado.count() == 0:
+                    honorary_item = HonoraryItem()
+                    honorary_item.type_item = 'P'  #models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
+                    honorary_item.type_value = 'R' #models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valores, error_messages=MENSAGENS_ERROS)
+                    honorary_item.honorary = honorary
+                    provento = Proventos.objects.get(pk=4)
+                    honorary_item.item = provento
+                    honorary_item.quantity = int(honorary.contract.arquivos_caixa)
+                    honorary_item.unit_value = provento.valor
+                    honorary_item.total_value = str(int(honorary.contract.arquivos_caixa)*Decimal(provento.valor))
+                    honorary_item.created_by_id = 1
+                    honorary_item.updated_by_id = 1
+                    honorary_item.save()
         else:
             honorary.initial_value_contract = 0
             honorary.temporary_discount = 0
@@ -347,12 +367,12 @@ class HonoraryItem(models.Model):
     honorary = models.ForeignKey(Honorary, default=1)
     item = models.ForeignKey(Proventos, default=1)
     complement = models.TextField("Complemento:", max_length=100, null=True, blank=True, error_messages=MENSAGENS_ERROS)
-    quantity = models.IntegerField("Quantidade",null=True,blank=True)
-    unit_value = models.CharField("Valor Unitário", max_length=8, null=True, blank=True)
-    total_value = models.CharField("Valor final do contrato", max_length=10, null=False, blank=False)
+    quantity = models.DecimalField("Quantidade",null=True,blank=True, max_digits=11, decimal_places=2)
+    unit_value = models.CharField("Valor unitário:", max_length=10, null=True, blank=True, default=1)
+    total_value = models.CharField("Valor total:", max_length=10, null=False, blank=False)
 
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, null=True, related_name="created_by")
 
-    last_update = models.DateTimeField("Ultima atualização", auto_now=True)
+    last_update = models.DateTimeField("Ultima atualização:", auto_now=True)
     updated_by = models.ForeignKey(User, null=True, related_name="updated_by")

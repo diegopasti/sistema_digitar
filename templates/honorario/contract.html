@@ -652,7 +652,7 @@ table th{
 	</div>
 
 	<div id="modal_servicos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-		<div class="modal-dialog" style="width: 40%">
+		<div class="modal-dialog" style="">
 			{% csrf_token %}
 			<div class="modal-content">
 				<div class="modal-header">
@@ -673,78 +673,73 @@ table th{
 												<th class='center'>Ativo</th>
 											</tr>
 										</thead>
-
 										<style>
 											#datatable_servicos td{
 												padding: 0px;
 												padding-top: 4px;
 											}
+											.switch {
+												position: relative;
+												display: table;
+												width: 50px;
+												height: 20px;
+											}
+
+											.switch input {display:none;}
+
+											.slider {
+												position: absolute;
+												cursor: pointer;
+												top: 0;
+												left: 0;
+												right: 0;
+												bottom: 0;
+												background-color: #47FF7F;
+												-webkit-transition: 1s;
+												transition: 1s;
+											}
+
+											.slider:before {
+												position: absolute;
+												content: "";
+												height: 15px;
+												width: 15px;
+												left: 4px;
+												bottom: 3px;
+												background-color: #c4bbcc;
+												-webkit-transition: 1s;
+												transition: .40s;
+											}
+
+											input:checked + .slider {
+												background-color: #FA4226;
+											}
+
+											input:focus + .slider {
+												box-shadow: 0 0 1px #2196F3;
+											}
+
+											input:checked + .slider:before {
+												-webkit-transform: translateX(26px);
+												-ms-transform: translateX(26px);
+												transform: translateX(26px);
+											}
+
+											/* Rounded sliders */
+											.slider.round {
+												border-radius: 20px;
+											}
+
+											.slider.round:before {
+												border-radius: 50%;
+											}
 										</style>
-
-										<style>
-															.switch {
-																position: relative;
-																display: table;
-																width: 50px;
-																height: 20px;
-															}
-
-															.switch input {display:none;}
-
-															.slider {
-																position: absolute;
-																cursor: pointer;
-																top: 0;
-																left: 0;
-																right: 0;
-																bottom: 0;
-																background-color: #47FF7F;
-																-webkit-transition: 1s;
-																transition: 1s;
-															}
-
-															.slider:before {
-																position: absolute;
-																content: "";
-																height: 15px;
-																width: 15px;
-																left: 4px;
-																bottom: 3px;
-																background-color: #c4bbcc;
-																-webkit-transition: 1s;
-																transition: .40s;
-															}
-
-															input:checked + .slider {
-																background-color: #FA4226;
-															}
-
-															input:focus + .slider {
-																box-shadow: 0 0 1px #2196F3;
-															}
-
-															input:checked + .slider:before {
-																-webkit-transform: translateX(26px);
-																-ms-transform: translateX(26px);
-																transform: translateX(26px);
-															}
-
-															/* Rounded sliders */
-															.slider.round {
-																border-radius: 20px;
-															}
-
-															.slider.round:before {
-																border-radius: 50%;
-															}
-														</style>
 										<tbody>
 											{% verbatim %}
 												<tr class="angular-repeat linha_selecionavel" ng-repeat='registro in servicos_contratados'>
 													<!--<td class='center' style="width: 30px;">{{ $index+1 }}</td>-->
 													<td class="left"	style="padding-left: 10px;" title="{{ registro.descricao }}">{{ registro.nome }}</td>
 													<td class="center" style="width: 30px; padding-left: 15px; padding-top: 4px">
-
 														<label class="switch" style="padding-bottom: 20px">
 															<input type="checkbox" ng-checked='registro.ativo != true' ng-click="ativar_desativar_servico(registro)" >
 															<span class="slider round" ></span>
@@ -755,6 +750,38 @@ table th{
 												<tr ng-repeat="k in minimal_quantity_rows.slice(servicos_contratados.length,minimal_quantity_rows.length)">
 													<td class='center' style="height: 26px;"></td>
 													<td class='center' style="width: 80px;"></td>
+												</tr>
+											{% endverbatim %}
+										</tbody>
+									</table>
+
+									<table class="table table-condensed table-striped table-bordered table-hover">
+										<thead>
+											<tr class="linha_cabecalho">
+												<!--<th class='center' style="width: 40px;" ng-click="sortType = 'id'; sortReverse = !sortReverse"></th>-->
+												<th class='center'>Outros Serviços</th>
+												<th class='center'>Ativo</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% verbatim %}
+												<tr style="height: 20px;">
+													<!--<td class='center' style="width: 30px;">{{ $index+1 }}</td>-->
+													<td class="left" style="padding-left: 10px;height:20px;vertical-align: middle;">
+														<span>REEMBOLSO DE ARQUIVO CAIXA</span>
+														<div ng-if="registro_selecionado.contrato.reembolso_arquivo_caixa == true" title="Quantidade de arquivos" style="float: right;width: 90px;">
+															<form ng-submit="configurar_reembolso_caixa_quantidade()">
+																<input type="text" ng-model="registro_selecionado.contrato.arquivos_caixa" style="height: 24px;padding-left: 4px;border-radius: 5px;border-color: 1px solid #ccc;width: 90px;">
+																<button type="submit" role="link" style="border: #fff;border-radius: 10px;width:20px;background:#fff;cursor: pointer;color:#888;margin-left: -30px;"><i class="fa fa-floppy-o" aria-hidden="true" ng-click="configurar_reembolso_caixa_quantidade()"></i></button>
+															</form>
+														</div>
+													</td>
+													<td class="center" style="width: 80px; padding-left: 15px; padding-top: 10px; height: 18px;">
+														<label class="switch">
+															<input type="checkbox" ng-checked='registro_selecionado.contrato.reembolso_arquivo_caixa != true' ng-click="configurar_reembolso_caixa(registro_selecionado)">
+															<span class="slider round"></span>
+														</label>
+													</td>
 												</tr>
 											{% endverbatim %}
 										</tbody>

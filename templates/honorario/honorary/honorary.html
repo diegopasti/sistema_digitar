@@ -498,7 +498,7 @@
 										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
 											<div class="custom_panel custom-box-default">
 												<h6>Proventos:
-													<span class="pull-right" ng-if="registro_selecionado.contract != null">{{ registro_selecionado.total_debit--registro_selecionado.initial_value_contract | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.contract != null">{{ registro_selecionado.total_debit--registro_selecionado.final_value_contract | currency:"R$ "}}</span>
 													<span class="pull-right" ng-if="registro_selecionado.contract == null">{{ registro_selecionado.total_debit | currency:"R$ "}}</span>
 												</h6>
 											</div>
@@ -507,7 +507,9 @@
 										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
 											<div class="custom_panel custom-box-default">
 												<h6>Descontos:
-													<span class="pull-right" ng-if="registro_selecionado.temporary_discount>0">- {{ registro_selecionado.total_credit--(registro_selecionado.initial_value_contract*(registro_selecionado.temporary_discount/100)) | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.temporary_discount>0">
+														- {{ registro_selecionado.total_credit--(registro_selecionado.initial_value_contract*(registro_selecionado.temporary_discount/100))--(registro_selecionado.initial_value_contract*(registro_selecionado.fidelity_discount/100)) | currency:"R$ "}}
+													</span>
 													<span class="pull-right" ng-if="registro_selecionado.temporary_discount==0">- {{ registro_selecionado.total_credit | currency:"R$ "}}</span>
 												</h6>
 											</div>

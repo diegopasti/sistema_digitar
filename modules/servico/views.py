@@ -58,6 +58,7 @@ def atualizar_plano(request):
         plano.nome = request.POST["plano[nome]"]
         plano.descricao = request.POST["plano[descricao]"]
         plano.servicos = request.POST["servicos"]
+        plano.alterado_por = request.user
 
         response_dict = executar_operacao(plano, "save")
         if response_dict['message'] != True:

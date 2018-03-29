@@ -106,6 +106,10 @@ urlpatterns = [
     url(r'^api/contract/alterar_indicacao/', ContractController().alterar_indicacao),
     url(r'^api/contract/alterar_boolean_indicacao/', ContractController().alterar_boolean_indicacao),
     url(r'^api/contract/deletar_indicacao/', ContractController().deletar_indicacao),
+    url(r'^api/contract/configurar_reembolso_caixa/', ContractController().configurar_reembolso_caixa),
+    url(r'^api/contract/configurar_reembolso_caixa_quantidade/', ContractController().configurar_reembolso_caixa_quantidade),
+
+
 
     url(r'^provents/$', honorario_views.proventos_page),
     url(r'^api/provents$', ProventosController().filter_provents),
