@@ -737,6 +737,8 @@ class HonoraryController(BaseController):
                 response_dict['message'] = "Honorários de " + completed_competence + " já foram finalizado!"
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def confirm_honorary(self, request):
         self.start_process(request)
         try:
@@ -757,6 +759,8 @@ class HonoraryController(BaseController):
             response_dict['message'] = "Erro! Honorário informado não existe."
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def close_honorary(self, request):
         self.start_process(request)
         try:

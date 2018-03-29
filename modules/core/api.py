@@ -1,5 +1,6 @@
 import os
 from django.contrib.auth.decorators import login_required, user_passes_test
+from libs.default.decorators import request_ajax_required
 from django.db.models import Case, When
 from django.http import Http404
 from django.utils.decorators import method_decorator
@@ -15,6 +16,9 @@ from django.db import models
 
 
 class BaseOperationController(BaseController):
+
+    @request_ajax_required
+    @method_decorator(login_required)
     def load_operations (self, request):
         self.start_process(request)
         list = BaseController().filter(request, BaseOperation, extra_fields=['username'], is_response=False)
@@ -22,9 +26,13 @@ class BaseOperationController(BaseController):
 
 
 class RestrictedOperationController(BaseController):
+
+    @request_ajax_required
+    @method_decorator(login_required)
     def load_operations (self, request):
         self.start_process(request)
         list = BaseController().filter(request, RestrictedOperation, extra_fields=['username'], is_response=False)
+        print('SOU LIST', list)
         for operation in list['object']:
             try:
                 user = User.objects.get(id=int(operation['user']))
@@ -48,11 +56,15 @@ class ConfigurationsController(BaseController):
 
     #method_decorator(login_required)
     #user_passes_test(lambda u: u.permissions.can_view_entity(), login_url='/error/access_denied', redirect_field_name=None)
+    @request_ajax_required
+    @method_decorator(login_required)
     def load_backups(self, request):
         x = BaseController().filter(request, model=Backup)
         #print("VEJA O QUE TENHO QUE ENVIAR: ",x)
         return BaseController().filter(request, model=Backup, limit=12)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def create_backup_local(self, request):
         self.start_process(request)
         backup_paramters = BackupManager().create_backup_local()
@@ -74,6 +86,8 @@ class ConfigurationsController(BaseController):
         return self.response(response_dict)
         """
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def create_backup(self,request):
         self.start_process(request)
         backup_paramters = BackupManager().create_backup()
@@ -88,6 +102,8 @@ class ConfigurationsController(BaseController):
             response_dict = self.notify.error(self.full_exceptions)
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def restore_backup(self,request):
         self.start_process(request)
         backup_paramters = BackupManager().restore_backup()
@@ -101,6 +117,8 @@ class ConfigurationsController(BaseController):
             pass
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def list_backups(self,request):
         self.start_process(request)
         backup_list = BackupManager().list_backup()
@@ -127,7 +145,8 @@ class ConfigurationsController(BaseController):
         #    print('SOU RESPONSE',response_dict)
         return self.response(response_dict)
 
-
+    @request_ajax_required
+    @method_decorator(login_required)
     def check_available_space(self,request):
         self.start_process(request)
         backup_list = Backup.objects.all()
@@ -146,6 +165,8 @@ class ConfigurationsController(BaseController):
         #print("ESPACO DE ARMAZENAMENTO: ",response_dict)
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def check_available_system_space(self,request):
         self.start_process(request)
         total_size = 0
@@ -179,6 +200,8 @@ class ConfigurationsController(BaseController):
 
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def check_available_space1(self,request):
         self.start_process(request)
         #backup_list = BackupManager().list_backup()
@@ -201,6 +224,8 @@ class ConfigurationsController(BaseController):
         #print("ESPACO DE ARMAZENAMENTO: ",response_dict)
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def version_update(self,request):
         self.start_process(request)
         version_check = check_update()
@@ -218,6 +243,8 @@ class ConfigurationsController(BaseController):
         #print("VEJA A VERSÃO: ",response_dict)
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def update(self,request):
         self.start_process(request)
         updating = update()
@@ -232,6 +259,8 @@ class ConfigurationsController(BaseController):
 
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def shared_folder(self,request):
         self.start_process(request)
         backup_link_folder = BackupManager().shared_folder()
@@ -263,6 +292,8 @@ class ConfigurationsController(BaseController):
         return self.response(response_dict)
     '''
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def last_backup(self, request):
         x = BaseController().filter(request, model=Backup)
         #print("VEJA O QUE TENHO QUE ENVIAR: ",x)
@@ -271,6 +302,8 @@ class ConfigurationsController(BaseController):
 
 class NotificationsController(BaseController):
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def confirm_notification(self, request):
         from django.utils.timezone import now, localtime
         self.start_process(request)
@@ -307,7 +340,8 @@ class NotificationsController(BaseController):
             response_dict['message'] = "Erro! Notificação não existe."
         return self.response(response_dict)
 
-
+    @request_ajax_required
+    @method_decorator(login_required)
     def get_notifications(self, request):
         self.start_process(request)
         user_id = str(request.user.id)
@@ -329,6 +363,8 @@ class NotificationsController(BaseController):
 
         return self.response(response_dict)
 
+    @request_ajax_required
+    @method_decorator(login_required)
     def get_notifications_status(self, request):
         self.start_process(request)
         user_id = str(request.user.id)
@@ -344,7 +380,8 @@ class NotificationsController(BaseController):
             response_dict['message'] = str(total_non_readed_notifications) + " notificações não confirmadas."
         return self.response(response_dict)
 
-
+    @request_ajax_required
+    @method_decorator(login_required)
     def get_notifications_competences(self, request):
         self.start_process(request)
         competences = list(Notification.objects.all().values_list('competence').distinct())
