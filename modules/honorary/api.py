@@ -713,7 +713,7 @@ class HonoraryController(BaseController):
             self.create_update_honorary(request, entity, self.get_competence(current_month + 1))
             self.create_update_honorary(request, entity, self.get_competence(current_month + 2))
             self.create_update_honorary(request, entity, self.get_competence(current_month + 3))
-        return BaseController().filter(request, Honorary)
+        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
 
     @request_ajax_required
     @method_decorator(login_required)
