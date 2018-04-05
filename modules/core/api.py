@@ -306,7 +306,6 @@ class NotificationsController(BaseController):
     @request_ajax_required
     @method_decorator(login_required)
     def confirm_notification(self, request):
-        from django.utils.timezone import now, localtime
         self.start_process(request)
         user_id = str(request.user.id)
         notification = Notification.objects.get(id=int(request.POST['notification_id']))

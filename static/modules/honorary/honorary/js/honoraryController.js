@@ -667,7 +667,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 				$scope.registro_selecionado.honorary_itens = [];
 			}
 
-			if($scope.registro_selecionado.honorary_itens.length < 10-$scope.max_honorary_itens){
+			if($scope.registro_selecionado.honorary_itens.length < 9-$scope.max_honorary_itens){
 				if($scope.selected_option_provent!=null){
 					var data_paramters = {}
 					data_paramters['honorary_id'] = parseInt($scope.registro_selecionado.id);
@@ -732,7 +732,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 				}
 			}
 			else{
-				error_notify(null,'Falha na operação','Cada honorário deve conter no máximo dez itens.')
+				error_notify(null,'Falha na operação','Cada honorário deve conter no máximo dez itens sendo que o ultimo é reservado pelo sistema para arredondamentos.')
 			}
 		}
 		else{

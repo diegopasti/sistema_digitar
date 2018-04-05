@@ -779,12 +779,12 @@ class HonoraryController(BaseController):
                     honorary_item.type_item = 'P'
                     provento = Proventos.objects.get(pk=5)
                     honorary_item.quantity = str(1-variacao)
-                    honorary_item.total_value = str(Decimal(1-variacao) * Decimal(provento.valor))
+                    honorary_item.total_value = "%.2f"%(float(Decimal(1-variacao) * Decimal(provento.valor)))
                 else:
                     honorary_item.type_item = 'D'
                     provento = Proventos.objects.get(pk=6)
                     honorary_item.quantity = str(variacao)
-                    honorary_item.total_value = str(Decimal(variacao) * Decimal(provento.valor))
+                    honorary_item.total_value = "%.2f"%(float(Decimal(variacao) * Decimal(provento.valor)))
 
                 honorary_item.item = provento
                 honorary_item.unit_value = provento.valor
