@@ -83,7 +83,7 @@
                 <h5 class="box-title titulo_painel">
                   <span ng-show="registro_selecionado">
                     <label ng-hide="esta_editando" class="text-capitalize">{{ registro_selecionado.nome | lowercase }}</label>
-                    <input id="plano_nome" ng-show="esta_editando" type='text' class="form-control uppercase" value="{{ registro_selecionado.nome | lowercase }}" />
+                    <input id="plano_nome" ng-show="esta_editando" type='text' class="form-control uppercase" ng-value="registro_selecionado.nome" />
                   </span>
 
                   <span ng-show="!registro_selecionado">
@@ -437,9 +437,8 @@
     }
 
     $scope.selecionar_plano = function (plano,indice) {
-
       $scope.limpar_opcoes_servicos();
-
+      //$scope.$apply();
       if ($scope.registro_selecionado == null){
         $scope.indice_registro_selecionado = indice;
         $scope.registro_selecionado = plano;
