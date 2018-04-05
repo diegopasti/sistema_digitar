@@ -61,7 +61,7 @@ from modules.entidade.formularios import MENSAGENS_ERROS
 from modules.entidade.models import entidade
 
 class documento(models.Model):
-    nome      = models.CharField("Nome:", max_length=100, null=True, error_messages=MENSAGENS_ERROS)
+    nome      = models.CharField("Nome:", max_length=100, unique=True, null=True, error_messages=MENSAGENS_ERROS)
     descricao = models.TextField("Descrição:",max_length=500,null=True,error_messages=MENSAGENS_ERROS)
 
     def precarregar_dados_digitar(self):

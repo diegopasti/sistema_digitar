@@ -518,9 +518,9 @@ def visualizar_entidade(request,id):
                             registro = None
 
                         if registro is not None:
-                            from django.utils.timezone import now, localtime
+                            #from django.utils.timezone import now, localtime
                             registro.ativo = False
-                            registro.data_finalizado = localtime(now())
+                            registro.data_finalizado = datetime.datetime.now() #localtime(now())
                             registro.finalizado_por = request.user
                             registro.save()
                         pass

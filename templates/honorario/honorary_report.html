@@ -543,7 +543,7 @@
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">3</td>
 								<td style="width: 447px;padding-left: 4px;">DESCONTO FIDELIDADE</td>
-								<td class="center" style="width: 74px;"></td>
+								<td class="center" style="width: 74px;text-align: right;">{{ contract_unit_value }}</td>
 								<td width='86px' style="text-align: center;" >{{ contract_fidelity_discount_rate }}%</td>
 								<td width='86px' style="text-align: right;">-{{ contract_fidelity_discount_value }}</td>
 							</tr>
@@ -855,8 +855,8 @@
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">3</td>
 								<td style="width: 447px;padding-left: 4px;">DESCONTO FIDELIDADE</td>
-								<td class="center" style="width: 74px;"></td>
-								<td width='86px' style="text-align: right;" >{{ contract_fidelity_discount_rate }}%</td>
+								<td class="center" style="width: 74px;text-align: right;">{{ contract_unit_value }}</td>
+								<td width='86px' style="text-align: center;" >{{ contract_fidelity_discount_rate }}%</td>
 								<td width='86px' style="text-align: right;">-{{ contract_fidelity_discount_value }}</td>
 							</tr>
 							{% endif %}

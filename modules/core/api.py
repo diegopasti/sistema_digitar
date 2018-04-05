@@ -1,4 +1,5 @@
 import os
+import datetime
 from django.contrib.auth.decorators import login_required, user_passes_test
 from libs.default.decorators import request_ajax_required
 from django.db.models import Case, When
@@ -322,7 +323,7 @@ class NotificationsController(BaseController):
 
             if response_dict == {}:
                 notification.last_view_by = request.user
-                notification.last_view_date = localtime(now())
+                notification.last_view_date = datetime.datetime.now()#localtime(now())
                 response_dict = self.execute(notification,notification.save,extra_fields=['related_entity__nome_razao','last_view_by__get_full_name','was_readed'])
 
             if response_dict['object']['related_users_readed'] is not None:

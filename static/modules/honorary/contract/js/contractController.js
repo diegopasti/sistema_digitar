@@ -13,7 +13,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","cliente", "plano"];
 	$scope.search             = '';
-	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10]
+	$scope.minimal_quantity_rows = [1,2,3,4,5,6,7,8,9,10];
 
 	$scope.opcao_desabilitada = "desabilitado";
 	$scope.registro_selecionado 	= null;
@@ -104,7 +104,6 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		}
 
 		function success_function(result,message,data_object,status) {
-			//alert("VEJA O RESULT: "+JSON.stringify(message))
 			/*
 			$scope.registro_selecionado.contrato.tipo_cliente = $('#tipo_cliente option:selected').text()
 			$scope.registro_selecionado.plano = $('#select_plano option:selected').text()
@@ -728,7 +727,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 				//data_object.taxa_desconto = $filter('currency')(data_object.taxa_desconto,"", 2)
 				$scope.registro_selecionado.indicacoes[index] = data_object;
 				if (data_object['change_contract']===true){
-				$scope.atualizar_contrato(cliente_id);
+					$scope.atualizar_contrato(cliente_id);
 				}
 				$scope.calcular_total_desconto_fidelidade();
 				$scope.desmarcar_linha_indicacao();

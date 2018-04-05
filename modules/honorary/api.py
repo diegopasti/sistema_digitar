@@ -692,7 +692,7 @@ class HonoraryController(BaseController):
 
     @method_decorator(login_required)
     def get_object(self, request):
-        return self.object(request, Honorary, int(request.POST['id']),is_response=True)
+        return self.object(request, Honorary, int(request.POST['id']),extra_fields = ['honorary_itens', 'contract__data_vencimento', 'contract__dia_vencimento', 'have_contract'],is_response=True)
 
     @method_decorator(login_required)
     def filter(self,request):
@@ -881,6 +881,7 @@ class HonoraryController(BaseController):
                     honorary.updated_by_name = request.user.get_full_name()
                     honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
                     if honorary_response['result']:
+                        #response_dict = honorary_response
                         response_dict['message'] = 'Honorário salvo com sucesso!'
                     else:
                         response_dict['message'] = 'Erro! Registro salvo mas houve uma falha ao tentar recalcular o honorário.'
@@ -1056,7 +1057,7 @@ class HonoraryController(BaseController):
             complemento = ""
 
         try:
-            contract_temporary_discount_rate  = '%.2f'%(contract_temporary_discount_value)
+            contract_temporary_discount_rate  = '%.2f'%(contract_temporary_discount_rate)
         except:
             #contract_temporary_discount_rate = '0.00'
             pass
