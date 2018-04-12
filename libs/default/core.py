@@ -263,10 +263,15 @@ class BaseController(Notify):
     def disable(self, request, model):
         object = model.objects.get(pk=int(request.POST['id']))
         try:
-            if getattr(object, 'ativo'):
-                object.ativo = False
             if getattr(object, 'is_active'):
                 object.is_active = False
+            else:
+                pass
+        except:
+            pass
+        try:
+            if getattr(object, 'ativo'):
+                object.ativo = False
             else:
                 pass
         except:

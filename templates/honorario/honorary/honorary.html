@@ -266,11 +266,13 @@
 									<div class="form-group field" id="field_item">
 										<sub><label id="lb_item" for="item_id">{{ formulario_proventos.item_id.label }}*</label></sub>
 										{% verbatim %}
-										<select id="item_id" class="form-control">
-											<option ng-repeat="option in provents_options" value="{{option.id}}" ng-show="view_provents_per_type(option)" ng-click="select_provent_option(option)">
-												{{ option.nome }}
+
+										<select id="item_id" class="form-control" ng-blur="select_provent_option()">
+											<option ng-repeat="option in provents_options" value="{{ $index }}" ng-show="view_provents_per_type(option)">
+												 {{ $index }} - {{ option.nome }}
 											</option>
 										</select>
+										VEJA A OPCAO SELECIONADA >{{ $scope.selected_option_provent }}<
 										{% endverbatim %}
 									</div>
 								</div>

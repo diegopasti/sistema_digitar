@@ -987,40 +987,55 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		$("#total_value").val("");
 	}
 
-	$scope.select_provent_option = function(option){
-		$scope.selected_option_provent = option;
-		setTimeout(function(){$("#item_id").val(option.id.toString()).trigger('change');},10);
-		if($scope.selected_item!=null){$scope.edited_item_option = option.id;}
-		if($scope.selected_option_provent.tipo_valor=='R'){
-			$("#lb_unit_value").text("Valor unitário");
-			$("#lb_quantity").text("Quantidade");
-			$("#quantity").val('1');
-			$("#unit_value").val($filter('currency')(option.valor,"", 2));
-			$("#total_value").val($filter('currency')(option.valor*1,"", 2));
+	$scope.select_provent_option = function(){
+	  var index = $("#item_id").val();
+	  if(index != null && index != ""){
+      $scope.selected_option_provent = $scope.provents_options[index];
+      alert("VEJA O OBJETO: "+ JSON.stringify($scope.selected_option_provent))
+      //setTimeout(function(){$("#item_id").val(option).trigger('change');},10);
+
+      if($scope.selected_item!=null){
+        $scope.edited_item_option = index;
+       }
+
+      if($scope.selected_option_provent.tipo_valor=='R'){
+        $("#lb_unit_value").text("Valor unitário");
+        $("#lb_quantity").text("Quantidade");
+        $("#quantity").val('1,00');
+        $("#unit_value").val($filter('currency')($scope.selected_option_provent.valor,"", 2));
+        $("#total_value").val($filter('currency')(parseInt($scope.selected_option_provent.valor)*1,"", 2));
+      }
+      else{
+        if($scope.registro_selecionado.initial_value_contract != null){
+          $("#lb_unit_value").text("Valor Base");
+          $("#lb_quantity").text("Taxa (%)");
+          $("#unit_value").val($filter('currency')($scope.registro_selecionado.initial_value_contract,"", 2));
+          $("#quantity").val($filter('currency')($scope.selected_option_provent.valor,"", 2));
+          $("#total_value").val($filter('currency')(($scope.selected_option_provent.valor/100)*$scope.registro_selecionado.initial_value_contract,"", 2));
+
+          /*if(option!=''){
+            $("#quantity").val($filter('currency')(option,"", 2));
+            $("#total_value").val($filter('currency')(parseInt(option)*$scope.registro_selecionado.initial_value_contract,"", 2));
+          }
+          else{
+            $("#quantity").val('');
+            $("#unit_value").val('');
+            $("#total_value").val('');
+          }
+          */
+        }
+        else{
+          $("#quantity").val('');
+          $("#unit_value").val('');
+          $("#total_value").val('');
+        }
+
+      }
+		  return true;
 		}
 		else{
-			if($scope.registro_selecionado.initial_value_contract != null){
-				$("#lb_unit_value").text("Valor Base");
-				$("#unit_value").val($filter('currency')($scope.registro_selecionado.initial_value_contract,"", 2));
-				$("#lb_quantity").text("Taxa (%)");
-				if(option.valor!=''){
-					$("#quantity").val($filter('currency')(option.valor,"", 2));
-					$("#total_value").val($filter('currency')(option.valor*$scope.registro_selecionado.initial_value_contract,"", 2));
-				}
-				else{
-					$("#quantity").val('');
-					$("#unit_value").val('');
-					$("#total_value").val('');
-				}
-			}
-			else{
-				$("#quantity").val('');
-				$("#unit_value").val('');
-				$("#total_value").val('');
-			}
+		  return false;
 		}
-
-		return true;
 	}
 
 	$scope.calculate_provent_value = function(){
@@ -1029,7 +1044,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 		if($scope.selected_item==null){
 			setTimeout(function(){$("#item_id").val($scope.selected_option_provent.id.toString()).trigger('change');},5);
-			if($scope.selected_option_provent.tipo_valor == 'R'){
+			if($scope.selected_option_provent.tipo_valor=='R'){
 				var total_value = unit_value*quantity;
 			}
 			else{
@@ -1048,14 +1063,14 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 			var quantity = parseFloat($("#quantity").val().replace(".","").replace(",","."));
 			var unit_value = parseFloat($("#unit_value").val().replace(".","").replace(",","."));
 
-			if($scope.selected_option_provent.tipo_valor == 'R'){
+			if($scope.selected_option_provent.tipo_valor=='R'){
 				var total_value = unit_value*quantity;
+				alert(total_value)
 			}
 			else{
 				var total_value = unit_value*(quantity/100);
+				alert(total_value)
 			}
-
-
 			$("#total_value").val($filter('currency')(total_value,"", 2));
 		}
 	}

@@ -14,6 +14,7 @@ app.controller('MeuController', ['$scope', function($scope) {
 	$scope.registro_selecionado 	= null;
 	$scope.esta_adicionando     	= true;
 	$scope.contratos = [];
+	$scope.ru_name = null;
 
 	$scope.save_provent = function() {
 		var data_paramters = create_data_paramters('form_adicionar_contrato');
@@ -117,9 +118,10 @@ app.controller('MeuController', ['$scope', function($scope) {
 
 	$scope.confirm_disable = function(){
 		var object_name = $scope.registro_selecionado.nome;
+		var object_operator = $scope.ru_name;
 		$('#action_type').val('Desativar')
 		$('#action_object').val(object_name)
-		$('#action_user').val('Operador')
+		$('#action_user').val(object_operator)
 	}
 
 	$scope.open_object = function(){
