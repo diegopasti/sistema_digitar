@@ -7,7 +7,6 @@ class Command(BaseCommand):
     help = 'Print hello world'
 
     def handle(self, **options):
-
         backup_paramters = BackupManager().create_backup()
         try:
             backup = Backup.objects.get(backup_file_name=backup_paramters['file_name'])

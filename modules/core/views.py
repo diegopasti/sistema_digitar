@@ -15,8 +15,8 @@ def index(request):
 
 @login_required
 def notifications_center(request):
-    from modules.core.services import NotificationsControl
-    NotificationsControl().generate_notifications()
+    #from modules.core.services import NotificationsControl
+    #NotificationsControl().generate_notifications()
     #EntityNotifications().check_documents_expiring()
     return render(request,"core/notifications/notifications_center.html",{'request_user':'DIEGO PASTI'})
 

@@ -23,7 +23,7 @@ class ProtocolNotifications:
         self.create_open_protocols()
 
     def create_open_protocols(self):
-        #corrigir_operador_emissor_protocolo()
+        corrigir_operador_emissor_protocolo()
         protocols_list = protocolo.objects.filter(situacao=False)
         current_date = datetime.datetime.now().date()
         current_year = current_date.year
@@ -71,11 +71,11 @@ def corrigir_operador_emissor_protocolo():
         else:
 
             if item.emissor.first_name in item.emitido_por:
-                pass
-                #print("VEJA O NOME DO OPERADOR: ", item.emitido_por, "  - ID: ", item.emissor,' - OK')
+                #pass
+                print("VEJA O NOME DO OPERADOR: ", item.emitido_por, "  - ID: ", item.emissor,' - OK')
             else:
-                #print("VEJA O NOME DO OPERADOR: ", item.emitido_por, "  - ID: ", item.emissor, ' - CORRIGIR')
-                #print("PROCURAR: ",item.emitido_por.split(' ')[0])
+                print("VEJA O NOME DO OPERADOR: ", item.emitido_por, "  - ID: ", item.emissor, ' - CORRIGIR')
+                print("PROCURAR: ",item.emitido_por.split(' ')[0])
                 edited_user = User.objects.get(first_name=item.emitido_por.split(' ')[0])
                 item.emissor = edited_user
                 item.save()

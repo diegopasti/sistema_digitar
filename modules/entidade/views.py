@@ -30,6 +30,8 @@ def verificar_cadastro_empresa():
 @login_required
 def index(request):
     if verificar_cadastro_empresa():
+        #from modules.core.services import NotificationsControl
+        #NotificationsControl().generate_notifications()
         return render(request,"blank.html")
     else:
         return HttpResponseRedirect('/cadastrar_empresa')
