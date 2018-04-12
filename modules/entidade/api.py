@@ -8,8 +8,11 @@ from modules.entidade.models import Documento, entidade
 
 class EntityController(BaseController):
 
-    @request_ajax_required
+    #request_ajax_required
+    #method_decorator(request_ajax_required)
+
     @method_decorator(login_required)
+    @request_ajax_required
     def close_document(self, request):
         self.start_process(request)
         try:
