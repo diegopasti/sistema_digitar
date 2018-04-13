@@ -160,12 +160,11 @@ table th{
 .modal-header h5{
 	margin-top: -1px !important;
 }
+
 </style>
 {% endblock %}
 {% block conteudo %}
 <div id="controle_angular" ng-cloak ng-controller="MeuController" ng-init="contratos_carregados=false">
-
-
 	<div class="row" style="margin-top: -45px;">
 		<div class="col-lg-12 col-md-12 col-xs-12">
 			<div class="box box-default" >
@@ -175,23 +174,23 @@ table th{
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
 								<fieldset ng-disabled="registro_selecionado==null">
-									<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="open_contract();">Contrato</a>
-									<a href="/entidade/visualizar/{% verbatim %}{{ registro_selecionado.cliente_id }}{% endverbatim %}/" target="_blank" id="bt_consultar_cliente" role="button" class="btn btn-sm btn-default" style='margin-left: 5px;'> Cliente</a>
-									<a href="#" id='bt_servicos' role="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_servicos" ng-click="carregar_servicos_contratados();" style='margin-left: 5px;'>Serviços</a>
-									<a href="#" id='bt_indicacoes' role="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_indicacoes" ng-click="carregar_indicacao()" style='margin-left: 5px;'> Indicações</a>
+									{% verbatim %}
+									<button id='bt_adicionar' class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_contrato" ng-click="open_contract();">Contrato</button>
+									<button id="bt_consultar_cliente" class="btn btn-sm btn-default" ng-click="open_contract_page();" style='margin-left: 5px;'> Cliente</button>
+									<button id='bt_servicos' class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_servicos" ng-click="carregar_servicos_contratados();" style='margin-left: 5px;'>Serviços</button>
+									<button id='bt_indicacoes' class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_indicacoes" ng-click="carregar_indicacao()" style='margin-left: 5px;'> Indicações</button>
 
 									<div class="btn-group" role="group" style='margin-left: 5px;'>
-										<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
+										<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" ng-class="{disabled: registro_selecionado==null}"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu dropdown-menu-right">
-											<style>
-												.disabled { cursor: not-allowed; opacity: 0.5; }
-											</style>
+
 											<!--<li role="separator" class="divider"></li>-->
 											<li><a role='button' ng-click="close_contract();">Encerrar Contrato</a></li>
 											<!--<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>-->
 										</ul>
 									</div>
+									{% endverbatim %}
 								</fieldset>
 							</div>
 						</div>
@@ -821,6 +820,7 @@ table th{
 
 <script>
 	$(document).ready(function() {
+		//$(".menu_item_block").attr("tabindex", "-1");
 		$("#divCarregando").show();
 		$(window).load(function () {
 				// Quando a página estiver totalmente carregada, remove o id
@@ -836,5 +836,15 @@ table th{
 	window.onresize = function(event) {
     angular.element(document.getElementById('controle_angular')).scope().reajustar_tela();
 	};
+
+
+</script>
+<script>
+	{% verbatim %}
+	function open_contract_page(){
+		//alert("VEJA A PAGINA: "+url);
+		window.open('/entidade/visualizar/{{ registro_selecionado.cliente_id }}/', '_blank');
+	}
+	{% endverbatim %}
 </script>
 {% endblock %}

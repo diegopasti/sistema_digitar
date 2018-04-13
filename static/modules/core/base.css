@@ -94,9 +94,8 @@ tr.linha_selecionavel{
 
 .disabled{
   cursor: not-allowed !important;
-  pointer-events: none;
-  color: grey;
   opacity: 0.5;
+	tabindex: -1;
 }
 
 .cursor_pointer {
@@ -121,7 +120,7 @@ li.disabled a{
 }
 
 .disabled:not(.nohover):hover {
-    background: transparent !important;
+  background: transparent !important;
 
 }
 
