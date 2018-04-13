@@ -286,7 +286,7 @@ display: none;
 
 					<tbody>
 					{% for protocolo in item.protocolos %}
-					<tr class='clickable-row' data-toggle="modal" data-target=".bs-example-modal-lg" data-href='{{ protocolo.id }}'>
+					<tr class='clickable-row' data-toggle="modal" title="VEJA: {{ protocolo }}" data-target=".bs-example-modal-lg" data-href='{{ protocolo.id }}'>
 						<td style="width: 30px;text-align: center;cursor:pointer;">{{ forloop.counter }}</td>
 						{% if protocolo.numeracao_destinatario == 'AVULSO' %}
 						<td style="text-align: center;cursor:pointer; width: 100px;">AVULSO</td>
@@ -295,7 +295,7 @@ display: none;
 						{% endif %}
 
 						{% if protocolo.numeracao_destinatario == 'AVULSO' %}
-						<td style="text-align: left;cursor:pointer;">{{ protocolo.destinatario.nome_avulso }}</td>
+						<td style="text-align: left;cursor:pointer;">{{ protocolo.nome_avulso }}</td>
 						{% else %}
 						<td style="text-align: left;cursor:pointer;">{{ protocolo.destinatario.nome_razao }}</td>
 						{% endif %}
@@ -315,11 +315,11 @@ display: none;
 							{% endif %}
 					</tr>
 					{% empty %}
-					<tr><td>Nenhum protocolo com esse documento</td></tr>
+					<tr><td colspan="7" style="text-align:center;">Nenhum protocolo com esse documento</td></tr>
 					{% endfor %}
 
 					{% empty %}
-					<tr><td>Nenhum registro encontrado!</td></tr>
+					<tr><td colspan="7" style="text-align:center;">Nenhum registro encontrado!</td></tr>
 					</tbody>
 					</table>
 					{% endfor %}

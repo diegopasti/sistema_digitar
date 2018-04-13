@@ -106,7 +106,7 @@ def report_protocols_per_documents(request, form):
                     total_protocolos = total_protocolos + 1
             resultado.append({'documento':documento.nome,'protocolos_abertos':protocolos_abertos,'protocolos':protocolos_selecionados})
 
-        print ("HORA DE FILTRAR PELOS DOCUMENTOS - CONEXOES ATE AQUI:", len(connection.queries))
+        #print ("HORA DE FILTRAR PELOS DOCUMENTOS - CONEXOES ATE AQUI:", len(connection.queries))
 
 
         #print("\n\n")
