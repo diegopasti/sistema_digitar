@@ -869,4 +869,11 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		}
 	}
 
+	$scope.open_contract_page = function(){
+		if($scope.registro_selecionado!=null){
+			window.open('/entidade/visualizar/'+$scope.registro_selecionado.cliente_id+'/', '_blank');
+		}
+	}
+
+
 }]);

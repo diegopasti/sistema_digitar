@@ -184,7 +184,6 @@ table th{
 										<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" ng-class="{disabled: registro_selecionado==null}"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu dropdown-menu-right">
-
 											<!--<li role="separator" class="divider"></li>-->
 											<li><a role='button' ng-click="close_contract();">Encerrar Contrato</a></li>
 											<!--<li><a href="#modal_justificativa" id="bt_desativar_cliente" data-toggle="modal"><i class="fa fa-trash-o"></i> Desativar</a></li>-->
@@ -836,15 +835,5 @@ table th{
 	window.onresize = function(event) {
     angular.element(document.getElementById('controle_angular')).scope().reajustar_tela();
 	};
-
-
-</script>
-<script>
-	{% verbatim %}
-	function open_contract_page(){
-		//alert("VEJA A PAGINA: "+url);
-		window.open('/entidade/visualizar/{{ registro_selecionado.cliente_id }}/', '_blank');
-	}
-	{% endverbatim %}
 </script>
 {% endblock %}
