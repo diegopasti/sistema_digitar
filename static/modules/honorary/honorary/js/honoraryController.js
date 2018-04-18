@@ -10,7 +10,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.filter_by_index    = parseInt($scope.filter_by);
 	$scope.filter_by_options  = ["codigo","cliente", "competence"];
 
-	$scope.filter_contract_by = 'com_contrato';
+	$scope.filter_contract_by = 'todos';
 	$scope.filter_conferred = 'T';
 
 	$scope.search             = '';
@@ -20,6 +20,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.esta_adicionando     	= true;
 	$scope.registros = [];
 	$scope.provents_options = [];
+	$scope.opened_competences = [];
 	$scope.max_honorary_itens = 0;
 	$scope.screen_model = null;
 
@@ -133,33 +134,61 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
         NProgress.done();
       },
     })
+
+
 	}
 
-	$scope.close_current_competences = function(){
+	$scope.load_opened_competences = function(){
 		NProgress.start();
 		$.ajax({
       type: 'GET',
-      url: "/api/honorary/competences/current/close",
+      url: "/api/honorary/competences/open",
 
       success: function (data) {
 				data = data.replace("<html><head></head><body>{","{")
 				data = data.replace("}</body></html>","}")
-        if(JSON.parse(data).result){
-        	success_notify('Operação realizada com Sucesso',JSON.parse(data).message)
-					NProgress.done();
-					$scope.load_objects();
-        }
-        else{
-        	NProgress.done();
-        	warning_notify(null,'Atenção',JSON.parse(data).message)
-        }
+				$scope.opened_competences = JSON.parse(data).object;
+        $scope.$apply();
+        NProgress.done();
       },
 
       failure: function (data) {
-        error_notify('Falha na Operação',JSON.parse(data).message)
+      	$scope.opened_competences = [];
+        alert("Não foi possivel carregar a lista");
         NProgress.done();
       },
     })
+	}
+
+	$scope.close_competence = function(item){
+		if(confirm('Deseja mesmo encerrar os honorário de '+item.competence+'?')){
+			NProgress.start();
+			$.ajax({
+				type: 'GET',
+				url: "/api/honorary/competence/close",
+				data: {'competence':item.competence},
+
+				success: function (data) {
+					data = data.replace("<html><head></head><body>{","{")
+					data = data.replace("}</body></html>","}")
+					if(JSON.parse(data).result){
+						success_notify('Operação realizada com Sucesso',JSON.parse(data).message);
+						$scope.opened_competences.splice(item, 1);
+						NProgress.done();
+						$scope.load_objects();
+					}
+					else{
+						NProgress.done();
+						warning_notify(null,'Atenção',JSON.parse(data).message)
+					}
+				},
+
+				failure: function (data) {
+					error_notify('Falha na Operação',JSON.parse(data).message)
+					NProgress.done();
+				},
+			})
+		}
 	}
 
 	$scope.change_honorary_status = function(registro){

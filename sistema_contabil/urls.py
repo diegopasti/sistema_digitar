@@ -129,7 +129,8 @@ urlpatterns = [
     url(r'^api/honorary/item/close', HonoraryController().close_honorary),
     url(r'^api/honorary/provents/options$', HonoraryController().get_provent_options),
     url(r'^api/honorary/competences$', HonoraryController().generate_honoraries),
-    url(r'^api/honorary/competences/current/close$', HonoraryController().close_current_competence),
+    url(r'^api/honorary/competences/open$', HonoraryController().get_opened_competences),
+    url(r'^api/honorary/competence/close$', HonoraryController().close_current_competence),
     url(r'^honorary/(?P<honorary_id>\d+)/(?P<data_vencimento>\d+)$', HonoraryController().generate_document),
 
     #url(r'^api/preferencias/alterar_salario/(?P<id>\d+)/$', "preferencias.views.alterar_salario),

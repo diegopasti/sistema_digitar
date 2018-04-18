@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from modules.protocolo.views import formatar_cpf_cnpj
 from modules.servico.models import Plano, Servico
 from django.http import HttpResponse, Http404, HttpResponseForbidden
-from libs.default.core import BaseController
+from libs.default.core import BaseController, json_serial
 from modules.entidade.models import entidade, contato
 from sistema_contabil import settings
 from django.core import serializers
@@ -684,7 +684,6 @@ class ProventosController(BaseController):
 
     @method_decorator(login_required)
     def disable_provent(self, request):
-        print('SOU REQUEST ',request)
         return BaseController().disable(request, Proventos)
 
 
@@ -719,10 +718,10 @@ class HonoraryController(BaseController):
     @method_decorator(login_required)
     @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def close_current_competence(self, request):
-        now = timezone.localtime(timezone.now())
-        completed_competence = self.get_competence(datetime.datetime.now().month-1)
+        now = datetime.datetime.now() #timezone.localtime(timezone.now()
+        completed_competence = request.GET['competence']
         exist_competence = Honorary.objects.filter(competence=completed_competence)
-        closed_competences = Honorary.objects.filter(competence=completed_competence, status='E').update(status='E',closed_by=request.user, closed_date = now)
+        closed_competences = Honorary.objects.filter(competence=completed_competence).exclude(status='E').update(status='E',closed_by=request.user, closed_date = now)
         response_dict = {}
         if closed_competences != 0:
             response_dict['result'] = True
@@ -757,6 +756,21 @@ class HonoraryController(BaseController):
             response_dict['result'] = False
             response_dict['object'] = None
             response_dict['message'] = "Erro! Honorário informado não existe."
+        return self.response(response_dict)
+
+    @request_ajax_required
+    @method_decorator(login_required)
+    #method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
+    def get_opened_competences(self, request):
+        self.start_process(request)
+        now = datetime.datetime.now()
+        excluir_periodo = datetime.datetime.strptime("01/"+str(now.month)+"/"+str(now.year)+" 00:00:00", "%d/%m/%Y %H:%M:%S")
+        competence_list = Honorary.objects.filter(status='A').exclude(competence_init_date__gte=excluir_periodo).values("competence").distinct()
+        response_dict = {}
+        response_dict['object'] = list(competence_list) #serializers.serialize('json', list(competence_list))#json.dumps(competence_list)
+        response_dict['message'] = 'OK'
+        response_dict['result'] = True
+        #print("VEJA O RESPONSE: ",response_dict)
         return self.response(response_dict)
 
     @request_ajax_required
@@ -838,7 +852,7 @@ class HonoraryController(BaseController):
             honorary = Honorary().create_honorary(entity, competence, contract=contract)
             honorary.created_by = request.user
             honorary.updated_by = request.user
-            honorary.updated_by_name = request.user.get_full_name()
+            honorary.updated_by_name = ""
         else:
             honorary = Honorary().update_honorary(honoraries[0], contract=contract)
             honorary.updated_by = request.user

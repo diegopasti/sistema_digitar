@@ -159,6 +159,8 @@ class Honorary(models.Model):
     entity = models.ForeignKey(entidade, default=1)
     entity_name = models.CharField("Cliente:", null=False, max_length=100)
     competence = models.CharField("Mês de Competencia:",null=False,max_length=8)
+
+    competence_init_date = models.DateTimeField("Competencia inicia em", null=True)
     contract = models.ForeignKey(Contrato, null=True, related_name='contrato')
     initial_value_contract = models.DecimalField("Valor base do contrato", max_digits=8, default=0, decimal_places=2, null=True, blank=True)
     temporary_discount = models.DecimalField("Desconto temporário", max_digits=5,default=0, decimal_places=2, null=False,blank=True)
@@ -198,6 +200,12 @@ class Honorary(models.Model):
     def create_honorary(self, entity, competence, contract=None):
         honorary = Honorary()
         honorary.entity = entity
+        month_numbers = {'JAN':'01', 'FEV':'02','MAR':'03','ABR':'04','MAI':'05','JUN':'06','JUL':'07','AGO':'08','SET':'09','OUT':'10','NOV':'11','DEZ':'12'}
+        competence_parts = competence.split('/')
+        year = competence_parts[1]
+        month = month_numbers[competence_parts[0]]
+
+        honorary.competence_init_date = datetime.datetime.strptime("01/"+month+"/"+year+" 00:00:00", "%d/%m/%Y %H:%M:%S")
         honorary.entity_name = entity.nome_razao
         honorary.competence = competence
         if contract is not None:

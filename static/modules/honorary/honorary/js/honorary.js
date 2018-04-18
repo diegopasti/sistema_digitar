@@ -1,6 +1,7 @@
 function init(){
 	angular.element(document.getElementById('controle_angular')).scope().load_objects();
 	angular.element(document.getElementById('controle_angular')).scope().load_provents();
+	angular.element(document.getElementById('controle_angular')).scope().load_opened_competences();
 	configurar_formulario_padrao()
 }
 
