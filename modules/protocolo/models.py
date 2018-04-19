@@ -81,7 +81,7 @@ class protocolo(models.Model):
     destinatario = models.ForeignKey(entidade,null=True,related_name='entidade_destinatario')
     data_emissao = models.DateField(auto_now_add=True)
     hora_emissao = models.TimeField(auto_now_add=True)
-    numeracao_destinatario = models.CharField(max_length=5,null=True)
+    numeracao_destinatario = models.CharField(max_length=6,null=True)
     
     nome_avulso      = models.CharField(max_length=100,null=True,blank=True)
     endereco_avulso  = models.CharField(max_length=500,null=True,blank=True)
@@ -112,9 +112,9 @@ class protocolo(models.Model):
 class item_protocolo(models.Model):    
     protocolo      = models.ForeignKey(protocolo)
     documento      = models.CharField("Item:",max_length=100,null=False,error_messages=MENSAGENS_ERROS)
-    referencia     = models.CharField("Mês de Referência:",max_length=100,null=False,error_messages=MENSAGENS_ERROS)
-    vencimento     = models.CharField("Vencimento:",max_length=100,null=False,error_messages=MENSAGENS_ERROS)
-    valor          = models.CharField("Valor:",max_length=100,null=False,default=0,error_messages=MENSAGENS_ERROS)
+    referencia     = models.CharField("Mês de Referência:",max_length=100,null=True,error_messages=MENSAGENS_ERROS)
+    vencimento     = models.CharField("Vencimento:",max_length=100,null=True,error_messages=MENSAGENS_ERROS)
+    valor          = models.CharField("Valor:",max_length=10,null=True,default=0,error_messages=MENSAGENS_ERROS)
     complemento    = models.TextField("Complemento:",max_length=500,null=True,error_messages=MENSAGENS_ERROS)
 
 

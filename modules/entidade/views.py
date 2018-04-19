@@ -582,7 +582,7 @@ def visualizar_entidade(request,id):
                         'natureza_juridica':cliente.natureza_juridica,
                         'regime_apuracao':cliente.regime_apuracao,
                         'regime_desde': cliente.regime_desde,
-                        'nome_filial': cliente.nome_filial.upper(),
+                        'nome_filial': cliente.nome_filial,
                         'inscricao_estadual': cliente.inscricao_estadual,
                         'inscricao_municipal': cliente.inscricao_municipal,
                         'inscricao_junta_comercial': cliente.inscricao_junta_comercial,

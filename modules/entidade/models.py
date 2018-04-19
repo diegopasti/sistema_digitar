@@ -27,7 +27,7 @@ class localizacao_simples(models.Model):
     complemento = models.CharField("Complemento:", max_length=100, null=True, error_messages=MENSAGENS_ERROS)
     # codigo_ibge = models.CharField("Codigo IBGE:",max_length=10,null=False,unique=True,error_messages=MENSAGENS_ERROS)
     bairro = models.CharField("Bairro:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
-    codigo_ibge = models.CharField("Codigo Municipal:", max_length=7, null=False, error_messages=MENSAGENS_ERROS)
+    codigo_ibge = models.CharField("Codigo Municipal:", max_length=7, null=True, error_messages=MENSAGENS_ERROS)
     municipio = models.CharField("Municipio:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
     # sigla       = models.CharField("Sigla:",max_length=2,null=False,unique=True,error_messages=MENSAGENS_ERROS)
     estado = models.CharField("Estado:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
