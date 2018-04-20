@@ -29,7 +29,7 @@ $('#datatable'+' tbody').on('click', 'tr', function () {
 	if ($(this).hasClass('selected')) {
 		var id_cliente = table.cell('.selected', 0).data();
 		$(this).removeClass('selected');
-		document.getElementById("bt_consultar_cliente").href = "#";
+		angular.element(document.getElementById('controle_angular')).scope().desmarcar_registro();
 		desabilitar("bt_consultar_cliente");
 		desabilitar("bt_desativar_cliente");
 		desabilitar("bt_outras_acoes");
@@ -41,7 +41,8 @@ $('#datatable'+' tbody').on('click', 'tr', function () {
 		habilitar('bt_consultar_cliente');
 		habilitar('bt_desativar_cliente');
 		habilitar('bt_outras_acoes');
-		document.getElementById("bt_consultar_cliente").href = "/entidade/visualizar/"+id_cliente;
+		//document.getElementById("bt_consultar_cliente").href = "/entidade/visualizar/"+id_cliente;
+		angular.element(document.getElementById('controle_angular')).scope().selecionar_registro(id_cliente);
 	}
 
 	$('#bt_excluir').click( function () {

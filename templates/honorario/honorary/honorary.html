@@ -66,7 +66,7 @@
 
 								{% if request.user.groups.values_list.0.0 <= 2%}
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
-									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" ng-disabled="registro_selecionado==null" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
 										<li ng-if='screen_model <= 3' ng-class="{disabled: registro_selecionado==null, cursor_pointer:registro_selecionado!=null }">
 											<a><i class="fa fa-print" aria-hidden="true" data-toggle="modal" data-target="#modal_vencimento"></i> Gerar Honorário</a></li>
@@ -278,7 +278,7 @@
 												 {{ $index }} - {{ option.nome }}
 											</option>
 										</select>
-										VEJA A OPCAO SELECIONADA >{{ $scope.selected_option_provent }}<
+										<!--VEJA A OPCAO SELECIONADA >{{ $scope.selected_option_provent }}-->
 										{% endverbatim %}
 									</div>
 								</div>

@@ -17,14 +17,14 @@
                 <div class="box-heading">
                     <div class="box-header with-border">
                         <h5 class="box-title">Cadastro de Salários</h5>
+                          <div class="pull-right">
+                               <button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="configurar_inclusao_salario();esta_adicionando = true"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Salário</button>
 
-                        <div class="pull-right">
-                             <a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_salario" ng-click="configurar_inclusao_salario();esta_adicionando = true"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Salário</a>
+                            <button id="bt_alterar" role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" data-toggle="modal" data-target="#modal_adicionar_salario" ng-disabled="registro_selecionado==null" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Alterar</button>
 
-                              <a href="#modal_adicionar_salario" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_salario();esta_adicionando = false"><i class="fa fa-file-text-o"></i> Alterar</a>
-                              <a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_salario();"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir</a>
+                                <a role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-disabled="registro_selecionado==null" ng-click="excluir_salario();"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir</a>
 
-                        </div>
+                          </div>
                     </div>
                 </div>
 

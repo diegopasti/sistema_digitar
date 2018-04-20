@@ -92,13 +92,15 @@ label {
                 <div class="box-heading">
                     <div class="box-header with-border">
                         <h5 class="box-title">Serviços</h5>
-                        <div class="pull-right">
-                            <a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_servico" ng-click="configurar_inclusao_servico();"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Serviço</a>
+                        <fieldset ng-disabled="registro_selecionado==null">
+                            <div class="pull-right">
+                                <button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_servico" ng-click="configurar_inclusao_servico();"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Serviço</button>
 
-                            <a href="#modal_adicionar_servico" id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" ng-click="configurar_alteracao_servico();" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Alterar</a>
-                            <a href="#modal_adicionar_servico" role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" ng-click="excluir_servico();" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir</a>
+                                <button id='bt_alterar' role="button" class="btn btn-sm btn-default {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}"   data-toggle="modal" data-target="#modal_adicionar_servico" ng-click="configurar_alteracao_servico();" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Alterar</button>
+                                <button id="bt_excluir" role="button" class="btn btn-sm btn-default pull-right {% verbatim %}{{ opcao_desabilitada }}{% endverbatim %}" id="bt_excluir" data-target="#modal_adicionar_servico" ng-click="excluir_servico();" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-trash-o" aria-hidden="true"></i> Excluir</button>
 
-                        </div>
+                            </div>
+                        </fieldset>
                     </div>
                 </div>
 
@@ -539,6 +541,13 @@ label {
             $scope.verificar_servicos();
 
         }
+
+        $scope.open_contract_page = function(){
+		        if($scope.registro_selecionado!=null){
+			          window.open('/entidade/visualizar/'+$scope.registro_selecionado.cliente_id+'/', '_blank');
+		        }
+	      }
+
     }]);
 </script>
 
