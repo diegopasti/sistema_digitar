@@ -31,7 +31,6 @@ class localizacao_simples(models.Model):
     municipio = models.CharField("Municipio:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
     # sigla       = models.CharField("Sigla:",max_length=2,null=False,unique=True,error_messages=MENSAGENS_ERROS)
     estado = models.CharField("Estado:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
-
     pais = models.CharField("País:", max_length=30, null=False, error_messages=MENSAGENS_ERROS)
 
     # sigla       = models.CharField("Sigla:",max_length=2,null=False,unique=True,error_messages=MENSAGENS_ERROS)
@@ -107,14 +106,13 @@ class entidade(models.Model):
 
 class contato(models.Model):
     opcoes_tipos_contatos = (
-
         ('CELULAR', 'CELULAR'), ('COMERCIAL', 'COMERCIAL'), ('RESIDENCIAL', 'RESIDENCIAL'), ('OUTROS', 'OUTROS'),)
 
     entidade = models.ForeignKey(entidade)
-    tipo_contato = models.CharField("Tipo:", max_length=10, null=False, default='C',
+    tipo_contato = models.CharField("Tipo:", max_length=20, null=True, default='C',
                                     error_messages=MENSAGENS_ERROS)
-    numero = models.CharField("Numero:", max_length=20, null=False, blank=True, error_messages=MENSAGENS_ERROS)
-    nome_contato = models.CharField("Nome do Contato:", max_length=50, null=False, blank=True,
+    numero = models.CharField("Numero:", max_length=20, null=True, blank=True, error_messages=MENSAGENS_ERROS)
+    nome_contato = models.CharField("Nome do Contato:", max_length=100, null=True, blank=True,
                                     error_messages=MENSAGENS_ERROS)
     cargo_setor = models.CharField("Cargo ou Setor:", max_length=50, null=True, blank=True,
                                    error_messages=MENSAGENS_ERROS)

@@ -647,7 +647,7 @@ def adicionar_entidade(request):
         tab_active = 'tab_client'
 
     if (request.method == "POST"):
-        print("VEJA O QUE VEIO: ",request.POST)
+        #print("VEJA O QUE VEIO: ",request.POST)
         formulario = formulario_cadastro_entidade_completo(request.POST, request.FILES)
         #formulario_contrato = FormularioContrato(request.POST, request.FILES)
 
@@ -666,7 +666,7 @@ def adicionar_entidade(request):
             registro_entidade    = formulario.get_entidade(formulario)
             registro_contato     = formulario.get_contatos(formulario, registro_entidade)
             registro_localizacao = formulario.get_localizacao(formulario)
-            print("OLHA O FORM DE LOCALIZAÇÃO:",registro_localizacao)
+            #print("OLHA O FORM DE LOCALIZAÇÃO:",registro_localizacao)
             registro_cnae        = formulario.get_cnae(formulario)
 
             registro_documentos  = formulario.get_documentos(formulario)

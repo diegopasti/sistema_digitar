@@ -151,8 +151,8 @@ input.no-border{
 								{% endif %}
 
 								<td align="left" style="cursor:pointer">{{ item.nome_razao }}</td>
-								<td align="left" style="cursor:pointer">{{ item.apelido_fantasia }}</td>
-								<td align="left" style="cursor:pointer">{{ item.nome_filial }}</td>
+								<td align="left" style="cursor:pointer">{{ item.apelido_fantasia|default:"" }}</td>
+								<td align="left" style="cursor:pointer">{{ item.nome_filial|default:"" }}</td>
 								<td align="center" style="cursor:pointer;width:140px;">{{ item.data_cadastro|date:"d/m/Y" }} ÀS {{ item.data_cadastro|date:"h:m:s" }}</td>
 							</tr>
 							{% empty %}

@@ -39,11 +39,12 @@ def cadastro_documentos(request):
                 doc = documento()
                 doc.nome = formulario['documento'].value().upper()
                 doc.descricao = formulario['descricao'].value()
+                doc.save()
                 try:
-                    doc.save()
+
                     messages.add_message(request, messages.SUCCESS, "Inclusão Realizada com sucesso!")
                 except IntegrityError:
-                    #messages.add_message(request, messages.SUCCESS, "")
+                    #messages.add_message(request, messages.SUCCESS, "VEJA O ERRO: "+str(erro))
                     pass
                 formulario = formulario_adicionar_documento()
 
