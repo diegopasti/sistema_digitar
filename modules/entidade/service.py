@@ -13,9 +13,9 @@ import urllib
 import requests
 from django.http.response import HttpResponse
 
-from modules.entidade.models import Logradouro, endereco_serializer
+#from modules.entidade.models import Logradouro, endereco_serializer
 
-
+"""
 def consultar_codigo_postal(cep):
     resultado = Logradouro.objects.filter(cep=cep)
     if resultado.count() != 0:
@@ -132,7 +132,7 @@ def consultar_pais(sigla):
         pais.save()
         return pais
     
-
+"""
 
 def consultar_codigo_postal_viacep(cep):
 

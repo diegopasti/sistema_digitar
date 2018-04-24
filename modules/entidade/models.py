@@ -7,11 +7,12 @@ MENSAGENS_ERROS = {'required': 'Campo Obrigatório!',
                    'invalid': 'Formato Inválido!'
                    }
 
+"""
 class natureza_juridica(models.Model):
     codigo_natureza = models.CharField("Código:", max_length=5, null=False, unique=True, error_messages=MENSAGENS_ERROS)
     natureza_juridica = models.CharField("Natureza Jurídica:", max_length=100, null=False, unique=True, error_messages=MENSAGENS_ERROS)
     natureza_juridica = models.CharField("Natureza Jurídica:", max_length=100, null=False, unique=True, error_messages=MENSAGENS_ERROS)
-
+"""
 
 class observacao(models.Model):
     data = models.DateField("Data:", null=False, auto_now=True)
@@ -153,7 +154,7 @@ class AtividadeEconomica(models.Model):
 #    data = models.DateField(null=False,auto_now=False, input_formats=['%d/%m/%Y'],error_messages=MENSAGENS_ERROS)
 
 
-
+"""
 class Pais(models.Model):
     nome = models.CharField("País:", max_length=100, null=False, unique=True, error_messages=MENSAGENS_ERROS)
     sigla = models.CharField("Sigla:", max_length=2, null=False, unique=True, error_messages=MENSAGENS_ERROS)
@@ -221,7 +222,7 @@ class Endereco(object):
     pais = None
     codigo_bairro = None
     codigo_municipio = None
-
+"""
 
 class endereco_serializer(serializers.Serializer):
     logradouro = serializers.CharField(max_length=100)

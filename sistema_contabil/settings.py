@@ -109,7 +109,7 @@ TEMPLATES = [
 ]
 
 DATABASES = {
-    'sqlite': {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'data/db.sqlite3'),
     },
@@ -119,7 +119,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'data/db.sqlite3'),
     },
 
-    'default': {
+    'postgresql': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'sistema_digitar',
         'USER': 'postgres',
