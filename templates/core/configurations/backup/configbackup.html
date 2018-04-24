@@ -103,8 +103,9 @@
 																	<td>Total Armazenado: </td>
 																	<td style="width:100px;"><span ng-show="loaded_backups == true">{{ backups_informations.used_space/1024| number: 2 }} Kb</span></td>
 																	<td>Espaço Utilizado:</td>
-																	<td style="width:100px;"><span ng-show="loaded_backups == true" class='pull-right'>{{ backups_informations.used_percent_space| number: 2 }}%</span></span>
-</td>
+																	<td style="width:100px;">
+																		<span ng-show="loaded_backups == true" class='pull-right'>{{ backups_informations.used_percent_space| number: 2 }}%</span>
+																	</td>
 																</tr>
 
 																<tr>
@@ -115,8 +116,6 @@
 															</table>
 															<br>
 															<!--Arquivos armazenados: <span ng-show="loaded_backups == true">{ backups_informations.total_files }} itens</span><br>-->
-															<!--<button id='bt_alterar' role="button" class="btn btn-sm btn-default {{ opcao_desabilitada }}" disabled="disabled" ng-click="restore_backups()"> Restaurar Backup</button>-->
-															<button id='bt_alterar' role="button" class="btn btn-sm btn-default {{ opcao_desabilitada }}" disabled="disabled" ng-click="restore_backups()"> Restaurar Backup</button>
 														</p>
 													</div>
 
@@ -137,6 +136,13 @@
 															<tr class="list-unstyled" ng-show="loaded_backups == true" ng-repeat="item in backups">
 																<td style="padding-top: 6px;"><span class="pull-left" style="">{{ item.backup_file_name }} <span style="font-size: 10px; color: #CCC;margin-left: 4px;">{{item.backup_size/1024| number:2}} Kb</span></span></td>
 																<td style="padding-top: 6px;"><span>{{ item.created_date| date:'dd/MM/yyyy' }} ás {{ item.created_date| date:'HH:mm' }}</span></td>
+															</tr>
+
+															<tr id="divEmpty" ng-show="backups.length == 0" style='height:179px;'>
+																<td colspan="2" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
+																	<br>
+																	<i class="fa fa-exclamation-triangle" aria-hidden="true"></i><br>Nenhum arquivo encontrado...<br><br>
+																</td>
 															</tr>
 														</table>
 													</div>
@@ -177,7 +183,7 @@
 														</td>
 													</tr>
 
-													<tr ng-cloak ng-if='loaded_operations' class="angular-repeat" pagination-id="paginate_operations" dir-paginate="operate in operations | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado" title="{{ operate.justify }}">
+													<tr ng-cloak ng-if='loaded_operations' class="angular-repeat" pagination-id="paginate_operations" dir-paginate="operate in operations | filter: get_filter_column() | orderBy:sortType:sortReverse | itemsPerPage:table_maximun_items_per_page as resultado" title="{{ operate.justify }}">
 														<td class='text-left'>
 															{{ operate.date_operation| date: 'yyyy-MM-dd' }} - {{ operate.date_operation| date: 'HH:mm:ss' }}: {{ operate.username | uppercase}}
 															<span ng-if="operate.type=='ADD'"> INCLUIU </span>
@@ -231,13 +237,13 @@
 				</div>
 			</div>
 
-			<div id="entity_contact" class="tab-pane fade">
+			<!--<div id="entity_contact" class="tab-pane fade">
 				nada 1
 			</div>
 
 			<div id="entity_endereco" class="tab-pane fade">
 				nada 2
-			</div>
+			</div>-->
 		</div>
 	</div>
 </div>

@@ -331,8 +331,8 @@ app.controller('configurations_controller',['$scope','$filter', function($scope,
 		$scope.screen_width  = SCREEN_PARAMTERS['screen_width'];
 		$scope.screen_model  = SCREEN_PARAMTERS['screen_model'];
 
-		$scope.table_maximun_items_per_page = SCREEN_PARAMTERS['table_maximun_items_per_page'];
-		$scope.table_minimun_items          = SCREEN_PARAMTERS['table_minimun_items'];
+		$scope.table_maximun_items_per_page = SCREEN_PARAMTERS['table_maximun_items_per_page']-2;
+		$scope.table_minimun_items = SCREEN_PARAMTERS['table_minimun_items'];
 
 		var extra_height = 0;
 		if(SCREEN_PARAMTERS['table_maximun_items_per_page'] <= 5){
