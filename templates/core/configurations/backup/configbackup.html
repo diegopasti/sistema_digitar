@@ -162,7 +162,6 @@
 										<h5 class="box-title">Auditoria</h5>
 									</div>
 								</div>
-
 								<div class="box-body">
 									<div class="dataTable_wrapper">
 										<div class='row'>
@@ -176,28 +175,27 @@
 													</thead>
 
 													<tbody style="font-size: 11px;">
+														<tr id="divOperationsCarregando" ng-if="loaded_operations == false" style="height: 10px">
+															<td colspan="8" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
+																<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></br></br>Aguarde.. Carregando...
+															</td>
+														</tr>
 
-													<tr id="divOperationsCarregando" ng-if="loaded_operations == false" style="height: 10px">
-														<td colspan="8" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle;' class="text-center">
-															<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></br></br>Aguarde.. Carregando...
-														</td>
-													</tr>
+														<tr ng-cloak ng-if='loaded_operations' class="angular-repeat" pagination-id="paginate_operations" dir-paginate="operate in operations | filter: get_filter_column() | orderBy:sortType:sortReverse | itemsPerPage:table_maximun_items_per_page as resultado" title="{{ operate.justify }}">
+															<td class='text-left'>
+																{{ operate.date_operation| date: 'yyyy-MM-dd' }} - {{ operate.date_operation| date: 'HH:mm:ss' }}: {{ operate.username | uppercase}}
+																<span ng-if="operate.type=='ADD'"> INCLUIU </span>
+																<span ng-if="operate.type=='ALT'"> ALTEROU </span>
+																<span ng-if="operate.type=='DEL'"> EXCLUIU </span>
+																<span ng-if="operate.type=='DES'"> DESATIVOU </span>
+																<span ng-if="operate.type=='REA'"> REATIVOU </span>
+																{{ operate.object_name | uppercase }}
+															</td>
+														</tr>
 
-													<tr ng-cloak ng-if='loaded_operations' class="angular-repeat" pagination-id="paginate_operations" dir-paginate="operate in operations | filter: get_filter_column() | orderBy:sortType:sortReverse | itemsPerPage:table_maximun_items_per_page as resultado" title="{{ operate.justify }}">
-														<td class='text-left'>
-															{{ operate.date_operation| date: 'yyyy-MM-dd' }} - {{ operate.date_operation| date: 'HH:mm:ss' }}: {{ operate.username | uppercase}}
-															<span ng-if="operate.type=='ADD'"> INCLUIU </span>
-															<span ng-if="operate.type=='ALT'"> ALTEROU </span>
-															<span ng-if="operate.type=='DEL'"> EXCLUIU </span>
-															<span ng-if="operate.type=='DES'"> DESATIVOU </span>
-															<span ng-if="operate.type=='REA'"> REATIVOU </span>
-															{{ operate.object_name | uppercase }}
-														</td>
-													</tr>
-
-													<tr ng-if='loaded_operations'  ng-repeat="k in table_minimun_items.slice(operations.length,table_minimun_items.length)">
-														<td class='text-center' style="color:white;">.</td>
-													</tr>
+														<tr ng-if='loaded_operations'  ng-repeat="k in table_minimun_items.slice(operations.length,table_minimun_items.length)">
+															<td class='text-center' style="color:white;">.</td>
+														</tr>
 													</tbody>
 												</table>
 												{% endverbatim %}
@@ -228,7 +226,6 @@
 											</div>
 											{% endverbatim %}
 										</div>
-
 									</div>
 								</div>
 							</div>

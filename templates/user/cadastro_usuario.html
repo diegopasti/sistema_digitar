@@ -84,10 +84,10 @@
 						<h5 class="box-title">Cadastro de Usuários</h5>
 						<div class="pull-right">
 							<div class="btn-group" role="group" aria-label="...">
-								<a id='bt_adicionar' role="button" class="btn btn-sm btn-primary " ng-class="{'disabled':registro_selecionado!=null}" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-click="open_modal_add()" ng-disabled="registro_selecionado!=null">Adicionar</a>
-								<a id='bt_servicos' role="button" class="btn btn-sm btn-primary"  ng-class="{'disabled':registro_selecionado==null}" ng-disabled="registro_selecionado==null"  data-toggle="modal" data-target="#modal_alterar_usuario" ng-click="esta_adicionando=false;open_object_user();" style='margin-left: 5px;'>Editar</a>
+								<button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_adicionar_usuario" ng-click="open_modal_add()" ng-disabled="registro_selecionado!=null">Adicionar</button>
+								<button id='bt_servicos' role="button" class="btn btn-sm btn-default"  ng-disabled="registro_selecionado==null" data-toggle="modal" data-target="#modal_alterar_usuario" ng-click="esta_adicionando=false;open_object_user();" style='margin-left: 5px;'>Editar</button>
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
-									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" ng-disabled="registro_selecionado==null" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
 										<!--<li><a class="" id='bt_apagar_senha' ng-class="{'disabled':registro_selecionado==null}" data-toggle="modal" data-target="#modal_reset_password">Alterar senha</a></li>-->
 										<li><a class="" id='bt_ative'  ng-class="{'disabled':registro_selecionado==null || registro_selecionado.is_active==true}" data-toggle="modal" data-target="#modal_justify_action" ng-click="confirm_active();">Reativar</a></li>

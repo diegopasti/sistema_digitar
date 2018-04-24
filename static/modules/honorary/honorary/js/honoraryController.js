@@ -1058,13 +1058,11 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
           $("#unit_value").val('');
           $("#total_value").val('');
         }
-
       }
-		  return true;
 		}
-		else{
-		  return false;
-		}
+		//$("#item_id").val(index);
+
+		setTimeout(function(){$("#item_id").val(index).trigger('change');},1);
 	}
 
 	$scope.calculate_provent_value = function(){
