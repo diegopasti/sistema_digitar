@@ -131,7 +131,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		}
 
 		fail_function = function(result,message,data_object,status) {
-			alert("deu false")
+			//alert("deu false")
 			$.each(message, function( index, value ) {
 				//alert("ERRO: "+index + ": " + value );
 				notificar('error','Falha na Operação',value);
@@ -868,12 +868,10 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			$scope.carregar_indicacao_selecionada();
 		}
 	}
-
-	$scope.open_contract_page = function(){
+  $scope.open_contract_page = function(){
 		if($scope.registro_selecionado!=null){
 			window.open('/entidade/visualizar/'+$scope.registro_selecionado.cliente_id+'/', '_blank');
 		}
 	}
-
 
 }]);

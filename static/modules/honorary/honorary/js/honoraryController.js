@@ -1020,7 +1020,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	  var index = $("#item_id").val();
 	  if(index != null && index != ""){
       $scope.selected_option_provent = $scope.provents_options[index];
-      alert("VEJA O OBJETO: "+ JSON.stringify($scope.selected_option_provent))
+      //alert("VEJA O OBJETO: "+ JSON.stringify($scope.selected_option_provent))
       //setTimeout(function(){$("#item_id").val(option).trigger('change');},10);
 
       if($scope.selected_item!=null){

@@ -60,6 +60,7 @@ label {
 {% endblock %}
 
 {% block conteudo %}
+<div id="controle_angular" ng-cloak ng-controller="protocolController">
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-xs-12">
 			<div class="box box-default" style="margin-top: -45px;">
@@ -67,12 +68,12 @@ label {
 						<div class="box-header with-border">
 							<h5 class="box-title">Documentos</h5>
 							<div class="pull-right">
-								<a href="#" id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal"
-									 data-target="#myModal"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Documento</a>
-								<a href="#myModal" id='bt_alterar' role="button" class="btn btn-sm btn-default link_desabilitado"
-									 data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Alterar</a>
-								<a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_excluir" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;">
-									<i class="fa fa-trash-o"aria-hidden="true"></i> Excluir</a>
+								<button id='bt_adicionar' role="button" class="btn btn-sm btn-primary" data-toggle="modal"
+									 data-target="#myModal"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Documento</button>
+								<button id='bt_alterar' role="button" class="btn btn-sm btn-default link_desabilitado"
+									 data-toggle="modal" data-target="#myModal" ng-disabled="registro_selecionado==null" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Alterar</button>
+								<button role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_excluir" ng-disabled="registro_selecionado==null" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;">
+									<i class="fa fa-trash-o"aria-hidden="true"></i> Excluir</button>
 							</div>
 						</div>
 					</div>
@@ -181,6 +182,7 @@ label {
 			</div>
 		</div>
 	</div>
+</div>
 {% endblock %}
 
 {% block recursos_complementares %}
@@ -193,6 +195,7 @@ label {
 <script src="{% static 'modules/core/mask.js' %}"></script>
 <script src="{% static 'modules/core/controle_botoes.js' %}"></script>
 <script src="{% static 'modules/protocol/protocolo.js' %}"></script>
+<script src="{% static 'modules/protocol/protocolController.js' %}"></script>
 {% endcompress %}
 {% include "componentes/mensagem.html" with messages=messages %}
 
@@ -274,6 +277,7 @@ label {
 
 	$('#bt_excluir').click( function () {
 		if (confirm('Deseja mesmo excluir esse documento?')) {
+			//alert('/protocolo/documento/excluir/' + table.cell('.selected', 0).data())
 			$.ajax({
 				url: '/protocolo/documento/excluir/' + table.cell('.selected', 0).data(),
 				type: 'get', //this is the default though, you don't actually need to always mention it

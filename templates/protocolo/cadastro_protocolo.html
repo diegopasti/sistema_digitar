@@ -120,334 +120,335 @@ label {
 -->
 
 {% block conteudo %}
-<div class="row">
-	<div class="col-lg-12 col-md-12 col-xs-12">
-		<div class="box box-default" style="margin-top: -45px;">
-			<div class="box-heading">
-				<div class="box-header with-border">
-					<h5 class="box-title">Controle de Protocolos</h5>
-					<div class="pull-right">
-						<a href="/protocolo/emitir_protocolo" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Protocolo</a>
-						<a href="#modal_relatorio" id='bt_relatorio' role="button" class="btn btn-sm btn-default" data-toggle="modal" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Gerar Relatório</a>
-						<a href="#" role="button" class="btn btn-sm btn-default pull-right link_desabilitado" id="bt_confirmar_entrega" data-toggle="modal" data-target="#myModal" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-check" aria-hidden="true"></i> Confirmar Recebimento</a>
+<div id="controle_angular" ng-cloak ng-controller="protocolController">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-xs-12">
+			<div class="box box-default" style="margin-top: -45px;">
+				<div class="box-heading">
+					<div class="box-header with-border">
+						<h5 class="box-title">Controle de Protocolos</h5>
+						<div class="pull-right">
+							<a href="/protocolo/emitir_protocolo" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus fa-1x" aria-hidden="true"></i> Novo Protocolo</a>
+							<button id='bt_relatorio' role="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_relatorio" ng-disabled="registro_selecionado==null" style='margin-left: 10px;'><i class="fa fa-file-text-o"></i> Gerar Relatório</button>
+							<button id="bt_confirmar_entrega" role="button" class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#myModal" ng-disabled="registro_selecionado==null && registro_confirmado==false" style="position: relative; margin-top: 0px;margin-right: 2px;margin-left: 10px;"><i class="fa fa-check" aria-hidden="true"></i> Confirmar Recebimento</button>
+						</div>
 					</div>
 				</div>
-			</div>
-			<!-- /.panel-heading -->
+				<!-- /.panel-heading -->
 
-			<div class="box-body" style="padding-bottom: -10px; margin-top: -5px;">
-				<div>
-					<table class="table table-condensed table-striped table-bordered table-hover" id="datatable">
+				<div class="box-body" style="padding-bottom: -10px; margin-top: -5px;">
+					<div>
+						<table class="table table-condensed table-striped table-bordered table-hover" id="datatable">
+							<thead>
+								<tr class="linha_cabecalho">
+									<th style="vertical-align: middle;"></th>
+									<th style="text-align: center;vertical-align: middle;">Cód</th>
+									<th style="text-align: center;vertical-align: middle;">Destinatário</th>
+									<th style="text-align: center;vertical-align: middle;">Emissão</th>
+									<th style="text-align: center;vertical-align: middle;">Entrega</th>
+									<th style="text-align: center;vertical-align: middle;">Recebido por</th>
+									<th style="text-align: center;vertical-align: middle;">Confirmardo</th>
+								</tr>
+							</thead>
 
-						<thead>
-							<tr class="linha_cabecalho">
-								<th style="vertical-align: middle;"></th>
-								<th style="text-align: center;vertical-align: middle;">Cód</th>
-								<th style="text-align: center;vertical-align: middle;">Destinatário</th>
-								<th style="text-align: center;vertical-align: middle;">Emissão</th>
-								<th style="text-align: center;vertical-align: middle;">Entrega</th>
-								<th style="text-align: center;vertical-align: middle;">Recebido por</th>
-								<th style="text-align: center;vertical-align: middle;">Confirmardo</th>
-							</tr>
-						</thead>
+							<tbody>
+								{% for item in dados %}
 
-						<tbody>
-							{% for item in dados %}
+								<tr class=''><!--  class="alinhado_meio clickable-row " data-href='/consultar_entidade/{{ item.id }}'> -->
+									<td style="text-align: center;cursor:pointer">{{ item.id|title }}</td>
 
-							<tr class=''><!--  class="alinhado_meio clickable-row " data-href='/consultar_entidade/{{ item.id }}'> -->
-								<td style="text-align: center;cursor:pointer">{{ item.id|title }}</td>
+									{% if item.numeracao_destinatario == 'AVULSO' %}
+									<td style="text-align: center;cursor:pointer">AVULSO</td>
+									{% else %}
+									<td style="text-align: center;cursor:pointer">{{ item.numeracao_destinatario }}</td>
+									{% endif %}
 
-								{% if item.numeracao_destinatario == 'AVULSO' %}
-								<td style="text-align: center;cursor:pointer">AVULSO</td>
-								{% else %}
-								<td style="text-align: center;cursor:pointer">{{ item.numeracao_destinatario }}</td>
-								{% endif %}
+									{% if item.destinatario %}
+									<td class='left_align' style="cursor:pointer">{{ item.destinatario }}</td><!-- Pra colocar o id do destinatario na tela e possibilitar a busca{ item.destinatario.id }} -->
+									{% else %}
+									<td class='left_align' style="cursor:pointer">{{ item.nome_avulso }}</td>
+									{% endif %}
 
-								{% if item.destinatario %}
-								<td class='left_align' style="cursor:pointer">{{ item.destinatario }}</td><!-- Pra colocar o id do destinatario na tela e possibilitar a busca{ item.destinatario.id }} -->
-								{% else %}
-								<td class='left_align' style="cursor:pointer">{{ item.nome_avulso }}</td>
-								{% endif %}
+									<td style="text-align: center;cursor:pointer">{{ item.data_emissao|date:"d/m/Y" }} - {{ item.hora_emissao|date:"H:i:s" }}</td>
+									{% if item.data_recebimento %}
+									<td style="text-align: center;cursor:pointer">{{ item.data_recebimento|date:"d/m/Y" }} - {{ item.hora_recebimento|date:"H:i:s" }}</td><!-- às { item.hora_recebimento }}</td> -->
+									{% else %}
+									<td style="text-align: center;cursor:pointer">-</td>
+									{% endif %}
 
-								<td style="text-align: center;cursor:pointer">{{ item.data_emissao|date:"d/m/Y" }} - {{ item.hora_emissao|date:"H:i:s" }}</td>
-								{% if item.data_recebimento %}
-								<td style="text-align: center;cursor:pointer">{{ item.data_recebimento|date:"d/m/Y" }} - {{ item.hora_recebimento|date:"H:i:s" }}</td><!-- às { item.hora_recebimento }}</td> -->
-								{% else %}
-								<td style="text-align: center;cursor:pointer">-</td>
-								{% endif %}
+									{% if item.recebido_por %}
+									<td class='left_align' style="cursor:pointer">{{ item.recebido_por }}</td>
+									{% else %}
+									<td style="text-align: center;cursor:pointer">-</td>
+									{% endif %}
 
-								{% if item.recebido_por %}
-								<td class='left_align' style="cursor:pointer">{{ item.recebido_por }}</td>
-								{% else %}
-								<td style="text-align: center;cursor:pointer">-</td>
-								{% endif %}
+									{% if item.situacao %}
+											<td align="left" style="text-align: center;cursor:pointer"><span class="label label-success">SIM</span></td>
+									{% else %}
+											<td align="left" style="text-align: center;cursor:pointer"><span class="label label-danger">NÃO</span></td>
+									{% endif %}
+								</tr>
 
-								{% if item.situacao %}
-										<td align="left" style="text-align: center;cursor:pointer"><span class="label label-success">SIM</span></td>
-								{% else %}
-										<td align="left" style="text-align: center;cursor:pointer"><span class="label label-danger">NÃO</span></td>
-								{% endif %}
-							</tr>
-
-							{% empty %}
-								<tr><td style="text-align: center;" colspan="7">Nenhum protocolo emitido</td></tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</div>
-
-
-
-				<div class='row'>
-					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-top:{% if dados|length > 0 %}-36px;{% else %}6px;{% endif %}'>
-						<label class='left_align'><sub>Buscar por:</sub></label>
-						 <select id='buscar_por' class='form-control'>
-							<option value="2" selected>Nome do Destinátario</option>
-							<option value="5">Nome do Recebedor</option>
-							<option value="1">Código Protocolo</option>
-							<option value="3">Data Emissão</option>
-							<option value="4">Data Entrega</option>
-						</select>
-					</div>
-
-					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-left:-20px;margin-top:{% if dados|length > 0 %}-36px;{% else %}6px;{% endif %}'>
-						<label class='left_align'><sub>Filtrar por:</sub></label>
-						 <select id='filtrar_por' class='form-control'>
-						 	<option value="emitidos" selected>Todos Protocolos</option>
-						 	<option value="abertos" >Protocolos em Aberto</option>
-						 	<option value="recebidos">Protocolos Confirmados</option>
-						 	<option value="avulsos">Protocolos Avulsos</option>
-						</select>
-					</div>
-
-					<div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top:{% if dados|length > 0 %}-14px;{% else %}27px;{% endif %}'>
-						<input type="text" id="search" class="form-control" autofocus placeholder="Consultar..">
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-<br>
-
-<div class="row div_desabilitado" id='painel_detalhes'>
-	<div class="col-lg-12">
-		<div class="box box-default" style="margin-top: 0px; margin-left: 0px; margin-right: 0px; ">
-			<div class="box-heading">
-				<div class="box-header with-border">
-					<h5 class="box-title">Detalhes</h5><!-- (Emitido por: <label id="lb_emitido_por"></label>)</h5> -->
-					<div class="pull-right">
-						<a href='/protocolo' role="button" class="btn btn-sm btn-primary pull-right" id="visualizar_protocolo" target="_blank" style="position: relative; margin-top: 0px;"><i class="fa fa-search fa-1x" aria-hidden="true"></i> Visualizar Protocolo</a>
-					</div>
-				</div>
-			</div>
-			<!-- /.panel-heading -->
-
-			<div class="panel-body">
-				<div class="table-responsive">
-					<table class="table table-condensed table-bordered" cellspacing="0" width="100%"  id="datatable_detalhes">
-
-						<thead>
-						<tr class="linha_cabecalho">
-							<th style="text-align: center;vertical-align: middle;">Documento</th>
-							<th style="text-align: center;vertical-align: middle;">Complemento</th>
-							<th style="text-align: center;vertical-align: middle;">Referência</th>
-							<th style="text-align: center;vertical-align: middle;">Vencimento</th>
-							<th style="text-align: center;vertical-align: middle;">Valor</th>
-						</tr>
-						</thead>
-
-						<tbody>
-
-						</tbody>
-					</table>
-					<!-- /.table-responsive -->
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div id="modal_relatorio" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-	<div class="modal-dialog" style="width: 60%;">
-		<div class="modal-content">
-			<div class="modal-header"  style="padding-top: 4px;padding-bottom:4px;">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top: 10px;">×</button>
-				<h4 id="myModalLabel">Gerar Relatório</h4>
-			</div>
-
-			<form action="" method="post" target="_blank" onsubmit="setTimeout(function () { window.location.replace('/protocolo') }, 2)">
-				{% csrf_token %}
-				<div class="modal-body" style="padding-left: 40px;padding-right: 40px;padding-bottom: 20px">
-					<div class="row no-gutter">
-						<div class='col-md-3'>
-							<div style='margin-left: 8px'>
-								<sub><label style=''>Cliente</label></sub>
-							</div>
-
-							<select id="select_filtrar_por_cliente" class='form-control uppercase'  onblur="selecionar_filtro_cliente()">
-								<option value='TODOS' selected>TODOS CLIENTES</option>
-								{% for item in clientes %}
-									<option value='{{ item.id }}'>{{ item.id }} - {{ item.nome_razao }}</option>
+								{% empty %}
+									<tr><td style="text-align: center;" colspan="7">Nenhum protocolo emitido</td></tr>
 								{% endfor %}
-							</select>
-							{{ form_relatorio.filtrar_por_cliente }}
-						</div>
-
-						<div class='col-md-3'>
-							<div>
-								<div style='padding-left: 8px'>
-									<sub>{{ form_relatorio.filtrar_por_status.label }}</sub>
-								</div>
-								{{ form_relatorio.filtrar_por_status }}
-							</div>
-						</div>
-
-						<div class='col-md-2'>
-								<div style='padding-left: 8px'>
-									<sub>{{ form_relatorio.filtrar_por_operacao.label }}</sub>
-								</div>
-								{{ form_relatorio.filtrar_por_operacao }}
-							</div>
-
-						<div class='col-md-2'>
-							<div>
-								<div style='padding-left: 8px'>
-									<sub><label id="label_filtrar_desde">{{ form_relatorio.filtrar_desde.label }}</label></sub>
-								</div>
-								{{ form_relatorio.filtrar_desde }}
-							</div>
-						</div>
-
-						<div class='col-md-2'>
-							<div>
-								<div style='padding-left: 8px'>
-									<sub><label id="label_filtrar_ate">{{ form_relatorio.filtrar_ate.label }}</label></sub>
-								</div>
-								{{ form_relatorio.filtrar_ate }}
-							</div>
-						</div>
-
-
-					</div>
-
-					<hr>
-
-					<div class="row no-gutter" style="padding-top: 0px;margin-top: -10px;">
-						<div class='col-md-12'>
-							<div style='padding-left: 8px;'>
-								<sub>{{ form_relatorio.filtrar_documentos.label }}
-									<a role="button"  id="unselect_all_documents" class="btn-sm btn-default pull-right" style="padding: 0px 8px 2px 8px;color:#777">
-										<sub>Remover Todos</sub>
-									</a>
-
-									<a role="" class="btn-sm pull-right noselect" disabled="disabled" disabled tabindex="-1" aria-disabled="true" style="padding: 0px 8px 2px 8px;color:#777">
-										<sub>|</sub>
-									</a>
-
-									<a role="button" id="select_all_documents" class="btn-sm btn-default pull-right" style="padding: 0px 8px 2px 8px;color:#777">
-										<sub>Selecionar Todos</sub>
-									</a>
-
-
-								</sub>
-							</div>
-							{{ form_relatorio.filtrar_documentos }}
-						</div>
-					</div>
-
-
-
-					<div class="row no-gutter">
-						<div class="col-md-offset-8 col-md-4">
-							<button type="submit" id="bt_gerar_relatorio" class="btn btn-primary form-control" name='gerar_relatorio'  value='value_gerar_relatorio' style="position: relative; margin-top: 20px">Gerar</button>
-							<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
-						</div>
-					</div>
-				</div>
-
-				<div class="modal-footer"  style="padding-left: 40px;padding-right: 40px;padding-top: 0px;padding-bottom: 10px;">
-
-					<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-	<div class="modal-dialog">
-		<!--  style="width: 90%"> -->
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 style="margin-top: -8px" id="myModalLabel">Confirmação de Recebimento</h3>
-			</div>
-
-
-			<div class="modal-body" style="padding: 30px;">
-				<form action="" method="post" id="form_confirma_entrega">
-				{% csrf_token %}
-					<div class="row" style="padding-left: 15px; padding-right: 15px">
-						<div style='padding-left: 8px'>
-							<sub>{{ form_entrega.recebido_por.label }}</sub>
-						</div>
-						{{ form_entrega.recebido_por }}
-					</div>
-
-					<div class="row" style="padding-left: 15px; padding-right: 15px">
-
-						<table>
-							<tr>
-								<td>
-									<div style='padding-left: 8px'>
-										<sub>{{ form_entrega.doc_receptor.label }}</sub>
-									</div>
-									{{ form_entrega.doc_receptor }}
-								</td>
-
-								<td>
-									<div style='padding-left: 10px'>
-										<div style='padding-left: 8px'>
-											<sub>{{ form_entrega.data_entrega.label }}</sub>
-										</div>
-										{{ form_entrega.data_entrega }}
-									</div>
-								</td>
-
-								<td>
-									<div style='padding-left: 10px'>
-										<div style='padding-left: 8px'>
-											<sub>{{ form_entrega.hora_entrega.label }}</sub>
-										</div>
-										{{ form_entrega.hora_entrega }}
-									</div>
-								</td>
-
-								<td>
-									<div style='padding-left: 10px'>
-										{{ form_entrega.protocolo_id }}
-									</div>
-								</td>
-							</tr>
+							</tbody>
 						</table>
 					</div>
 
-					<div class="row" style="padding-left: 15px; padding-right: 15px">
-						<div style='padding-left: 8px'>
-							<sub>{{ form_entrega.observacao_entrega.label }}</sub>
+
+
+					<div class='row'>
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-top:{% if dados|length > 0 %}-36px;{% else %}6px;{% endif %}'>
+							<label class='left_align'><sub>Buscar por:</sub></label>
+							 <select id='buscar_por' class='form-control'>
+								<option value="2" selected>Nome do Destinátario</option>
+								<option value="5">Nome do Recebedor</option>
+								<option value="1">Código Protocolo</option>
+								<option value="3">Data Emissão</option>
+								<option value="4">Data Entrega</option>
+							</select>
 						</div>
-						{{ form_entrega.observacao_entrega }}
+
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" style='margin-left:-20px;margin-top:{% if dados|length > 0 %}-36px;{% else %}6px;{% endif %}'>
+							<label class='left_align'><sub>Filtrar por:</sub></label>
+							 <select id='filtrar_por' class='form-control'>
+								<option value="emitidos" selected>Todos Protocolos</option>
+								<option value="abertos" >Protocolos em Aberto</option>
+								<option value="recebidos">Protocolos Confirmados</option>
+								<option value="avulsos">Protocolos Avulsos</option>
+							</select>
+						</div>
+
+						<div class="col-lg-4 col-md-4 col-sm-5 col-xs-6" style='margin-left:-20px;margin-top:{% if dados|length > 0 %}-14px;{% else %}27px;{% endif %}'>
+							<input type="text" id="search" class="form-control" autofocus placeholder="Consultar..">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="row div_desabilitado" id='painel_detalhes'>
+		<div class="col-lg-12">
+			<div class="box box-default" style="margin-top: 0px; margin-left: 0px; margin-right: 0px; ">
+				<div class="box-heading">
+					<div class="box-header with-border">
+						<h5 class="box-title">Detalhes</h5><!-- (Emitido por: <label id="lb_emitido_por"></label>)</h5> -->
+						<div class="pull-right">
+							<button class="btn btn-sm btn-primary pull-right" id="visualizar_protocolo" ng-disable='registro_selecionado==null' style="position: relative; margin-top: 0px;"><i class="fa fa-search fa-1x" aria-hidden="true"></i> Visualizar Protocolo</button>
+						</div>
+					</div>
+				</div>
+				<!-- /.panel-heading -->
+
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-condensed table-bordered" cellspacing="0" width="100%"  id="datatable_detalhes">
+
+							<thead>
+							<tr class="linha_cabecalho">
+								<th style="text-align: center;vertical-align: middle;">Documento</th>
+								<th style="text-align: center;vertical-align: middle;">Complemento</th>
+								<th style="text-align: center;vertical-align: middle;">Referência</th>
+								<th style="text-align: center;vertical-align: middle;">Vencimento</th>
+								<th style="text-align: center;vertical-align: middle;">Valor</th>
+							</tr>
+							</thead>
+
+							<tbody>
+
+							</tbody>
+						</table>
+						<!-- /.table-responsive -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="modal_relatorio" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog" style="width: 60%;">
+			<div class="modal-content">
+				<div class="modal-header"  style="padding-top: 4px;padding-bottom:4px;">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-top: 10px;">×</button>
+					<h4 id="myModalLabel">Gerar Relatório</h4>
+				</div>
+
+				<form action="" method="post" target="_blank" onsubmit="setTimeout(function () { window.location.replace('/protocolo') }, 2)">
+					{% csrf_token %}
+					<div class="modal-body" style="padding-left: 40px;padding-right: 40px;padding-bottom: 20px">
+						<div class="row no-gutter">
+							<div class='col-md-3'>
+								<div style='margin-left: 8px'>
+									<sub><label style=''>Cliente</label></sub>
+								</div>
+
+								<select id="select_filtrar_por_cliente" class='form-control uppercase'  onblur="selecionar_filtro_cliente()">
+									<option value='TODOS' selected>TODOS CLIENTES</option>
+									{% for item in clientes %}
+										<option value='{{ item.id }}'>{{ item.id }} - {{ item.nome_razao }}</option>
+									{% endfor %}
+								</select>
+								{{ form_relatorio.filtrar_por_cliente }}
+							</div>
+
+							<div class='col-md-3'>
+								<div>
+									<div style='padding-left: 8px'>
+										<sub>{{ form_relatorio.filtrar_por_status.label }}</sub>
+									</div>
+									{{ form_relatorio.filtrar_por_status }}
+								</div>
+							</div>
+
+							<div class='col-md-2'>
+									<div style='padding-left: 8px'>
+										<sub>{{ form_relatorio.filtrar_por_operacao.label }}</sub>
+									</div>
+									{{ form_relatorio.filtrar_por_operacao }}
+								</div>
+
+							<div class='col-md-2'>
+								<div>
+									<div style='padding-left: 8px'>
+										<sub><label id="label_filtrar_desde">{{ form_relatorio.filtrar_desde.label }}</label></sub>
+									</div>
+									{{ form_relatorio.filtrar_desde }}
+								</div>
+							</div>
+
+							<div class='col-md-2'>
+								<div>
+									<div style='padding-left: 8px'>
+										<sub><label id="label_filtrar_ate">{{ form_relatorio.filtrar_ate.label }}</label></sub>
+									</div>
+									{{ form_relatorio.filtrar_ate }}
+								</div>
+							</div>
+
+
+						</div>
+
+						<hr>
+
+						<div class="row no-gutter" style="padding-top: 0px;margin-top: -10px;">
+							<div class='col-md-12'>
+								<div style='padding-left: 8px;'>
+									<sub>{{ form_relatorio.filtrar_documentos.label }}
+										<a role="button"  id="unselect_all_documents" class="btn-sm btn-default pull-right" style="padding: 0px 8px 2px 8px;color:#777">
+											<sub>Remover Todos</sub>
+										</a>
+
+										<a role="" class="btn-sm pull-right noselect" disabled="disabled" disabled tabindex="-1" aria-disabled="true" style="padding: 0px 8px 2px 8px;color:#777">
+											<sub>|</sub>
+										</a>
+
+										<a role="button" id="select_all_documents" class="btn-sm btn-default pull-right" style="padding: 0px 8px 2px 8px;color:#777">
+											<sub>Selecionar Todos</sub>
+										</a>
+
+
+									</sub>
+								</div>
+								{{ form_relatorio.filtrar_documentos }}
+							</div>
+						</div>
+
+
+
+						<div class="row no-gutter">
+							<div class="col-md-offset-8 col-md-4">
+								<button type="submit" id="bt_gerar_relatorio" class="btn btn-primary form-control" name='gerar_relatorio'  value='value_gerar_relatorio' style="position: relative; margin-top: 20px">Gerar</button>
+								<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+							</div>
+						</div>
 					</div>
 
-					<div class="row">
-						<div class="col-lg-5 col-lg-push-7">
-							<button type="submit" class="btn btn-primary form-control" name='confirmar_protocolo' style="position: relative; margin-top: 20px">Confirmar</button>
-							<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
-						</div>
+					<div class="modal-footer"  style="padding-left: 40px;padding-right: 40px;padding-top: 0px;padding-bottom: 10px;">
+
+						<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
 					</div>
 				</form>
+			</div>
+		</div>
+	</div>
+
+	<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<!--  style="width: 90%"> -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 style="margin-top: -8px" id="myModalLabel">Confirmação de Recebimento</h3>
+				</div>
+
+
+				<div class="modal-body" style="padding: 30px;">
+					<form action="" method="post" id="form_confirma_entrega">
+					{% csrf_token %}
+						<div class="row" style="padding-left: 15px; padding-right: 15px">
+							<div style='padding-left: 8px'>
+								<sub>{{ form_entrega.recebido_por.label }}</sub>
+							</div>
+							{{ form_entrega.recebido_por }}
+						</div>
+
+						<div class="row" style="padding-left: 15px; padding-right: 15px">
+
+							<table>
+								<tr>
+									<td>
+										<div style='padding-left: 8px'>
+											<sub>{{ form_entrega.doc_receptor.label }}</sub>
+										</div>
+										{{ form_entrega.doc_receptor }}
+									</td>
+
+									<td>
+										<div style='padding-left: 10px'>
+											<div style='padding-left: 8px'>
+												<sub>{{ form_entrega.data_entrega.label }}</sub>
+											</div>
+											{{ form_entrega.data_entrega }}
+										</div>
+									</td>
+
+									<td>
+										<div style='padding-left: 10px'>
+											<div style='padding-left: 8px'>
+												<sub>{{ form_entrega.hora_entrega.label }}</sub>
+											</div>
+											{{ form_entrega.hora_entrega }}
+										</div>
+									</td>
+
+									<td>
+										<div style='padding-left: 10px'>
+											{{ form_entrega.protocolo_id }}
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+
+						<div class="row" style="padding-left: 15px; padding-right: 15px">
+							<div style='padding-left: 8px'>
+								<sub>{{ form_entrega.observacao_entrega.label }}</sub>
+							</div>
+							{{ form_entrega.observacao_entrega }}
+						</div>
+
+						<div class="row">
+							<div class="col-lg-5 col-lg-push-7">
+								<button type="submit" class="btn btn-primary form-control" name='confirmar_protocolo' style="position: relative; margin-top: 20px">Confirmar</button>
+								<!-- <a href="#myModal" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -468,6 +469,7 @@ label {
 <script src="{% static 'modules/core/controle_componentes.js' %}"></script>
 <script src="{% static 'modules/core/controle_botoes.js' %}"></script>
 <script src="{% static 'modules/protocol/protocolo.js' %}"></script>
+<script src="{% static 'modules/protocol/protocolController.js' %}"></script>
 {% endcompress %}
 {% include "componentes/mensagem.html" with messages=messages %}
 
@@ -512,35 +514,35 @@ $('#datatable').DataTable({
 });
 
 var table = $('#datatable').DataTable();
-$('#datatable'+' tbody').on('click', 'tr', function () {
-
-     if ($(this).hasClass('selected') ) {
+	$('#datatable'+' tbody').on('click', 'tr', function () {
+     if ($(this).hasClass('selected')){
        $(this).removeClass('selected');
-       desabilitar_botao('#bt_confirmar_entrega');
-       $('#bt_confirmar_entrega').addClass('link_desabilitado');
-       $('#visualizar_protocolo').addClass('link_desabilitado');
+       angular.element(document.getElementById('controle_angular')).scope().desmarcar_registro();
+       //desabilitar_botao('#bt_confirmar_entrega');
+       //$('#bt_confirmar_entrega').addClass('link_desabilitado');
+       //$('#visualizar_protocolo').addClass('link_desabilitado');
        $('#painel_detalhes').addClass('div_desabilitado');
      }
      else {
        table.$('tr.selected').removeClass('selected');
        $(this).addClass('selected');
-				 var confirmado = table.cell('.selected', 6).data();
-				 if (confirmado.indexOf("SIM") !=-1) {
-					 desabilitar_botao('#bt_confirmar_entrega');
-					 $('#bt_confirmar_entrega').addClass('link_desabilitado');
-					 $('#tooltip_confirmar').tooltip({title: "Esse documento já foi confirmado!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
-				 }
-				 else{
-					 habilitar_botao('#bt_confirmar_entrega');
-					 $('#bt_confirmar_entrega').removeClass('link_desabilitado');
-					 $('#tooltip_confirmar').tooltip("destroy");
-				 }
+       var confirmado = table.cell('.selected', 6).data();
+       angular.element(document.getElementById('controle_angular')).scope().selecionar_registro(this, confirmado);
 
-       habilitar_botao('#visualizar_protocolo');
-       $('#visualizar_protocolo').removeClass('link_desabilitado');
+			 if (confirmado.indexOf("SIM") !=-1){
+				 //desabilitar_botao('#bt_confirmar_entrega');
+				 //$('#bt_confirmar_entrega').addClass('link_desabilitado');
+				 $('#tooltip_confirmar').tooltip({title: "Esse documento já foi confirmado!", animation: true, delay:{show: 200, hide: 200}, placement: "top"});
+			 }
+			 else{
+				 //habilitar_botao('#bt_confirmar_entrega');
+				 //$('#bt_confirmar_entrega').removeClass('link_desabilitado');
+				 $('#tooltip_confirmar').tooltip("destroy");
+			 }
 
+       //habilitar_botao('#visualizar_protocolo');
+       //$('#visualizar_protocolo').removeClass('link_desabilitado');
        $('#painel_detalhes').removeClass('div_desabilitado');
-
 
        //alert("Quero procurar os detalhes de: "+table.cell('.selected', 0).data());
 			 var protocolo_id = table.cell('.selected', 0).data();
@@ -687,8 +689,8 @@ $('.modal').on('hidden.bs.modal', function(){
 <script>
 $(document).ready(function() {
 
-	$('#bt_confirmar_entrega').addClass('link_desabilitado');
-	$('#visualizar_protocolo').addClass('link_desabilitado');
+	//$('#bt_confirmar_entrega').addClass('link_desabilitado');
+	//$('#visualizar_protocolo').addClass('link_desabilitado');
 
 
 	{% if erro %}
@@ -726,14 +728,14 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 $('#visualizar_protocolo').click( function () {
-    //alert("cliquei pra visualizar protocolo"+table.cell('.selected', 0).data());
+  //alert("cliquei pra visualizar protocolo"+table.cell('.selected', 0).data());
 	//document.getElementById('visualizar_protocolo').target='_blank';
-
 	var protocolo_id = table.cell('.selected', 0).data();
 	protocolo_id = protocolo_id.replace(/\./g, '');
 
+	window.open('/protocolo/visualizar/'+protocolo_id, '_blank');
 
-	document.getElementById('visualizar_protocolo').href = '/protocolo/visualizar/'+protocolo_id;
+	//document.getElementById('visualizar_protocolo').href = '/protocolo/visualizar/'+protocolo_id;
 	//setTimeout(function(){ window.location.href = ('/protocolo/visualizar/'+table.cell('.selected', 0).data()); }, 500);
 	//window.location.href = '/protocolo/visualizar/'+table.cell('.selected', 0).data();
 	//window.location.reload();
@@ -905,7 +907,6 @@ function selecionar_filtro_cliente(){
 	{% if selecionar_protocolo %}
 	var table = $('#datatable').DataTable();
 	var selecionar_protocolo = '{{ selecionar_protocolo.destinatario.nome_razao }}';
-
 	$('#search').val(selecionar_protocolo);
 
 	var e = jQuery.Event("keyup");
