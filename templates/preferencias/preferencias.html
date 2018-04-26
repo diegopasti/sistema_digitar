@@ -73,7 +73,7 @@
                                             <td colspan="4" class="center_align">Nenhum Salário Mínimo Cadastrado!</td>
                                         </tr>
 
-                                        <tr ng-cloak ng-class="salario.id == id_salario_vigencia_atual ? 'vigente' : 'nao_vigente' "class="angular-repeat linha_selecionavel {{ salario.selecionado }}" ng-click="selecionar_linha(salario)" pagination-id="paginate_salarios" dir-paginate="salario in salarios | filter: get_filter_column() | itemsPerPage:10 | orderBy:sortType:sortReverse as resultado" >
+                                        <tr ng-cloak ng-class="salario.id == id_salario_vigencia_atual ? 'vigente' : 'nao_vigente' "class="angular-repeat linha_selecionavel {{ salario.selecionado }}" ng-click="selecionar_linha(salario)" pagination-id="paginate_salarios" dir-paginate="salario in salarios | filter: get_filter_column() | orderBy:sortType:sortReverse | itemsPerPage:10 as resultado" >
 
                                             <td class='center_align'>{{ salario.id }}</td>
                                             <td class="center_align">{{ salario.data_cadastro | date :  "dd/MM/yyyy HH:mm:ss" }}</td>

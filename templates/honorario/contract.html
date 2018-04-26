@@ -202,7 +202,7 @@ table th{
 						<div class='row'>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 								{% verbatim %}
-								<div class="container">
+									<div class="container">
 									<table class="table table-condensed  table-striped table-bordered table-hover" id="table_contratos" style="width: 100%;">
 									<thead>
 										<tr class="linha_cabecalho">
@@ -216,11 +216,11 @@ table th{
 
 											<th class='center' ng-click="sortType = 'contrato.vigencia_fim'; sortReverse = !sortReverse">Término</th>
 
-											<th class='center' ng-click="sortType = 'contrato.valor_honorario'; sortReverse = !sortReverse">Honorário (R$)</th>
+											<th class='center' ng-click="sortType = 'contrato.valor_honorario_float';sortReverse = !sortReverse">Honorário (R$)</th>
 
-											<th class='center'>Desc (%)</th>
+											<th class='center' ng-click="sortType = 'contrato.desconto_total_ativo';sortReverse = !sortReverse">Desc (%)</th>
 
-											<th class='center' ng-click="sortType = 'contrato.valor_total'; sortReverse = !sortReverse" >Total (R$)</th>
+											<th class='center' ng-click="sortType = 'contrato.valor_total_float'; sortReverse = !sortReverse" >Total (R$)</th>
 
 											<th class='center' ng-click="sortType = 'contrato.ultima_alteracao'; sortReverse = !sortReverse" >Ult. Alteração</th>
 
@@ -239,7 +239,7 @@ table th{
 											</td>
 										</tr>
 
-										<tr ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | itemsPerPage:table_maximun_items_per_page | orderBy:sortType:sortReverse as resultado">
+										<tr ng-if='contratos_carregados' class="angular-repeat linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos" dir-paginate="contrato in contratos | filter: get_filter_column() | orderBy:sortType:sortReverse| itemsPerPage:table_maximun_items_per_page+1 as resultado">
 											<!--<tr ng-repeat='contrato in contratos' class="linha_selecionavel {{ contrato.selecionado }}" ng-click="selecionar_linha(contrato)" pagination-id="paginate_contratos">-->
 
 											<td class='center' style="width: 30px;">{{ contrato.cliente_id }}</td> <!-- {{ $index+1 }} -->
@@ -265,18 +265,18 @@ table th{
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' ng-class="{'right': contrato.contrato.valor_honorario, 'center': !contrato.plano  }" style="width: 100px;">
-												<span ng-if="contrato.contrato.valor_honorario">{{ contrato.contrato.valor_honorario | currency:"" }}</span>
+												<span ng-if="contrato.contrato.valor_honorario">{{ contrato.contrato.valor_honorario_float | currency:'' }}</span>
 												<span ng-if="contrato.contrato==null"></span>
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2 || screen3' class="center" style="width: 80px;">
 												<span ng-if="contrato.contrato!=null" title="Desconto Temporário: {{ contrato.contrato.desconto_temporario_ativo }}% disponivel de {{ contrato.contrato.desconto_temporario }}% concedido e Desconto Fidelidade: {{ contrato.contrato.desconto_indicacoes }}%">
-													{{ contrato.contrato.desconto_temporario_ativo -- contrato.contrato.desconto_indicacoes }}</span>
+													{{ contrato.contrato.desconto_total_ativo }}</span>
 												<span ng-if="contrato.contrato==null"></span>
 											</td>
 
 											<td ng-hide='screen0 || screen1 || screen2' class="text-right" style="width: 100px;">
-												<span ng-if="contrato.contrato!=null">{{ contrato.contrato.valor_total | currency:"" }}</span>
+												<span ng-if="contrato.contrato!=null">{{ contrato.contrato.valor_total_float | currency:"" }}</span>
 												<span ng-if="contrato.contrato==null"></span>
 											</td>
 

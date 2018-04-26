@@ -193,7 +193,7 @@ class ContractController(BaseController):
 
             try:
                 contrato = Contrato.objects.get(cliente_id=item.id)
-                result = self.object(request, Contrato, contrato.id, extra_fields=['plano__nome'])
+                result = self.object(request, Contrato, contrato.id, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float'])
                 response_cliente['contrato'] = result['object']
             except:
                 response_cliente['contrato'] = None
@@ -272,6 +272,7 @@ class ContractController(BaseController):
         response_final['result'] = True
         response_final['object'] = response_dict
         response_final['message'] = str(len(response_dict))+" Contratos carregados com sucesso!"
+        print(response_final)
         return self.response(response_final)
 
     @request_ajax_required

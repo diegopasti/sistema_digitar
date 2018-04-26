@@ -125,7 +125,7 @@
 												<td colspan="12" style='background: #FFFAFA;opacity: 0.5;vertical-align: middle' class="text-center"><br><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><br><br>Aguarde.. Carregando...<br><br></td>
 											</tr>
 
-											<tr ng-cloak ng-if='registros_carregados' class="angular-repeat {{ registro.selecionado }}" dir-paginate="registro in resultado = (registros | filter: get_filter_column()) | orderBy:sortType:sortReverse | itemsPerPage:table_maximun_items_per_page" pagination-id="paginate_registros">
+											<tr ng-cloak ng-if='registros_carregados' class="angular-repeat {{ registro.selecionado }}" dir-paginate="registro in resultado = (registros | filter: get_filter_column()) | orderBy:sortType:sortReverse | itemsPerPage:table_maximun_items_per_page  as resultado" pagination-id="paginate_registros">
 												<td class='text-center linha_selecionavel' style="width: 30px;" ng-click="selecionar_linha(registro);">{{ registro.id }}</td>
 												<td class="text-center linha_selecionavel" style="width: 60px;" ng-click="selecionar_linha(registro);">{{ registro.competence }}</td>
 												<td class='text-left linha_selecionavel'  ng-click="selecionar_linha(registro);">{{ registro.entity_name }}</td>

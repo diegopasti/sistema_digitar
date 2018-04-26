@@ -275,6 +275,10 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 					case 'plano':
 							//alert("filtrar pelo plano");
 							return {plano: $scope.search};
+					case 'valor_honorario':
+							//alert("filtrar pelo plano");
+							return {valor_honorario: $scope.search};
+
 					default:
 							return {cliente_nome: $scope.search}
 			}
@@ -558,7 +562,6 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 	$scope.editar_quantidade_arquivo = function(){
 		$scope.editando_arquivo_caixa=!$scope.editando_arquivo_caixa;
 	}
-
 
 	$scope.ativar_desativar_servico = function(registro){
 		if(registro.ativo){
@@ -868,6 +871,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			$scope.carregar_indicacao_selecionada();
 		}
 	}
+
   $scope.open_contract_page = function(){
 		if($scope.registro_selecionado!=null){
 			window.open('/entidade/visualizar/'+$scope.registro_selecionado.cliente_id+'/', '_blank');

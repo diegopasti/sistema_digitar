@@ -56,6 +56,15 @@ class Contrato(models.Model):
     def serialize(self):
         serialized_values = {}
 
+    def valor_honorario_float(self):
+        return float(self.valor_honorario)
+
+    def desconto_total_ativo(self):
+        return float(self.desconto_temporario_ativo + self.desconto_indicacoes)
+
+    def valor_total_float(self):
+        return float(self.valor_total)
+
     def totalizar_honorario(self):
         desconto_temporario = self.calcular_desconto_temporario()
         desconto_fidelidade = self.calcular_desconto_fidelidade()
