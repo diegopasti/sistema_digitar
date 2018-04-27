@@ -177,7 +177,7 @@ class Honorary(models.Model):
     contract_discount = models.DecimalField("Desconto total em contrato", max_digits=5, decimal_places=2, default=0, null=True,blank=True)
     final_value_contract = models.DecimalField("Valor final do contrato", max_digits=8, decimal_places=2, default=0, null=True, blank=True)
     number_debit_credit = models.IntegerField("Total de débitos e créditos", default=0)
-    total_debit =  models.DecimalField("Total à debitar", max_digits=5,default=0, decimal_places=2, null=True,blank=True)
+    total_debit = models.DecimalField("Total à debitar", max_digits=5,default=0, decimal_places=2, null=True,blank=True)
     total_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=True, blank=True)
     total_debit_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=True, blank=True)
     total_repayment = models.DecimalField("Total à reembolsar", max_digits=5, default=0, decimal_places=2, null=True, blank=True)
@@ -199,6 +199,21 @@ class Honorary(models.Model):
     updated_by_name = models.CharField("Atualizado por:", null=True, max_length=100)
     is_received = models.BooleanField("Honorário recebido", default=False)
     received_by = models.ForeignKey(User, related_name="recebido_por", null=True)
+
+    def initial_value_contract_float(self):
+        return float(self.initial_value_contract)
+
+    def total_honorary_float(self):
+        return float(self.total_honorary)
+
+    def total_repayment_float(self):
+        return float(self.total_repayment)
+
+    def total_debit_float(self):
+        return float(self.total_debit)
+
+    def total_credit_float(self):
+        return float(self.total_credit)
 
     def have_contract(self):
         if self.contract is not None:

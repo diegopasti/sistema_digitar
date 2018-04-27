@@ -108,12 +108,12 @@
 												<th class='text-center' style="width: 40px;" ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
 												<th class='text-center' style="width:60px;" ng-click="sortType='competence';sortReverse=!sortReverse">Comp.</th>
 												<th class='text-center' ng-click="sortType='entity_name';sortReverse=!sortReverse">Cliente</th>
-												<th class='text-center' style="width: 100px;" ng-click="sortType='initial_value_contract';sortReverse=!sortReverse">Valor Contrato</th>
+												<th class='text-center' style="width: 100px;" ng-click="sortType='initial_value_contract_float';sortReverse=!sortReverse">Valor Contrato</th>
 												<th class='text-center' style="width: 100px;" style="cursos: not-allowed">Desc. Contrato</th>
-												<th class='text-center' style="width: 90px;" ng-click="sortType='total_debit';sortReverse=!sortReverse">Proventos</th>
-												<th class='text-center' style="width: 90px;" ng-click="sortType='total_credit';sortReverse=!sortReverse">Descontos</th>
-												<th class='text-center' style="width: 90px;" ng-click="sortType='total_repayment';sortReverse=!sortReverse">Ressarcim.</th>
-												<th class='text-center' style="width: 90px;" ng-click="sortType='total_honorary';sortReverse=!sortReverse">Honorário</th>
+												<th class='text-center' style="width: 90px;" ng-click="sortType='total_debit_float';sortReverse=!sortReverse">Proventos</th>
+												<th class='text-center' style="width: 90px;" ng-click="sortType='total_credit_float';sortReverse=!sortReverse">Descontos</th>
+												<th class='text-center' style="width: 90px;" ng-click="sortType='total_repayment_float';sortReverse=!sortReverse">Ressarcim.</th>
+												<th class='text-center' style="width: 90px;" ng-click="sortType='total_honorary_float';sortReverse=!sortReverse">Honorário</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='last_update';sortReverse=!sortReverse">Ult. Alteração</th>
 												<th class="text-center" style="width: 120px;" ng-click="sortType='updated_by_name';sortReverse=!sortReverse">Alterado por</th>
 												<th class='text-center' style="width: 100px;" ng-click="sortType='status';sortReverse=!sortReverse" >Situação</th>
@@ -129,12 +129,12 @@
 												<td class='text-center linha_selecionavel' style="width: 30px;" ng-click="selecionar_linha(registro);">{{ registro.id }}</td>
 												<td class="text-center linha_selecionavel" style="width: 60px;" ng-click="selecionar_linha(registro);">{{ registro.competence }}</td>
 												<td class='text-left linha_selecionavel'  ng-click="selecionar_linha(registro);">{{ registro.entity_name }}</td>
-												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.initial_value_contract| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.initial_value_contract_float| currency:"" }}</td>
 												<td class='text-right linha_selecionavel' style="width: 100px;" ng-click="selecionar_linha(registro);" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount| currency:'' }}%">{{ ((registro.contract_discount/100)*registro.initial_value_contract)| currency:"" }}</td>
-												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_debit| currency:"" }}</td>
-												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_credit| currency:"" }}</td>
-												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_repayment| currency:"" }}</td>
-												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_honorary| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_debit_float| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_credit_float| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_repayment_float| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_honorary_float| currency:"" }}</td>
 												<td class='text-center linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);"title="Atualizado {{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}">{{ registro.last_update| date: 'dd/MM/yyyy' }} às {{ registro.last_update| date: 'HH:mm:ss' }}</td>
 												<td class="text-left linha_selecionavel" style="width: 100px;" ng-click="selecionar_linha(registro);">
 													<span ng-show="registro.updated_by_name!=null">{{ registro.updated_by_name }}</span>

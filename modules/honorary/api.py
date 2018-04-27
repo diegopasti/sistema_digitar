@@ -71,7 +71,7 @@ class ContractController(BaseController):
     @method_decorator(login_required)
     @method_decorator(permission_level_required(2, raise_exception=HttpResponseForbidden()))
     def salvar_contrato(self, request):
-        save_response = self.save(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
+        save_response = self.save(request, FormContrato, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float'], is_response=False)
         if save_response['result']:
             contrato = Contrato.objects.get(pk=int(save_response['object']['id']))
             contrato.servicos_contratados = contrato.plano.servicos
@@ -107,7 +107,7 @@ class ContractController(BaseController):
                 contrato.ativo = False
                 contrato.save()
 
-            return self.response(super().object(request, Contrato, contrato.id, extra_fields=['plano__nome']))
+            return self.response(super().object(request, Contrato, contrato.id, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float']))
         else:
             return self.response(save_response)
 
@@ -272,14 +272,13 @@ class ContractController(BaseController):
         response_final['result'] = True
         response_final['object'] = response_dict
         response_final['message'] = str(len(response_dict))+" Contratos carregados com sucesso!"
-        print(response_final)
         return self.response(response_final)
 
     @request_ajax_required
     @method_decorator(login_required)
     @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
     def alterar_contrato(self, request):
-        update_response = self.update(request, FormContrato, extra_fields=['plano__nome'], is_response=False)
+        update_response = self.update(request, FormContrato, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float'], is_response=False)
         if update_response['result']:
             contrato = Contrato.objects.get(pk=int(request.POST['id']))
             contrato.totalizar_honorario()
@@ -292,7 +291,7 @@ class ContractController(BaseController):
                 honorary.updated_by_name = request.user.get_full_name()
                 honorary.save()
 
-            return self.response(super().object(request, Contrato, contrato.id, extra_fields=['plano__nome']))
+            return self.response(super().object(request, Contrato, contrato.id, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float']))
         else:
             return self.response(update_response)
 
@@ -333,7 +332,7 @@ class ContractController(BaseController):
 
         if contrato is not None:
             contrato.reembolso_arquivo_caixa = not contrato.reembolso_arquivo_caixa
-            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome'])
+            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float'])
 
         else:
             response_dict = {'result':False,'message':'Erro! Contrato inexistente.'}
@@ -348,7 +347,7 @@ class ContractController(BaseController):
 
         if contrato is not None:
             contrato.arquivos_caixa = int(request.POST['quantidade'])
-            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome'])
+            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float'])
 
         else:
             response_dict = {'result':False,'message':'Erro! Contrato inexistente.'}
@@ -374,7 +373,7 @@ class ContractController(BaseController):
             response_dict = self.notify.error(e)
 
         if contrato is not None:
-            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome'])
+            response_dict = self.execute(contrato, contrato.save, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float'])
             if(response_dict['result']):
                 honoraries = Honorary.objects.filter(contract=contrato)
                 for honorary in honoraries:
@@ -400,7 +399,7 @@ class ContractController(BaseController):
             contract_selected = contract_selected[0]
             contract_selected.totalizar_honorario()
             contract_selected.save()
-            response_dict = self.notify.success(contract_selected, extra_fields=['plano__nome'])
+            response_dict = self.notify.success(contract_selected, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float'])
         return self.response(response_dict)
 
     @request_ajax_required
@@ -702,7 +701,7 @@ class HonoraryController(BaseController):
                 entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
                 for entity in entity_list:
                     self.create_update_honorary(request, entity, competence)
-        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
+        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
 
     @method_decorator(login_required)
     def generate_honoraries(self,request):
@@ -713,7 +712,7 @@ class HonoraryController(BaseController):
             self.create_update_honorary(request, entity, self.get_competence(current_month + 1))
             self.create_update_honorary(request, entity, self.get_competence(current_month + 2))
             self.create_update_honorary(request, entity, self.get_competence(current_month + 3))
-        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
+        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
 
     @request_ajax_required
     @method_decorator(login_required)
@@ -751,7 +750,7 @@ class HonoraryController(BaseController):
             Honorary.conferred_date = now
             Honorary.conferred_by = request.user
             honorary.updated_by_name = request.user.get_full_name()
-            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
+            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
         else:
             response_dict = {}
             response_dict['result'] = False
@@ -816,7 +815,7 @@ class HonoraryController(BaseController):
             honorary.conferred_by = request.user
             honorary.updated_by_name = request.user.get_full_name()
 
-            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract'])
+            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
         else:
             response_dict = {}
             response_dict['result'] = False
@@ -945,7 +944,7 @@ class HonoraryController(BaseController):
 
                     honorary.updated_by_id = request.user.id
                     honorary.updated_by_name = request.user.get_full_name()
-                    honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
+                    honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
                     if honorary_response['result']:
                         response_dict['message'] = 'Honorário salvo com sucesso!'
                     else:
@@ -983,7 +982,7 @@ class HonoraryController(BaseController):
             honorary.verify_provents_values()
             honorary.updated_by_id = request.user.id
             honorary.updated_by_name = request.user.get_full_name()
-            honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome', 'created_by__get_full_name', 'updated_by__get_full_name'])
+            honorary_response = self.execute(honorary, honorary.save, extra_fields=['item__nome', 'created_by__get_full_name', 'updated_by__get_full_name','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
             if honorary_response['result']:
                response_dict['message'] = 'Honorário salvo com sucesso!'
             else:
