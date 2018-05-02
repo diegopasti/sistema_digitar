@@ -139,11 +139,11 @@ h5{color : #777;font-size: 130% !important;}
             </li>
 
             <li class="dropdown notifications-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Notificações não confirmadas">
+              {% verbatim %}<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{{notifications.length>0 ? 'Notificações não confirmadas' : 'Você não possui nenhuma notificação.'}}">{% endverbatim %}
                 <i class="fa fa-bell-o"></i>
-                <span ng-cloak class="label label-warning">{% verbatim %}{{ non_readed_notifications }}{% endverbatim %}</span>
+                <span ng-cloak ng-if="notifications.length>0" class="label label-warning">{% verbatim %}{{ non_readed_notifications }}{% endverbatim %}</span>
               </a>
-              <ul class="dropdown-menu" style="width: 500px;">
+              <ul ng-if="notifications.length>0" class="dropdown-menu" style="width: 500px;">
                 <li class="header">Últimas Notificações</li>
                 <li>
                   <ul class="menu">
@@ -275,7 +275,7 @@ h5{color : #777;font-size: 130% !important;}
             <ul class="treeview-menu">
               <li><a href="/entidade"><i class="fa fa-circle-o"></i>Cadastro de Clientes</a></li>
               <li><a href="/planos"><i class="fa fa-circle-o"></i>Planos de Honorários</a></li>
-              <li><a href="/preferencias/servicos"><i class="fa fa-circle-o"></i>Serviços de Honorários</a></li>
+              <li><a href="/services"><i class="fa fa-circle-o"></i>Serviços de Honorários</a></li>
             </ul>
           </li>
 

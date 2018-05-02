@@ -86,4 +86,3 @@ app.controller('app.core.header_menu_controller', ['$scope', function($scope) {
 		}
 	}
 }]);
-

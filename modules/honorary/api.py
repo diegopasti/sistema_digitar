@@ -785,6 +785,7 @@ class HonoraryController(BaseController):
             now = datetime.datetime.now() #timezone.localtime(timezone.now())
             variacao = honorary.total_honorary - int(str(honorary.total_honorary).split('.')[0])
             if variacao != 0:
+                honorary.update_honorary(honorary, honorary.contract)
                 honorary_item = HonoraryItem()
                 honorary_item.type_value = 'R'
                 honorary_item.honorary = honorary

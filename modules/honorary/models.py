@@ -290,7 +290,7 @@ class Honorary(models.Model):
                     honorary_item.type_item = 'P'  #models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
                     honorary_item.type_value = 'R' #models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valores, error_messages=MENSAGENS_ERROS)
                     honorary_item.honorary = honorary
-                    provento = Proventos.objects.get(pk=4)
+                    provento = Proventos.objects.get(pk=6)
                     honorary_item.item = provento
                     honorary_item.quantity = int(honorary.contract.arquivos_caixa)
                     honorary_item.unit_value = provento.valor

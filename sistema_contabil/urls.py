@@ -81,7 +81,7 @@ urlpatterns = [
     url(r'^api/entity/document/close$', EntityController().close_document),
 
 
-    url(r'^preferencias/servicos/$', servico_views.cadastro_servico),
+    url(r'^services/$', servico_views.cadastro_servico),
     url(r'^api/preferencias/servicos/$', servico_views.consultar_servicos),
     url(r'^api/preferencias/novo_servico$', servico_views.adicionar_servico),
     url(r'^api/preferencias/alterar_servico/(?P<servico_id>\d+)/$', servico_views.alterar_servico),
