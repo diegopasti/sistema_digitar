@@ -1092,11 +1092,11 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 			if($scope.selected_option_provent.tipo_valor=='R'){
 				var total_value = unit_value*quantity;
-				alert(total_value)
+				//alert(total_value)
 			}
 			else{
 				var total_value = unit_value*(quantity/100);
-				alert(total_value)
+				//alert(total_value)
 			}
 			$("#total_value").val($filter('currency')(total_value,"", 2));
 		}

@@ -320,7 +320,7 @@ class BaseController(Notify):
             action()
             response_dict = self.notify.success(object, extra_fields=extra_fields)
         except Exception as e:
-            print("DEU ERRO NA HORA DE SALVAR: ",e)
+            #print("DEU ERRO NA HORA DE SALVAR: ",e)
             response_dict = self.notify.error(e)
         return response_dict
 

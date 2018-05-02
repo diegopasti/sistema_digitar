@@ -171,17 +171,17 @@ class Honorary(models.Model):
 
     competence_init_date = models.DateTimeField("Competencia inicia em", null=True)
     contract = models.ForeignKey(Contrato, null=True, related_name='contrato')
-    initial_value_contract = models.DecimalField("Valor base do contrato", max_digits=8, default=0, decimal_places=2, null=True, blank=True)
-    temporary_discount = models.DecimalField("Desconto temporário", max_digits=5,default=0, decimal_places=2, null=False,blank=True)
-    fidelity_discount = models.DecimalField("Desconto fidelidade", max_digits=5, decimal_places=2, default=0, null=False,blank=True)
-    contract_discount = models.DecimalField("Desconto total em contrato", max_digits=5, decimal_places=2, default=0, null=True,blank=True)
-    final_value_contract = models.DecimalField("Valor final do contrato", max_digits=8, decimal_places=2, default=0, null=True, blank=True)
+    initial_value_contract = models.DecimalField("Valor base do contrato", max_digits=11, default=0, decimal_places=2, null=True, blank=True)
+    temporary_discount = models.DecimalField("Desconto temporário", max_digits=11,default=0, decimal_places=2, null=False,blank=True)
+    fidelity_discount = models.DecimalField("Desconto fidelidade", max_digits=11, decimal_places=2, default=0, null=False,blank=True)
+    contract_discount = models.DecimalField("Desconto total em contrato", max_digits=11, decimal_places=2, default=0, null=True,blank=True)
+    final_value_contract = models.DecimalField("Valor final do contrato", max_digits=11, decimal_places=2, default=0, null=True, blank=True)
     number_debit_credit = models.IntegerField("Total de débitos e créditos", default=0)
-    total_debit = models.DecimalField("Total à debitar", max_digits=5,default=0, decimal_places=2, null=True,blank=True)
-    total_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=True, blank=True)
-    total_debit_credit = models.DecimalField("Valor total à creditar", max_digits=5, default=0, decimal_places=2, null=True, blank=True)
-    total_repayment = models.DecimalField("Total à reembolsar", max_digits=5, default=0, decimal_places=2, null=True, blank=True)
-    total_honorary = models.DecimalField("Honorário", max_digits=8, default=0, decimal_places=2, null=True, blank=True)
+    total_debit = models.DecimalField("Total à debitar", max_digits=11,decimal_places=2, default=0, null=True,blank=True)
+    total_credit = models.DecimalField("Valor total à creditar", max_digits=11,decimal_places=2, default=0, null=True, blank=True)
+    total_debit_credit = models.DecimalField("Valor total à creditar", max_digits=11, decimal_places=2, default=0, null=True, blank=True)
+    total_repayment = models.DecimalField("Total à reembolsar", max_digits=11, decimal_places=2, default=0, null=True, blank=True)
+    total_honorary = models.DecimalField("Honorário", max_digits=11, decimal_places=2, default=0, null=True, blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True)
 
@@ -284,7 +284,7 @@ class Honorary(models.Model):
             honorary.save()
 
             if honorary.contract.reembolso_arquivo_caixa:
-                verificar_reembolso_ja_lançado = HonoraryItem.objects.filter(honorary=honorary,item_id=4)
+                verificar_reembolso_ja_lançado = HonoraryItem.objects.filter(honorary=honorary,item_id=6)
                 if verificar_reembolso_ja_lançado.count() == 0:
                     honorary_item = HonoraryItem()
                     honorary_item.type_item = 'P'  #models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
@@ -298,6 +298,7 @@ class Honorary(models.Model):
                     honorary_item.created_by_id = 1
                     honorary_item.updated_by_id = 1
                     honorary_item.save()
+
         else:
             honorary.initial_value_contract = 0
             honorary.temporary_discount = 0

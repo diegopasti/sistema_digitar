@@ -691,7 +691,7 @@ class HonoraryController(BaseController):
 
     @method_decorator(login_required)
     def get_object(self, request):
-        return self.object(request, Honorary, int(request.POST['id']),extra_fields = ['honorary_itens', 'contract__data_vencimento', 'contract__dia_vencimento', 'have_contract'],is_response=True)
+        return self.object(request, Honorary, int(request.POST['id']),extra_fields = ['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'],is_response=True)
 
     @method_decorator(login_required)
     def filter(self,request):
@@ -785,19 +785,21 @@ class HonoraryController(BaseController):
             now = datetime.datetime.now() #timezone.localtime(timezone.now())
             variacao = honorary.total_honorary - int(str(honorary.total_honorary).split('.')[0])
             if variacao != 0:
+                # Verificar se depois de gerado esse honorario, configuraram o reembolso automatico.
                 honorary.update_honorary(honorary, honorary.contract)
+
                 honorary_item = HonoraryItem()
                 honorary_item.type_value = 'R'
                 honorary_item.honorary = honorary
 
-                if variacao > 0.5:
+                if variacao >= 0.5:
                     honorary_item.type_item = 'P'
-                    provento = Proventos.objects.get(pk=5)
+                    provento = Proventos.objects.get(pk=4)
                     honorary_item.quantity = str(1-variacao)
                     honorary_item.total_value = "%.2f"%(float(Decimal(1-variacao) * Decimal(provento.valor)))
                 else:
                     honorary_item.type_item = 'D'
-                    provento = Proventos.objects.get(pk=6)
+                    provento = Proventos.objects.get(pk=5)
                     honorary_item.quantity = str(variacao)
                     honorary_item.total_value = "%.2f"%(float(Decimal(variacao) * Decimal(provento.valor)))
 
@@ -807,6 +809,8 @@ class HonoraryController(BaseController):
                 honorary_item.created_by_id = 1
                 honorary_item.updated_by_id = 1
                 honorary_item.save()
+
+                # Se houve o lancamento de novo provento (no caso os arrendondamento) e preciso atualizar o honorario.
                 honorary.update_honorary(honorary, honorary.contract)
 
             honorary.status = "E"
@@ -815,7 +819,6 @@ class HonoraryController(BaseController):
             honorary.closed_by = request.user
             honorary.conferred_by = request.user
             honorary.updated_by_name = request.user.get_full_name()
-
             response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
         else:
             response_dict = {}
