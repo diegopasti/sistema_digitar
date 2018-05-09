@@ -24,6 +24,8 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 	$scope.max_honorary_itens = 0;
 	$scope.screen_model = null;
 
+	$scope.item_provent_editing = null;
+
 	$scope.save_provent = function() {
 		var data_paramters = create_data_paramters('form_adicionar_contrato');
 		data_paramters['valor'] = data_paramters['valor'].replace(".","").replace(",",".");
@@ -974,27 +976,76 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 		else{
 			registro.selected = 'selected';
+			//alert("VEJA O REGISTRO qUE TEM QUE CARREGAR: "+JSON.stringify(registro));
 			$scope.selected_item = registro;
+			$scope.provents_options.forEach(function(item, index){
+				//alert("VEJA AS OPÇÔES: "+index+" - "+item.id);
+				if(item.id==registro.item){
+					//$("#item_id").val(item.id);
+					setTimeout(function(){$("#item_id").val(item.id).trigger('change');},10);
+				}
+			});
 			$scope.load_item_selected();
 		}
 	}
 
 	$scope.desmarcar_item = function(registro){
-		$scope.selected_item.selected = "";
-		$scope.selected_item = null;
+		if($scope.item_provent_editing!=null){
+			$scope.item_provent_editing.attr('selected',false);
+			$scope.item_provent_editing = null;
+			$scope.selected_item.selected = "";
+			$scope.selected_item = null;
+			document.getElementById('item_id').disabled = false;
+			document.getElementById('type_item').disabled = false;
+		}
+
+
 		$("#type_item").val("P");
-		$("#item_id").val("").change();
+		//$("#item_id").val("") //.change();
 		$("#unit_value").val("");
+		$("#complement").val("");
 		$("#quantity").val("");
 		$("#total_value").val("");
+
 	}
 
 	$scope.load_item_selected = function(){
+		if($scope.item_provent_editing!=null){
+			//alert("JA TINHA UM SELECIONADO")
+			$scope.item_provent_editing.attr('selected',false);
+			$scope.selected_item.selected = "";
+			$scope.item_provent_editing = null;
+		}
+
 		$("#type_item").val($scope.selected_item.type_item);
-		setTimeout(function(){$("#item_id").val($scope.selected_item.item.toString()).trigger('change');},10);
+		$("#complement").val($scope.selected_item.complement);
 		$("#unit_value").val($filter('currency')($scope.selected_item.unit_value,"", 2));
 		$("#total_value").val($filter('currency')($scope.selected_item.total_value,"", 2));
 		$("#quantity").val($filter('currency')($scope.selected_item.quantity,"", 2));
+
+		$("#unit_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+		$("#total_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+		$("#quantity").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+
+		$("#item_id option").each(function () {
+			//alert("VEJA: "+$(this).html());
+			if ($(this).html().indexOf($scope.selected_item.item__nome)!=-1) {
+				//alert("encontrei "+$(this).attr("id"));
+				//setTimeout(function(){$("#item_id").val($(this).attr("id")).trigger('change');},10);
+				//setTimeout(function(){$(this).attr("selected", "selected").trigger('change');},10);
+				$scope.item_provent_editing = $(this);
+				setTimeout(function(){
+					//alert("VEJA QUEM TA: "+$scope.item_provent_editing);
+					$scope.item_provent_editing.attr("selected", "selected");
+					//alert("TROQUEI: "+$scope.item_provent_editing);
+					//$("#item_id").trigger('change');
+					document.getElementById('item_id').disabled = true;
+					document.getElementById('type_item').disabled = true;
+					//$scope.$apply();
+				},100);
+				return;
+			}
+		});
 	}
 
 	$scope.view_provents_per_type = function(provent){
@@ -1022,10 +1073,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
       $scope.selected_option_provent = $scope.provents_options[index];
       //alert("VEJA O OBJETO: "+ JSON.stringify($scope.selected_option_provent))
       //setTimeout(function(){$("#item_id").val(option).trigger('change');},10);
-
-      if($scope.selected_item!=null){
-        $scope.edited_item_option = index;
-       }
 
       if($scope.selected_option_provent.tipo_valor=='R'){
         $("#lb_unit_value").text("Valor unitário");
@@ -1060,8 +1107,9 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
         }
       }
 		}
-		//$("#item_id").val(index);
-
+		$("#unit_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+		$("#total_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+		$("#quantity").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
 		setTimeout(function(){$("#item_id").val(index).trigger('change');},1);
 	}
 
@@ -1069,8 +1117,57 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		var quantity = parseFloat($("#quantity").val().replace(".","").replace(",","."));
 		var unit_value = parseFloat($("#unit_value").val().replace(".","").replace(",","."));
 
-		if($scope.selected_item==null){
-			setTimeout(function(){$("#item_id").val($scope.selected_option_provent.id.toString()).trigger('change');},5);
+		if($scope.selected_option_provent!=null && $scope.selected_item == null){
+			// Adicionando item
+			var index = $("#item_id").val();
+			if($scope.selected_option_provent.tipo_valor=='R'){
+				var total_value = unit_value*quantity;
+			}
+			else{
+				var total_value = unit_value*(quantity/100);
+			}
+			$("#total_value").val($filter('currency')(total_value,"", 2));
+			$("#unit_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+			$("#quantity").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+			$("#total_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+			setTimeout(function(){$("#item_id").val(index).trigger('change');},1);
+		}
+		else{
+
+			if($scope.selected_item != null){
+				//alert("VAMOS calcular com os valores carregados: "+JSON.stringify($scope.selected_item))
+				if($scope.selected_item.type_value=='R'){
+					var total_value = unit_value*quantity;
+				}
+				else{
+					var total_value = unit_value*(quantity/100);
+				}
+
+				$("#total_value").val($filter('currency')(total_value,"", 2));
+				setTimeout(function(){$("#item_id").val(index).trigger('change');},1);
+				//$("#total_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+				//$("#item_id").val(1).trigger('change');
+			}
+			else{
+				//alert("Nao calcula nada nao..")
+			}
+		}
+	}
+
+
+
+
+
+		/*var index = $("#item_id").val();
+		var quantity = parseFloat($("#quantity").val().replace(".","").replace(",","."));
+		var unit_value = parseFloat($("#unit_value").val().replace(".","").replace(",","."));
+
+		alert("VEJA QUEM EH selected_option_provent: "+JSON.stringify($scope.selected_option_provent));
+		alert("VEJA QUEM EH selected_item: "+JSON.stringify($scope.selected_item));
+
+		if($scope.selected_option_provent==null){
+			alert("NAO TEM ITEM SELECIONADO?");
+			//setTimeout(function(){$("#item_id").val($scope.selected_option_provent.id.toString()).trigger('change');},5);
 			if($scope.selected_option_provent.tipo_valor=='R'){
 				var total_value = unit_value*quantity;
 			}
@@ -1080,25 +1177,39 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 			$("#total_value").val($filter('currency')(total_value,"", 2));
 		}
 		else{
+			alert("TEM ITEM SELECIONADO");
 			if($scope.edited_item_option){
+				alert("TEM EDITED_ITEM_OPTION");
 				setTimeout(function(){$("#item_id").val($scope.edited_item_option.toString()).trigger('change');},10);
 			}
 			else{
+				alert("NAO TEM EDITED_ITEM_OPTION");
 				setTimeout(function(){$("#item_id").val($scope.selected_item.item.toString()).trigger('change');},5);
 			}
 
+			alert("PASSEI");
 			var quantity = parseFloat($("#quantity").val().replace(".","").replace(",","."));
+			alert("PASSEI");
 			var unit_value = parseFloat($("#unit_value").val().replace(".","").replace(",","."));
+			alert("PASSEI");
 
 			if($scope.selected_option_provent.tipo_valor=='R'){
+				alert("TIPO SELECIONADO R");
 				var total_value = unit_value*quantity;
 				//alert(total_value)
 			}
 			else{
+			alert("TIPO SELECIONADO P");
 				var total_value = unit_value*(quantity/100);
 				//alert(total_value)
 			}
+			alert("HORA DE APRESENTAR O VALOR TOTAL");
 			$("#total_value").val($filter('currency')(total_value,"", 2));
+			alert("APRESENTEI");
 		}
-	}
+		alert("VEJA QUEM EH selected_option_provent: "+JSON.stringify($scope.selected_option_provent));
+		alert("VEJA QUEM EH selected_item: "+JSON.stringify($scope.selected_item));
+		alert("INDO EMBORA");
+		//setTimeout(function(){$("#item_id").val(index).trigger('change');},1);
+	}	*/
 }]);

@@ -52,8 +52,10 @@ function configurar_formulario_padrao(){
 			selectList.appendChild(option);
 	}
 
-	document.getElementById('close_competence').setAttribute('title',"Encerrar Competência ("+last_competence+")");
+	//alert("VEJA QUEM TEM QUE SELECIONAR :"+selected)
+	//document.getElementById('close_competence').setAttribute('title',"Encerrar Competência ("+last_competence+")");
 	$("#competence").val(selected);
+
 
 	$("#unit_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
 	$("#total_value").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});

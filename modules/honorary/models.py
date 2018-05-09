@@ -203,6 +203,9 @@ class Honorary(models.Model):
     def initial_value_contract_float(self):
         return float(self.initial_value_contract)
 
+    def total_contract_discount_float(self):
+        return float((self.contract_discount/100)*self.initial_value_contract)
+
     def total_honorary_float(self):
         return float(self.total_honorary)
 

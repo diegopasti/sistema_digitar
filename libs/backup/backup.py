@@ -27,6 +27,8 @@ class BackupManager:
         print(share_folder)
 
     def create_backup(self):
+        import sys
+        print("VEJA OS ARGUMENTOS: ",sys.argv)
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
         start_timing_backup = datetime.datetime.now()
         django.setup()
@@ -152,6 +154,8 @@ class BackupManager:
         return data
 
     def upload(self):
+        import sys
+        root_path = sys.argv[0].replace('manage.py','')
         self.data = []
         data = {}
         temp_file = DBBACKUP_STORAGE_OPTIONS['location']+'/temp.dump.gz'
@@ -166,7 +170,7 @@ class BackupManager:
         dia = dias[hj.weekday()]
         #shutil.copy(temp_file,'data/backup/'+time.strftime("%a"+"_"+"%Y%m%d%I%M%S"+"_"+"%p")+".dump.gz")
         #export_name = DROPBOX_ROOT_PATH+'/'+time.strftime("%a"+"_"+"%Y%m%d%I%M%S"+"_"+"%p")+".dump.gz"
-        shutil.copy(temp_file,'data/backup/'+time.strftime(dia+"_"+now)+".dump.gz")
+        shutil.copy(temp_file,root_path+'/data/backup/'+time.strftime(dia+"_"+now)+".dump.gz")
         export_name = DROPBOX_ROOT_PATH+'/'+time.strftime(dia+"_"+now)+".dump.gz"
         with open(temp_file, 'rb') as f:
             self.dropbox.files_upload(f.read(), export_name, mode=dropbox.files.WriteMode('overwrite'))

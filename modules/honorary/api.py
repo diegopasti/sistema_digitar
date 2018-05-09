@@ -691,7 +691,7 @@ class HonoraryController(BaseController):
 
     @method_decorator(login_required)
     def get_object(self, request):
-        return self.object(request, Honorary, int(request.POST['id']),extra_fields = ['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'],is_response=True)
+        return self.object(request, Honorary, int(request.POST['id']),extra_fields = ['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'],is_response=True)
 
     @method_decorator(login_required)
     def filter(self,request):
@@ -701,7 +701,7 @@ class HonoraryController(BaseController):
                 entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
                 for entity in entity_list:
                     self.create_update_honorary(request, entity, competence)
-        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
+        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
 
     @method_decorator(login_required)
     def generate_honoraries(self,request):
@@ -712,7 +712,7 @@ class HonoraryController(BaseController):
             self.create_update_honorary(request, entity, self.get_competence(current_month + 1))
             self.create_update_honorary(request, entity, self.get_competence(current_month + 2))
             self.create_update_honorary(request, entity, self.get_competence(current_month + 3))
-        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
+        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
 
     @request_ajax_required
     @method_decorator(login_required)
@@ -750,7 +750,7 @@ class HonoraryController(BaseController):
             Honorary.conferred_date = now
             Honorary.conferred_by = request.user
             honorary.updated_by_name = request.user.get_full_name()
-            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
+            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
         else:
             response_dict = {}
             response_dict['result'] = False
@@ -765,12 +765,14 @@ class HonoraryController(BaseController):
         self.start_process(request)
         now = datetime.datetime.now()
         excluir_periodo = datetime.datetime.strptime("01/"+str(now.month)+"/"+str(now.year)+" 00:00:00", "%d/%m/%Y %H:%M:%S")
+        print("EXCLUIR PERIODOS SUPERIOR: ",excluir_periodo)
         competence_list = Honorary.objects.filter(status='A').exclude(competence_init_date__gte=excluir_periodo).values("competence").distinct()
+        print("VEJa AS OPCOES: ",competence_list)
         response_dict = {}
         response_dict['object'] = list(competence_list) #serializers.serialize('json', list(competence_list))#json.dumps(competence_list)
         response_dict['message'] = 'OK'
         response_dict['result'] = True
-        #print("VEJA O RESPONSE: ",response_dict)
+        print("VEJA O RESPONSE: ",response_dict)
         return self.response(response_dict)
 
     @request_ajax_required
@@ -819,7 +821,7 @@ class HonoraryController(BaseController):
             honorary.closed_by = request.user
             honorary.conferred_by = request.user
             honorary.updated_by_name = request.user.get_full_name()
-            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float'])
+            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
         else:
             response_dict = {}
             response_dict['result'] = False

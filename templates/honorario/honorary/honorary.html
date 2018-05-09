@@ -66,7 +66,7 @@
 
 								{% if request.user.groups.values_list.0.0 <= 2%}
 								<div class="btn-group" role="group" style='margin-left: 5px;'>
-									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" ng-disabled="registro_selecionado==null" aria-expanded="false"><span class="caret"></span></button>
+									<button type="button" id='bt_outras_acoes' class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
 									<ul class="dropdown-menu dropdown-menu-right">
 										<li ng-if='screen_model <= 3' ng-class="{disabled: registro_selecionado==null, cursor_pointer:registro_selecionado!=null }">
 											<a><i class="fa fa-print" aria-hidden="true" data-toggle="modal" data-target="#modal_vencimento"></i> Gerar Honorário</a></li>
@@ -78,7 +78,7 @@
 
 										{% verbatim %}
 											<li ng-repeat="item in opened_competences track by $index">
-												<a id="close_competence" ng-click="close_competence(item)" style="cursor: pointer;">
+												<a ng-click="close_competence(item)" style="cursor: pointer;">
 													<i class="fa fa-check" aria-hidden="true"></i> Encerrar Competência {{ item.competence }}
 												</a>
 											</li>
@@ -109,7 +109,7 @@
 												<th class='text-center' style="width:60px;" ng-click="sortType='competence';sortReverse=!sortReverse">Comp.</th>
 												<th class='text-center' ng-click="sortType='entity_name';sortReverse=!sortReverse">Cliente</th>
 												<th class='text-center' style="width: 100px;" ng-click="sortType='initial_value_contract_float';sortReverse=!sortReverse">Valor Contrato</th>
-												<th class='text-center' style="width: 100px;" style="cursos: not-allowed">Desc. Contrato</th>
+												<th class='text-center' style="width: 100px;" ng-click="sortType='total_contract_discount_float';sortReverse=!sortReverse">Desc. Contrato</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='total_debit_float';sortReverse=!sortReverse">Proventos</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='total_credit_float';sortReverse=!sortReverse">Descontos</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='total_repayment_float';sortReverse=!sortReverse">Ressarcim.</th>
@@ -130,7 +130,7 @@
 												<td class="text-center linha_selecionavel" style="width: 60px;" ng-click="selecionar_linha(registro);">{{ registro.competence }}</td>
 												<td class='text-left linha_selecionavel'  ng-click="selecionar_linha(registro);">{{ registro.entity_name }}</td>
 												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.initial_value_contract_float| currency:"" }}</td>
-												<td class='text-right linha_selecionavel' style="width: 100px;" ng-click="selecionar_linha(registro);" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount| currency:'' }}%">{{ ((registro.contract_discount/100)*registro.initial_value_contract)| currency:"" }}</td>
+												<td class='text-right linha_selecionavel' style="width: 100px;" ng-click="selecionar_linha(registro);" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount|currency:'' }}%">{{ registro.total_contract_discount_float|currency:"" }}</td>
 												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_debit_float| currency:"" }}</td>
 												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_credit_float| currency:"" }}</td>
 												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_repayment_float| currency:"" }}</td>
@@ -165,7 +165,7 @@
 												<td style="width:30px;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
 											</tr>
 
-											<tr ng-if="resultado.length">
+											<tr ng-cloak ng-if="resultado.length">
 												<td colspan="12" class='text-center'>Nenhum resultado Encontrado</td>
 											</tr>
 										</tbody>
@@ -274,7 +274,7 @@
 										{% verbatim %}
 
 										<select id="item_id" class="form-control" ng-blur="select_provent_option()">
-											<option ng-repeat="option in provents_options" value="{{ $index }}" ng-show="view_provents_per_type(option)">
+											<option id='{{ $index }}' ng-repeat="option in provents_options" value="{{ $index }}" ng-show="view_provents_per_type(option)">
 												 {{ option.nome }}
 											</option>
 										</select>

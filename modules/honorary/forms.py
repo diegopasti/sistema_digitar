@@ -46,7 +46,7 @@ class FormHonoraryItem(forms.Form, BaseForm):
     )
 
     complement = forms.CharField(label="Complemento: ", max_length=100, required=False, error_messages=MENSAGENS_ERROS,
-                                  widget=forms.TextInput(attrs={'class': "form-control uppercase", 'id': 'complement', "ng-model": "complement"}))
+                                  widget=forms.TextInput(attrs={'class': "form-control uppercase", 'id': 'complement'}))
 
     quantity = forms.DecimalField(
         label="Quantidade", max_digits=5, decimal_places=2, required=False, error_messages=MENSAGENS_ERROS,
@@ -62,7 +62,7 @@ class FormHonoraryItem(forms.Form, BaseForm):
         label="Valor unitário", max_length=10, required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'id': 'unit_value', 'class': "form-control",'ng-keyup': 'calculate_provent_value()'
+                'id': 'unit_value', 'class': "form-control",#'ng-keyup': 'calculate_provent_value()'
                 # 'ng-blur': 'calcular_valor_base();calcular_total();', 'onkeyup': 'calcular_honorario()', 'ng-keyup': 'calcular_total()', 'ng-change': 'calcular_total()'
             }
         )
