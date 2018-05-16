@@ -123,7 +123,7 @@ class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'id': 'first_name', 'name': 'update_first_name', 'class': "form-control ",
+                'id': 'first_name', 'name': 'update_first_name', 'class': "form-control uppercase",
                 'autocomplete': "off", 'ng-model': 'first_name',
                 'placeholder':'Nome..'
             }
@@ -137,7 +137,7 @@ class FormUpdateProfile (BaseForm,FormAbstractUsername,FormAbstractEmail):
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'id': 'last_name', 'name': 'update_last_name', 'class': "form-control ",
+                'id': 'last_name', 'name': 'update_last_name', 'class': "form-control uppercase",
                 'autocomplete': "off", 'ng-model': 'sobrenome', 'required': "required",
                 'placeholer':'Sobrenome..'
             }
@@ -259,7 +259,7 @@ class FormChangePassword(FormAbstractPassword, FormAbstractConfirmPassword, Base
         widget=forms.TextInput(
             attrs={
                 'id': 'old_password', 'class': "form-control",'type': "password",'autocomplete': "off", 'ng-model': 'old_password',
-                'required': "required", 'data-validate-length-range': '6', 'ng-pattern': '(\d+[a-zA-Z]+)|([a-zA-Z]+\d+)',
+                'required': "required", 'data-validate-length-range': '8', # 'ng-pattern': '(\d+[a-zA-Z]+)|([a-zA-Z]+\d+)',
             }
         )
     )
@@ -310,7 +310,7 @@ class FromChangePersonalInfo (BaseForm,FormAbstractEmail):
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'id': 'first_name', 'name': 'primeiro_nome', 'class': "form-control ",
+                'id': 'first_name', 'name': 'primeiro_nome', 'class': "form-control uppercase",
                 'autocomplete': "off", 'ng-model': 'primeiro_nome', 'required': "required",
             }
         )
@@ -323,7 +323,7 @@ class FromChangePersonalInfo (BaseForm,FormAbstractEmail):
         error_messages=ERRORS_MESSAGES,
         widget=forms.TextInput(
             attrs={
-                'id': 'last_name', 'name': 'sobrenome', 'class': "form-control ",
+                'id': 'last_name', 'name': 'sobrenome', 'class': "form-control uppercase",
                 'autocomplete': "off", 'ng-model': 'sobrenome', 'required': "required",
             }
         )

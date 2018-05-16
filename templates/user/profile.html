@@ -4,6 +4,10 @@
 {% block recursos_necessarios %}
 <style>
 	.field label {
+		padding-top: 0px;
+		padding-bottom: 0px;
+		margin-top: 8px;
+		margin-bottom: 0px;
 		font-weight: normal;
 	}
 	.teste {
@@ -17,8 +21,8 @@
 {% endblock %}
 
 {% block conteudo %}
-	<div id="angular_content_profile" ng-cloak ng-app="modules.user" >
-		<div class="row" style="margin-top: -55px;">
+	<div id="angular_content_profile" ng-cloak ng-app="app" >
+		<div class="row" style="margin-top: -45px;">
 			<div class="col-lg-12 col-md-12 col-xs-12">
 				<div class="box box-default" >
 					<div class="box-heading" ng-controller="change_password_controller">
@@ -38,7 +42,7 @@
 										<div class="row">
 											<div class="col-lg-12">
 												<div id="field_old_password" class="field">
-													<sub><label for="old_password">{{ form_change_email.first_name.label }}</label></sub>
+													<label for="old_password">{{ form_change_email.first_name.label }}</label>
 													{{ form_change_email.first_name}}
 												</div>
 											</div>
@@ -46,7 +50,7 @@
 										<div class="row">
 											<div class="col-lg-12">
 												<div id="field_old_password" class="field" >
-													<sub><label for="old_password">{{ form_change_email.last_name.label }}</label></sub>
+													<label for="old_password">{{ form_change_email.last_name.label }}</label>
 													{{ form_change_email.last_name }}
 												</div>
 											</div>
@@ -54,7 +58,7 @@
 										<div class="row">
 											<div class="col-lg-12">
 												<div id="field_old_password" class="field" >
-													<sub><label for="old_password">{{ form_change_email.email.label }}</label></sub>
+													<label for="old_password">{{ form_change_email.email.label }}</label>
 													{{ form_change_email.email|default:'email' }}
 												</div>
 											</div>
@@ -82,7 +86,7 @@
 											<div class="row">
 												<div class="col-lg-12">
 													<div id="field_old_password" class="field">
-														<sub><label for="old_password">{{ form_change_password.old_password.label }}</label></sub>
+														<label for="old_password">{{ form_change_password.old_password.label }}</label>
 														{{ form_change_password.old_password }}
 													</div>
 												</div>
@@ -90,7 +94,7 @@
 											<div class="row">
 												<div class="col-lg-12">
 														<div id="field_password" class="field">
-															<sub><label for="password">{{ form_change_password.password.label }}</label></sub>
+															<label for="password">{{ form_change_password.password.label }}</label>
 															{{ form_change_password.password }}
 														</div>
 													</div>
@@ -98,7 +102,7 @@
 											<div class="row">
 												<div class="col-lg-12">
 														<div id="field_confirm_password" class="field">
-															<sub><label for="confirm_password">{{ form_change_password.confirm_password.label }}</label></sub>
+															<label for="confirm_password">{{ form_change_password.confirm_password.label }}</label>
 															{{ form_change_password.confirm_password }}
 														</div>
 													</div>
@@ -127,7 +131,7 @@
 {% load compress %}
 {% compress js %}
 	<script src="{% static 'modules/core/base_controller.js' %}"/>
-	<script src="{% static 'modules/user/user_controller.js' %}"/>
+	<script src="{% static 'modules/user/profile_controller.js' %}"/>
 	<script src="{% static 'modules/user/user.js' %}"/>
 	<script>
 		$(window).load(function () {

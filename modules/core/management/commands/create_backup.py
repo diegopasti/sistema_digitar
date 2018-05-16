@@ -13,7 +13,7 @@ class Command(BaseCommand):
         except:
             backup = Backup()
 
-        backup.backup_file_name = backup_paramters['file_name']
-        backup.backup_link = backup_paramters['link']
-        backup.backup_size = backup_paramters['size']
+        backup.file_name = backup_paramters['file_name']
+        backup.file_link = backup_paramters['link']
+        backup.file_size = backup_paramters['size']
         backup.save()
