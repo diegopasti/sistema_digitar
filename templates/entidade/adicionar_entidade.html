@@ -1379,10 +1379,13 @@ function substituir_valor_nulo(valor){
 				$scope.cargo_setor = "";
 				$scope.email = "";
 
-				var sugestao = document.getElementById("sugestao_email").innerHTML;
-				sugestao += '<option value="'+sugestao_email+'" />';
-				document.getElementById("sugestao_email").innerHTML = sugestao;
-
+				try{
+					var sugestao = document.getElementById("sugestao_email").innerHTML;
+					sugestao += '<option value="'+sugestao_email+'" />';
+					document.getElementById("sugestao_email").innerHTML = sugestao;
+				}
+				catch (err){
+				}
 			};
 
 			$scope.removePerson = function(index){
@@ -1694,7 +1697,11 @@ function substituir_valor_nulo(valor){
 	$('#apelido_fantasia').blur(function(){
 		var sugestao = "";
 		sugestao += '<option value="'+$('#apelido_fantasia').val().toUpperCase()+'" />';
-		document.getElementById('sugestao_responsavel').innerHTML = sugestao;
+		try{
+			document.getElementById('sugestao_responsavel').innerHTML = sugestao;
+		}
+		catch (err){
+		}
 	});
 
 	//$("#tipo_vencimento option[value=FIXO]").attr('selected','selected');
@@ -1789,8 +1796,11 @@ function verificar_dados_antes_salvar(){
   }
 
   if ($('#responsavel_cliente').val() == $('#supervisor_cliente').val()){
-	notify('error','Falha na operação','co-responsável não pode ser o mesmo que responsável.')
-	return false;
+		if($('#responsavel_cliente').val() != null){
+			notify('error','Falha na operação','co-responsável não pode ser o mesmo que responsável.')
+			return false;
+		}
+
   }
 
   $("#formulario_cliente").submit();

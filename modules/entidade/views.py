@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import render
 from libs.default.core import BaseController
 from libs.default.decorators import request_ajax_required, permission_level_required
-from modules.entidade.models import informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, Documento#, localizacao , Endereco, Municipio, Bairro, Logradouro,
+from modules.entidade.models import informacoes_juridicas, informacoes_tributarias, AtividadeEconomica, localizacao_simples, Documento  # , localizacao , Endereco, Municipio, Bairro, Logradouro,
 from modules.entidade.models import entidade, contato
 from modules.entidade.service import consultar_codigo_postal_viacep  # consultar_codigo_postal_default
 from modules.entidade.utilitarios import remover_simbolos  # formatar_codificacao,
@@ -186,13 +186,15 @@ def formatar_cnpj(cnpj):
 def construir_endereco(localizacao):
     comp = localizacao.complemento
     num  = localizacao.numero
-    rua = Logradouro.objects.get(pk=localizacao.cep_id)
-    Bairro = ""#Bairro.objects.get(pk=rua.bairro_id)
-    Cidade = Municipio.objects.get(pk=Bairro.municipio_id)
-    Estado = ""#Estado.objects.get(pk=Cidade.estado_id)
+
+    localizacao = localizacao_simples.objects.get(pk=localizacao.cep_id)
+    rua = localizacao.logradouro
+    bairro = localizacao.bairro #Bairro.objects.get(pk=rua.bairro_id)
+    cidade = localizacao.municipio #Municipio.objects.get(pk=Bairro.municipio_id)
+    estado = localizacao.estado #""#Estado.objects.get(pk=Cidade.estado_id)
     
     
-    endereco_completo = rua.nome+", "+num+", "+comp+", "+Bairro.nome+", "+Cidade.nome+", "+Estado.nome+" - "+formatar_cep(rua.cep)
+    endereco_completo = rua.nome+", "+num+", "+comp+", "+bairro+", "+cidade+", "+estado+" - "+formatar_cep(rua.cep)
     return endereco_completo
 
 
@@ -943,21 +945,22 @@ def verificar_erros_formulario(formulario):
           
 
 def consultar_cep(request,codigo_postal):
-    from modules.entidade.models import Logradouro
+    from modules.entidade.models import localizacao_simples
     if request.is_ajax():
         
         codigo_postal = codigo_postal.replace(".","")
         codigo_postal = codigo_postal.replace("-","")
         
-        resultado = Logradouro.objects.filter(cep=codigo_postal)
-               
+        resultado = localizacao_simples.objects.filter(cep=codigo_postal)
+        resultado = consultar_codigo_postal_viacep(codigo_postal)
+        """
         if True: #resultado.count() == 0:
             #print("Nao achei na base de dados"
-            resultado = consultar_codigo_postal_viacep(codigo_postal)
+            
             #return HttpResponse(resultado, content_type='application/json')
             #resultado = [resultado['logradouro'],resultado['bairro'],resultado['municipio'],resultado['estado'],resultado['codigo_municipio'],resultado['pais']]
             
-            """
+            ""
             if resultado != None:
                 resultado[0] = formatar_codificacao(resultado[0])
                 resultado[1] = formatar_codificacao(resultado[1])
@@ -989,15 +992,15 @@ def consultar_cep(request,codigo_postal):
                     
             else:
                 resultado = ["","","","","",""]
-            """
+            ""
             
-        else:
-            registro_endereco = resultado[0]
-            registro_bairro = Bairro.objects.get(id=registro_endereco.bairro_id)
-            registro_cidade = registro_bairro.municipio 
-            registro_estado = registro_cidade.estado    
-            resultado = [registro_endereco.nome,registro_bairro.nome,registro_cidade.nome,registro_estado.sigla,registro_cidade.codigo_ibge,registro_estado.pais.nome]
-
+        #else:
+        #    registro_endereco = resultado[0]
+        #    registro_bairro = Bairro.objects.get(id=registro_endereco.bairro_id)
+        #    registro_cidade = registro_bairro.municipio 
+        #    registro_estado = registro_cidade.estado    
+        #    resultado = [registro_endereco.nome,registro_bairro.nome,registro_cidade.nome,registro_estado.sigla,registro_cidade.codigo_ibge,registro_estado.pais.nome]
+        """
         data = json.dumps(resultado)
         print("VEJA A CONSULTA  O  QUE VEIO: ",data)
         return HttpResponse(data, content_type='application/json')
