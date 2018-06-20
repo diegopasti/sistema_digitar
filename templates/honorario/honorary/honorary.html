@@ -410,26 +410,32 @@
 
 														<tr ng-if="registro_selecionado.honorary_itens.length > 0" class="angular-repeat linha_selecionavel {{ item.selected }}" ng-repeat='item in registro_selecionado.honorary_itens' ng-click="selecionar_item(item)" style="font-size: 10px;">
 															<td class='center' style="width: 30px;">{{ item.item }}</td>
-															<td class="left" style="padding-left: 6px; width: 70px;">
+
+															<td ng-if="item.item > 7 || item.item == 5 || item.item == 6" class="left" style="padding-left: 6px; width: 70px;">
 																<span ng-if="item.type_item=='P'">PROVENTO</span>
 																<span ng-if="item.type_item=='D'">DESCONTO</span>
 																<span ng-if="item.type_item=='R'">PROVENTO</span>
 															</td>
-															<td class="left"	style="padding-left: 6px;">
+
+															<td ng-if="item.item <= 7 && item.item != 5 && item.item != 6" class="left"	style="padding-left: 6px;" colspan="6">
 																{{ item.item__nome }}<span ng-if="item.complement!=null && item.complement!='' "> - {{ item.complement }}</span>
 															</td>
 
-															<td class="center"	style="padding-left: 6px; width: 125px;">{{ item.created_date | date:'dd/MM/yyyy' }} às {{ item.created_date | date:'HH:mm:ss' }}</td>
-															<td class="left"	style="padding-left: 6px;">{{ item.created_by__get_full_name }}</td>
-															<td class="center"	style="padding-left: 6px;width: 125px;">{{ item.last_update | date:'dd/MM/yyyy' }} às {{ item.last_update | date:'HH:mm:ss' }}</td>
-															<td class="left"	style="padding-left: 6px;">{{ item.updated_by__get_full_name }}</td>
+															<td ng-if="item.item > 7 || item.item == 5 || item.item == 6" class="left"	style="padding-left: 6px;">
+																{{ item.item__nome }}<span ng-if="item.complement!=null && item.complement!='' "> - {{ item.complement }}</span>
+															</td>
+
+															<td ng-if="item.item > 7 || item.item == 5 || item.item == 6" class="center"	style="padding-left: 6px; width: 125px;">{{ item.created_date | date:'dd/MM/yyyy' }} às {{ item.created_date | date:'HH:mm:ss' }}</td>
+															<td ng-if="item.item > 7 || item.item == 5 || item.item == 6" class="left"	style="padding-left: 6px;">{{ item.created_by__get_full_name }}</td>
+															<td ng-if="item.item > 7 || item.item == 5 || item.item == 6" class="center"	style="padding-left: 6px;width: 125px;">{{ item.last_update | date:'dd/MM/yyyy' }} às {{ item.last_update | date:'HH:mm:ss' }}</td>
+															<td ng-if="item.item > 7 || item.item == 5 || item.item == 6" class="left"	style="padding-left: 6px;">{{ item.updated_by__get_full_name }}</td>
 
 															<td class="right"	style="padding-left: 6px; width: 90px;">
 																<span ng-if="item.unit_value != '0.00' && item.unit_value != '' && item.unit_value != null">{{ item.unit_value | currency:"" }}</span>
 															</td>
 															<td class="right"	style="padding-left: 6px; width: 90px;">
 																<span ng-if="item.type_value=='R'">{{ item.quantity | currency:""}}</span>
-																<span ng-if="item.unit_value != '0.00' && item.unit_value != '' && item.unit_value != null && item.type_value=='P'">{{ item.quantity | currency:""}} %</span>
+																<span ng-if="item.unit_value != '0.00' && item.unit_value != '' && item.unit_value != null && item.type_value=='P'">{{ item.quantity | currency:""}}%</span>
 															</td>
 															<td class="right"	style="padding-left: 6px; width: 90px;">
 																<span ng-if="item.type_item=='P' || item.type_item=='R' ">{{ item.total_value| currency:"" }}</span>
@@ -506,7 +512,7 @@
 										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
 											<div class="custom_panel custom-box-default">
 												<h6>Proventos:
-													<span class="pull-right" ng-if="registro_selecionado.contract != null">{{ registro_selecionado.total_debit--registro_selecionado.final_value_contract | currency:"R$ "}}</span>
+													<span class="pull-right" ng-if="registro_selecionado.contract != null">{{ registro_selecionado.total_debit--registro_selecionado.initial_value_contract | currency:"R$ "}}</span>
 													<span class="pull-right" ng-if="registro_selecionado.contract == null">{{ registro_selecionado.total_debit | currency:"R$ "}}</span>
 												</h6>
 											</div>
@@ -536,14 +542,14 @@
 													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
 												</h6>
 											</div>
-											<div ng-if='registro_selecionado.total_debit_credit > 0' class="custom_panel custom-box-primary">
+											<div ng-if='registro_selecionado.total_honorary >= 0' class="custom_panel custom-box-primary">
 												<h6 style="font-weight: bold; color:#3C8dbc;">Total:
 													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
 													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
 												</h6>
 
 											</div>
-											<div ng-if='registro_selecionado.total_debit_credit < 0' class="custom_panel custom-box-danger">
+											<div ng-if='registro_selecionado.total_honorary < 0' class="custom_panel custom-box-danger">
 												<h6 style="font-weight: bold;color: #800000;">Total:
 													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
 													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>

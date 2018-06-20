@@ -286,14 +286,30 @@ class Honorary(models.Model):
             honorary.total_honorary = honorary.final_value_contract
             honorary.save()
 
+            if honorary.entity.regime_apuracao == "SIMPLES_NACIONAL":
+                verificar_desconto_ja_lançado = HonoraryItem.objects.filter(honorary=honorary, item_id=4)
+                if verificar_desconto_ja_lançado.count() == 0:
+                    honorary_item = HonoraryItem()
+                    honorary_item.type_item = 'D'
+                    honorary_item.type_value = 'P'
+                    honorary_item.honorary = honorary
+                    provento = Proventos.objects.get(pk=4)
+                    honorary_item.item = provento
+                    honorary_item.quantity = Decimal(provento.valor)
+                    honorary_item.unit_value = honorary.initial_value_contract
+                    honorary_item.total_value = (honorary_item.quantity/100) * Decimal(honorary_item.unit_value)
+                    honorary_item.created_by_id = 1
+                    honorary_item.updated_by_id = 1
+                    honorary_item.save()
+
             if honorary.contract.reembolso_arquivo_caixa:
-                verificar_reembolso_ja_lançado = HonoraryItem.objects.filter(honorary=honorary,item_id=6)
+                verificar_reembolso_ja_lançado = HonoraryItem.objects.filter(honorary=honorary,item_id=7)
                 if verificar_reembolso_ja_lançado.count() == 0:
                     honorary_item = HonoraryItem()
                     honorary_item.type_item = 'P'  #models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
                     honorary_item.type_value = 'R' #models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valores, error_messages=MENSAGENS_ERROS)
                     honorary_item.honorary = honorary
-                    provento = Proventos.objects.get(pk=6)
+                    provento = Proventos.objects.get(pk=7)
                     honorary_item.item = provento
                     honorary_item.quantity = int(honorary.contract.arquivos_caixa)
                     honorary_item.unit_value = provento.valor

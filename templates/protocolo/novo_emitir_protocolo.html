@@ -147,7 +147,7 @@
                                 <div class="form-group field_required">
                                     <label><sub>Documento:</sub></label>
 
-                                    <input id="modal_documento" ng-model='modal_documento' class="form-control uppercase" list='lista_documentos' type="text" onblur="validar_novo_documento()" required/>
+                                    <input id="modal_documento" ng-model='modal_documento' class="form-control uppercase" list='lista_documentos' type="text" required/>
                                     <datalist id="lista_documentos">
                                         {% for item in documentos %}
                                         <option value="{{ item.nome }}">
@@ -161,7 +161,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label><sub>Complemento:</sub></label>
-                                    <input id="modal_complemento" ng-model='modal_complemento' onblur="validar_novo_documento();" class="form-control uppercase" type="text" />
+                                    <input id="modal_complemento" ng-model='modal_complemento' class="form-control uppercase" type="text" />
                                 </div>
                             </div>
                         </div>
@@ -185,7 +185,7 @@
                                         <td>
                                             <div class="form-group">
                                                 <label><sub>Referência:</sub></label>
-                                                <input id="modal_referencia" ng-model='modal_referencia' maxlength="9" class="form-control" onblur="validar_novo_documento();" type="text" />
+                                                <input id="modal_referencia" ng-model='modal_referencia' maxlength="9" class="form-control" type="text" />
                                             </div>
                                         </td>
 
@@ -194,7 +194,7 @@
                                         <td>
                                             <div class="form-group">
                                                 <label><sub>Vencimento:</sub></label>
-                                                <input id="modal_vencimento" ng-model='modal_vencimento' class="form-control" onblur="validar_novo_documento();" type="text" />
+                                                <input id="modal_vencimento" ng-model='modal_vencimento' class="form-control" type="text" />
                                             </div>
                                         </td>
 
@@ -210,14 +210,12 @@
                                 </table>
                             </div>
                         </div>
-
-
                     </div>
 
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-md-3 col-md-push-9">
-                                <button type="submit" id="bt_adicionar_item" ng-disabled="!modal_documento" class="btn btn-sm btn-primary" onclick="return validar_novo_documento();" data-toggle="modal" data-target="#modal_adicionar_documento">Salvar</button>
+                                <button type="submit" id="bt_adicionar_item" class="btn btn-sm btn-primary" onclick="return validar_novo_documento();" data-toggle="modal" data-target="#modal_adicionar_documento">Salvar</button>
                                 <!-- <a href="#modal_adicionar_documento" role="button" class="btn btn-primary form-control" data-toggle="modal" '  > Adicionar</a>  -->
                             </div>
                         </div>
@@ -390,7 +388,7 @@
 
             $scope.documentos.push(documento);
             $scope.desmarcar_linha_selecionada();
-            $("#bt_adicionar_item").addClass("desabilitado");
+            //$("#bt_adicionar_item").addClass("desabilitado");
             $scope.reset_scope_modal();
             reset_dados_modal();
             //$scope.$apply();
@@ -403,7 +401,7 @@
             $scope.documentos[$scope.linha_selecionada].vencimento = $("#modal_vencimento").val();
             $scope.documentos[$scope.linha_selecionada].valor = $("#modal_valor").val();
 
-            $("#bt_adicionar_item").addClass("desabilitado");
+            //$("#bt_adicionar_item").addClass("desabilitado");
             $scope.desmarcar_linha_selecionada();
             $scope.reset_scope_modal();
             reset_dados_modal();
@@ -431,7 +429,7 @@
           $("#modal_referencia").val(referencia_padrao);
           $("#modal_vencimento").val("");
           $("#modal_valor").val("");
-          $("#bt_adicionar_item").addClass("desabilitado");
+          //$("#bt_adicionar_item").addClass("desabilitado");
         }
 
         $scope.editar_documento = function(){

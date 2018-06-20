@@ -796,12 +796,12 @@ class HonoraryController(BaseController):
 
                 if variacao >= 0.5:
                     honorary_item.type_item = 'P'
-                    provento = Proventos.objects.get(pk=4)
+                    provento = Proventos.objects.get(pk=5)
                     honorary_item.quantity = str(1-variacao)
                     honorary_item.total_value = "%.2f"%(float(Decimal(1-variacao) * Decimal(provento.valor)))
                 else:
                     honorary_item.type_item = 'D'
-                    provento = Proventos.objects.get(pk=5)
+                    provento = Proventos.objects.get(pk=6)
                     honorary_item.quantity = str(variacao)
                     honorary_item.total_value = "%.2f"%(float(Decimal(variacao) * Decimal(provento.valor)))
 
@@ -1005,7 +1005,7 @@ class HonoraryController(BaseController):
     @method_decorator(login_required)
     def get_honorary_item(self, request):
         self.start_process(request)
-        queryset = HonoraryItem.objects.filter(honorary_id=int(request.POST['id']))
+        queryset = HonoraryItem.objects.filter(honorary_id=int(request.POST['id'])).order_by('id')
         return BaseController().filter(request, HonoraryItem,queryset=queryset, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'])
 
     @method_decorator(login_required)

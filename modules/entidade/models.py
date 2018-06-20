@@ -126,7 +126,7 @@ class Documento(models.Model):
     # C = Certidao
     # D = Certificado Digital
     # A = Alvara
-    tipo = models.CharField("Tipo do Documento:", max_length=1, null=False, error_messages=MENSAGENS_ERROS)
+    tipo = models.CharField("Tipo do Documento:", max_length=20, null=False, error_messages=MENSAGENS_ERROS)
     nome = models.CharField("Documento:", max_length=100, null=False, error_messages=MENSAGENS_ERROS)
     vencimento = models.DateField("Vencimento:", null=True, blank=True)
     tipo_vencimento = models.CharField("Tipo do Vencimento:", max_length=8, null=False, error_messages=MENSAGENS_ERROS)

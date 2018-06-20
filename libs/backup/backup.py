@@ -28,7 +28,7 @@ class BackupManager:
 
     def create_backup(self):
         import sys
-        print("VEJA OS ARGUMENTOS: ",sys.argv)
+        #print("VEJA OS ARGUMENTOS: ",sys.argv)
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
         start_timing_backup = datetime.datetime.now()
         django.setup()
@@ -158,7 +158,8 @@ class BackupManager:
         root_path = sys.argv[0].replace('manage.py','')
         self.data = []
         data = {}
-        temp_file = DBBACKUP_STORAGE_OPTIONS['location']+'/temp.dump.gz'
+        temp_file = DBBACKUP_STORAGE_OPTIONS['location'] + '/temp.psql.gz'
+
         time = datetime.datetime.now()
         now = time.strftime("%p")
         if now == 'AM':

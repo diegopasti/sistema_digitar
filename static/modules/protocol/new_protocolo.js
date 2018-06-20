@@ -36,17 +36,21 @@ function verificar_campo_vazio(){ // Verifica se o campo documento esta vazio.
 
     else{
         //$("#bt_adicionar_item").addClass("desabilitado");
+        alert("O campo documento precisa ser informado!");
+        $("#modal_documento").focus();
         return false;
     }
 }
 
 function validar_novo_documento(event){  // Verifica se os campos vencimentos e referencia estao em branco ou se são validos.
-    if (validar_data_vencimento() && validar_referencia() && verificar_campo_vazio() && validar_complemento()){
-        $("#bt_adicionar_item").removeClass("desabilitado");
+    if (verificar_campo_vazio() && validar_data_vencimento() && validar_referencia() && validar_complemento()){
+        //$("#bt_adicionar_item").removeClass("desabilitado");
+        alert("olha deu tudo certo pra adicionar");
         return true;
     }
     else{
-        $("#bt_adicionar_item").addClass("desabilitado");
+    		alert("deu problema pra salvar");
+        //$("#bt_adicionar_item").addClass("desabilitado");
         return false;
 
     }
@@ -56,14 +60,15 @@ function validar_data_vencimento(){
     var valor = $("#modal_vencimento").val();
 
     if (valor == "" || valor=="__/__/____"){
-        if (verificar_campo_vazio()){
-            //$("#bt_adicionar_item").removeClass("desabilitado");
-            return true;
-        }
-        else{
-            //$("#bt_adicionar_item").addClass("desabilitado");
-            return false;
-        }
+    	return true;
+			/*if (verificar_campo_vazio()){
+					//$("#bt_adicionar_item").removeClass("desabilitado");
+					return true;
+			}
+			else{
+					//$("#bt_adicionar_item").addClass("desabilitado");
+					return false;
+			}*/
 
     }
     else{
@@ -80,18 +85,17 @@ function validar_data_vencimento(){
 }
 
 function validar_complemento() {
-    var complemento = $("#modal_complemento").val();
-    var documento = $("#modal_documento").val();
-    var total = complemento.length + documento.length;
+	var complemento = $("#modal_complemento").val();
+	var documento = $("#modal_documento").val();
+	var total = complemento.length + documento.length;
 
-    if (total <= 65){
-        return true;
-    }
-    else{
-        alert("Atenção! Nome de documento e complemento devem possuir \njuntos no máximo 65 caractéres."+total+" caractéres informado.");
-        return false;
-    }
-
+	if (total <= 65){
+		return true;
+	}
+	else{
+		alert("Atenção! Nome de documento e complemento devem possuir \njuntos no máximo 65 caractéres."+total+" caractéres informado.");
+		return false;
+	}
 }
 
 /* Valida se a data passada como parâmetro está dentro do período informado */

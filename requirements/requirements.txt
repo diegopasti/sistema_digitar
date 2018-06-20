@@ -31,6 +31,12 @@ Pillow==4.3.0
 # NEED REPLACE 'import StringIO' to 'from io import StringIO' on file utils.py
 # NEED REPLACE 'generate_pdf_template_object(tmpl, file_object, Context(context))' on file utils.py, line 66 to 'generate_pdf_template_object(tmpl, file_object, context)'
 
+
+########
+######## NO SERVIDOR NOVO ALTEREI A LINHA 39 : html = template_object.render(Context(context)) ==> Retirei o Context.
+########
+
+
 dulwich --global-option="--pure"
 django-filebrowser
 

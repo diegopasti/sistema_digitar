@@ -140,11 +140,13 @@ h5{color : #777;font-size: 130% !important;}
 
             <li ng-cloak class="dropdown notifications-menu">
               {% verbatim %}
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{{notifications.length>0 ? 'Notificações não confirmadas' : 'Você não possui nenhuma notificação.'}}">
+              <a ng-if='notifications.length==0' href="/notifications" title="Você não possui nenhuma notificação"><i class="fa fa-bell-o"></i></a>
+              <a ng-if='notifications.length>0' href="#" class="dropdown-toggle" data-toggle="dropdown" title="Notificações não confirmadas">
                 {% endverbatim %}
                 <i class="fa fa-bell-o"></i>
                 <span ng-if="notifications.length>0" class="label label-warning">{% verbatim %}{{ non_readed_notifications }}{% endverbatim %}</span>
               </a>
+
               <ul ng-if="notifications.length>0" class="dropdown-menu" style="width: 500px;">
                 <li class="header">Últimas Notificações</li>
                 <li>
@@ -407,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function(){
   catch(err){
   }
 	load_images();
-	working();
+	//working();
 });
 </script>
 </html>

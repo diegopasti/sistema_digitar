@@ -140,12 +140,13 @@ input.no-border{
 									<th style="vertical-align: middle;text-align:center;">Razão Social</th>
 									<th style="vertical-align: middle;text-align:center;">Nome Fantasia</th>
 									<th style="vertical-align: middle;text-align:center;">Filial ou Comp.</th>
+									<th style="vertical-align: middle;text-align:center;">Regime</th>
 									<th style="vertical-align: middle;text-align:center;">Data Cadastro</th>
 								</tr>
 							</thead>
 
 							<tbody>
-								{% for item in dados %} <!-- reversed -->
+								{% for item in dados %}
 								<tr class="alinhado_meio">
 									<!--<td style="cursor:pointer;text-align:center;">{ forloop.counter }} class='clickable-row ' data-href='/entidade/visualizar/{ item.id }}'</td>-->
 									<td style="cursor:pointer;text-align:center;">{{ item.id }}</td>
@@ -155,9 +156,15 @@ input.no-border{
 									<td style="cursor:pointer">{{ item.cpf_cnpj|slice:":2" }}.{{ item.cpf_cnpj|slice:"2:5" }}.{{ item.cpf_cnpj|slice:"5:8" }}/{{ item.cpf_cnpj|slice:"8:12" }}-{{ item.cpf_cnpj|slice:"12:" }}</td>
 									{% endif %}
 
+									{% if item.nome_razao|length > 50 %}
+									<td align="left" style="cursor:pointer" title="{{ item.nome_razao }}">{{ item.nome_razao|slice:":50" }}...</td>
+									{% else %}
 									<td align="left" style="cursor:pointer">{{ item.nome_razao }}</td>
+									{% endif %}
+
 									<td align="left" style="cursor:pointer">{{ item.apelido_fantasia }}</td>
 									<td align="left" style="cursor:pointer">{{ item.nome_filial }}</td>
+									<td align="left" style="cursor:pointer">{{ item.regime_apuracao }}</td>
 									<td align="center" style="cursor:pointer;width:140px;">{{ item.data_cadastro|date:"d/m/Y" }} ÀS {{ item.data_cadastro|date:"h:m:s" }}</td>
 								</tr>
 								{% empty %}

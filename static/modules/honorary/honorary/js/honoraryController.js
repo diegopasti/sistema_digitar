@@ -657,6 +657,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 				$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
 			}
 			$scope.registro_selecionado.honorary_itens = object;
+			alert(JSON.stringify(object));
 
 			$scope.$apply();
 		}

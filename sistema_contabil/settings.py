@@ -110,24 +110,15 @@ TEMPLATES = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'data/db.sqlite3'),
-    },
-
-    'mysql': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'data/db.sqlite3'),
-    },
-
-    'postgresql': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'sistema_digitar',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'admin', #admin
         'HOST': '127.0.0.1',
         'PORT': '5432', # 8000 is default
     }
 }
+
 
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'data/backup')}
@@ -225,7 +216,7 @@ LOGIN_REDIRECT_URL = "/"
 STATIC_URL = '/static/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = 'sistemadigitar@gmail.com>'
+DEFAULT_FROM_EMAIL = 'sistemadigitar@gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'sistemadigitar@gmail.com'
@@ -261,7 +252,7 @@ BOWER_INSTALLED_APPS = (
     'angular#1.6.4',
     'bootstrap#3.3.7', #3.3.7',#3.3.2
     'jquery-ui',
-    'font-awesome', #4.7.0',#4.2
+    'font-awesome#4.7.0',#4.2
     'nprogress',
     'pnotify',
     'datatables.net-dt',
@@ -348,6 +339,8 @@ SERVER_ADDRESS = "0.0.0.0:8020"
 SERVER_DIGITAR = True
 WORKING_CONFIGURATION = os.path.join(BASE_DIR, 'conf/working.json')
 WORKING_SERVER = "http://127.0.0.1:8010"
+
+"""
 if SERVER_DIGITAR:
     from modules.nucleo.working_api import WorkingManager
     try:
@@ -359,3 +352,4 @@ if SERVER_DIGITAR:
             pass
     except:
         pass
+"""

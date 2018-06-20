@@ -339,31 +339,6 @@ Controles</a>
 											</div>
 										</div>
 
-										<div class="col-lg-8">
-											<div class="form-group">
-												<sub><label id="lb_natureza_juridica" for="natureza_juridica">{{ formulario_entidade.natureza_juridica.label }}</label></sub>
-												{{ formulario_entidade.natureza_juridica }}
-												<datalist id="naturezas_juridicas">
-												</datalist>
-											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-lg-2">
-											<div class="form-group">
-												<sub><label id="lb_regime_apuracao" for="regime_apuracao">{{ formulario_entidade.regime_apuracao.label }}</label></sub>
-												{{ formulario_entidade.regime_apuracao }}
-											</div>
-										</div>
-
-										<div class="col-lg-2">
-											<div class="form-group">
-												<sub><label id="lb_regime_desde" for="regime_desde">{{ formulario_entidade.regime_desde.label }}</label></sub>
-												{{ formulario_entidade.regime_desde }}
-											</div>
-										</div>
-
 										<div class="col-lg-2">
 											<div class="form-group">
 												<sub><label id="lb_inscricao_estadual" for="inscricao_estadual">{{ formulario_entidade.inscricao_estadual.label }}</label></sub>
@@ -372,7 +347,7 @@ Controles</a>
 										</div>
 
 										<div class="col-lg-2">
-											<div class="form-group" data-toggle="tooltip" data-placement="top" title="Inscrição da Junta Comercial, Cartório ou OAB.">
+											<div class="form-group" data-toggle="tooltip" data-placement="top" title="Inscrição da Junta Comercial, Cartório, OAB ou Conselho Profissional.">
 												<sub><label id="lb_inscricao_junta_comercial" for="inscricao_junta_comercial">{{ formulario_entidade.inscricao_junta_comercial.label }}</label></sub>
 												{{ formulario_entidade.inscricao_junta_comercial }}
 											</div>
@@ -393,6 +368,30 @@ Controles</a>
 										</div>
 									</div>
 
+									<div class="row">
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_regime_apuracao" for="regime_apuracao">{{ formulario_entidade.regime_apuracao.label }}</label></sub>
+												{{ formulario_entidade.regime_apuracao }}
+											</div>
+										</div>
+
+										<div class="col-lg-2">
+											<div class="form-group">
+												<sub><label id="lb_regime_desde" for="regime_desde">{{ formulario_entidade.regime_desde.label }}</label></sub>
+												{{ formulario_entidade.regime_desde }}
+											</div>
+										</div>
+
+										<div class="col-lg-8">
+											<div class="form-group">
+												<sub><label id="lb_natureza_juridica" for="natureza_juridica">{{ formulario_entidade.natureza_juridica.label }}</label></sub>
+												{{ formulario_entidade.natureza_juridica }}
+												<datalist id="naturezas_juridicas">
+												</datalist>
+											</div>
+										</div>
+									</div>
 								</fieldset>
 
 								<fieldset>
@@ -1837,15 +1836,15 @@ function configurar_formulario_pessoa_fisica(){
   desabilitar_campo("regime_apuracao");
   desabilitar_campo("regime_desde");
   //desabilitar_campo("nome_filial");
-  desabilitar_campo("inscricao_estadual");
+  //desabilitar_campo("inscricao_estadual");
   //desabilitar_campo("inscricao_municipal");
-  desabilitar_campo("inscricao_junta_comercial");
-  desabilitar_campo("inscricao_produtor_rural");
-  desabilitar_campo("inscricao_imovel_rural");
-  desabilitar_campo("atividade_descricao");
-  desabilitar_campo("atividade_desde");
-  desabilitar_campo("bt_adicionar_atividade");
-  desabilitar('table_cnae');
+  //desabilitar_campo("inscricao_junta_comercial");
+  //desabilitar_campo("inscricao_produtor_rural");
+  //desabilitar_campo("inscricao_imovel_rural");
+  //desabilitar_campo("atividade_descricao");
+  //desabilitar_campo("atividade_desde");
+  //desabilitar_campo("bt_adicionar_atividade");
+  //desabilitar('table_cnae');
 }
 
 function configurar_formulario_pessoa_juridica(){
@@ -1859,17 +1858,17 @@ function configurar_formulario_pessoa_juridica(){
   habilitar_campo("regime_apuracao");
   habilitar_campo("regime_desde");
   habilitar_campo("nome_filial");
-  habilitar_campo("inscricao_estadual");
-  habilitar_campo("inscricao_municipal");
-  habilitar_campo("inscricao_junta_comercial");
-  habilitar_campo("inscricao_produtor_rural");
-  habilitar_campo("inscricao_imovel_rural");
+  //habilitar_campo("inscricao_estadual");
+  //habilitar_campo("inscricao_municipal");
+  //habilitar_campo("inscricao_junta_comercial");
+  //habilitar_campo("inscricao_produtor_rural");
+  //habilitar_campo("inscricao_imovel_rural");
 
-  habilitar_campo("atividade_descricao");
-  habilitar_campo("atividade_desde");
-  habilitar_campo("bt_adicionar_atividade");
+  //habilitar_campo("atividade_descricao");
+  //habilitar_campo("atividade_desde");
+  //habilitar_campo("bt_adicionar_atividade");
 
-  habilitar('table_cnae');
+  //habilitar('table_cnae');
 
   //habilitar_nav_page("#nav_controles",'#tab_servicos');
   var inscricao_municipal = $('#inscricao_municipal').val();
@@ -1896,33 +1895,32 @@ function configurar_inscricao_municipal(){
 </script>
 
 <script>
-        window.addEventListener('DOMContentLoaded', carregar_dados_complementares, false);
+  window.addEventListener('DOMContentLoaded', carregar_dados_complementares, false);
 
-        function carregar_dados_complementares(){
-            carregar_naturezas_juridicas();
-            carregar_atividades_economicas();
-        }
+  function carregar_dados_complementares(){
+    carregar_naturezas_juridicas();
+    carregar_atividades_economicas();
+  }
 
-        function carregar_naturezas_juridicas() {
-            var opcoes = ""
-            {% for grupo in naturezas_juridicas %}
-                //alert("hora de carregar grupo");
-                {% for item in grupo %}
-                    opcoes = opcoes+"<option value='{{ item }}'/>";
-                {% endfor %}
-            {% endfor %}
-        document.getElementById('naturezas_juridicas').innerHTML = opcoes;
-        }
+  function carregar_naturezas_juridicas() {
+    var opcoes = ""
+    {% for grupo in naturezas_juridicas %}
+      //alert("hora de carregar grupo");
+      {% for item in grupo %}
+        opcoes = opcoes+"<option value='{{ item }}'/>";
+      {% endfor %}
+    {% endfor %}
+    document.getElementById('naturezas_juridicas').innerHTML = opcoes;
+  }
 
-        function carregar_atividades_economicas() {
-            var opcoes = ""
-
-            {% for item in atividades_economicas %}
-                opcoes = opcoes+"<option value='{{ item }}'/>";
-            {% endfor %}
-        document.getElementById('codigo_atividades').innerHTML = opcoes;
-        }
-    </script>
+  function carregar_atividades_economicas() {
+    var opcoes = ""
+    {% for item in atividades_economicas %}
+        opcoes = opcoes+"<option value='{{ item }}'/>";
+    {% endfor %}
+  document.getElementById('codigo_atividades').innerHTML = opcoes;
+  }
+</script>
 
 <script>
     function definir_tipo_documento(campo){

@@ -20,6 +20,7 @@ $('#datatable').DataTable({
 		{"sWidth": null},
 		{"sWidth": null},
 		{"sWidth": "110px"},
+		{"sWidth": "110px"},
 		{"sWidth": "110px"}
 	],
 });
