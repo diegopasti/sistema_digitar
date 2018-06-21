@@ -73,10 +73,11 @@ class BackupManager:
         list_files = self.dropbox.files_list_folder(DROPBOX_ROOT_PATH)
         #print(list_files.entries[-1].path_display)
         most_recent_backup = self.download(list_files.entries[-1].path_display)
-        print(most_recent_backup)
+        print("Arquivo mais recente: ",list_files.entries[-1].path_display)
         django.setup()
         #call_command('flush', '--no-input')
-        call_command('dbrestore', '-v','0', '-i', 'temp.dump.gz', '-z', '-q','--noinput')
+        #call_command('dbrestore', '-v','0', '-i', 'temp.dump.gz', '-z', '-q','--noinput')
+        call_command('dbrestore', '-v', '0', '-i', 'temp.dump.gz', '-z', '--noinput')
         #self.clear_temp_file()
         backup_duration = datetime.datetime.now() - start_timing_backup
         print("Backup Restaurado em", backup_duration.total_seconds(), "segundos")
@@ -196,7 +197,7 @@ class BackupManager:
         self.dropbox.files_delete_v2(path)
 
     def clear_temp_file(self):
-        backup_file = DBBACKUP_STORAGE_OPTIONS['location'] + '/temp.dump.gz'
+        backup_file = DBBACKUP_STORAGE_OPTIONS['location'] + '/temp.psql.gz'
         if os.path.isfile(backup_file):
             os.remove(backup_file)
 

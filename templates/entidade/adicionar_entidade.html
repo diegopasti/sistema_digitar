@@ -771,11 +771,11 @@ Controles</a>
 																{{ documento.documento }}
 
 																<span ng-if='documento.tipo_documento=="IMPOSTOS"'>
-																	- TAXA: {{ documento.documento_senha }}%
+																	- {{ documento.documento_senha }}
 																</span>
 
 																<span ng-if='documento.documento_senha!="" && documento.tipo_documento!="IMPOSTOS"'>
-																	- SENHA: {{ documento.documento_senha }}
+																	- {{ documento.documento_senha }}
 																</span>
 
 																<span ng-if='documento.documento_senha==""'>
@@ -913,7 +913,7 @@ Controles</a>
 													<div class="row">
 														<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
 															<div>
-																<sub><label id="documento_complemento">Complemento: </label></sub>
+																<sub><label id="documento_complemento">Complemento (Taxa, Senha..): </label></sub>
 																<input type="text" id="documento_senha" class="form-control" ng-model="documento_senha">
 															</div>
 														</div>
@@ -1203,7 +1203,7 @@ function substituir_valor_nulo(valor){
 					$("#notificar_cliente").val("NAO");
 					$("#prazo_notificacao").val("");
 
-					desabilitar_campo("documento_senha");
+					//desabilitar_campo("documento_senha");
 
 					$scope.tipo_documento = "";
 					$scope.documento = "";
@@ -1303,7 +1303,7 @@ function substituir_valor_nulo(valor){
 						else{
 								registro_temporario = registro_temporario.replace(temp+"#","-"+temp+"#");
 						}
-						alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
+						//alert("VEJA O REGISTRO DEPOIS:"+registro_temporario);
 						$('#tabela_documentos').val(registro_temporario);
 					}
 				}
@@ -1593,7 +1593,7 @@ function substituir_valor_nulo(valor){
 				valor_final = valor_base*(1-valor_desconto);
 			}
 			else{
-				alert("Desconto Temporário não está na validade.")
+				//alert("Desconto Temporário não está na validade.")
 			}
 		}
 		else{
@@ -1665,7 +1665,7 @@ function substituir_valor_nulo(valor){
 	desabilitar_campo("data_vencimento_iss");
 	desabilitar_campo("dia_vencimento_iss");
 	desabilitar_campo("taxa_iss");
-	desabilitar_campo("documento_senha");
+	//desabilitar_campo("documento_senha");
 	desabilitar_campo("taxa_honorario");
 
 	var notificar_cliente = document.getElementById('notificar_cliente');
@@ -1732,7 +1732,7 @@ $('#codigo_postal').blur(function(){
 			//alert(data);
 		},
 		failure: function(data) {
-				alert('Got an error dude');
+				alert('Erro! Não foi possivel consultar o CEP.');
 		}
 	});
 });
@@ -1940,41 +1940,40 @@ function configurar_inscricao_municipal(){
             case "ALVARÁ":
                 //alert("Alvara");
                 trocar_opcoes_datalist("opcoes_documentos",opcoes_alvara);
-                desabilitar_campo("documento_senha");
+                //desabilitar_campo("documento_senha");
                 $('#documento_senha').val("");
                 break;
 
             case "CERTIDÃO":
                 //alert("Certidao");
                 trocar_opcoes_datalist("opcoes_documentos",opcoes_certidoes);
-                desabilitar_campo("documento_senha");
+                //desabilitar_campo("documento_senha");
                 $('#documento_senha').val("");
                 break;
 
-            case "CERITIFICADO":
+            case "CERTIFICADO":
                 //alert("Certificado Digital");
                 trocar_opcoes_datalist("opcoes_documentos",opcoes_certificado);
-                habilitar_campo("documento_senha");
+                //habilitar_campo("documento_senha");
                 break;
 
             case "PROCURAÇÃO":
                 //alert("Certificado Digital");
                 trocar_opcoes_datalist("opcoes_documentos",opcoes_procuracao);
-                habilitar_campo("documento_senha");
+                //habilitar_campo("documento_senha");
                 break;
 
 						case "IMPOSTOS":
 								trocar_opcoes_datalist("opcoes_documentos",opcoes_impostos);
-                habilitar_campo("documento_senha");
-                $("#documento_complemento").text("Taxa (%)");
+                //habilitar_campo("documento_senha");
                 //habilitar_campo("taxa_iss");
                 break;
 
             case "OUTRO":
                 //alert("Outro Documento");
                 trocar_opcoes_datalist("opcoes_documentos",outras_opcoes);
-                desabilitar_campo("documento_senha");
-                $('#documento_senha').val("");
+                //desabilitar_campo("documento_senha");
+                //$('#documento_senha').val("");
                 break;
 
         }

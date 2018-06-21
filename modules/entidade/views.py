@@ -314,12 +314,13 @@ def validar_registro(registro):
 
 @login_required
 def visualizar_entidade(request,id):
+    print("QUERO PEGAR OS CONTATOS DO CLIENTE: ",id)
     cliente = entidade.objects.get(pk=id)
     meus_contatos = contato.objects.filter(entidade=cliente)
+    print("VEJA OS CONTATOS: ",meus_contatos)
     minhas_atividades = AtividadeEconomica.objects.filter(entidade=cliente)
-
-    contatos_serializado = serializar_contatos(meus_contatos)
-    atividades_serializadas = serializar_atividades(minhas_atividades)
+    #contatos_serializado = serializar_contatos(meus_contatos)
+    #atividades_serializadas = serializar_atividades(minhas_atividades)
     meus_documentos = Documento.objects.filter(entidade=cliente)
     url = request.get_full_path()
     print(url)
@@ -416,7 +417,7 @@ def visualizar_entidade(request,id):
 
                     elif "-" in dados[0]:
                         if dados[1] != "-":
-                            excluir_id = int(dados[0][1:])
+                            excluir_id = int(dados[0].replace("-","")) # int(dados[0][1:])
 
                             try:
                                 contato_excluir = contato.objects.get(id=excluir_id)
@@ -493,9 +494,8 @@ def visualizar_entidade(request,id):
                         registro.entidade = cliente
 
                         if "@" in dados[0]:
-                            from django.utils.timezone import now, localtime
                             registro.ativo = False
-                            registro.data_finalizado = localtime(now())
+                            registro.data_finalizado = datetime.datetime.now()
                             registro.finalizado_por = request.user
 
                         try:
@@ -559,6 +559,7 @@ def visualizar_entidade(request,id):
         minhas_atividades = AtividadeEconomica.objects.filter(entidade=cliente)
         meus_documentos = Documento.objects.filter(entidade=cliente)
         contatos_serializado = serializar_contatos(meus_contatos)
+        print("VEJA SO OS CONTATOS SERIALIZADO JOVEM: ",contatos_serializado)
         atividades_serializadas = serializar_atividades(minhas_atividades)
         documentos_serializados = serializar_documentos(meus_documentos)
         #print("olha minhas atividades:",minhas_atividades)
@@ -830,6 +831,7 @@ def salvar_contatos(registro_cnae,registro_entidade):
 
 def serializar_contatos(dados):
     resultado = ''
+    print("VEJA MEUS CONTATOS: ",dados)
     for item in dados:
         resultado = resultado + str(item.id)+'|'+item.tipo_contato +'|'+item.numero+'|'+item.nome_contato+'|'+item.cargo_setor+'|'+item.email+'#'
         #u'RESIDENCIAL|(27) 3043-0703|undefined|undefined#'

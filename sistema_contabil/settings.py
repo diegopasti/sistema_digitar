@@ -119,9 +119,19 @@ DATABASES = {
     }
 }
 
+DBBACKUP_CONNECTORS = {
+    'default': {
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': '127.0.0.1',
+        'DROP': True,
+        'SINGLE_TRANSACTION': False
+    }
+}
 
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'data/backup')}
+
 #DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 #DBBACKUP_STORAGE_OPTIONS = {'oauth2_access_token': '','root_path': '//data/'}
 DBBACKUP_DATE_FORMAT = 'temp' #'%Y%m%d%H%M%S'

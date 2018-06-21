@@ -657,8 +657,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 				$scope.max_honorary_itens = $scope.max_honorary_itens + 1;
 			}
 			$scope.registro_selecionado.honorary_itens = object;
-			alert(JSON.stringify(object));
-
 			$scope.$apply();
 		}
 		fail_function = function (result,message,data_object,status) {
@@ -1053,7 +1051,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		$scope.selected_type = $("#type_item").val();
 		var item_provent_selected = $("#item_id").val();
 		$("#item_id").val("");
-		if(provent.tipo==$scope.selected_type){
+		if	(provent.tipo==$scope.selected_type){
 			return true;
 		}
 		else{

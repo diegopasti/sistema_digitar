@@ -430,7 +430,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			$('#dia_vencimento option:selected').text($scope.registro_selecionado.contrato.dia_vencimento);
 			$("#data_vencimento").val($filter('date')($scope.registro_selecionado.contrato.data_vencimento,'dd/MM/yyyy'));
 			$('#tipo_honorario').find('option:selected').text($scope.registro_selecionado.contrato.tipo_honorario)
-			$("#taxa_honorario").val($scope.registro_selecionado.contrato.taxa_honorario)
+			$("#taxa_honorario").val($scope.registro_selecionado.contrato.taxa_honorario).trigger('mask.maskMoney');
 			$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario *100.0).trigger('mask.maskMoney');
 			$('#desconto_inicio').val($filter('date')($scope.registro_selecionado.contrato.desconto_inicio,'dd/MM/yyyy'));
 			$('#desconto_fim').val($filter('date')($scope.registro_selecionado.contrato.desconto_fim,'dd/MM/yyyy'));
