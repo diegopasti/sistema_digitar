@@ -65,9 +65,9 @@
 					-pdf-frame-content: painel_telefone_emissor;
 					/* -pdf-frame-border: 1; */
 					text-align: center;
-					width: 4.0cm;
+					width: 3.5cm;
 					height: 1.3cm;
-					right: 0.7cm;
+					right: 0.95cm;
 					top: 2.8cm;
 					padding-top: 1px;
 				}
@@ -100,9 +100,9 @@
 					-pdf-frame-content: painel_telefone_destinatario;
 					/* -pdf-frame-border: 1; */
 					text-align: center;
-					width: 4cm;
+					width: 3.5cm;
 					height: 1.3cm;
-					right: 0.7cm;
+					right: 0.95cm;
 					top: 4.6cm;
 					padding-top: 1px;
 				}
@@ -264,9 +264,9 @@
 					-pdf-frame-content: painel_telefone_emissor2;
 					/* -pdf-frame-border: 1; */
 					text-align: center;
-					width: 4.0cm;
+					width: 3.5cm;
 					height: 1.3cm;
-					right: 1cm;
+					right: 0.95cm;
 					top: 17.1cm;
 					padding-top: 1px;
 				}
@@ -299,10 +299,10 @@
 					-pdf-frame-content: painel_telefone_destinatario2;
 					/* -pdf-frame-border: 1; */
 					text-align: center;
-					width: 4cm;
+					width: 3.5cm;
 					height: 1.3cm;
-					right: 1cm;
-					top: 19.5cm;
+					right: 0.95cm;
+					top: 19.0cm;
 					}
 
 				@frame {
@@ -400,7 +400,7 @@
 			
 			td.codigo{
 				padding-left: 2px; 
-				width:45px;
+				width:30px;
 			}
 			
 			td.documento{
@@ -444,22 +444,19 @@
 					</div>	
 					
 					<div id='painel_telefone_emissor'>
-						
 						<table border=0>
 							<tr style="padding-top:3px">
-								<td class="codigo">
-									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
-								</td>
-								
-								<td>
+								<td style="text-align: right;padding-left: 0px;">
+									<div>
 									<font size=4>
 										{% for item in emissor_contatos %}
-										{{ item.numero }}<br>
+											{{ item.numero }}<br>
 										{% endfor %}
 									</font>
+										</div>
 								</td>
 							</tr>
-						</table>	
+						</table>
 					</div>
 					
 					<div id='line_separator_entidades'>
@@ -472,12 +469,23 @@
 					</div>-->
 					
 					<div id='painel_destinatario'>
-						<font size=4 class='negrito'>{{ destinatario_nome }}
-						
+						{% if destinatario_nome|length > 65 %}
+						<font size=3 class='negrito'>
+							{{ destinatario_nome }}
+
 						{% if destinatario_cpf_cnpj != "" %}
 							- {{ destinatario_cpf_cnpj }}
-						{% endif %}	
+						{% endif %}
 						</font><br>
+						{% else %}
+						<font size=4 class='negrito'>
+							{{ destinatario_nome }}
+
+						{% if destinatario_cpf_cnpj != "" %}
+							- {{ destinatario_cpf_cnpj }}
+						{% endif %}
+						</font><br>
+						{% endif %}
 						<font size=4>{{ destinatario_endereco }}<br>{{ destinatario_complemento }}</font>
 					</div>	
 					
@@ -487,15 +495,17 @@
 						<table border=0>
 							<tr style="padding-top:3px">
 								<td class="codigo">
-									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
+
 								</td>
-								
-								<td>
+
+								<td style="text-align: right;padding-left: 0px;">
+									<div>
 									<font size=4>
 										{% for item in destinatario_contatos %}
 											{{ item.numero }}<br>
 										{% endfor %}
 									</font>
+										</div>
 								</td>
 							</tr>
 						</table>
@@ -559,22 +569,22 @@
 								</td>
 
 								{% if item.unit_value != None and item.unit_value != '' %}
-									<td width='86px' style="text-align: right;">{{ item.unit_value }}</td>
+									<td width='86px' style="text-align: right;">{{ item.unit_value|floatformat:2 }}</td>
 								{% else %}
 									<td width='86px'></td>
 								{% endif %}
 
 								{% if item.quantity != None and item.quantity != '' %}
-								<td class="center" style="width: 74px;">{{ item.quantity }}</td>
+								<td class="center" style="width: 74px;">{{ item.quantity|floatformat:2 }}</td>
 								{% else %}
 									<td style="width: 74px;"></td>
 								{% endif %}
 
 								{% if item.valor != "0,00" %}
 									{% if item.type_item == "D" %}
-										<td width='86px'  style="text-align: right;">- {{ item.total_value }}</td>
+										<td width='86px'  style="text-align: right;">- {{ item.total_value|floatformat:2 }}</td>
 									{% else %}
-										<td width='86px'  style="text-align: right;">{{ item.total_value }}</td>
+										<td width='86px'  style="text-align: right;">{{ item.total_value|floatformat:2 }}</td>
 									{% endif %}
 
 								{% else %}
@@ -723,20 +733,16 @@
 					</div>
 
 					<div id='painel_telefone_emissor2'>
-
 						<table border=0>
 							<tr style="padding-top:3px">
-								<td class="codigo">
-									{% load staticfiles %}
-									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
-								</td>
-
-								<td>
+								<td style="text-align: right;padding-left: 0px;">
+									<div>
 									<font size=4>
 										{% for item in emissor_contatos %}
-										{{ item.numero }}<br>
+											{{ item.numero }}<br>
 										{% endfor %}
 									</font>
+										</div>
 								</td>
 							</tr>
 						</table>
@@ -754,35 +760,41 @@
 					</div>-->
 
 					<div id='painel_destinatario2'>
-						<font size=4 class='negrito'>{{ destinatario_nome }}
+						{% if destinatario_nome|length > 65 %}
+						<font size=3 class='negrito'>
+							{{ destinatario_nome }}
 
-						{% if destinatario_cpf_cnpj %}
+						{% if destinatario_cpf_cnpj != "" %}
 							- {{ destinatario_cpf_cnpj }}
 						{% endif %}
 						</font><br>
+						{% else %}
+						<font size=4 class='negrito'>
+							{{ destinatario_nome }}
+
+						{% if destinatario_cpf_cnpj != "" %}
+							- {{ destinatario_cpf_cnpj }}
+						{% endif %}
+						</font><br>
+						{% endif %}
 						<font size=4>{{ destinatario_endereco }}<br>{{ destinatario_complemento }}</font>
 					</div>
 
 					{% if destinatario_contatos|length > 0 %}
 					<div id='painel_telefone_destinatario2'>
-
 						<table border=0>
 							<tr style="padding-top:3px">
-								<td class="codigo">
-									{% load staticfiles %}
-									<img src="{{ path_imagens }}phone.png" width="20px" height="20px" alt="phone"/>
-								</td>
-
-								<td>
+								<td style="text-align: right;padding-left: 0px;">
+									<div>
 									<font size=4>
 										{% for item in destinatario_contatos %}
 											{{ item.numero }}<br>
 										{% endfor %}
 									</font>
+										</div>
 								</td>
 							</tr>
 						</table>
-
 					</div>
 					{% endif %}
 
@@ -861,6 +873,9 @@
 							</tr>
 							{% endif %}
 
+						{% load humanize %}
+
+
 						{% for item in documentos %}
 							<tr style="padding-top:3px;padding-bottom:-3px;">
 								<td class="center">{{ item.item.id }}</td>
@@ -871,22 +886,22 @@
 								</td>
 
 								{% if item.unit_value != None and item.unit_value != '' %}
-									<td width='86px' style="text-align: right;">{{ item.unit_value }}</td>
+									<td width='86px' style="text-align: right;">{{ item.unit_value|floatformat:2 }}</td>
 								{% else %}
 									<td width='86px'></td>
 								{% endif %}
 
 								{% if item.quantity != None and item.quantity != '' %}
-								<td class="center" style="width: 74px;">{{ item.quantity }}</td>
+								<td class="center" style="width: 74px;">{{ item.quantity|floatformat:2 }}</td>
 								{% else %}
 									<td style="width: 74px;"></td>
 								{% endif %}
 
 								{% if item.valor != "0,00" %}
 									{% if item.type_item == "D" %}
-										<td width='86px'  style="text-align: right;">- {{ item.total_value }}</td>
+										<td width='86px'  style="text-align: right;">- {{ item.total_value|floatformat:2 }}</td>
 									{% else %}
-										<td width='86px'  style="text-align: right;">{{ item.total_value }}</td>
+										<td width='86px'  style="text-align: right;">{{ item.total_value|floatformat:2 }}</td>
 									{% endif %}
 
 								{% else %}

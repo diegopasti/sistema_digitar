@@ -297,7 +297,7 @@ class Honorary(models.Model):
                     honorary_item.item = provento
                     honorary_item.quantity = Decimal(provento.valor)
                     honorary_item.unit_value = honorary.initial_value_contract
-                    honorary_item.total_value = (honorary_item.quantity/100) * Decimal(honorary_item.unit_value)
+                    honorary_item.total_value = round((honorary_item.quantity/100) * Decimal(honorary_item.unit_value),2)
                     honorary_item.created_by_id = 1
                     honorary_item.updated_by_id = 1
                     honorary_item.save()

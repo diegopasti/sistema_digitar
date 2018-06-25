@@ -30,7 +30,7 @@ class ProtocolNotifications:
         current_month = current_date.month - 1
         month_name = {0: 'JAN', 1: 'FEV', 2: 'MAR', 3: 'ABR', 4: 'MAI', 5: 'JUN', 6: 'JUL', 7: 'AGO', 8: 'SET', 9: 'OUT', 10: 'NOV', 11: 'DEZ'}
         competence = month_name[current_month] + "/" + str(current_year)
-        max_days_open_protocols = 5
+        max_days_open_protocols = 7
 
         for item in protocols_list:
             opened_days = item.calcular_dias_atraso()

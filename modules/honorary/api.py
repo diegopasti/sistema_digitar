@@ -1100,13 +1100,17 @@ class HonoraryController(BaseController):
             #contract_fidelity_discount_value = '0.00'
             pass
 
+        novo_nome = client.nome_razao
+
+
+
         parametros = {
             'emissor_nome': company.nome_razao, #parametros_emissor.nome,
             'emissor_cpf_cnpj': formatar_cpf_cnpj(company.cpf_cnpj), #parametros_emissor.nome,formatar_cpf_cnpj(parametros_emissor.cpf_cnpj),
             'emissor_endereco': company.endereco.get_endereco(), #parametros_emissor.nome,parametros_emissor.endereco,
             'emissor_complemento': company.endereco.complemento.title(), #parametros_emissor.nome,parametros_emissor.complemento,
             'emissor_contatos': company_contacts, #parametros_emissor.nome,parametros_emissor.contatos,
-            'destinatario_nome': client.nome_razao, #parametros_emissor.nome,parametros_destinatario.nome,
+            'destinatario_nome': novo_nome, #parametros_emissor.nome,parametros_destinatario.nome,
             'destinatario_cpf_cnpj': formatar_cpf_cnpj(client.cpf_cnpj), #parametros_emissor.nome,formatar_cpf_cnpj(parametros_destinatario.cpf_cnpj),
             'destinatario_endereco': client.endereco.get_endereco(), #parametros_emissor.nome,parametros_destinatario.endereco,
             'destinatario_complemento': complemento, #parametros_emissor.nome,parametros_destinatario.complemento,

@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.humanize',
     'django.contrib.staticfiles','session_security',
     'djangobower','compressor','dropbox','dbbackup',
     'sistema_contabil','modules','modules.core','modules.nucleo',
