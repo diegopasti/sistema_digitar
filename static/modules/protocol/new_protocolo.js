@@ -45,11 +45,10 @@ function verificar_campo_vazio(){ // Verifica se o campo documento esta vazio.
 function validar_novo_documento(event){  // Verifica se os campos vencimentos e referencia estao em branco ou se são validos.
     if (verificar_campo_vazio() && validar_data_vencimento() && validar_referencia() && validar_complemento()){
         //$("#bt_adicionar_item").removeClass("desabilitado");
-        alert("olha deu tudo certo pra adicionar");
         return true;
     }
     else{
-    		alert("deu problema pra salvar");
+    		//alert("deu problema pra salvar");
         //$("#bt_adicionar_item").addClass("desabilitado");
         return false;
 
