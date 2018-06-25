@@ -120,7 +120,7 @@ function notify(type,title,description){
     text: description,
     width: width,
     hide: type=='confirm' ? false : true,
-    delay: type=='error' ? 7000 : 7000,
+    delay: type=='error' ? 5000 : 1500,
     mouse_reset: false,
     type: type=='confirm' ? 'success' : type,
     styling: 'fontawesome',//'bootstrap3' // bootstrap3 ,
@@ -156,7 +156,7 @@ function notificar(type,title,text){
 		addclass: 'visible',
 		text: text,
 		hide: true,
-		delay: 7000,
+		delay: 2000,
 		mouse_reset: false,
 		type: type,
 		styling: 'bootstrap3'
