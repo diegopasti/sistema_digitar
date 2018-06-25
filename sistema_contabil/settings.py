@@ -109,6 +109,8 @@ TEMPLATES = [
     },
 ]
 
+
+BACKUP_FILE = os.path.join(BASE_DIR,"data/backup/dump.json")
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -126,7 +128,8 @@ DBBACKUP_CONNECTORS = {
         'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'DROP': True,
-        'SINGLE_TRANSACTION': False
+        'SINGLE_TRANSACTION': False,
+        'NAME': 'sistema_digitar',
     }
 }
 

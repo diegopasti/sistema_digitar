@@ -4,13 +4,14 @@ import datetime
 import dropbox
 import shutil
 import django
+import sys
 import re
 import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sistema_contabil.settings")
 
-from sistema_contabil.settings import DBBACKUP_STORAGE_OPTIONS, DROPBOX_ROOT_PATH, DROPBOX_OAUTH2_TOKEN
-
+from sistema_contabil.settings import DBBACKUP_STORAGE_OPTIONS, DROPBOX_ROOT_PATH, DROPBOX_OAUTH2_TOKEN, BACKUP_FILE
+import tarfile
 
 class BackupManager:
 
@@ -26,26 +27,78 @@ class BackupManager:
         #print(self.dt)
         print(share_folder)
 
+
+    def novo_backup(self):
+        self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
+        start_timing_backup = datetime.datetime.now()
+        django.setup()
+
+        sysout = sys.stdout
+        sys.stdout = open(BACKUP_FILE, 'w+')
+        call_command('dumpdata')
+
+        final_name = self.rename_backup() + ".dump.tar.gz"
+        tar_file = BACKUP_FILE.replace('dump.json', final_name)
+        tar = tarfile.open(tar_file, "w:gz")
+        tar.add(BACKUP_FILE)
+        tar.close()
+
+
+        export_name = DROPBOX_ROOT_PATH + '/' + final_name
+        with open(tar_file, 'rb') as f:
+            self.dropbox.files_upload(f.read(), export_name, mode=dropbox.files.WriteMode('overwrite'))
+        try:
+            link = self.dropbox.sharing_create_shared_link_with_settings(export_name)
+        except:
+            link = self.dropbox.sharing_create_shared_link(export_name)
+        file_metadata = self.dropbox.files_get_metadata(export_name)
+        print(file_metadata)
+        url = link.url
+        dl_url = re.sub(r"\?dl\=0", "?dl=1", url)
+
+        data = {}
+        data['file_name'] = file_metadata.name
+        data['link'] = dl_url
+        data['client_modified'] = file_metadata.client_modified
+        data['size'] = int(file_metadata.size)
+        data['folder_link'] = self.shared_folder()
+
+        backup_duration = datetime.datetime.now() - start_timing_backup
+        print("Backup gerado em", backup_duration.total_seconds(), "segundos")
+        return data
+
+    def rename_backup(self):
+        time = datetime.datetime.now()
+        now = time.strftime("%p")
+        if now == 'AM':
+            now = 'mat'
+        elif now == 'PM':
+            now = 'vesp'
+        dias = ('seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom')
+        hj = date.today()
+        dia = dias[hj.weekday()]
+        final_name = dia+"_"+now
+        return final_name
+
     def create_backup(self):
-        import sys
         #print("VEJA OS ARGUMENTOS: ",sys.argv)
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
         start_timing_backup = datetime.datetime.now()
         django.setup()
         call_command('dbbackup', '-v', '1', '-z')
-        backup = self.upload()
-        link = backup['link']
-        name = backup['file_name']
-        size = backup['size']
-        link_folder = backup['folder_link']
-        self.clear_temp_file()
+        #backup = self.upload()
+        #link = backup['link']
+        #name = backup['file_name']
+        #size = backup['size']
+        #link_folder = backup['folder_link']
+        #self.clear_temp_file()
         backup_duration = datetime.datetime.now() - start_timing_backup
         print("Backup gerado em",backup_duration.total_seconds(),"segundos")
         #print("Arquivo disponivel em "+link)
         #print("Nome: "+name)
         #print("Tamanho em bytes: "+str(size))
         #print("Pasta compartilhada: "+link_folder)
-        return backup
+        #return backup
 
     def create_backup_local(self):
         metadata = {}
