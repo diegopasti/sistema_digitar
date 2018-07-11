@@ -51,7 +51,6 @@ function validar_novo_documento(event){  // Verifica se os campos vencimentos e 
     		//alert("deu problema pra salvar");
         //$("#bt_adicionar_item").addClass("desabilitado");
         return false;
-
     }
 }
 

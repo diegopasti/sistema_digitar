@@ -79,13 +79,31 @@ class ContractController(BaseController):
             contrato.save()
 
             if self.contrato_vigente(contrato):
-                honoraries = Honorary.objects.filter(contract=contrato)
+                honoraries = Honorary.objects.filter(entity=contrato.cliente).exclude(status="E")
+
+                #honoraries = Honorary.objects.filter(contract=contrato)
                 if honoraries.count() > 0:
                     for honorary in honoraries:
-                        honorary = Honorary().update_honorary(honorary, contract=contrato)
-                        honorary.updated_by = request.user
-                        honorary.updated_by_name = request.user.get_full_name()
-                        honorary.save()
+                        if honorary.contract is None or honorary.contract=="":
+                            print("HONORARIO NAO TEM CONTRATO ASSOCIADO.. VOU ASSOCIAR: ",contrato," COM O HONORARIO: ",honorary)
+                            if self.verificar_honorario_vigente(contrato, honorary):
+                                print("OLHA O HONORARIO TA DENTRO DA VIGENCIA.. PRECISO ALTERAR ELE TBM")
+                                honorary.contract = contrato
+                                honorary.save()
+                                honorary.update_honorary(honorary, contrato)
+                                honorary.updated_by = request.user
+                                honorary.updated_by_name = request.user.get_full_name()
+                                honorary.save()
+
+                            else:
+                                print("OLHA ESSE HONORARIO NAO ESTA DENTRO DA VIGENCIA DESSE CONTRATO, NAO VOU ALTERAR ELE")
+
+                        else:
+                            print("HONORARIO JA TEM UM CONTRATO ASSOCIADO.. SO ATUALIZAR")
+                            honorary = Honorary().update_honorary(honorary, contract=contrato)
+                            honorary.updated_by = request.user
+                            honorary.updated_by_name = request.user.get_full_name()
+                            honorary.save()
                 else:
                     cliente = contrato.cliente
                     for item in range(4):
@@ -137,6 +155,22 @@ class ContractController(BaseController):
 
         return self.response(response_dict)
         """
+
+    def verificar_honorario_vigente(self, contrato, honorario):
+        print("VOU VERIFICAR SE O HONORARIO:",honorario," ESTA DENTRO DA VIGENCIA DO CONTRATO: ",contrato)
+        data_inicio = datetime.datetime.combine(contrato.vigencia_inicio, datetime.time(0, 0))
+        if honorario.competence_init_date > data_inicio:
+            print("OLHA O HONORARIO:",honorario.competence,"ESTA DENTRO DA VIGENCIA DO CONTRATO.")
+            if contrato.vigencia_fim is not None:
+                data_fim = datetime.datetime.combine(contrato.vigencia_fim, datetime.time(0, 0))
+                if honorario.competence_init_date < data_fim:
+                    return True
+                else:
+                    return False
+            else:
+                return True
+        else:
+            return False
 
     def verificar_competencia_vigente(self, data_competencia, data_contrato):
         # data_contrato = datetime.datetime.strptime(data_contrato, '%d/%m/%Y')

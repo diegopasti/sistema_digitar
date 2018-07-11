@@ -109,7 +109,6 @@ TEMPLATES = [
     },
 ]
 
-
 BACKUP_FILE = os.path.join(BASE_DIR,"data/backup/dump.json")
 DATABASES = {
     'default': {

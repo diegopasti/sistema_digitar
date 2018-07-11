@@ -37,15 +37,15 @@ class BackupManager:
         sys.stdout = open(BACKUP_FILE, 'w+')
         call_command('dumpdata')
 
-        final_name = self.rename_backup() + ".dump.tar.gz"
-        tar_file = BACKUP_FILE.replace('dump.json', final_name)
-        tar = tarfile.open(tar_file, "w:gz")
-        tar.add(BACKUP_FILE)
-        tar.close()
+        final_name = self.rename_backup() + ".json"#.tar.gz"
+        #tar_file = BACKUP_FILE.replace('dump.json', final_name)
+        #tar = tarfile.open(tar_file, "w:gz")
+        #tar.add(BACKUP_FILE)
+        #tar.close()
 
 
         export_name = DROPBOX_ROOT_PATH + '/' + final_name
-        with open(tar_file, 'rb') as f:
+        with open(BACKUP_FILE, 'rb') as f:
             self.dropbox.files_upload(f.read(), export_name, mode=dropbox.files.WriteMode('overwrite'))
         try:
             link = self.dropbox.sharing_create_shared_link_with_settings(export_name)

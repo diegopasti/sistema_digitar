@@ -595,6 +595,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 		if($scope.registro_selecionado != null && vencimento!=""){
 			vencimento = vencimento.replace("/","").replace("/","")
+			$("#modal_vencimento").modal('hide');
 			window.open('/honorary/'+$scope.registro_selecionado.id+"/"+vencimento);
 		}
 		else{
