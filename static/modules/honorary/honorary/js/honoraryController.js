@@ -536,7 +536,17 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 		var month_names = ['01', '02', '03','04', '05', '06', '07','08', '09', '10', '11', '12'];
 		if($scope.registro_selecionado != null){
 			if($scope.registro_selecionado.contract__dia_vencimento!=null){
-				date = new Date();
+				var competence_month = $scope.registro_selecionado.competence_init_date.split("-")[1];
+				if (competence_month == "12"){
+					competence_month = "0";
+					var increment_year = 1;
+				}
+				else{
+					// nem preciso incrementar o mes pois a lista já comeca em um, e não em zero.
+					var increment_year = 0;
+				}
+				competence_month = competence_month.toString();
+				competence_month = month_names[parseInt(competence_month)];
 				var day = '';
 
 				if($scope.registro_selecionado.contract__dia_vencimento.length==1){
@@ -546,8 +556,9 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 					day = $scope.registro_selecionado.contract__dia_vencimento.toString();
 				}
 
-				var new_date = month_names[date.getMonth()+1]+"/"+date.getFullYear();
-				var iso_date = date.getFullYear()+"-"+month_names[date.getMonth()+1]+"-"+day;
+				var date = new Date();
+				var new_date = competence_month+"/"+date.getFullYear()+increment_year;
+				var iso_date = date.getFullYear()+"-"+competence_month+"-"+day;
 				var label_day = "";
 				switch(new Date(iso_date).getDay()){
 					case 0: label_day = "SEGUNDA"; break;
@@ -999,9 +1010,7 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 			document.getElementById('type_item').disabled = false;
 		}
 
-
 		$("#type_item").val("P");
-		//$("#item_id").val("") //.change();
 		$("#unit_value").val("");
 		$("#complement").val("");
 		$("#quantity").val("");
@@ -1011,7 +1020,6 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 
 	$scope.load_item_selected = function(){
 		if($scope.item_provent_editing!=null){
-			//alert("JA TINHA UM SELECIONADO")
 			$scope.item_provent_editing.attr('selected',false);
 			$scope.selected_item.selected = "";
 			$scope.item_provent_editing = null;

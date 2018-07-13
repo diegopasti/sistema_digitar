@@ -34,7 +34,6 @@ class Command(BaseCommand):
         except:
             backup = Backup()
 
-
         backup.backup_file_name = data['file_name']
         backup.backup_link = data['link']
         backup.backup_size = data['size']

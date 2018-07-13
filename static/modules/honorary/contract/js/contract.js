@@ -56,7 +56,6 @@ function verificar_tipo_honorario () {
 		$("#valor_total").val('');
 		calcular_honorario();
 	}
-
 }
 
 function calcular_honorario(){
