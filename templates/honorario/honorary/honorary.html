@@ -536,7 +536,7 @@
 										</div>
 
 										<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-											<div ng-if='registro_selecionado.total_debit_credit==0' class="custom_panel custom-box-default">
+											<div ng-if='registro_selecionado.total_honorary==0' class="custom_panel custom-box-default">
 												<h6 style="font-weight: bold;color: #555;">Total:
 													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract==0">{{ registro_selecionado.total_debit_credit | currency:"R$ "}}</span>
 													<span class="pull-right" ng-if="registro_selecionado.initial_value_contract>0">{{ registro_selecionado.final_value_contract--registro_selecionado.total_debit_credit | currency:"R$ "}}</span>

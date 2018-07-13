@@ -63,7 +63,7 @@ function calcular_honorario(){
 	salario_vigente = Number(salario_vigente.replace('R$ ','').replace('.','').replace(',','.')); //975.3
 	var multiplicador = $('#taxa_honorario').val().replace(',','.')
 	if (multiplicador != ''){
-		var valor_total = salario_vigente * (Number(multiplicador))
+		var valor_total = salario_vigente*(Number(multiplicador))
 		valor_total = Math.round(valor_total*10000)/100.0;
 		$('#valor_honorario').val(valor_total).trigger('mask.maskMoney');
 	}
