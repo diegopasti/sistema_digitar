@@ -122,7 +122,7 @@ class ContractController(BaseController):
                             honorary = HonoraryController().create_update_honorary(request, contrato.cliente, competence)
 
             else:
-                contrato.ativo = False
+                #contrato.ativo = False
                 contrato.save()
 
             return self.response(super().object(request, Contrato, contrato.id, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float']))
@@ -740,8 +740,15 @@ class HonoraryController(BaseController):
     @method_decorator(login_required)
     def generate_honoraries(self,request):
         current_month = datetime.datetime.now().month
+        current_date = datetime.datetime.now()
         entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
         for entity in entity_list:
+            exists_honoraries = Honorary.objects.filter(entity=entity).filter(competence_init_date__lt=current_date).exclude(competence=self.get_competence(current_month)).exclude(status="E")
+            for item in exists_honoraries:
+                honorary = Honorary().update_honorary(item, contract=item.contract)
+                honorary.updated_by = request.user
+                honorary.updated_by_name = request.user.get_full_name()
+
             self.create_update_honorary(request, entity, self.get_competence(current_month))
             self.create_update_honorary(request, entity, self.get_competence(current_month + 1))
             self.create_update_honorary(request, entity, self.get_competence(current_month + 2))
