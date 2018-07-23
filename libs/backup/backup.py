@@ -33,9 +33,20 @@ class BackupManager:
         start_timing_backup = datetime.datetime.now()
         django.setup()
 
-        sysout = sys.stdout
-        sys.stdout = open(BACKUP_FILE, 'w+')
-        call_command('dumpdata')
+        #sysout = sys.stdout
+        #sys.stdout = open(BACKUP_FILE, 'w+')
+        #call_command('dumpdata')
+
+
+        #buf = StringIO()
+        #management.call_command('dumpdata', app_name, stdout=buf)
+        #buf.seek(0)
+        #with open(filename, 'w') as f:
+        #    f.write(buf.read())
+
+        with open(BACKUP_FILE, 'w') as f:
+            call_command('dumpdata', stdout=f)
+
 
         final_name = self.rename_backup() + ".json"#.tar.gz"
         #tar_file = BACKUP_FILE.replace('dump.json', final_name)
@@ -64,7 +75,10 @@ class BackupManager:
         data['folder_link'] = self.shared_folder()
 
         backup_duration = datetime.datetime.now() - start_timing_backup
-        print("Backup gerado em", backup_duration.total_seconds(), "segundos")
+
+        os.rename(BACKUP_FILE, BACKUP_FILE.replace("dump.json",final_name))
+
+        #print("Backup gerado em", backup_duration.total_seconds(), "segundos")
         return data
 
     def rename_backup(self):
@@ -121,6 +135,11 @@ class BackupManager:
         return metadata
 
     def restore_backup(self):
+        restore_file = DBBACKUP_STORAGE_OPTIONS['location'] + '/restore.json'
+        try:
+            os.remove(restore_file)
+        except OSError:
+            pass
         self.dropbox = dropbox.Dropbox(DROPBOX_OAUTH2_TOKEN)
         start_timing_backup = datetime.datetime.now()
         list_files = self.dropbox.files_list_folder(DROPBOX_ROOT_PATH)
@@ -128,13 +147,20 @@ class BackupManager:
         most_recent_backup = self.download(list_files.entries[-1].path_display)
         print("Arquivo mais recente: ",list_files.entries[-1].path_display)
         django.setup()
-        #call_command('flush', '--no-input')
+        call_command('flush', '--no-input')
+
+        from django.contrib.contenttypes.models import ContentType
+        ContentType.objects.all().delete()
+
         #call_command('dbrestore', '-v','0', '-i', 'temp.dump.gz', '-z', '-q','--noinput')
-        call_command('dbrestore', '-v', '0', '-i', 'temp.dump.gz', '-z', '--noinput')
+        #call_command('dbrestore', '-v', '0', '-i', 'temp.dump.gz', '-z', '--noinput')
         #self.clear_temp_file()
+
+        call_command('loaddata', restore_file)
+
         backup_duration = datetime.datetime.now() - start_timing_backup
         print("Backup Restaurado em", backup_duration.total_seconds(), "segundos")
-        self.clear_temp_file()
+        #self.clear_temp_file()
         return True
 
     def list_backup(self):
@@ -183,7 +209,7 @@ class BackupManager:
         except Exception as erro:
             print("Erro! ", erro)
 
-        final_path = DBBACKUP_STORAGE_OPTIONS['location'] + '/temp.dump.gz'
+        final_path = DBBACKUP_STORAGE_OPTIONS['location'] + '/restore.json'
         f = open(final_path, "wb")
         f.write(res.content)
         f.close()

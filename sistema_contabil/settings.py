@@ -133,7 +133,7 @@ DBBACKUP_CONNECTORS = {
 }
 
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
-DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'data/backup')}
+DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'data/')}
 
 #DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 #DBBACKUP_STORAGE_OPTIONS = {'oauth2_access_token': '','root_path': '//data/'}
