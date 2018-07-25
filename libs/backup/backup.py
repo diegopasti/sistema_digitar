@@ -135,6 +135,7 @@ class BackupManager:
         return metadata
 
     def restore_backup(self):
+        from django.contrib.contenttypes.models import ContentType
         restore_file = DBBACKUP_STORAGE_OPTIONS['location'] + '/restore.json'
         try:
             os.remove(restore_file)
@@ -149,7 +150,6 @@ class BackupManager:
         django.setup()
         call_command('flush', '--no-input')
 
-        from django.contrib.contenttypes.models import ContentType
         ContentType.objects.all().delete()
 
         #call_command('dbrestore', '-v','0', '-i', 'temp.dump.gz', '-z', '-q','--noinput')
