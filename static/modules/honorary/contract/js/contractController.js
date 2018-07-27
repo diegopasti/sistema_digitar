@@ -144,6 +144,7 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	$scope.alterar_contrato = function() {
 		var data_paramters = $scope.get_data_from_form();
+
 		data_paramters['id'] = $scope.registro_selecionado.contrato.id;
 		if ($("#desconto_temporario").val() == ""){
 			data_paramters['desconto_temporario'] = '0.0';
@@ -212,6 +213,42 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 
 	};
 
+	$scope.open_contract = function(){
+		if ($scope.registro_selecionado.contrato != null){
+			$scope.esta_adicionando = false;
+			var plano = $scope.registro_selecionado.contrato.plano;
+			if(plano){
+				$("#plano").val(plano).change();
+				//$('#plano option[value=3]').prop('selected','selected');
+				//$('#plano').find('option:selected').text(plano)
+			}
+			else{
+				$('#plano option:first').prop('selected','selected');
+			}
+			//s$('#tipo_cliente').find('option:selected').val($scope.registro_selecionado.contato.tipo_cliente)
+			$('#vigencia_inicio').val($filter('date')($scope.registro_selecionado.contrato.vigencia_inicio,'dd/MM/yyyy'));
+			$('#vigencia_fim').val($filter('date')($scope.registro_selecionado.contrato.vigencia_fim,'dd/MM/yyyy'));
+			//$('#dia_vencimento option:selected').text($scope.registro_selecionado.contrato.dia_vencimento);
+			$("#dia_vencimento").val($scope.registro_selecionado.contrato.dia_vencimento);
+			//$('#select_dia_vencimento option:selected').val($scope.registro_selecionado.contrato.dia_vencimento);
+			//alert("VEJA O QUE VAI FICAR REALMENTE ARMAZENADO NO SELECT:"+$('#select_dia_vencimento option:selected').val());
+			$("#data_vencimento").val($filter('date')($scope.registro_selecionado.contrato.data_vencimento,'dd/MM/yyyy'));
+			$('#tipo_honorario').find('option:selected').text($scope.registro_selecionado.contrato.tipo_honorario)
+			$("#taxa_honorario").val($scope.registro_selecionado.contrato.taxa_honorario).trigger('mask.maskMoney');
+			//$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario *100.0).trigger('mask.maskMoney');
+			$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario).trigger('mask.maskMoney');
+			$('#desconto_inicio').val($filter('date')($scope.registro_selecionado.contrato.desconto_inicio,'dd/MM/yyyy'));
+			$('#desconto_fim').val($filter('date')($scope.registro_selecionado.contrato.desconto_fim,'dd/MM/yyyy'));
+			$('#desconto_temporario').val($scope.registro_selecionado.contrato.desconto_temporario).trigger('mask.maskMoney');
+			//$("#desconto_temporario").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
+			//$('#valor_total').val($filter('currency')($scope.registro_selecionado.contrato.valor_total,"", 2)); //$scope.registro_selecionado.contrato.valor_total*100).trigger('mask.maskMoney');
+			$scope.calcular_total();
+		}
+		else{
+			$scope.esta_adicionando = true;
+		}
+	}
+
 	$scope.get_data_from_form = function(){
 		var tipo_cliente = $('#select_tipo_cliente option:selected').val();
 		var plano = $('#select_plano option:selected').val();
@@ -219,7 +256,8 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 		var vigencia_inicio = $("#vigencia_inicio").val();
 		var vigencia_fim = $("#vigencia_fim").val();
 		var tipo_vencimento = $('#select_tipo_vencimento option:selected').val();
-    var dia_vencimento = $('#select_dia_vencimento option:selected').val();
+    //var dia_vencimento = $('#select_dia_vencimento option:selected').val();
+    var dia_vencimento = $('#dia_vencimento').val();
     var data_vencimento = $("#data_vencimento").val();
 		var tipo_honorario = $('#select_tipo_honorario option:selected').val();
     var taxa_honorario = $("#taxa_honorario").val().replace('.','').replace(',','.');
@@ -409,40 +447,6 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 				alert('Got an error dude');
 			}
 		});
-	}
-
-	$scope.open_contract = function(){
-		if ($scope.registro_selecionado.contrato != null){
-			$scope.esta_adicionando = false;
-			var plano = $scope.registro_selecionado.contrato.plano;
-			if(plano){
-				$("#plano").val(plano).change();
-				//$('#plano option[value=3]').prop('selected','selected');
-				//$('#plano').find('option:selected').text(plano)
-			}
-			else{
-				$('#plano option:first').prop('selected','selected');
-			}
-
-			//s$('#tipo_cliente').find('option:selected').val($scope.registro_selecionado.contato.tipo_cliente)
-			$('#vigencia_inicio').val($filter('date')($scope.registro_selecionado.contrato.vigencia_inicio,'dd/MM/yyyy'));
-			$('#vigencia_fim').val($filter('date')($scope.registro_selecionado.contrato.vigencia_fim,'dd/MM/yyyy'));
-			$('#dia_vencimento option:selected').text($scope.registro_selecionado.contrato.dia_vencimento);
-			$("#data_vencimento").val($filter('date')($scope.registro_selecionado.contrato.data_vencimento,'dd/MM/yyyy'));
-			$('#tipo_honorario').find('option:selected').text($scope.registro_selecionado.contrato.tipo_honorario)
-			$("#taxa_honorario").val($scope.registro_selecionado.contrato.taxa_honorario).trigger('mask.maskMoney');
-			//$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario *100.0).trigger('mask.maskMoney');
-			$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario).trigger('mask.maskMoney');
-			$('#desconto_inicio').val($filter('date')($scope.registro_selecionado.contrato.desconto_inicio,'dd/MM/yyyy'));
-			$('#desconto_fim').val($filter('date')($scope.registro_selecionado.contrato.desconto_fim,'dd/MM/yyyy'));
-			$('#desconto_temporario').val($scope.registro_selecionado.contrato.desconto_temporario).trigger('mask.maskMoney');
-			//$("#desconto_temporario").maskMoney({showSymbol:false, symbol:"R$", decimal:",", thousands:"."});
-			//$('#valor_total').val($filter('currency')($scope.registro_selecionado.contrato.valor_total,"", 2)); //$scope.registro_selecionado.contrato.valor_total*100).trigger('mask.maskMoney');
-			$scope.calcular_total();
-		}
-		else{
-			$scope.esta_adicionando = true;
-		}
 	}
 
 	$scope.calcular_total = function () {

@@ -172,9 +172,6 @@ USE_THOUSAND_SEPARATOR = True
 #TIME_ZONE = 'America/Sao_Paulo'
 
 
-
-
-
 """
     STATIC_ROOT        
         
