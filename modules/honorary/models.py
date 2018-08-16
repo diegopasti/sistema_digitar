@@ -26,7 +26,7 @@ class Contrato(models.Model):
     taxa_honorario  = models.DecimalField("Honorário:", max_digits=11, decimal_places=2, null=True,blank=True)
     valor_honorario = models.DecimalField("Valor:", max_digits=11, decimal_places=2, null=True,blank=False)
     valor_total = models.DecimalField("Total:", max_digits=11, decimal_places=2, null=True, blank=False)
-    dia_vencimento  = models.CharField("Dia do Vencimento",null=False,default=5,max_length=2)
+    dia_vencimento  = models.CharField("Dia do Vencimento",null=True,blank=True,default=5,max_length=2)
     data_vencimento = models.DateField("Data de Vencimento",null=True,blank=True)
 
     desconto_temporario = models.DecimalField("Desconto Temporário:", max_digits=11,default=0, decimal_places=2, null=True,blank=True,validators=[MaxValueValidator(100),MinValueValidator(0)])
@@ -278,45 +278,66 @@ class Honorary(models.Model):
     def verify_contract_values(self, honorary, contract):
         honorary.contract = contract
         if honorary.contract is not None and honorary.contract.ativo:
-            honorary.initial_value_contract = contract.valor_honorario
-            honorary.temporary_discount = contract.calcular_desconto_temporario(honorary.competence)
-            honorary.fidelity_discount = contract.calcular_desconto_fidelidade()
-            honorary.contract_discount = honorary.temporary_discount + decimal.Decimal(honorary.fidelity_discount)
-            honorary.final_value_contract = Decimal(honorary.initial_value_contract)*(1 - (honorary.contract_discount / 100))
-            honorary.total_honorary = honorary.final_value_contract
-            honorary.save()
+            generate_honorary = True
+            if honorary.contract.dia_vencimento is None or honorary.contract.dia_vencimento == "":
+                if honorary.contract.data_vencimento is not None and honorary.contract.data_vencimento != "":
+                    honorary_competence = honorary.competence_init_date.strftime('%m/%Y')
+                    contract_competence = honorary.contract.data_vencimento.strftime('%m/%Y')
+                    if honorary_competence == contract_competence:
+                        generate_honorary = True
+                        #print("VOU GERAR ESSE HONORARIO ANUAL:",honorary_competence," - ",contract_competence)
+                    else:
+                        #print("CONTRATO COM VENCIMENTO ANUAL MAS NAO TA NO MES AINDA:", honorary_competence, " - ", contract_competence)
+                        generate_honorary = False
+                else:
+                    pass
+                    #print("EH MENSAL MESMO")
+            else:
+                #print("TEM DIA DE VENCIMENTO??")
+                generate_honorary = True
 
-            if honorary.entity.regime_apuracao == "SIMPLES_NACIONAL":
-                verificar_desconto_ja_lançado = HonoraryItem.objects.filter(honorary=honorary, item_id=4)
-                if verificar_desconto_ja_lançado.count() == 0:
-                    honorary_item = HonoraryItem()
-                    honorary_item.type_item = 'D'
-                    honorary_item.type_value = 'P'
-                    honorary_item.honorary = honorary
-                    provento = Proventos.objects.get(pk=4)
-                    honorary_item.item = provento
-                    honorary_item.quantity = Decimal(provento.valor)
-                    honorary_item.unit_value = honorary.initial_value_contract
-                    honorary_item.total_value = round((honorary_item.quantity/100) * Decimal(honorary_item.unit_value),2)
-                    honorary_item.created_by_id = 1
-                    honorary_item.updated_by_id = 1
-                    honorary_item.save()
+            if generate_honorary:
+                honorary.initial_value_contract = contract.valor_honorario
+                honorary.temporary_discount = contract.calcular_desconto_temporario(honorary.competence)
+                honorary.fidelity_discount = contract.calcular_desconto_fidelidade()
+                honorary.contract_discount = honorary.temporary_discount + decimal.Decimal(honorary.fidelity_discount)
+                honorary.final_value_contract = Decimal(honorary.initial_value_contract)*(1 - (honorary.contract_discount / 100))
+                honorary.total_honorary = honorary.final_value_contract
+                honorary.save()
 
-            if honorary.contract.reembolso_arquivo_caixa:
-                verificar_reembolso_ja_lançado = HonoraryItem.objects.filter(honorary=honorary,item_id=7)
-                if verificar_reembolso_ja_lançado.count() == 0:
-                    honorary_item = HonoraryItem()
-                    honorary_item.type_item = 'P'  #models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
-                    honorary_item.type_value = 'R' #models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valores, error_messages=MENSAGENS_ERROS)
-                    honorary_item.honorary = honorary
-                    provento = Proventos.objects.get(pk=7)
-                    honorary_item.item = provento
-                    honorary_item.quantity = int(honorary.contract.arquivos_caixa)
-                    honorary_item.unit_value = provento.valor
-                    honorary_item.total_value = str(int(honorary.contract.arquivos_caixa)*Decimal(provento.valor))
-                    honorary_item.created_by_id = 1
-                    honorary_item.updated_by_id = 1
-                    honorary_item.save()
+                self.verify_discount_simples_nacional(honorary)
+                self.verify_reembolso_arquivo_caixa(honorary)
+                self.verify_provents(honorary)
+
+                """
+                if honorary.contract.reembolso_arquivo_caixa:
+                    verificar_reembolso_ja_lançado = HonoraryItem.objects.filter(honorary=honorary,item_id=7)
+                    if verificar_reembolso_ja_lançado.count() == 0:
+                        honorary_item = HonoraryItem()
+                        honorary_item.type_item = 'P'  #models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
+                        honorary_item.type_value = 'R' #models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valores, error_messages=MENSAGENS_ERROS)
+                        honorary_item.honorary = honorary
+                        provento = Proventos.objects.get(pk=7)
+                        honorary_item.item = provento
+                        honorary_item.quantity = int(honorary.contract.arquivos_caixa)
+                        honorary_item.unit_value = provento.valor
+                        honorary_item.total_value = str(int(honorary.contract.arquivos_caixa)*Decimal(provento.valor))
+                        honorary_item.created_by_id = 1
+                        honorary_item.updated_by_id = 1
+                        honorary_item.save()
+                """
+            else:
+                #print("VOU RESETAR ESSE HONORARIO POIS NAO TA NO VENCIMENTO (ANUAL) OU NAO TEM DIA DE COBRANCA.")
+                honorary.initial_value_contract = 0
+                honorary.temporary_discount = 0
+                honorary.fidelity_discount = 0
+                honorary.contract_discount = 0
+                honorary.final_value_contract = Decimal(0)
+                honorary.total_honorary = Decimal(0)
+                honorary.save()
+
+                self.verify_discount_simples_nacional(honorary)
+                self.verify_reembolso_arquivo_caixa(honorary)
 
         else:
             honorary.initial_value_contract = 0
@@ -326,6 +347,70 @@ class Honorary(models.Model):
             honorary.final_value_contract = Decimal(0)
             honorary.total_honorary = Decimal(0)
         return honorary
+
+
+    def verify_provents(self, honorary):
+        honorary_itens = HonoraryItem.objects.filter(honorary=honorary)
+        for item in honorary_itens:
+            if item.type_value == "P":
+                #print("AJUSTAR O ITEM:",item.item.nome,' PRECISA SER ATUALIZADO')
+                provento = item.item
+                item.item = provento
+                item.quantity = Decimal(provento.valor)
+                item.unit_value = honorary.initial_value_contract
+                item.total_value = round((item.quantity / 100) * Decimal(item.unit_value), 2)
+                item.created_by_id = 1
+                item.updated_by_id = 1
+                item.save()
+
+    def verify_discount_simples_nacional(self, honorary):
+        if honorary.entity.regime_apuracao == "SIMPLES_NACIONAL":
+            verificar_desconto_ja_lançado = HonoraryItem.objects.filter(honorary=honorary, item_id=4)
+            if verificar_desconto_ja_lançado.count() == 0:
+                honorary_item = HonoraryItem()
+                honorary_item.type_item = 'D'
+                honorary_item.type_value = 'P'
+                honorary_item.honorary = honorary
+                provento = Proventos.objects.get(pk=4)
+                honorary_item.item = provento
+                honorary_item.quantity = Decimal(provento.valor)
+                honorary_item.unit_value = honorary.initial_value_contract
+                honorary_item.total_value = round((honorary_item.quantity / 100) * Decimal(honorary_item.unit_value), 2)
+                honorary_item.created_by_id = 1
+                honorary_item.updated_by_id = 1
+                honorary_item.save()
+
+            else:
+                #print("JA TEM SIMPLES NACIONAL LANCADO.. VOU TER QUE ATUALIZAR:", verificar_desconto_ja_lançado)
+                honorary_item = verificar_desconto_ja_lançado[0]
+                honorary_item.type_item = 'D'
+                honorary_item.type_value = 'P'
+                honorary_item.honorary = honorary
+                provento = Proventos.objects.get(pk=4)
+                honorary_item.item = provento
+                honorary_item.quantity = Decimal(provento.valor)
+                honorary_item.unit_value = honorary.initial_value_contract
+                honorary_item.total_value = round((honorary_item.quantity / 100) * Decimal(honorary_item.unit_value), 2)
+                honorary_item.created_by_id = 1
+                honorary_item.updated_by_id = 1
+                honorary_item.save()
+
+    def verify_reembolso_arquivo_caixa(self, honorary):
+        if honorary.contract.reembolso_arquivo_caixa:
+            verificar_reembolso_ja_lançado = HonoraryItem.objects.filter(honorary=honorary, item_id=7)
+            if verificar_reembolso_ja_lançado.count() == 0:
+                honorary_item = HonoraryItem()
+                honorary_item.type_item = 'P'  # models.CharField("Tipo do Provento:", max_length=1, null=False, default='P', choices=opcoes_tipos_item, error_messages=MENSAGENS_ERROS)
+                honorary_item.type_value = 'R'  # models.CharField("Tipo do Valor:", max_length=1, null=False, default='R', choices=opcoes_tipos_valores, error_messages=MENSAGENS_ERROS)
+                honorary_item.honorary = honorary
+                provento = Proventos.objects.get(pk=7)
+                honorary_item.item = provento
+                honorary_item.quantity = int(honorary.contract.arquivos_caixa)
+                honorary_item.unit_value = provento.valor
+                honorary_item.total_value = str(int(honorary.contract.arquivos_caixa) * Decimal(provento.valor))
+                honorary_item.created_by_id = 1
+                honorary_item.updated_by_id = 1
+                honorary_item.save()
 
     """
     def set_contract_paramters(self, honorary, contract):

@@ -225,15 +225,33 @@ app.controller('MeuController', ['$scope', '$filter', function($scope,$filter) {
 			else{
 				$('#plano option:first').prop('selected','selected');
 			}
-			//s$('#tipo_cliente').find('option:selected').val($scope.registro_selecionado.contato.tipo_cliente)
+			//s$('#tipo_cliente').find('option:selected').val($scope.registro_selecionado.contrato.tipo_cliente)
 			$('#vigencia_inicio').val($filter('date')($scope.registro_selecionado.contrato.vigencia_inicio,'dd/MM/yyyy'));
 			$('#vigencia_fim').val($filter('date')($scope.registro_selecionado.contrato.vigencia_fim,'dd/MM/yyyy'));
 			//$('#dia_vencimento option:selected').text($scope.registro_selecionado.contrato.dia_vencimento);
-			$("#dia_vencimento").val($scope.registro_selecionado.contrato.dia_vencimento);
-			//$('#select_dia_vencimento option:selected').val($scope.registro_selecionado.contrato.dia_vencimento);
-			//alert("VEJA O QUE VAI FICAR REALMENTE ARMAZENADO NO SELECT:"+$('#select_dia_vencimento option:selected').val());
-			$("#data_vencimento").val($filter('date')($scope.registro_selecionado.contrato.data_vencimento,'dd/MM/yyyy'));
-			$('#tipo_honorario').find('option:selected').text($scope.registro_selecionado.contrato.tipo_honorario)
+			if ($scope.registro_selecionado.contrato.data_vencimento!=null && $scope.registro_selecionado.contrato.dia_vencimento==''){
+				$("#tipo_vencimento").val("ANUAL");
+				verificar_tipo_vencimento();
+				$("#data_vencimento").val($filter('date')($scope.registro_selecionado.contrato.data_vencimento,'dd/MM/yyyy'));
+				//$("#data_vencimento").val($scope.registro_selecionado.contrato.data_vencimento);
+			}
+			else{
+				$("#tipo_vencimento").val("MENSAL");
+				verificar_tipo_vencimento();
+				$("#dia_vencimento").val($scope.registro_selecionado.contrato.dia_vencimento);
+			}
+
+			if($scope.registro_selecionado.contrato.taxa_honorario==null || $scope.registro_selecionado.contrato.taxa_honorario=="0.00"){
+				$('#tipo_honorario').val("FIXO");
+				habilitar('field_valor_honorario');
+				desabilitar('field_taxa_honorario');
+			}
+			else{
+				$('#tipo_honorario').val("VARIAVEL");
+				habilitar('field_taxa_honorario');
+				desabilitar('field_valor_honorario');
+			}
+
 			$("#taxa_honorario").val($scope.registro_selecionado.contrato.taxa_honorario).trigger('mask.maskMoney');
 			//$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario *100.0).trigger('mask.maskMoney');
 			$('#valor_honorario').val($scope.registro_selecionado.contrato.valor_honorario).trigger('mask.maskMoney');

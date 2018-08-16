@@ -312,7 +312,7 @@ class ContractController(BaseController):
     @method_decorator(login_required)
     @method_decorator(permission_level_required(1, raise_exception=HttpResponseForbidden()))
     def alterar_contrato(self, request):
-        print("VEJA O REQUEST:",request.POST)
+        #print("VEJA O REQUEST:",request.POST)
         update_response = self.update(request, FormContrato, extra_fields=['plano__nome','valor_honorario_float','desconto_total_ativo','valor_total_float'], is_response=False)
         if update_response['result']:
             contrato = Contrato.objects.get(pk=int(request.POST['id']))
@@ -788,7 +788,7 @@ class HonoraryController(BaseController):
             honorary = None
         if honorary is not None:
             honorary.status = "C"
-            Honorary.conferred_date = now
+            Honorary.conferred_date = datetime.datetime.now()
             Honorary.conferred_by = request.user
             honorary.updated_by_name = request.user.get_full_name()
             response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])

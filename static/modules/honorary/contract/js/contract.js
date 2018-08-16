@@ -1,9 +1,9 @@
 function configurar_formulario_padrao(){
 	$("#tipo_cliente").val('PJ');
 	$("#plano").val(1);
-	$("#tipo_honorario").val('FIXO');
 	$("#tipo_vencimento").val('MENSAL');
 	$("#dia_vencimento").val('5');
+	//$("#tipo_honorario").val('FIXO');
 	$("#tipo_honorario").val('VARIAVEL');
 	configurar_campo_data('vigencia_inicio');
 	configurar_campo_data('vigencia_fim');
@@ -26,9 +26,10 @@ $('#modal_adicionar_contrato').on('hidden.bs.modal', function () {
 });
 
 function verificar_tipo_vencimento () {
-	var tipo_vencimento = $('#select_tipo_vencimento option:selected').val();
+	var tipo_vencimento = $('#tipo_vencimento').val();
 	if (tipo_vencimento == 'ANUAL'){
 		$("#dia_vencimento").val('');
+		$("#data_vencimento").val('');
 		desabilitar('field_dia_vencimento');
 		habilitar('field_data_venvimento');
 	}else{
