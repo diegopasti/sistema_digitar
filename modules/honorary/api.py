@@ -157,10 +157,10 @@ class ContractController(BaseController):
         """
 
     def verificar_honorario_vigente(self, contrato, honorario):
-        print("VOU VERIFICAR SE O HONORARIO:",honorario," ESTA DENTRO DA VIGENCIA DO CONTRATO: ",contrato)
+        #print("VOU VERIFICAR SE O HONORARIO:",honorario," ESTA DENTRO DA VIGENCIA DO CONTRATO: ",contrato)
         data_inicio = datetime.datetime.combine(contrato.vigencia_inicio, datetime.time(0, 0))
         if honorario.competence_init_date > data_inicio:
-            print("OLHA O HONORARIO:",honorario.competence,"ESTA DENTRO DA VIGENCIA DO CONTRATO.")
+            #print("OLHA O HONORARIO:",honorario.competence,"ESTA DENTRO DA VIGENCIA DO CONTRATO.")
             if contrato.vigencia_fim is not None:
                 data_fim = datetime.datetime.combine(contrato.vigencia_fim, datetime.time(0, 0))
                 if honorario.competence_init_date < data_fim:
@@ -970,8 +970,10 @@ class HonoraryController(BaseController):
             if honorary.status!='E':
                 response_dict = self.update(request, FormHonoraryItem, extra_fields=['item__nome','created_by__get_full_name','updated_by__get_full_name'],is_response=False)
                 if response_dict['result']:
-                    honorary.number_debit_credit = honorary.number_debit_credit + 1
+                    #honorary.number_debit_credit = honorary.number_debit_credit + 1
                     new_value =  Decimal(request.POST['total_value'])
+                    honorary.update_honorary(honorary, honorary.contract)
+                    """
                     if request.POST['type_item'] == "P":
                         honorary.total_debit = honorary.total_debit + new_value
                         honorary.total_debit_credit = honorary.total_debit_credit + new_value
@@ -988,6 +990,7 @@ class HonoraryController(BaseController):
                         honorary.total_honorary = honorary.total_honorary - new_value
                     else:
                         pass
+                    """
 
                     honorary.updated_by_id = request.user.id
                     honorary.updated_by_name = request.user.get_full_name()

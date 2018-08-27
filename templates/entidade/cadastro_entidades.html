@@ -165,7 +165,7 @@ input.no-border{
 									<td align="left" style="cursor:pointer">{{ item.apelido_fantasia }}</td>
 									<td align="left" style="cursor:pointer">{{ item.nome_filial }}</td>
 									<td align="left" style="cursor:pointer">{{ item.regime_apuracao }}</td>
-									<td align="center" style="cursor:pointer;width:140px;">{{ item.data_cadastro|date:"d/m/Y" }} ÀS {{ item.data_cadastro|date:"h:m:s" }}</td>
+									<td align="center" style="cursor:pointer;width:140px;">{{ item.data_cadastro|date:"d/m/Y - h:m:s" }}</td>
 								</tr>
 								{% empty %}
 										<tr><td colspan="6" style='text-align:center;'><a href="/entidade/adicionar">Adicione uma nova Entidade.</a></td></tr>
@@ -316,6 +316,7 @@ input.no-border{
 <script src="{% static 'modules/entity/entityController.js' %}"></script>
 {% endcompress %}
 
+<script src="http://cdn.datatables.net/plug-ins/1.10.19/sorting/date-eu.js"></script>
 <script>
 $('#codigo_postal').blur(function(){
 	$.ajax({

@@ -9,19 +9,19 @@ function post_screen_verified(){
 function init_datatable(){
 $('#datatable').DataTable({
 	"pagingType": "simple_numbers",
-	"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
+	"lengthMenu": [[20, 100, -1], [20, 100, "All"]],
 	"dom": '<"top">rt"<"rightcolumn"><"clear">p',
 	"bSort": true,
-	"ordering": false,
+	"ordering": true,
 	"bAutoWidth": false,
-	"aoColumns": [
+	"columns": [
 		{"sWidth": "20px"},
 		{"sWidth": "120px"},
 		{"sWidth": null},
 		{"sWidth": null},
 		{"sWidth": "110px"},
 		{"sWidth": "110px"},
-		{"sWidth": "110px"}
+		{"sWidth": "110px", "type": "date-eu"}
 	],
 });
 
