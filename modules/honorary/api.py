@@ -726,7 +726,7 @@ class HonoraryController(BaseController):
 
     @method_decorator(login_required)
     def get_object(self, request):
-        return self.object(request, Honorary, int(request.POST['id']),extra_fields = ['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'],is_response=True)
+        return self.object(request, Honorary, int(request.POST['id']),extra_fields = ['honorary_itens','contract__data_vencimento','contract__dia_vencimento','contract__ativo''have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'],is_response=True)
 
     @method_decorator(login_required)
     def filter(self,request):
@@ -736,7 +736,7 @@ class HonoraryController(BaseController):
                 entity_list = entidade.objects.filter(ativo=True).exclude(id=1)
                 for entity in entity_list:
                     self.create_update_honorary(request, entity, competence)
-        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
+        return BaseController().filter(request, Honorary, order_by='entity_name', extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','contract__ativo','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
 
     @method_decorator(login_required)
     def generate_honoraries(self,request):
@@ -791,7 +791,7 @@ class HonoraryController(BaseController):
             Honorary.conferred_date = datetime.datetime.now()
             Honorary.conferred_by = request.user
             honorary.updated_by_name = request.user.get_full_name()
-            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
+            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','contract__ativo''have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
         else:
             response_dict = {}
             response_dict['result'] = False
@@ -862,7 +862,7 @@ class HonoraryController(BaseController):
             honorary.closed_by = request.user
             honorary.conferred_by = request.user
             honorary.updated_by_name = request.user.get_full_name()
-            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
+            response_dict = self.execute(honorary,honorary.save,extra_fields=['honorary_itens','contract__data_vencimento','contract__dia_vencimento','contract__ativo''have_contract','initial_value_contract_float','total_honorary_float','total_repayment_float','total_debit_float','total_credit_float','total_contract_discount_float'])
         else:
             response_dict = {}
             response_dict['result'] = False

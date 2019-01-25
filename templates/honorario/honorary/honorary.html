@@ -108,6 +108,7 @@
 												<th class='text-center' style="width: 40px;" ng-click="sortType='id';sortReverse=!sortReverse">N°</th>
 												<th class='text-center' style="width:60px;" ng-click="sortType='competence_init_date';sortReverse=!sortReverse">Comp.</th>
 												<th class='text-center' ng-click="sortType='entity_name';sortReverse=!sortReverse">Cliente</th>
+												<th class='text-center' ng-click="sortType='entity_name';sortReverse=!sortReverse" style="width:60px;">Contrato</th>
 												<th class='text-center' style="width: 100px;" ng-click="sortType='initial_value_contract_float';sortReverse=!sortReverse">Valor Contrato</th>
 												<th class='text-center' style="width: 100px;" ng-click="sortType='total_contract_discount_float';sortReverse=!sortReverse">Desc. Contrato</th>
 												<th class='text-center' style="width: 90px;" ng-click="sortType='total_debit_float';sortReverse=!sortReverse">Proventos</th>
@@ -129,6 +130,11 @@
 												<td class='text-center linha_selecionavel' style="width: 30px;" ng-click="selecionar_linha(registro);">{{ registro.id }}</td>
 												<td class="text-center linha_selecionavel" style="width: 60px;" ng-click="selecionar_linha(registro);">{{ registro.competence }}</td>
 												<td class='text-left linha_selecionavel'  ng-click="selecionar_linha(registro);">{{ registro.entity_name }}</td>
+												<td class='text-left linha_selecionavel'  ng-click="selecionar_linha(registro);" style="text-align:center;">
+													<span ng-show="registro.contract__ativo==true">ATIVO</span>
+													<span ng-show="registro.contract__ativo==false">INATIVO</span>
+													<span ng-show="registro.contract__ativo==null">-</span>
+												</td>
 												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.initial_value_contract_float| currency:"" }}</td>
 												<td class='text-right linha_selecionavel' style="width: 100px;" ng-click="selecionar_linha(registro);" title="Desconto Fidelidade {{ registro.fidelity_discount| currency:'' }}% e Desconto Temporário {{ registro.temporary_discount|currency:'' }}%">{{ registro.total_contract_discount_float|currency:"" }}</td>
 												<td class='text-right linha_selecionavel' style="width: 90px;" ng-click="selecionar_linha(registro);">{{ registro.total_debit_float| currency:"" }}</td>
@@ -143,7 +149,7 @@
 
 												{% endverbatim %}
 
-												{% if request.user.groups.values_list.0.0 <= 2%}
+												{% if request.user.groups.values_list.0.0 <= 2 %}
 												<td class='text-center confirm_honorary' style="width: 100px;" ng-click="change_honorary_status(registro)">
 													<span ng-show="registro.status=='A'" title="Clique aqui para confirmar." style="color:#AAA;">
 														<i class="fa fa-minus" aria-hidden="true"></i>
@@ -187,7 +193,8 @@
 						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" style='margin-top:6px;'>
 							<label id="label_filtrar_contrato" class='left {{ desabilitar }}'><sub>Contrato:</sub></label>
 							<select id='filtrar_contrato' class='form-control' ng-model="filter_contract_by" ng-change="select_filter_contract_by()">
-								<option value="com_contrato">COM CONTRATO</option>
+								<option value="com_contrato_ativo">CONTRATO ATIVOS</option>
+								<option value="com_contrato_inativo">CONTRATO INATIVO</option>
 								<option value="sem_contrato">SEM CONTRATO</option>
 								<option value="todos">TODOS</option>
 							</select>
