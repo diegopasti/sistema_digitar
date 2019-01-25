@@ -42,7 +42,7 @@ urlpatterns = [
     #url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^login/$', view_usuario.login_page),
+    url(r'^login', view_usuario.login_page),
     url(r'^logout', view_usuario.logout_page),
     url(r'^profile/',view_usuario.profile),
     url(r'^cadastrar_empresa$', nucleo_views.cadastrar_empresa), #url(r'teste/$', "endereco.views.teste),

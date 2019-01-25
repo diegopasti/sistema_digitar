@@ -557,8 +557,10 @@ app.controller('MeuController', ['$scope','$filter', function($scope,$filter) {
 				}
 
 				var date = new Date();
-				var new_date = competence_month+"/"+date.getFullYear()+increment_year;
-				var iso_date = date.getFullYear()+"-"+competence_month+"-"+day;
+
+				var new_date = competence_month+"/"+(date.getFullYear()+increment_year);
+
+				var iso_date = (date.getFullYear()+increment_year)+"-"+competence_month+"-"+day;
 				var label_day = "";
 				switch(new Date(iso_date).getDay()){
 					case 0: label_day = "SEGUNDA"; break;

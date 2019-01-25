@@ -79,8 +79,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'session_security.middleware.SessionSecurityMiddleware',
 
-
-
     #'django.middleware.cache.UpdateCacheMiddleware',
     #'htmlmin.middleware.HtmlMinifyMiddleware',
     # other middleware classes
