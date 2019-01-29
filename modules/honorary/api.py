@@ -6,6 +6,8 @@ from modules.honorary.forms import FormContrato, FormProventos, FormHonoraryItem
 from django.contrib.auth.decorators import login_required, permission_required
 from libs.default.decorators import request_ajax_required, permission_level_required
 from django.utils.decorators import method_decorator
+
+from modules.preferencias.models import SalarioMinimo
 from modules.protocolo.views import formatar_cpf_cnpj
 from modules.servico.models import Plano, Servico
 from django.http import HttpResponse, Http404, HttpResponseForbidden
@@ -419,6 +421,17 @@ class ContractController(BaseController):
             return self.response(response_dict)
         else:
             return self.response(response_dict)
+
+    def atualizar_contratos_completo(self, request=None):
+        contratos_baseado_salario = Contrato.objects.all()
+        data_atual = datetime.datetime.today()
+        salario_vigente = SalarioMinimo.objects.filter(inicio_vigencia__lte=data_atual).latest('inicio_vigencia')
+        for item in contratos_baseado_salario:
+            if item.taxa_honorario is not None:
+                novo_valor_base = round(item.taxa_honorario*salario_vigente.valor,2)
+                item.valor_honorario = novo_valor_base
+                item.save()
+        HonoraryController().generate_honoraries(request)
 
     @request_ajax_required
     @method_decorator(login_required)

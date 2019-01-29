@@ -11,6 +11,7 @@ from django.template import RequestContext
 from django.utils.decorators import method_decorator
 
 from libs.default.decorators import permission_level_required
+from modules.honorary.api import ContractController
 from modules.preferencias.formularios import adicionar_salario_minimo
 
 from modules.preferencias.models import SalarioMinimo
@@ -34,6 +35,7 @@ def adicionar_salario(request):
             response_dict = executar_operacao(salario, "save")
             if response_dict["success"]:
                 #print("Buscando o id:",response_dict['message'],type(response_dict['message']))
+                ContractController().atualizar_contratos_completo(request)
                 novo_registro = SalarioMinimo.objects.get(pk=response_dict['message']).data_cadastro.strftime("%Y-%m-%d às %H:%M:%S")
                 #print("Tentando buscar o novo registro:"+novo_registro)
                 response_dict['message'] = str(response_dict['message']) + "#" +novo_registro
@@ -73,8 +75,8 @@ def alterar_salario(request,id):
             salario = SalarioMinimo.objects.get(pk=int(id))
             salario.valor = formulario.cleaned_data['valor']
             salario.inicio_vigencia = formulario.cleaned_data['inicio_vigencia']
-
             response_dict = executar_operacao(salario, "save")
+            ContractController().atualizar_contratos_completo(request)
 
 
         else:
@@ -99,6 +101,8 @@ def excluir_salario(request,id):
 
 @login_required
 def listar_salarios(request):
+    #ContractController().atualizar_contratos_completo()
+
     locale.setlocale(locale.LC_ALL, '')
     data_atual = date.today()
     # Outro recurso seria usar o modulo do proprio Django.

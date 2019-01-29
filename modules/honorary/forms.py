@@ -129,7 +129,7 @@ class FormContrato(forms.Form, BaseForm):
         label="Fim do Contrato", required=False, error_messages=MENSAGENS_ERROS,
         widget=forms.TextInput(
             attrs={
-                'class': "form-control", 'id': 'vigencia_fim', 'ng-model':'vigencia_fim', 'onblur':'verificar_data_vigencia()'
+                'class': "form-control", 'id': 'vigencia_fim', 'ng-model':'vigencia_fim'#, #'onblur':'verificar_data_vigencia()'
             }
         )
     )
